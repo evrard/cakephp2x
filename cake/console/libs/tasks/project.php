@@ -1,32 +1,25 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * The Project Task handles creating the base application
  *
- * Long description for file
  *
  * PHP versions 4 and 5
  *
  * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
  * @package       cake
- * @subpackage    cake.cake.scripts.bake
+ * @subpackage    cake.cake.console.bake
  * @since         CakePHP(tm) v 1.2
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-if (!class_exists('File')) {
-	uses('file');
-}
+
 /**
  * Task class for creating new project apps and plugins
  *
@@ -144,7 +137,7 @@ class ProjectTask extends Shell {
 
 		$looksGood = $this->in('Look okay?', array('y', 'n', 'q'), 'y');
 
-		if (low($looksGood) == 'y' || low($looksGood) == 'yes') {
+		if (strtolower($looksGood) == 'y') {
 			$verbose = $this->in(__('Do you want verbose output?', true), array('y', 'n'), 'n');
 
 			$Folder = new Folder($skel);
@@ -157,14 +150,14 @@ class ProjectTask extends Shell {
 				return false;
 			}
 
-			if (low($verbose) == 'y' || low($verbose) == 'yes') {
+			if (strtolower($verbose) == 'y') {
 				foreach ($Folder->messages() as $message) {
 					$this->out($message);
 				}
 			}
 
 			return true;
-		} elseif (low($looksGood) == 'q' || low($looksGood) == 'quit') {
+		} elseif (strtolower($looksGood) == 'q') {
 			$this->out('Bake Aborted.');
 		} else {
 			$this->execute(false);
@@ -273,7 +266,10 @@ class ProjectTask extends Shell {
 		$this->out("Usage: cake bake project <arg1>");
 		$this->hr();
 		$this->out('Commands:');
-		$this->out("\n\tproject <name>\n\t\tbakes app directory structure.\n\t\tif <name> begins with '/' path is absolute.");
+		$this->out('');
+		$this->out("project <name>");
+		$this->out("\tbakes app directory structure.");
+		$this->out("\tif <name> begins with '/' path is absolute.");
 		$this->out("");
 		$this->_stop();
 	}

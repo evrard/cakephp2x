@@ -40,7 +40,7 @@ class BakeShell extends Shell {
  * @var array
  * @access public
  */
-	var $tasks = array('Project', 'DbConfig', 'Model', 'Controller', 'View', 'Plugin', 'Test');
+	var $tasks = array('Project', 'DbConfig', 'Model', 'Controller', 'View', 'Plugin', 'Fixture', 'Test');
 /**
  * Override loadTasks() to handle paths
  *
@@ -50,8 +50,16 @@ class BakeShell extends Shell {
 		parent::loadTasks();
 		$task = Inflector::classify($this->command);
 		if (isset($this->{$task}) && !in_array($task, array('Project', 'DbConfig'))) {
-			$path = Inflector::underscore(Inflector::pluralize($this->command));
-			$this->{$task}->path = $this->params['working'] . DS . $path . DS;
+			if (empty($this->{$task}->path)) {
+				$path = Inflector::underscore(Inflector::pluralize($this->command));
+				$this->{$task}->path = $this->params['working'] . DS . $path . DS;
+			}
+			if (isset($this->params['connection'])) {
+				$this->{$task}->connection = $this->params['connection'];
+			}
+			if (isset($this->params['plugin'])) {
+				$this->{$task}->plugin = $this->params['plugin'];
+			}
 			if (!is_dir($this->{$task}->path)) {
 				$this->err(sprintf(__("%s directory could not be found.\nBe sure you have created %s", true), $task, $this->{$task}->path));
 				$this->_stop();
@@ -82,6 +90,7 @@ class BakeShell extends Shell {
 		$this->out('[V]iew');
 		$this->out('[C]ontroller');
 		$this->out('[P]roject');
+		$this->out('[F]ixture');
 		$this->out('[Q]uit');
 
 		$classToBake = strtoupper($this->in(__('What would you like to Bake?', true), array('D', 'M', 'V', 'C', 'P', 'Q')));
@@ -100,6 +109,9 @@ class BakeShell extends Shell {
 				break;
 			case 'P':
 				$this->Project->execute();
+				break;
+			case 'F':
+				$this->Fixture->execute();
 				break;
 			case 'Q':
 				exit(0);
