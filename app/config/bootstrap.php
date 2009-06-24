@@ -14,7 +14,7 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @link          http://cakephp.org CakePHP(tm) Project CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.app.config
  * @since         CakePHP(tm) v 0.10.8.2117
