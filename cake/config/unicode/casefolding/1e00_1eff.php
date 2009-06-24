@@ -26,7 +26,7 @@
  * @version       $Revision$
  * @modifiedby    $LastChangedBy$
  * @lastmodified  $Date$
- * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 /**
  * The upper field is the decimal value of the upper case character

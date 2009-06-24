@@ -22,7 +22,7 @@
  * @version       $Revision$
  * @modifiedby    $LastChangedBy$
  * @lastmodified  $Date$
- * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 if (!defined('CAKE_CORE_INCLUDE_PATH')) {
 	header('HTTP/1.1 404 Not Found');

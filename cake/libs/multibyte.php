@@ -21,7 +21,7 @@
  * @version       $Revision$
  * @modifiedby    $LastChangedBy$
  * @lastmodified  $Date$
- * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 if (function_exists('mb_internal_encoding')) {
 	$encoding = Configure::read('App.encoding');

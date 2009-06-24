@@ -24,7 +24,7 @@
  * @version       $Revision$
  * @modifiedby    $LastChangedBy$
  * @lastmodified  $Date$
- * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 /**
  * Here, we are connecting '/' (base path) to controller called 'Pages',
