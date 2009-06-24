@@ -7,7 +7,7 @@
  * Sun Java DB) using the native ibm_db2 extension:
  * http://pecl.php.net/package/ibm_db2
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2007, Cake Software Foundation, Inc.

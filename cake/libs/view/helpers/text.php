@@ -5,7 +5,7 @@
  *
  * Text manipulations: Highlight, excerpt, truncate, strip of links, convert email addresses to mailto: links...
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)

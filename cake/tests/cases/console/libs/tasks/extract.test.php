@@ -5,7 +5,7 @@
  *
  * Test Case for i18n extraction shell task
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP :  Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2006-2008, Cake Software Foundation, Inc.

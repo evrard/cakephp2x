@@ -5,7 +5,7 @@
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
  * Copyright 2006-2008, Cake Software Foundation, Inc.

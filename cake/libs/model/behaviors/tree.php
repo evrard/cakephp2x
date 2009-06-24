@@ -5,7 +5,7 @@
  *
  * Enables a model object to act as a node-based tree.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP :  Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2006-2008, Cake Software Foundation, Inc.

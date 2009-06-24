@@ -6,7 +6,7 @@
  * This file includes js vendor-files from /vendor/ directory if they need to
  * be accessible to the public.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)

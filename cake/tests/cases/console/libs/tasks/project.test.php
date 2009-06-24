@@ -4,7 +4,7 @@
  *
  * Test Case for project generation shell task
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP :  Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2006-2009, Cake Software Foundation, Inc.

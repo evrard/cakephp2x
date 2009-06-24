@@ -7,7 +7,7 @@
  * Routes are very important mechanism that allows you to freely connect
  * different urls to chosen controllers and their actions (functions).
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)

@@ -5,7 +5,7 @@
  *
  * Series of tests for email component.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
  * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
