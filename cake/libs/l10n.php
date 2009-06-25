@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 1.2.0.4116
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -39,28 +35,28 @@ class L10n extends Object {
  * @var string
  * @access public
  */
-	var $language = 'English (United States)';
+	public $language = 'English (United States)';
 /**
  * Locale search paths
  *
  * @var array
  * @access public
  */
-	var $languagePath = array('eng');
+	public $languagePath = array('eng');
 /**
  * ISO 639-3 for current locale
  *
  * @var string
  * @access public
  */
-	var $lang = 'eng';
+	private $lang = 'eng';
 /**
  * Locale
  *
  * @var string
  * @access public
  */
-	var $locale = 'en_us';
+	public $locale = 'en_us';
 /**
  * Default ISO 639-3 language.
  *
@@ -69,28 +65,28 @@ class L10n extends Object {
  * @var string
  * @access public
  */
-	var $default = null;
+	private $default = null;
 /**
  * Encoding used for current locale
  *
  * @var string
  * @access public
  */
-	var $charset = 'utf-8';
+	private $charset = 'utf-8';
 /**
  * Set to true if a locale is found
  *
  * @var string
  * @access public
  */
-	var $found = false;
+	private $found = false;
 /**
  * Maps ISO 639-3 to I10n::__l10nCatalog
  *
  * @var array
  * @access private
  */
-	var $__l10nMap = array(/* Afrikaans */ 'afr' => 'af',
+	private $__l10nMap = array(/* Afrikaans */ 'afr' => 'af',
 								/* Albanian */ 'alb' => 'sq',
 								/* Arabic */ 'ara' => 'ar',
 								/* Armenian - Armenia */ 'hye' => 'hy',
@@ -175,7 +171,7 @@ class L10n extends Object {
  * @var array
  * @access private
  */
-	var $__l10nCatalog = array('af' => array('language' => 'Afrikaans', 'locale' => 'afr', 'localeFallback' => 'afr', 'charset' => 'utf-8'),
+	private $__l10nCatalog = array('af' => array('language' => 'Afrikaans', 'locale' => 'afr', 'localeFallback' => 'afr', 'charset' => 'utf-8'),
 										'ar' => array('language' => 'Arabic', 'locale' => 'ara', 'localeFallback' => 'ara', 'charset' => 'utf-8'),
 										'ar-ae' => array('language' => 'Arabic (U.A.E.)', 'locale' => 'ar_ae', 'localeFallback' => 'ara', 'charset' => 'utf-8'),
 										'ar-bh' => array('language' => 'Arabic (Bahrain)', 'locale' => 'ar_bh', 'localeFallback' => 'ara', 'charset' => 'utf-8'),
@@ -317,7 +313,7 @@ class L10n extends Object {
 /**
  * Class constructor
  */
-	function __construct() {
+	public function __construct() {
 		if (defined('DEFAULT_LANGUAGE')) {
 			$this->default = DEFAULT_LANGUAGE;
 		}
@@ -331,7 +327,7 @@ class L10n extends Object {
  * @param string $language Language (if null will use DEFAULT_LANGUAGE if defined)
  * @access public
  */
-	function get($language = null) {
+	public function get($language = null) {
 		if ($language !== null) {
 			return $this->__setLanguage($language);
 		} elseif ($this->__autoLanguage() === false) {
@@ -345,7 +341,7 @@ class L10n extends Object {
  * @param string $language Language (if null will use DEFAULT_LANGUAGE if defined)
  * @access private
  */
-	function __setLanguage($language = null) {
+	private function __setLanguage($language = null) {
 		$langKey = null;
 		if ($language !== null && isset($this->__l10nMap[$language]) && isset($this->__l10nCatalog[$this->__l10nMap[$language]])) {
 			$langKey = $this->__l10nMap[$language];
@@ -392,7 +388,7 @@ class L10n extends Object {
  * @return boolean Success
  * @access private
  */
-	function __autoLanguage() {
+	private function __autoLanguage() {
 		$_detectableLanguages = split('[,;]', env('HTTP_ACCEPT_LANGUAGE'));
 		foreach ($_detectableLanguages as $key => $langKey) {
 			$langKey = strtolower($langKey);
@@ -420,7 +416,7 @@ class L10n extends Object {
  * @return mixed string language/locale, array of those values, whole map as an array, or false when language/locale doesn't exist
  * @access public
  */
-	function map($mixed = null) {
+	public function map($mixed = null) {
 		if (is_array($mixed)) {
 			$result = array();
 			foreach ($mixed as $_mixed) {
@@ -445,7 +441,7 @@ class L10n extends Object {
  * @param mixed $language string requested language, array of requested languages, or null for whole catalog
  * @return mixed array catalog record for requested language, array of catalog records, whole catalog, or false when language doesn't exist
  */
-	function catalog($language = null) {
+	public function catalog($language = null) {
 		if (is_array($language)) {
 			$result = array();
 			foreach ($language as $_language) {

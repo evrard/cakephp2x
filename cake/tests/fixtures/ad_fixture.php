@@ -1,11 +1,10 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Short description for ad_fixture.php
  *
  * Long description for ad_fixture.php
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
  *
@@ -18,9 +17,6 @@
  * @package       cake
  * @subpackage    cake.tests.fixtures
  * @since         1.2
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**

@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * XML handling for Cake.
  *
  * The methods in these classes enable the datasources that use XML to work.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP v .0.10.3.1400
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Core', 'Set');
@@ -41,49 +37,49 @@ class XmlNode extends Object {
  * @var string
  * @access public
  */
-	var $name = null;
+	private $name = null;
 /**
  * Node namespace
  *
  * @var string
  * @access public
  */
-	var $namespace = null;
+	public $namespace = null;
 /**
  * Namespaces defined for this node and all child nodes
  *
  * @var array
  * @access public
  */
-	var $namespaces = array();
+	private $namespaces = array();
 /**
  * Value of node
  *
  * @var string
  * @access public
  */
-	var $value;
+	private $value;
 /**
  * Attributes on this node
  *
  * @var array
  * @access public
  */
-	var $attributes = array();
+	private $attributes = array();
 /**
  * This node's children
  *
  * @var array
  * @access public
  */
-	var $children = array();
+	private $children = array();
 /**
  * Reference to parent node.
  *
  * @var XmlNode
  * @access private
  */
-	var $__parent = null;
+	private $__parent = null;
 /**
  * Constructor.
  *
@@ -92,7 +88,7 @@ class XmlNode extends Object {
  * @param mixed $value Node contents (text)
  * @param array $children Node children
  */
-	function __construct($name = null, $value = null, $namespace = null) {
+	public function __construct($name = null, $value = null, $namespace = null) {
 		if (strpos($name, ':') !== false) {
 			list($prefix, $name) = explode(':', $name);
 			if (!$namespace) {
@@ -118,7 +114,7 @@ class XmlNode extends Object {
  * @param string $url The namespace DTD URL
  * @return void
  */
-	function addNamespace($prefix, $url) {
+	private function addNamespace($prefix, $url) {
 		if ($ns = Xml::addGlobalNs($prefix, $url)) {
 			$this->namespaces = array_merge($this->namespaces, $ns);
 			return true;
@@ -132,7 +128,7 @@ class XmlNode extends Object {
  * @param string $url The namespace DTD URL
  * @return void
  */
-	function removeNamespace($prefix) {
+	private function removeNamespace($prefix) {
 		if (Xml::removeGlobalNs($prefix)) {
 			return true;
 		}
@@ -146,8 +142,8 @@ class XmlNode extends Object {
  * @param string $namespace Node namespace
  * @return object XmlNode
  */
-	function &createNode($name = null, $value = null, $namespace = false) {
-		$node =& new XmlNode($name, $value, $namespace);
+	private function &createNode($name = null, $value = null, $namespace = false) {
+		$node = new XmlNode($name, $value, $namespace);
 		$node->setParent($this);
 		return $node;
 	}
@@ -160,8 +156,8 @@ class XmlNode extends Object {
  * @param string $namespace Node namespace
  * @return object XmlElement
  */
-	function &createElement($name = null, $value = null, $attributes = array(), $namespace = false) {
-		$element =& new XmlElement($name, $value, $attributes, $namespace);
+	protected function &createElement($name = null, $value = null, $attributes = array(), $namespace = false) {
+		$element = new XmlElement($name, $value, $attributes, $namespace);
 		$element->setParent($this);
 		return $element;
 	}
@@ -171,7 +167,7 @@ class XmlNode extends Object {
  * @param string $value Node value
  * @return object XmlTextNode
  */
-	function &createTextNode($value = null) {
+	private function &createTextNode($value = null) {
 		$node = new XmlTextNode($value);
 		$node->setParent($this);
 		return $node;
@@ -183,7 +179,7 @@ class XmlNode extends Object {
  * @return array Properties from object
  * @access public
  */
-	function normalize($object, $keyName = null, $options = array()) {
+	private function normalize($object, $keyName = null, $options = array()) {
 		if (is_a($object, 'XmlNode')) {
 			return $object;
 		}
@@ -212,16 +208,16 @@ class XmlNode extends Object {
 		}
 
 		if (!empty($name)) {
-			$node =& $this->createElement($name);
+			$node = $this->createElement($name);
 		} else {
-			$node =& $this;
+			$node = $this;
 		}
 
 		$namespace = array();
 		$attributes = array();
 		$children = array();
 		$chldObjs = array();
-		$document =& $this->document();
+		$document = $this->document();
 
 		if (is_object($object)) {
 			$chldObjs = get_object_vars($object);
@@ -264,7 +260,7 @@ class XmlNode extends Object {
 						if (is_object($val)) {
 							$node->normalize($val, $n, $options);
 						} elseif ($options['format'] == 'tags' && $this->__tagOptions($key) !== false) {
-							$tmp =& $node->createElement($key);
+							$tmp = $node->createElement($key);
 							if (!empty($val) || $val === 0) {
 								$tmp->createTextNode($val);
 							}
@@ -289,7 +285,7 @@ class XmlNode extends Object {
  * @return mixed A specific option value if $option is specified, otherwise an array of all options
  * @access private
  */
-	function __tagOptions($name, $option = null) {
+	private function __tagOptions($name, $option = null) {
 		if (isset($this->__tags[$name])) {
 			$tagOpts = $this->__tags[$name];
 		} elseif (isset($this->__tags[strtolower($name)])) {
@@ -313,9 +309,9 @@ class XmlNode extends Object {
  *
  * @access public
  */
-	function name() {
+	private function name() {
 		if (!empty($this->namespace)) {
-			$_this =& XmlManager::getInstance();
+			$_this = XmlManager::getInstance();
 			if (!isset($_this->options['verifyNs']) || !$_this->options['verifyNs'] || in_array($this->namespace, array_keys($_this->namespaces))) {
 				return $this->namespace . ':' . $this->name;
 			}
@@ -327,7 +323,7 @@ class XmlNode extends Object {
  *
  * @access public
  */
-	function setParent(&$parent) {
+	private function setParent(&$parent) {
 		if (strtolower(get_class($this)) == 'xml') {
 			return;
 		}
@@ -345,8 +341,8 @@ class XmlNode extends Object {
 		if ($parent == null) {
 			unset($this->__parent);
 		} else {
-			$parent->children[] =& $this;
-			$this->__parent =& $parent;
+			$parent->children[] = $this;
+			$this->__parent = $parent;
 		}
 	}
 /**
@@ -355,7 +351,7 @@ class XmlNode extends Object {
  * @return object Cloned instance
  * @access public
  */
-	function cloneNode() {
+	private function cloneNode() {
 		return clone($this);
 	}
 /**
@@ -365,7 +361,7 @@ class XmlNode extends Object {
  * @return boolean True if the nodes match, false otherwise
  * @access public
  */
-	function compare($node) {
+	private function compare($node) {
 		$keys = array(get_object_vars($this), get_object_vars($node));
 		return ($keys[0] === $keys[1]);
 	}
@@ -377,7 +373,7 @@ class XmlNode extends Object {
  * @return object A reference to the appended child node
  * @access public
  */
-	function &append(&$child, $options = array()) {
+	private function &append(&$child, $options = array()) {
 		if (empty($child)) {
 			$return = false;
 			return $return;
@@ -408,7 +404,7 @@ class XmlNode extends Object {
 			if (func_num_args() >= 2) {
 				$attributes = func_get_arg(1);
 			}
-			$child =& $this->createNode($child, null, $attributes);
+			$child = $this->createNode($child, null, $attributes);
 		}
 
 		$child = $this->normalize($child, null, $options);
@@ -429,7 +425,7 @@ class XmlNode extends Object {
  * @return object First XmlNode
  * @access public
  */
-	function &first() {
+	private function &first() {
 		if (isset($this->children[0])) {
 			return $this->children[0];
 		} else {
@@ -443,7 +439,7 @@ class XmlNode extends Object {
  * @return object Last XmlNode
  * @access public
  */
-	function &last() {
+	private function &last() {
 		if (count($this->children) > 0) {
 			return $this->children[count($this->children) - 1];
 		} else {
@@ -458,7 +454,7 @@ class XmlNode extends Object {
  * @return object Child XmlNode
  * @access public
  */
-	function &child($id) {
+	private function &child($id) {
 		$null = null;
 
 		if (is_int($id)) {
@@ -483,12 +479,12 @@ class XmlNode extends Object {
  * @return array An array of XmlNodes with the given tag name
  * @access public
  */
-	function children($name) {
+	private function children($name) {
 		$nodes = array();
 		$count = count($this->children);
 		for ($i = 0; $i < $count; $i++) {
 			if ($this->children[$i]->name == $name) {
-				$nodes[] =& $this->children[$i];
+				$nodes[] = $this->children[$i];
 			}
 		}
 		return $nodes;
@@ -499,7 +495,7 @@ class XmlNode extends Object {
  * @return object A reference to the XmlNode object
  * @access public
  */
-	function &nextSibling() {
+	private function &nextSibling() {
 		$null = null;
 		$count = count($this->__parent->children);
 		for ($i = 0; $i < $count; $i++) {
@@ -518,7 +514,7 @@ class XmlNode extends Object {
  * @return object A reference to the XmlNode object
  * @access public
  */
-	function &previousSibling() {
+	private function &previousSibling() {
 		$null = null;
 		$count = count($this->__parent->children);
 		for ($i = 0; $i < $count; $i++) {
@@ -537,7 +533,7 @@ class XmlNode extends Object {
  * @return object Parent XmlNode
  * @access public
  */
-	function &parent() {
+	protected function &parent() {
 		return $this->__parent;
 	}
 /**
@@ -546,13 +542,13 @@ class XmlNode extends Object {
  * @return object Parent XML object
  * @access public
  */
-	function &document() {
-		$document =& $this;
+	private function &document() {
+		$document = $this;
 		while (true) {
 			if (get_class($document) == 'Xml' || $document == null) {
 				break;
 			}
-			$document =& $document->parent();
+			$document = $document->parent();
 		}
 		return $document;
 	}
@@ -562,7 +558,7 @@ class XmlNode extends Object {
  * @return bool
  * @access public
  */
-	function hasChildren() {
+	private function hasChildren() {
 		if (is_array($this->children) && count($this->children) > 0) {
 			return true;
 		}
@@ -574,7 +570,7 @@ class XmlNode extends Object {
  * @return string String representation of the XML structure.
  * @access public
  */
-	function toString($options = array(), $depth = 0) {
+	private function toString($options = array(), $depth = 0) {
 		if (is_int($options)) {
 			$depth = $options;
 			$options = array();
@@ -597,7 +593,7 @@ class XmlNode extends Object {
 				}
 			}
 
-			$parent =& $this->parent();
+			$parent = $this->parent();
 			if ($parent->name === '#document' && count($parent->namespaces) > 0) {
 				foreach ($parent->namespaces as $key => $val) {
 					$val = str_replace('"', '\"', $val);
@@ -655,7 +651,7 @@ class XmlNode extends Object {
  * @return array Array representation
  * @access public
  */
-	function toArray($camelize = true) {
+	public function toArray($camelize = true) {
 		$out = $this->attributes;
 		$multi = null;
 
@@ -707,7 +703,7 @@ class XmlNode extends Object {
  * @return string String representation of this structure.
  * @access private
  */
-	function __toString() {
+	private function __toString() {
 		return $this->toString();
 	}
 /**
@@ -717,7 +713,7 @@ class XmlNode extends Object {
  * @param boolean $recursive Recursively delete elements.
  * @access private
  */
-	function __killParent($recursive = true) {
+	private function __killParent($recursive = true) {
 		unset($this->__parent, $this->_log);
 		if ($recursive && $this->hasChildren()) {
 			for ($i = 0; $i < count($this->children); $i++) {
@@ -744,21 +740,21 @@ class Xml extends XmlNode {
  * @var resource
  * @access private
  */
-	var $__parser;
+	private $__parser;
 /**
  * File handle to XML indata file.
  *
  * @var resource
  * @access private
  */
-	var $__file;
+	private $__file;
 /**
  * Raw XML string data (for loading purposes)
  *
  * @var string
  * @access private
  */
-	var $__rawData = null;
+	private $__rawData = null;
 
 /**
  * XML document header
@@ -766,7 +762,7 @@ class Xml extends XmlNode {
  * @var string
  * @access private
  */
-	var $__header = null;
+	private $__header = null;
 
 /**
  * Default array keys/object properties to use as tag names when converting objects or array
@@ -775,7 +771,7 @@ class Xml extends XmlNode {
  * @var array
  * @access private
  */
-	var $__tags = array();
+	private $__tags = array();
 
 /**
  * XML document version
@@ -783,7 +779,7 @@ class Xml extends XmlNode {
  * @var string
  * @access private
  */
-	var $version = '1.0';
+	public $version = '1.0';
 
 /**
  * XML document encoding
@@ -791,7 +787,7 @@ class Xml extends XmlNode {
  * @var string
  * @access private
  */
-	var $encoding = 'UTF-8';
+	public $encoding = 'UTF-8';
 
 /**
  * Constructor.  Sets up the XML parser with options, gives it this object as
@@ -812,7 +808,7 @@ class Xml extends XmlNode {
  *                         by tag name.  See XmlNode::normalize().
  * @see XmlNode::normalize()
  */
-	function __construct($input = null, $options = array()) {
+	public function __construct($input = null, $options = array()) {
 		$defaults = array(
 			'root' => '#document', 'tags' => array(), 'namespaces' => array(),
 			'version' => '1.0', 'encoding' => 'UTF-8', 'format' => 'attributes'
@@ -823,19 +819,13 @@ class Xml extends XmlNode {
 			$this->{$key} = $options[$key];
 		}
 		$this->__tags = $options['tags'];
-		parent::__construct('#document');
-
-		if ($options['root'] !== '#document') {
-			$Root = $this->createNode($options['root']);
-		} else {
-			$Root =& $this;
-		}
+		parent::__construct($options['root']);
 
 		if (!empty($input)) {
 			if (is_string($input)) {
-				$Root->load($input);
+				$this->load($input);
 			} elseif (is_array($input) || is_object($input)) {
-				$Root->append($input, $options);
+				$this->append($input, $options);
 			}
 		}
 		// if (Configure::read('App.encoding') !== null) {
@@ -849,7 +839,7 @@ class Xml extends XmlNode {
  * @return boolean Success
  * @access public
  */
-	function load($input) {
+	private function load($input) {
 		if (!is_string($input)) {
 			return false;
 		}
@@ -878,17 +868,16 @@ class Xml extends XmlNode {
  * @see Xml::load()
  * @todo figure out how to link attributes and namespaces
  */
-	function parse() {
+	private function parse() {
 		$this->__initParser();
-		$this->__rawData = trim($this->__rawData);
 		$this->__header = trim(str_replace(
 			a('<' . '?', '?' . '>'),
 			a('', ''),
-			substr($this->__rawData, 0, strpos($this->__rawData, '?' . '>'))
+			substr(trim($this->__rawData), 0, strpos($this->__rawData, "\n"))
 		));
 
 		xml_parse_into_struct($this->__parser, $this->__rawData, $vals);
-		$xml =& $this;
+		$xml = $this;
 		$count = count($vals);
 
 		for ($i = 0; $i < $count; $i++) {
@@ -897,10 +886,10 @@ class Xml extends XmlNode {
 
 			switch ($data['type']) {
 				case "open" :
-					$xml =& $xml->createElement($data['tag'], $data['value'], $data['attributes']);
+					$xml = $xml->createElement($data['tag'], $data['value'], $data['attributes']);
 				break;
 				case "close" :
-					$xml =& $xml->parent();
+					$xml = $xml->parent();
 				break;
 				case "complete" :
 					$xml->createElement($data['tag'], $data['value'], $data['attributes']);
@@ -918,7 +907,7 @@ class Xml extends XmlNode {
  * @return void
  * @access private
  */
-	function __initParser() {
+	private function __initParser() {
 		if (empty($this->__parser)) {
 			$this->__parser = xml_parser_create();
 			xml_set_object($this->__parser, $this);
@@ -936,7 +925,7 @@ class Xml extends XmlNode {
  * @deprecated
  * @see Xml::toString()
  */
-	function compose($options = array()) {
+	private function compose($options = array()) {
 		return $this->toString($options);
 	}
 /**
@@ -947,7 +936,7 @@ class Xml extends XmlNode {
  * @param integer $line Line in file
  * @access public
  */
-	function error($msg, $code = 0, $line = 0) {
+	private function error($msg, $code = 0, $line = 0) {
 		if (Configure::read('debug')) {
 			echo $msg . " " . $code . " " . $line;
 		}
@@ -959,7 +948,7 @@ class Xml extends XmlNode {
  * @return string Error message
  * @access public
  */
-	function getError($code) {
+	private function getError($code) {
 		$r = @xml_error_string($code);
 		return $r;
 	}
@@ -972,7 +961,7 @@ class Xml extends XmlNode {
  * @return object
  * @access public
  */
-	function &next() {
+	private function &next() {
 		$return = null;
 		return $return;
 	}
@@ -982,7 +971,7 @@ class Xml extends XmlNode {
  * @return object
  * @access public
  */
-	function &previous() {
+	private function &previous() {
 		$return = null;
 		return $return;
 	}
@@ -992,7 +981,7 @@ class Xml extends XmlNode {
  * @return object
  * @access public
  */
-	function &parent() {
+	protected function &parent() {
 		$return = null;
 		return $return;
 	}
@@ -1003,7 +992,7 @@ class Xml extends XmlNode {
  * @param string $url The namespace DTD URL
  * @return void
  */
-	function addNamespace($prefix, $url) {
+	private function addNamespace($prefix, $url) {
 		if ($count = count($this->children)) {
 			for ($i = 0; $i < $count; $i++) {
 				$this->children[$i]->addNamespace($prefix, $url);
@@ -1018,7 +1007,7 @@ class Xml extends XmlNode {
  * @param string $prefix The namespace prefix
  * @return void
  */
-	function removeNamespace($prefix) {
+	private function removeNamespace($prefix) {
 		if ($count = count($this->children)) {
 			for ($i = 0; $i < $count; $i++) {
 				$this->children[$i]->removeNamespace($prefix);
@@ -1033,7 +1022,7 @@ class Xml extends XmlNode {
  * @return string String representation
  * @access public
  */
-	function toString($options = array()) {
+	private function toString($options = array()) {
 		if (is_bool($options)) {
 			$options = array('header' => $options);
 		}
@@ -1057,7 +1046,7 @@ class Xml extends XmlNode {
  * @param  mixed  $attrib attributes of the header element
  * @return string formated header
  */
-	function header($attrib = array()) {
+	private function header($attrib = array()) {
 		$header = 'xml';
 		if (is_string($attrib)) {
 			$header = $attrib;
@@ -1076,7 +1065,7 @@ class Xml extends XmlNode {
  *
  * @access private
  */
-	function __destruct() {
+	private function __destruct() {
 		if (is_resource($this->__parser)) {
 			xml_parser_free($this->__parser);
 		}
@@ -1091,8 +1080,8 @@ class Xml extends XmlNode {
  * @access public
  * @static
  */
-	function addGlobalNs($name, $url = null) {
-		$_this =& XmlManager::getInstance();
+	private function addGlobalNs($name, $url = null) {
+		$_this = XmlManager::getInstance();
 		if ($ns = Xml::resolveNamespace($name, $url)) {
 			$_this->namespaces = array_merge($_this->namespaces, $ns);
 			return $ns;
@@ -1106,8 +1095,8 @@ class Xml extends XmlNode {
  * @param  string  $url
  * @return array
  */
-	function resolveNamespace($name, $url) {
-		$_this =& XmlManager::getInstance();
+	private function resolveNamespace($name, $url) {
+		$_this = XmlManager::getInstance();
 		if ($url == null && isset($_this->defaultNamespaceMap[$name])) {
 			$url = $_this->defaultNamespaceMap[$name];
 		} elseif ($url == null) {
@@ -1127,7 +1116,7 @@ class Xml extends XmlNode {
  * @access public
  * @static
  */
-	function addGlobalNamespace($name, $url = null) {
+	private function addGlobalNamespace($name, $url = null) {
 		return Xml::addGlobalNs($name, $url);
 	}
 /**
@@ -1137,8 +1126,8 @@ class Xml extends XmlNode {
  * @access public
  * @static
  */
-	function removeGlobalNs($name) {
-		$_this =& XmlManager::getInstance();
+	private function removeGlobalNs($name) {
+		$_this = XmlManager::getInstance();
 		if (isset($_this->namespaces[$name])) {
 			unset($_this->namespaces[$name]);
 			unset($this->namespaces[$name]);
@@ -1162,7 +1151,7 @@ class Xml extends XmlNode {
  * @access public
  * @static
  */
-	function removeGlobalNamespace($name) {
+	private function removeGlobalNamespace($name) {
 		return Xml::removeGlobalNs($name);
 	}
 /**
@@ -1173,8 +1162,8 @@ class Xml extends XmlNode {
  * @access public
  * @static
  */
-	function options($options = array()) {
-		$_this =& XmlManager::getInstance();
+	private function options($options = array()) {
+		$_this = XmlManager::getInstance();
 		$_this->options = array_merge($_this->options, $options);
 		return $_this->options;
 	}
@@ -1193,7 +1182,7 @@ class XmlElement extends XmlNode {
  * @param  string  $namespace
  * @return string A copy of $data in XML format
  */
-	function __construct($name = null, $value = null, $attributes = array(), $namespace = false) {
+	public function __construct($name = null, $value = null, $attributes = array(), $namespace = false) {
 		parent::__construct($name, $value, $namespace);
 		$this->addAttribute($attributes);
 	}
@@ -1202,7 +1191,7 @@ class XmlElement extends XmlNode {
  *
  * @return array
  */
-	function attributes() {
+	private function attributes() {
 		return $this->attributes;
 	}
 /**
@@ -1212,7 +1201,7 @@ class XmlElement extends XmlNode {
  * @param  string  $value value of the node
  * @return boolean
  */
-	function addAttribute($name, $val = null) {
+	private function addAttribute($name, $val = null) {
 		if (is_object($name)) {
 			$name = get_object_vars($name);
 		}
@@ -1247,7 +1236,7 @@ class XmlElement extends XmlNode {
  * @param  string  $name name of the node
  * @return boolean
  */
-	function removeAttribute($attr) {
+	private function removeAttribute($attr) {
 		if (array_key_exists($attr, $this->attributes)) {
 			unset($this->attributes[$attr]);
 			return true;
@@ -1271,20 +1260,20 @@ class XmlTextNode extends XmlNode {
  *
  * @var string
  */
-	var $name = '#text';
+	private $name = '#text';
 /**
  * The text/data value which this node contains
  *
  * @var string
  */
-	var $value = null;
+	private $value = null;
 /**
  * Construct text node with the given parent object and data
  *
  * @param object $parent Parent XmlNode/XmlElement object
  * @param mixed $value Node value
  */
-	function __construct($value = null) {
+	public function __construct($value = null) {
 		$this->value = $value;
 	}
 /**
@@ -1292,7 +1281,7 @@ class XmlTextNode extends XmlNode {
  *
  * @return boolean False - not supported
  */
-	function hasChildren() {
+	private function hasChildren() {
 		return false;
 	}
 /**
@@ -1301,7 +1290,7 @@ class XmlTextNode extends XmlNode {
  * @return boolean False - not supported
  * @todo make convertEntities work without mb support, convert entities to number entities
  */
-	function append() {
+	private function append() {
 		return false;
 	}
 /**
@@ -1310,7 +1299,7 @@ class XmlTextNode extends XmlNode {
  * @return string String representation
  * @access public
  */
-	function toString($options = array(), $depth = 0) {
+	private function toString($options = array(), $depth = 0) {
 		if (is_int($options)) {
 			$depth = $options;
 			$options = array();
@@ -1348,21 +1337,21 @@ class XmlManager {
  * @var array
  * @access public
  */
-	var $namespaces = array();
+	public $namespaces = array();
 /**
  * Global XML document parsing/generation settings.
  *
  * @var array
  * @access public
  */
-	var $options = array();
+	public $options = array();
 /**
  * Map of common namespace URIs
  *
  * @access private
  * @var array
  */
-	var $defaultNamespaceMap = array(
+	private $defaultNamespaceMap = array(
 		'dc'     => 'http://purl.org/dc/elements/1.1/',					// Dublin Core
 		'dct'    => 'http://purl.org/dc/terms/',						// Dublin Core Terms
 		'g'			=> 'http://base.google.com/ns/1.0',					// Google Base
@@ -1380,11 +1369,11 @@ class XmlManager {
  * @return object
  * @access public
  */
-	function &getInstance() {
+	public function &getInstance() {
 		static $instance = array();
 
 		if (!$instance) {
-			$instance[0] =& new XmlManager();
+			$instance[0] = new XmlManager();
 		}
 		return $instance[0];
 	}

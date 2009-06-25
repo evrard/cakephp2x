@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * ViewTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', array('View', 'Controller'));
@@ -152,7 +148,7 @@ class TestView extends View {
  * @return void
  */
 	function cakeError($method, $messages) {
-		$error =& new ViewTestErrorHandler($method, $messages);
+		$error = new ViewTestErrorHandler($method, $messages);
 		return $error;
 	}
 }
@@ -186,7 +182,7 @@ class TestAfterHelper extends Helper {
  * @return void
  */
 	function afterLayout() {
-		$View =& ClassRegistry::getObject('afterView');
+		$View = ClassRegistry::getObject('afterView');
 		$View->output .= 'modified in the afterlife';
 	}
 }
@@ -473,7 +469,7 @@ class ViewTest extends CakeTestCase {
  **/
 	function testHelperCallbackTriggering() {
 		$this->PostsController->helpers = array('Html', 'CallbackMock');
-		$View =& new TestView($this->PostsController);
+		$View = new TestView($this->PostsController);
 		$loaded = array();
 		$View->loaded = $View->loadHelpers($loaded, $this->PostsController->helpers);
 		$View->loaded['CallbackMock']->expectOnce('beforeRender');
@@ -490,7 +486,7 @@ class ViewTest extends CakeTestCase {
  */
 	function testBeforeLayout() {
 		$this->PostsController->helpers = array('TestAfter', 'Html');
-		$View =& new View($this->PostsController);
+		$View = new View($this->PostsController);
 		$out = $View->render('index');
 		$this->assertEqual($View->loaded['testAfter']->property, 'Valuation');
 	}
@@ -504,7 +500,7 @@ class ViewTest extends CakeTestCase {
 		$this->PostsController->helpers = array('TestAfter', 'Html');
 		$this->PostsController->set('variable', 'values');
 
-		$View =& new View($this->PostsController);
+		$View = new View($this->PostsController);
 		ClassRegistry::addObject('afterView', $View);
 
 		$content = 'This is my view output';
@@ -662,7 +658,7 @@ class ViewTest extends CakeTestCase {
 		$View->render();
 
 		ob_start();
-		$View->renderCache($filename, getMicroTime());
+		$View->renderCache($filename, microtime(true));
 		$result = ob_get_clean();
 		@unlink($filename);
 

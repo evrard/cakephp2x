@@ -1,25 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * MagicDb parser and file analyzer
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 1.2.0
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 if (!class_exists('File')) {
@@ -37,7 +33,7 @@ class MagicDb extends Object {
  *
  * @var array
  **/
-	var $db = array();
+	private $db = array();
 
 /**
  * Reads a MagicDb from various formats
@@ -46,14 +42,14 @@ class MagicDb extends Object {
  * @return boolean Returns false if reading / validation failed or true on success.
  * @author        Felix
  **/
-	function read($magicDb = null) {
+	private function read($magicDb = null) {
 		if (!is_string($magicDb) && !is_array($magicDb)) {
 			return false;
 		}
 		if (is_array($magicDb) || strpos($magicDb, '# FILE_ID DB') === 0) {
 			$data = $magicDb;
 		} else {
-			$File =& new File($magicDb);
+			$File = new File($magicDb);
 			if (!$File->exists()) {
 				return false;
 			}
@@ -80,7 +76,7 @@ class MagicDb extends Object {
  * @return array A parsed MagicDb array or an empty array if the $data param was invalid. Returns the db property if $data is not set.
  * @access public
  */
-	function toArray($data = null) {
+	private function toArray($data = null) {
 		if (is_array($data)) {
 			return $data;
 		}
@@ -134,7 +130,7 @@ class MagicDb extends Object {
  * @return boolean True if the $magicDb / instance db validates, false if not
  * @access public
  */
-	function validates($magicDb = null) {
+	private function validates($magicDb = null) {
 		if (is_null($magicDb)) {
 			$magicDb = $this->db;
 		} elseif (!is_array($magicDb)) {
@@ -152,13 +148,13 @@ class MagicDb extends Object {
  * @return mixed
  * @access public
  */
-	function analyze($file, $options = array()) {
+	private function analyze($file, $options = array()) {
 		if (!is_string($file)) {
 			return false;
 		}
 
 		$matches = array();
-		$MagicFileResource =& new MagicFileResource($file);
+		$MagicFileResource = new MagicFileResource($file);
 		foreach ($this->db['database'] as $format) {
 			$magic = $format[0];
 			$match = $MagicFileResource->test($magic);
@@ -185,14 +181,14 @@ class MagicFileResource extends Object{
  * @var unknown
  * @access public
  */
-	var $resource = null;
+	private $resource = null;
 /**
  * undocumented variable
  *
  * @var unknown
  * @access public
  */
-	var $offset = 0;
+	private $offset = 0;
 /**
  * undocumented function
  *
@@ -200,9 +196,9 @@ class MagicFileResource extends Object{
  * @return void
  * @access public
  */
-	function __construct($file) {
+	private function __construct($file) {
 		if (file_exists($file)) {
-			$this->resource =& new File($file);
+			$this->resource = new File($file);
 		} else {
 			$this->resource = $file;
 		}
@@ -214,7 +210,7 @@ class MagicFileResource extends Object{
  * @return void
  * @access public
  */
-	function test($magic) {
+	private function test($magic) {
 		$offset = null;
 		$type = null;
 		$expected = null;
@@ -242,7 +238,7 @@ class MagicFileResource extends Object{
  * @return void
  * @access public
  */
-	function read($length = null) {
+	private function read($length = null) {
 		if (!is_object($this->resource)) {
 			return substr($this->resource, $this->offset, $length);
 		}
@@ -256,7 +252,7 @@ class MagicFileResource extends Object{
  * @return void
  * @access public
  */
-	function extract($offset, $type, $expected) {
+	private function extract($offset, $type, $expected) {
 		switch ($type) {
 			case 'string':
 				$this->offset($offset);
@@ -275,7 +271,7 @@ class MagicFileResource extends Object{
  * @return void
  * @access public
  */
-	function offset($offset = null) {
+	private function offset($offset = null) {
 		if (is_null($offset)) {
 			if (!is_object($this->resource)) {
 				return $this->offset;

@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * ConfigureTest file
  *
  * Holds several tests
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.5432
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'Configure');
@@ -307,26 +303,16 @@ class AppImportTest extends UnitTestCase {
 		if (!class_exists('AppController')) {
 			$classes = array_flip(get_declared_classes());
 
-			if (PHP5) {
-				$this->assertFalse(isset($classes['PagesController']));
-				$this->assertFalse(isset($classes['AppController']));
-			} else {
-				$this->assertFalse(isset($classes['pagescontroller']));
-				$this->assertFalse(isset($classes['appcontroller']));
-			}
+			$this->assertFalse(isset($classes['PagesController']));
+			$this->assertFalse(isset($classes['AppController']));
 
 			$file = App::import('Controller', 'Pages');
 			$this->assertTrue($file);
 
 			$classes = array_flip(get_declared_classes());
 
-			if (PHP5) {
-				$this->assertTrue(isset($classes['PagesController']));
-				$this->assertTrue(isset($classes['AppController']));
-			} else {
-				$this->assertTrue(isset($classes['pagescontroller']));
-				$this->assertTrue(isset($classes['appcontroller']));
-			}
+			$this->assertTrue(isset($classes['PagesController']));
+			$this->assertTrue(isset($classes['AppController']));
 
 			$file = App::import('Behavior', 'Containable');
 			$this->assertTrue($file);
@@ -451,11 +437,7 @@ class AppImportTest extends UnitTestCase {
 
 		$classes = array_flip(get_declared_classes());
 
-		if (PHP5) {
-			$this->assertTrue(isset($classes['I18n']));
-		} else {
-			$this->assertTrue(isset($classes['i18n']));
-		}
+		$this->assertTrue(isset($classes['I18n']));
 
 		$load = App::import(array('I18n', 'SomeNotFoundClass', 'Socket'));
 		$this->assertFalse($load);

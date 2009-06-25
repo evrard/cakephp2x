@@ -1,26 +1,22 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * APC storage engine for cache.
  *
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.cache
  * @since         CakePHP(tm) v 1.2.0.4933
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -41,7 +37,7 @@ class ApcEngine extends CacheEngine {
  * @see CacheEngine::__defaults
  * @access public
  */
-	function init($settings = array()) {
+	private function init($settings = array()) {
 		parent::init(array_merge(array('engine' => 'Apc', 'prefix' => Inflector::slug(APP_DIR) . '_'), $settings));
 		return function_exists('apc_cache_info');
 	}
@@ -54,7 +50,7 @@ class ApcEngine extends CacheEngine {
  * @return boolean True if the data was succesfully cached, false on failure
  * @access public
  */
-	function write($key, &$value, $duration) {
+	private function write($key, &$value, $duration) {
 		$expires = time() + $duration;
 		apc_store($key.'_expires', $expires, $duration);
 		return apc_store($key, $value, $duration);
@@ -66,7 +62,7 @@ class ApcEngine extends CacheEngine {
  * @return mixed The cached data, or false if the data doesn't exist, has expired, or if there was an error fetching it
  * @access public
  */
-	function read($key) {
+	private function read($key) {
 		$time = time();
 		$cachetime = intval(apc_fetch($key.'_expires'));
 		if ($cachetime < $time || ($time + $this->settings['duration']) < $cachetime) {
@@ -81,7 +77,7 @@ class ApcEngine extends CacheEngine {
  * @return boolean True if the value was succesfully deleted, false if it didn't exist or couldn't be removed
  * @access public
  */
-	function delete($key) {
+	private function delete($key) {
 		return apc_delete($key);
 	}
 /**
@@ -90,7 +86,7 @@ class ApcEngine extends CacheEngine {
  * @return boolean True if the cache was succesfully cleared, false otherwise
  * @access public
  */
-	function clear() {
+	private function clear() {
 		return apc_clear_cache('user');
 	}
 }

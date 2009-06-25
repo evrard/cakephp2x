@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * StringTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.5432
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'String');
@@ -86,11 +82,6 @@ class StringTest extends CakeTestCase {
 		$string = '2 + 2 = 12sum21. Cake is 23adjective45.';
 		$expected = '2 + 2 = 4. Cake is 23adjective45.';
 		$result = String::insert($string, array('sum' => '4', 'adjective' => 'yummy'), array('format' => '/([\d])([\d])%s\\2\\1/'));
-		$this->assertEqual($result, $expected);
-
-		$string = ':web :web_site';
-		$expected = 'www http';
-		$result = String::insert($string, array('web' => 'www', 'web_site' => 'http'));
 		$this->assertEqual($result, $expected);
 
 		$string = '2 + 2 = <sum. Cake is <adjective>.';

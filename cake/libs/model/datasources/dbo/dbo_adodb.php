@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * AdoDB layer for DBO.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model.datasources.dbo
  * @since         CakePHP(tm) v 0.2.9
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -42,21 +38,21 @@ class DboAdodb extends DboSource {
  *
  * @var string
  */
-	var $description = "ADOdb DBO Driver";
+	private $description = "ADOdb DBO Driver";
 /**
  * ADOConnection object with which we connect.
  *
  * @var ADOConnection The connection object.
  * @access private
  */
-	var $_adodb = null;
+	private $_adodb = null;
 /**
  * Array translating ADOdb column MetaTypes to cake-supported metatypes
  *
  * @var array
  * @access private
  */
-	var $_adodbColumnTypes = array(
+	private $_adodbColumnTypes = array(
 		'string' => 'C',
 		'text' => 'X',
 		'date' => 'D',
@@ -73,7 +69,7 @@ class DboAdodb extends DboSource {
  *
  * @var array
  */
-	var $columns = array(
+	private $columns = array(
 		'primary_key' => array('name' => 'R', 'limit' => 11),
 		'string' => array('name' => 'C', 'limit' => '255'),
 		'text' => array('name' => 'X'),
@@ -91,7 +87,7 @@ class DboAdodb extends DboSource {
  *
  * @param array $config Configuration array for connecting
  */
-	function connect() {
+	private function connect() {
 		$config = $this->config;
 		$persistent = strrpos($config['connect'], '|p');
 
@@ -119,7 +115,7 @@ class DboAdodb extends DboSource {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	function disconnect() {
+	private function disconnect() {
 		return $this->_adodb->Close();
 	}
 /**
@@ -128,7 +124,7 @@ class DboAdodb extends DboSource {
  * @param string $sql SQL statement
  * @return resource Result resource identifier
  */
-	function _execute($sql) {
+	private function _execute($sql) {
 		global $ADODB_FETCH_MODE;
 		$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
 		return $this->_adodb->execute($sql);
@@ -138,7 +134,7 @@ class DboAdodb extends DboSource {
  *
  * @return array The fetched row as an array
  */
-	function fetchRow($sql = null) {
+	private function fetchRow($sql = null) {
 		if (!empty($sql) && is_string($sql) && strlen($sql) > 5) {
 			if (!$this->execute($sql)) {
 				return null;
@@ -160,7 +156,7 @@ class DboAdodb extends DboSource {
  * @return boolean True on success, false on fail
  * (i.e. if the database/model does not support transactions).
  */
-	function begin(&$model) {
+	private function begin(&$model) {
 		if (parent::begin($model)) {
 			if ($this->_adodb->BeginTrans()) {
 				$this->_transactionStarted = true;
@@ -177,7 +173,7 @@ class DboAdodb extends DboSource {
  * (i.e. if the database/model does not support transactions,
  * or a transaction has not started).
  */
-	function commit(&$model) {
+	private function commit(&$model) {
 		if (parent::commit($model)) {
 			$this->_transactionStarted = false;
 			return $this->_adodb->CommitTrans();
@@ -192,7 +188,7 @@ class DboAdodb extends DboSource {
  * (i.e. if the database/model does not support transactions,
  * or a transaction has not started).
  */
-	function rollback(&$model) {
+	private function rollback(&$model) {
 		if (parent::rollback($model)) {
 			return $this->_adodb->RollbackTrans();
 		}
@@ -203,7 +199,7 @@ class DboAdodb extends DboSource {
  *
  * @return array Array of tablenames in the database
  */
-	function listSources() {
+	private function listSources() {
 		$tables = $this->_adodb->MetaTables('TABLES');
 
 		if (!sizeof($tables) > 0) {
@@ -218,7 +214,7 @@ class DboAdodb extends DboSource {
  * @param AppModel $model Model object
  * @return array Fields in table. Keys are name and type
  */
-	function describe(&$model) {
+	private function describe(&$model) {
 		$cache = parent::describe($model);
 		if ($cache != null) {
 			return $cache;
@@ -249,7 +245,7 @@ class DboAdodb extends DboSource {
  *
  * @return string Error message
  */
-	function lastError() {
+	private function lastError() {
 		return $this->_adodb->ErrorMsg();
 	}
 /**
@@ -257,7 +253,7 @@ class DboAdodb extends DboSource {
  *
  * @return integer Number of affected rows
  */
-	function lastAffected() {
+	private function lastAffected() {
 		return $this->_adodb->Affected_Rows();
 	}
 /**
@@ -265,7 +261,7 @@ class DboAdodb extends DboSource {
  *
  * @return integer Number of rows in resultset
  */
-	function lastNumRows() {
+	private function lastNumRows() {
 		return $this->_result ? $this->_result->RecordCount() : false;
 	}
 /**
@@ -275,7 +271,7 @@ class DboAdodb extends DboSource {
  *
  * @Returns the last autonumbering ID inserted. Returns false if function not supported.
  */
-	function lastInsertId() {
+	private function lastInsertId() {
 		return $this->_adodb->Insert_ID();
 	}
 /**
@@ -286,7 +282,7 @@ class DboAdodb extends DboSource {
  * @return string SQL limit/offset statement
  * @todo Please change output string to whatever select your database accepts. adodb doesn't allow us to get the correct limit string out of it.
  */
-	function limit($limit, $offset = null) {
+	private function limit($limit, $offset = null) {
 		if ($limit) {
 			$rt = '';
 			if (!strpos(strtolower($limit), 'limit') || strpos(strtolower($limit), 'limit') === 0) {
@@ -310,7 +306,7 @@ class DboAdodb extends DboSource {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return string Abstract column type (i.e. "string")
  */
-	function column($real) {
+	private function column($real) {
 		$metaTypes = array_flip($this->_adodbColumnTypes);
 
 		$interpreted_type = $this->_adodbMetatyper->MetaType($real);
@@ -328,7 +324,7 @@ class DboAdodb extends DboSource {
  * @param boolean $safe Whether or not numeric data should be handled automagically if no column data is provided
  * @return string Quoted and escaped data
  */
-	function value($data, $column = null, $safe = false) {
+	private function value($data, $column = null, $safe = false) {
 		$parent = parent::value($data, $column, $safe);
 		if ($parent != null) {
 			return $parent;
@@ -352,7 +348,7 @@ class DboAdodb extends DboSource {
  * @param mixed $fields
  * @return array
  */
-	function fields(&$model, $alias = null, $fields = array(), $quote = true) {
+	private function fields(&$model, $alias = null, $fields = array(), $quote = true) {
 		if (empty($alias)) {
 			$alias = $model->alias;
 		}
@@ -388,7 +384,7 @@ class DboAdodb extends DboSource {
  *
  * @param array $results
  */
-	function resultSet(&$results) {
+	private function resultSet(&$results) {
 		$num_fields = count($results);
 		$fields = array_keys($results);
 		$this->results =& $results;
@@ -413,7 +409,7 @@ class DboAdodb extends DboSource {
  *
  * @return unknown
  */
-	function fetchResult() {
+	private function fetchResult() {
 		if (!empty($this->results)) {
 			$row = $this->results;
 			$this->results = null;
@@ -442,7 +438,7 @@ class DboAdodb extends DboSource {
  *                      where options can be 'default', 'length', or 'key'.
  * @return string
  */
-	function buildColumn($column) {
+	private function buildColumn($column) {
 		$name = $type = null;
 		extract(array_merge(array('null' => true), $column));
 
@@ -509,7 +505,7 @@ class DboAdodb extends DboSource {
  *
  * @return boolean True if the result is valid, else false
  */
-	function hasResult() {
+	private function hasResult() {
 		return is_object($this->_result) && !$this->_result->EOF;
 	}
 }

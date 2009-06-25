@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * HttpSocketTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'HttpSocket');
@@ -58,8 +54,8 @@ class HttpSocketTest extends CakeTestCase {
 			Mock::generatePartial('HttpSocket', 'TestHttpSocketRequests', array('read', 'write', 'connect', 'request'));
 		}
 
-		$this->Socket =& new TestHttpSocket();
-		$this->RequestSocket =& new TestHttpSocketRequests();
+		$this->Socket = new TestHttpSocket();
+		$this->RequestSocket = new TestHttpSocketRequests();
 	}
 /**
  * We use this function to clean up after the test case was executed
@@ -1156,8 +1152,7 @@ class HttpSocketTest extends CakeTestCase {
 		$header = array(
 			'Set-Cookie' => array(
 				'foo=bar',
-				'people=jim,jack,johnny";";Path=/accounts',
-				'google=not=nice'
+				'people=jim,jack,johnny";";Path=/accounts'
 			),
 			'Transfer-Encoding' => 'chunked',
 			'Date' => 'Sun, 18 Nov 2007 18:57:42 GMT',
@@ -1169,10 +1164,7 @@ class HttpSocketTest extends CakeTestCase {
 			),
 			'people' => array(
 				'value' => 'jim,jack,johnny";"',
-				'path' => '/accounts',
-			),
-			'google' => array(
-				'value' => 'not=nice',
+				'path' => '/accounts'
 			)
 		);
 		$this->assertEqual($cookies, $expected);
@@ -1183,7 +1175,7 @@ class HttpSocketTest extends CakeTestCase {
 		$this->assertEqual($cookies, $expected);
 
 		$header['Set-Cookie'] = 'foo=bar';
-		unset($expected['people'], $expected['cakephp'], $expected['google']);
+		unset($expected['people'], $expected['cakephp']);
 		$cookies = $this->Socket->parseCookies($header);
 		$this->assertEqual($cookies, $expected);
 	}

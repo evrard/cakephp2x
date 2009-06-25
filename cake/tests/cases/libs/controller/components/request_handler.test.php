@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * RequestHandlerComponentTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.controller.components
  * @since         CakePHP(tm) v 1.2.0.5435
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', array('Controller'));
@@ -416,7 +412,6 @@ class RequestHandlerComponentTest extends CakeTestCase {
 		$this->RequestHandler->ext = 'rss';
 		$this->assertEqual($this->RequestHandler->prefers(), 'rss');
 		$this->assertFalse($this->RequestHandler->prefers('xml'));
-		$this->assertEqual($this->RequestHandler->prefers(array('js', 'xml', 'xhtml')), 'xml');
 		$this->assertTrue($this->RequestHandler->accepts('xml'));
 
 		$_SERVER['HTTP_ACCEPT'] = 'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5';
@@ -511,7 +506,7 @@ class RequestHandlerComponentTest extends CakeTestCase {
 	function _init() {
 		$this->Controller = new RequestHandlerTestController(array('components' => array('RequestHandler')));
 		$this->Controller->constructClasses();
-		$this->RequestHandler =& $this->Controller->RequestHandler;
+		$this->RequestHandler = $this->Controller->RequestHandler;
 	}
 }
 ?>

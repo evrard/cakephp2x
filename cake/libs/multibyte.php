@@ -1,33 +1,26 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Multibyte handling methods.
  *
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 1.2.0.6833
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 if (function_exists('mb_internal_encoding')) {
-	$encoding = Configure::read('App.encoding');
-	if (!empty($encoding)) {
-		mb_internal_encoding($encoding);
-	}
+	mb_internal_encoding(Configure::read('App.encoding'));
 }
 /**
  * Find position of first occurrence of a case-insensitive string.
@@ -248,36 +241,21 @@ class Multibyte extends Object {
  * @var array
  * @access private
  */
-	var $__caseFold = array();
+	private static $__caseFold = array();
 /**
  * Holds an array of Unicode code point ranges
  *
  * @var array
  * @access private
  */
-	var $__codeRange = array();
+	private static $__codeRange = array();
 /**
  * Holds the current code point range
  *
  * @var string
  * @access private
  */
-	var $__table = null;
-/**
- * Gets a reference to the Multibyte object instance
- *
- * @return object Multibyte instance
- * @access public
- * @static
- */
-	function &getInstance() {
-		static $instance = array();
-
-		if (!$instance) {
-			$instance[0] =& new Multibyte();
-		}
-		return $instance[0];
-	}
+	private static $__table = null;
 /**
  * Converts a multibyte character string
  * to the decimal value of the character
@@ -287,7 +265,7 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function utf8($string) {
+	public static function utf8($string) {
 		$map = array();
 
 		$values = array();
@@ -327,7 +305,7 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function ascii($array) {
+	public static function ascii($array) {
 		$ascii = '';
 
 		foreach ($array as $utf8) {
@@ -354,11 +332,11 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function stripos($haystack, $needle, $offset = 0) {
-		if (!PHP5 || Multibyte::checkMultibyte($haystack)) {
-			$haystack = Multibyte::strtoupper($haystack);
-			$needle = Multibyte::strtoupper($needle);
-			return Multibyte::strpos($haystack, $needle, $offset);
+	public static function stripos($haystack, $needle, $offset = 0) {
+		if (self::checkMultibyte($haystack)) {
+			$haystack = self::strtoupper($haystack);
+			$needle = self::strtoupper($needle);
+			return self::strpos($haystack, $needle, $offset);
 		}
 		return stripos($haystack, $needle, $offset);
 	}
@@ -374,19 +352,19 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function stristr($haystack, $needle, $part = false) {
+	public static function stristr($haystack, $needle, $part = false) {
 		$php = (PHP_VERSION < 5.3);
 
-		if (($php && $part) || Multibyte::checkMultibyte($haystack)) {
-			$check = Multibyte::strtoupper($haystack);
-			$check = Multibyte::utf8($check);
+		if (($php && $part) || self::checkMultibyte($haystack)) {
+			$check = self::strtoupper($haystack);
+			$check = self::utf8($check);
 			$found = false;
 
-			$haystack = Multibyte::utf8($haystack);
+			$haystack = self::utf8($haystack);
 			$haystackCount = count($haystack);
 
-			$needle = Multibyte::strtoupper($needle);
-			$needle = Multibyte::utf8($needle);
+			$needle = self::strtoupper($needle);
+			$needle = self::utf8($needle);
 			$needleCount = count($needle);
 
 			$parts = array();
@@ -411,9 +389,9 @@ class Multibyte extends Object {
 			}
 
 			if ($found && $part && !empty($parts)) {
-				return Multibyte::ascii($parts);
+				return self::ascii($parts);
 			} elseif ($found && !empty($haystack)) {
-				return Multibyte::ascii($haystack);
+				return self::ascii($haystack);
 			}
 			return false;
 		}
@@ -431,9 +409,9 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function strlen($string) {
-		if (Multibyte::checkMultibyte($string)) {
-			$string = Multibyte::utf8($string);
+	public static function strlen($string) {
+		if (self::checkMultibyte($string)) {
+			$string = self::utf8($string);
 			return count($string);
 		}
 		return strlen($string);
@@ -449,14 +427,14 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function strpos($haystack, $needle, $offset = 0) {
-		if (Multibyte::checkMultibyte($haystack)) {
+	public static function strpos($haystack, $needle, $offset = 0) {
+		if (self::checkMultibyte($haystack)) {
 			$found = false;
 
-			$haystack = Multibyte::utf8($haystack);
+			$haystack = self::utf8($haystack);
 			$haystackCount = count($haystack);
 
-			$needle = Multibyte::utf8($needle);
+			$needle = self::utf8($needle);
 			$needleCount = count($needle);
 
 			$position = $offset;
@@ -494,16 +472,16 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function strrchr($haystack, $needle, $part = false) {
-		$check = Multibyte::utf8($haystack);
+	public static function strrchr($haystack, $needle, $part = false) {
+		$check = self::utf8($haystack);
 		$found = false;
 
-		$haystack = Multibyte::utf8($haystack);
+		$haystack = self::utf8($haystack);
 		$haystackCount = count($haystack);
 
 		$matches = array_count_values($check);
 
-		$needle = Multibyte::utf8($needle);
+		$needle = self::utf8($needle);
 		$needleCount = count($needle);
 
 		$parts = array();
@@ -536,9 +514,9 @@ class Multibyte extends Object {
 		}
 
 		if ($found && $part && !empty($parts)) {
-			return Multibyte::ascii($parts);
+			return self::ascii($parts);
 		} elseif ($found && !empty($haystack)) {
-			return Multibyte::ascii($haystack);
+			return self::ascii($haystack);
 		}
 		return false;
 	}
@@ -554,18 +532,18 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function strrichr($haystack, $needle, $part = false) {
-		$check = Multibyte::strtoupper($haystack);
-		$check = Multibyte::utf8($check);
+	public static function strrichr($haystack, $needle, $part = false) {
+		$check = self::strtoupper($haystack);
+		$check = self::utf8($check);
 		$found = false;
 
-		$haystack = Multibyte::utf8($haystack);
+		$haystack = self::utf8($haystack);
 		$haystackCount = count($haystack);
 
 		$matches = array_count_values($check);
 
-		$needle = Multibyte::strtoupper($needle);
-		$needle = Multibyte::utf8($needle);
+		$needle = self::strtoupper($needle);
+		$needle = self::utf8($needle);
 		$needleCount = count($needle);
 
 		$parts = array();
@@ -598,9 +576,9 @@ class Multibyte extends Object {
 		}
 
 		if ($found && $part && !empty($parts)) {
-			return Multibyte::ascii($parts);
+			return self::ascii($parts);
 		} elseif ($found && !empty($haystack)) {
-			return Multibyte::ascii($haystack);
+			return self::ascii($haystack);
 		}
 		return false;
 	}
@@ -614,17 +592,17 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function strripos($haystack, $needle, $offset = 0) {
-		if (!PHP5 || Multibyte::checkMultibyte($haystack)) {
+	public static function strripos($haystack, $needle, $offset = 0) {
+		if (self::checkMultibyte($haystack)) {
 			$found = false;
-			$haystack = Multibyte::strtoupper($haystack);
-			$haystack = Multibyte::utf8($haystack);
+			$haystack = self::strtoupper($haystack);
+			$haystack = self::utf8($haystack);
 			$haystackCount = count($haystack);
 
 			$matches = array_count_values($haystack);
 
-			$needle = Multibyte::strtoupper($needle);
-			$needle = Multibyte::utf8($needle);
+			$needle = self::strtoupper($needle);
+			$needle = self::utf8($needle);
 			$needleCount = count($needle);
 
 			$position = $offset;
@@ -666,16 +644,16 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function strrpos($haystack, $needle, $offset = 0) {
-		if (!PHP5 || Multibyte::checkMultibyte($haystack)) {
+	public static function strrpos($haystack, $needle, $offset = 0) {
+		if (self::checkMultibyte($haystack)) {
 			$found = false;
 
-			$haystack = Multibyte::utf8($haystack);
+			$haystack = self::utf8($haystack);
 			$haystackCount = count($haystack);
 
 			$matches = array_count_values($haystack);
 
-			$needle = Multibyte::utf8($needle);
+			$needle = self::utf8($needle);
 			$needleCount = count($needle);
 
 			$position = $offset;
@@ -717,17 +695,17 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function strstr($haystack, $needle, $part = false) {
+	public static function strstr($haystack, $needle, $part = false) {
 		$php = (PHP_VERSION < 5.3);
 
-		if (($php && $part) || Multibyte::checkMultibyte($haystack)) {
-			$check = Multibyte::utf8($haystack);
+		if (($php && $part) || self::checkMultibyte($haystack)) {
+			$check = self::utf8($haystack);
 			$found = false;
 
-			$haystack = Multibyte::utf8($haystack);
+			$haystack = self::utf8($haystack);
 			$haystackCount = count($haystack);
 
-			$needle = Multibyte::utf8($needle);
+			$needle = self::utf8($needle);
 			$needleCount = count($needle);
 
 			$parts = array();
@@ -752,9 +730,9 @@ class Multibyte extends Object {
 			}
 
 			if ($found && $part && !empty($parts)) {
-				return Multibyte::ascii($parts);
+				return self::ascii($parts);
 			} elseif ($found && !empty($haystack)) {
-				return Multibyte::ascii($haystack);
+				return self::ascii($haystack);
 			}
 			return false;
 		}
@@ -772,10 +750,8 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function strtolower($string) {
-		$_this =& Multibyte::getInstance();
-		$utf8Map = Multibyte::utf8($string);
-
+	public static function strtolower($string) {
+		$utf8Map = self::utf8($string);
 		$length = count($utf8Map);
 		$lowerCase = array();
 		$matched = false;
@@ -793,7 +769,7 @@ class Multibyte extends Object {
 				$matched = true;
 			} else {
 				$matched = false;
-				$keys = $_this->__find($char, 'upper');
+				$keys = self::__find($char, 'upper');
 
 				if (!empty($keys)) {
 					foreach ($keys as $key => $value) {
@@ -809,7 +785,7 @@ class Multibyte extends Object {
 				$lowerCase[] = $char;
 			}
 		}
-		return Multibyte::ascii($lowerCase);
+		return self::ascii($lowerCase);
 	}
 /**
  * Make a string uppercase
@@ -820,10 +796,8 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function strtoupper($string) {
-		$_this =& Multibyte::getInstance();
-		$utf8Map = Multibyte::utf8($string);
-
+	public static function strtoupper($string) {
+		$utf8Map = self::utf8($string);
 		$length = count($utf8Map);
 		$matched = false;
 		$replaced = array();
@@ -843,7 +817,7 @@ class Multibyte extends Object {
 
 			} else {
 				$matched = false;
-				$keys = $_this->__find($char);
+				$keys = self::__find($char);
 				$keyCount = count($keys);
 
 				if (!empty($keys)) {
@@ -901,7 +875,7 @@ class Multibyte extends Object {
 				$upperCase[] = $char;
 			}
 		}
-		return Multibyte::ascii($upperCase);
+		return self::ascii($upperCase);
 	}
 /**
  * Count the number of substring occurrences
@@ -912,12 +886,12 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function substrCount($haystack, $needle) {
+	public static function substrCount($haystack, $needle) {
 		$count = 0;
-		$haystack = Multibyte::utf8($haystack);
+		$haystack = self::utf8($haystack);
 		$haystackCount = count($haystack);
 		$matches = array_count_values($haystack);
-		$needle = Multibyte::utf8($needle);
+		$needle = self::utf8($needle);
 		$needleCount = count($needle);
 
 		if ($needleCount === 1 && isset($matches[$needle[0]])) {
@@ -949,12 +923,12 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function substr($string, $start, $length = null) {
+	public static function substr($string, $start, $length = null) {
 		if ($start === 0 && $length === null) {
 			return $string;
 		}
 
-		$string = Multibyte::utf8($string);
+		$string = self::utf8($string);
 		$stringCount = count($string);
 
 		for ($i = 1; $i <= $start; $i++) {
@@ -962,7 +936,7 @@ class Multibyte extends Object {
 		}
 
 		if ($length === null || count($string) < $length) {
-			return Multibyte::ascii($string);
+			return self::ascii($string);
 		}
 		$string = array_values($string);
 
@@ -970,7 +944,7 @@ class Multibyte extends Object {
 		for ($i = 0; $i < $length; $i++) {
 			$value[] = $string[$i];
 		}
-		return Multibyte::ascii($value);
+		return self::ascii($value);
 	}
 /**
  * Prepare a string for mail transport, using the provided encoding
@@ -983,8 +957,8 @@ class Multibyte extends Object {
  * @static
  * @TODO: add support for 'Q'('Quoted Printable') encoding
  */
-	function mimeEncode($string, $charset = null, $newline = "\r\n") {
-		if (!Multibyte::checkMultibyte($string) && strlen($string) < 75) {
+	public static function mimeEncode($string, $charset = null, $newline = "\r\n") {
+		if (!self::checkMultibyte($string) && strlen($string) < 75) {
 			return $string;
 		}
 
@@ -1027,7 +1001,7 @@ class Multibyte extends Object {
  * @return string
  * @access private
  */
-	function __codepoint ($decimal) {
+	private static function __codepoint ($decimal) {
 		if ($decimal > 128 && $decimal < 256)  {
 			$return = '0080_00ff'; // Latin-1 Supplement
 		} elseif ($decimal < 384) {
@@ -1065,7 +1039,7 @@ class Multibyte extends Object {
 		} else {
 			$return = false;
 		}
-		$this->__codeRange[$decimal] = $return;
+		self::$__codeRange[$decimal] = $return;
 		return $return;
 	}
 /**
@@ -1076,30 +1050,30 @@ class Multibyte extends Object {
  * @return array
  * @access private
  */
-	function __find($char, $type = 'lower') {
+	private static function __find($char, $type = 'lower') {
 		$value = false;
 		$found = array();
-		if (!isset($this->__codeRange[$char])) {
-			$range = $this->__codepoint($char);
+		if (!isset(self::$__codeRange[$char])) {
+			$range = self::__codepoint($char);
 			if ($range === false) {
 				return null;
 			}
 			Configure::load('unicode' . DS . 'casefolding' . DS . $range);
-			$this->__caseFold[$range] = Configure::read($range);
+			self::$__caseFold[$range] = Configure::read($range);
 			Configure::delete($range);
 		}
 
-		if (!$this->__codeRange[$char]) {
+		if (!self::$__codeRange[$char]) {
 			return null;
 		}
-		$this->__table = $this->__codeRange[$char];
-		$count = count($this->__caseFold[$this->__table]);
+		self::$__table = self::$__codeRange[$char];
+		$count = count(self::$__caseFold[self::$__table]);
 
 		for ($i = 0; $i < $count; $i++) {
-			if ($type === 'lower' && $this->__caseFold[$this->__table][$i][$type][0] === $char) {
-				$found[] = $this->__caseFold[$this->__table][$i];
-			} elseif ($type === 'upper' && $this->__caseFold[$this->__table][$i][$type] === $char) {
-				$found[] = $this->__caseFold[$this->__table][$i];
+			if ($type === 'lower' && self::$__caseFold[self::$__table][$i][$type][0] === $char) {
+				$found[] = self::$__caseFold[self::$__table][$i];
+			} elseif ($type === 'upper' && self::$__caseFold[self::$__table][$i][$type] === $char) {
+				$found[] = self::$__caseFold[self::$__table][$i];
 			}
 		}
 		return $found;
@@ -1111,7 +1085,7 @@ class Multibyte extends Object {
  * @access public
  * @static
  */
-	function checkMultibyte($string) {
+	public static function checkMultibyte($string) {
 		$length = strlen($string);
 
 		for ($i = 0; $i < $length; $i++ ) {

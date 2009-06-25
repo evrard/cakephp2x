@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * This is core configuration file.
  *
  * Use it to configure core behaviour ofCake.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model
  * @since         CakePHP(tm) v 0.2.9
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -44,19 +40,19 @@ class AclNode extends AppModel {
  * @var boolean
  * @access public
  */
-	var $cacheQueries = false;
+	private $cacheQueries = false;
 /**
  * ACL models use the Tree behavior
  *
  * @var array
  * @access public
  */
-	var $actsAs = array('Tree' => 'nested');
+	private $actsAs = array('Tree' => 'nested');
 /**
  * Constructor
  *
  */
-	function __construct() {
+	private function __construct() {
 		$config = Configure::read('Acl.database');
 		if (isset($config)) {
 			$this->useDbConfig = $config;
@@ -70,8 +66,8 @@ class AclNode extends AppModel {
  * @return array Node found in database
  * @access public
  */
-	function node($ref = null) {
-		$db =& ConnectionManager::getDataSource($this->useDbConfig);
+	private function node($ref = null) {
+		$db = ConnectionManager::getDataSource($this->useDbConfig);
 		$type = $this->alias;
 		$result = null;
 
@@ -136,11 +132,7 @@ class AclNode extends AppModel {
 		} elseif (is_array($ref) && !(isset($ref['model']) && isset($ref['foreign_key']))) {
 			$name = key($ref);
 
-			if (PHP5) {
-				$model = ClassRegistry::init(array('class' => $name, 'alias' => $name));
-			} else {
-				$model =& ClassRegistry::init(array('class' => $name, 'alias' => $name));
-			}
+			$model = ClassRegistry::init(array('class' => $name, 'alias' => $name));
 
 			if (empty($model)) {
 				trigger_error("Model class '$name' not found in AclNode::node() when trying to bind {$this->alias} object", E_USER_WARNING);
@@ -207,14 +199,14 @@ class Aco extends AclNode {
  * @var string
  * @access public
  */
-	var $name = 'Aco';
+	private $name = 'Aco';
 /**
  * Binds to ARO nodes through permissions settings
  *
  * @var array
  * @access public
  */
-	var $hasAndBelongsToMany = array('Aro' => array('with' => 'Permission'));
+	private $hasAndBelongsToMany = array('Aro' => array('with' => 'Permission'));
 }
 /**
  * Action for Access Control Object
@@ -229,14 +221,14 @@ class AcoAction extends AppModel {
  * @var string
  * @access public
  */
-	var $name = 'AcoAction';
+	private $name = 'AcoAction';
 /**
  * ACO Actions belong to ACOs
  *
  * @var array
  * @access public
  */
-	var $belongsTo = array('Aco');
+	private $belongsTo = array('Aco');
 }
 /**
  * Access Request Object
@@ -251,14 +243,14 @@ class Aro extends AclNode {
  * @var string
  * @access public
  */
-	var $name = 'Aro';
+	private $name = 'Aro';
 /**
  * AROs are linked to ACOs by means of Permission
  *
  * @var array
  * @access public
  */
-	var $hasAndBelongsToMany = array('Aco' => array('with' => 'Permission'));
+	private $hasAndBelongsToMany = array('Aco' => array('with' => 'Permission'));
 }
 /**
  * Permissions linking AROs with ACOs
@@ -273,40 +265,40 @@ class Permission extends AppModel {
  * @var string
  * @access public
  */
-	var $name = 'Permission';
+	private $name = 'Permission';
 /**
  * Explicitly disable in-memory query caching
  *
  * @var boolean
  * @access public
  */
-	var $cacheQueries = false;
+	private $cacheQueries = false;
 /**
  * Override default table name
  *
  * @var string
  * @access public
  */
-	var $useTable = 'aros_acos';
+	private $useTable = 'aros_acos';
 /**
  * Permissions link AROs with ACOs
  *
  * @var array
  * @access public
  */
-	var $belongsTo = array('Aro', 'Aco');
+	private $belongsTo = array('Aro', 'Aco');
 /**
  * No behaviors for this model
  *
  * @var array
  * @access public
  */
-	var $actsAs = null;
+	private $actsAs = null;
 /**
  * Constructor, used to tell this model to use the
  * database configured for ACL
  */
-	function __construct() {
+	private function __construct() {
 		$config = Configure::read('Acl.database');
 		if (!empty($config)) {
 			$this->useDbConfig = $config;

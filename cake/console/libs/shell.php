@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Base class for Shells
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.console.libs
  * @since         CakePHP(tm) v 1.2.0.5012
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -131,9 +127,9 @@ class Shell extends Object {
 		$vars = array('params', 'args', 'shell', 'shellCommand' => 'command');
 		foreach ($vars as $key => $var) {
 			if (is_string($key)) {
-				$this->{$var} =& $dispatch->{$key};
+				$this->{$var} = $dispatch->{$key};
 			} else {
-				$this->{$var} =& $dispatch->{$var};
+				$this->{$var} = $dispatch->{$var};
 			}
 		}
 
@@ -148,16 +144,7 @@ class Shell extends Object {
 		ClassRegistry::addObject($this->name, $this);
 		ClassRegistry::map($this->name, $this->alias);
 
-		if (!PHP5 && isset($this->args[0])) {
-			if (strpos($this->name, low(Inflector::camelize($this->args[0]))) !== false) {
-				$dispatch->shiftArgs();
-			}
-			if (low($this->command) == low(Inflector::variable($this->args[0])) && method_exists($this, $this->command)) {
-				$dispatch->shiftArgs();
-			}
-		}
-
-		$this->Dispatch =& $dispatch;
+		$this->Dispatch = $dispatch;
 	}
 /**
  * Initializes the Shell
@@ -200,7 +187,7 @@ class Shell extends Object {
  */
 	function _loadDbConfig() {
 		if (config('database') && class_exists('DATABASE_CONFIG')) {
-			$this->DbConfig =& new DATABASE_CONFIG();
+			$this->DbConfig = new DATABASE_CONFIG();
 			return true;
 		}
 		$this->err('Database config could not be loaded');
@@ -222,7 +209,7 @@ class Shell extends Object {
 		}
 
 		if ($this->uses === true && App::import('Model', 'AppModel')) {
-			$this->AppModel =& new AppModel(false, false, false);
+			$this->AppModel = new AppModel(false, false, false);
 			return true;
 		}
 
@@ -241,11 +228,7 @@ class Shell extends Object {
 					list($plugin, $modelClass) = explode('.', $modelClass);
 					$plugin = $plugin . '.';
 				}
-				if (PHP5) {
-					$this->{$modelClass} = ClassRegistry::init($plugin . $modelClass);
-				} else {
-					$this->{$modelClass} =& ClassRegistry::init($plugin . $modelClass);
-				}
+				$this->{$modelClass} = ClassRegistry::init($plugin . $modelClass);
 			}
 			return true;
 		}
@@ -282,18 +265,10 @@ class Shell extends Object {
 			}
 			if (ClassRegistry::isKeySet($taskClass)) {
 				$this->taskNames[] = $taskName;
-				if (!PHP5) {
-					$this->{$taskName} =& ClassRegistry::getObject($taskClass);
-				} else {
-					$this->{$taskName} = ClassRegistry::getObject($taskClass);
-				}
+				$this->{$taskName} = ClassRegistry::getObject($taskClass);
 			} else {
 				$this->taskNames[] = $taskName;
-				if (!PHP5) {
-					$this->{$taskName} =& new $taskClass($this->Dispatch);
-				} else {
-					$this->{$taskName} = new $taskClass($this->Dispatch);
-				}
+				$this->{$taskName} = new $taskClass($this->Dispatch);
 			}
 
 			if (!isset($this->{$taskName})) {

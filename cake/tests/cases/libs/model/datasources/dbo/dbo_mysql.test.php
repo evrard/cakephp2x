@@ -1,25 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * DboMysqlTest file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 1.2.0
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Core', array('Model', 'DataSource', 'DboSource', 'DboMysql'));
@@ -371,7 +367,7 @@ class DboMysqlTest extends CakeTestCase {
 	function testIndexOnMySQL4Output() {
 		$name = $this->db->fullTableName('simple');
 
-		$mockDbo =& new QueryMockDboMysql($this);
+		$mockDbo = new QueryMockDboMysql($this);
 		$columnData = array(
 			array('0' => array(
 				'Table' => 'with_compound_keys',
@@ -512,7 +508,7 @@ class DboMysqlTest extends CakeTestCase {
 		App::import('Core', 'Schema');
 		$this->db->cacheSources = $this->db->testing = false;
 
-		$schema1 =& new CakeSchema(array(
+		$schema1 = new CakeSchema(array(
 			'name' => 'AlterTest1',
 			'connection' => 'test_suite',
 			'altertest' => array(
@@ -523,7 +519,7 @@ class DboMysqlTest extends CakeTestCase {
 		)));
 		$this->db->query($this->db->createSchema($schema1));
 
-		$schema2 =& new CakeSchema(array(
+		$schema2 = new CakeSchema(array(
 			'name' => 'AlterTest2',
 			'connection' => 'test_suite',
 			'altertest' => array(
@@ -543,7 +539,7 @@ class DboMysqlTest extends CakeTestCase {
 		$this->assertEqual($schema2->tables['altertest']['indexes'], $indexes);
 
 		// Change three indexes, delete one and add another one
-		$schema3 =& new CakeSchema(array(
+		$schema3 = new CakeSchema(array(
 			'name' => 'AlterTest3',
 			'connection' => 'test_suite',
 			'altertest' => array(

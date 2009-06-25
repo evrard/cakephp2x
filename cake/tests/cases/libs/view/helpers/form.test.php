@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * FormHelperTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2006-2008, Cake Software Foundation, Inc.
+ * Copyright 2006-2009, Cake Software Foundation, Inc.
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2006-2008, Cake Software Foundation, Inc.
+ * @copyright     Copyright 2006-2009, Cake Software Foundation, Inc.
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.view.helpers
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
@@ -601,10 +597,10 @@ class FormHelperTest extends CakeTestCase {
 		parent::setUp();
 		Router::reload();
 
-		$this->Form =& new FormHelper();
-		$this->Form->Html =& new HtmlHelper();
-		$this->Controller =& new ContactTestController();
-		$this->View =& new View($this->Controller);
+		$this->Form = new FormHelper();
+		$this->Form->Html = new HtmlHelper();
+		$this->Controller = new ContactTestController();
+		$this->View = new View($this->Controller);
 
 		ClassRegistry::addObject('view', $view);
 		ClassRegistry::addObject('Contact', new Contact());
@@ -1181,8 +1177,8 @@ class FormHelperTest extends CakeTestCase {
  * @return void
  */
 	function testFormValidationAssociated() {
-		$this->UserForm =& ClassRegistry::getObject('UserForm');
-		$this->UserForm->OpenidUrl =& ClassRegistry::getObject('OpenidUrl');
+		$this->UserForm = ClassRegistry::getObject('UserForm');
+		$this->UserForm->OpenidUrl = ClassRegistry::getObject('OpenidUrl');
 
 		$data = array(
 			'UserForm' => array('name' => 'user'),
@@ -1222,8 +1218,8 @@ class FormHelperTest extends CakeTestCase {
  * @return void
  */
 	function testFormValidationAssociatedFirstLevel() {
-		$this->ValidateUser =& ClassRegistry::getObject('ValidateUser');
-		$this->ValidateUser->ValidateProfile =& ClassRegistry::getObject('ValidateProfile');
+		$this->ValidateUser = ClassRegistry::getObject('ValidateUser');
+		$this->ValidateUser->ValidateProfile = ClassRegistry::getObject('ValidateProfile');
 
 		$data = array(
 			'ValidateUser' => array('name' => 'mariano'),
@@ -1261,9 +1257,9 @@ class FormHelperTest extends CakeTestCase {
  * @return void
  */
 	function testFormValidationAssociatedSecondLevel() {
-		$this->ValidateUser =& ClassRegistry::getObject('ValidateUser');
-		$this->ValidateUser->ValidateProfile =& ClassRegistry::getObject('ValidateProfile');
-		$this->ValidateUser->ValidateProfile->ValidateItem =& ClassRegistry::getObject('ValidateItem');
+		$this->ValidateUser = ClassRegistry::getObject('ValidateUser');
+		$this->ValidateUser->ValidateProfile = ClassRegistry::getObject('ValidateProfile');
+		$this->ValidateUser->ValidateProfile->ValidateItem = ClassRegistry::getObject('ValidateItem');
 
 		$data = array(
 			'ValidateUser' => array('name' => 'mariano'),
@@ -1771,7 +1767,7 @@ class FormHelperTest extends CakeTestCase {
 		$this->assertTags($result, $expected);
 
 		$this->Form->data = array('Model' => array('user_id' => 'value'));
-		$view =& ClassRegistry::getObject('view');
+		$view = ClassRegistry::getObject('view');
 		$view->viewVars['users'] = array('value' => 'good', 'other' => 'bad');
 		$result = $this->Form->input('Model.user_id', array('empty' => true));
 		$expected = array(
@@ -1794,7 +1790,7 @@ class FormHelperTest extends CakeTestCase {
 		$this->assertTags($result, $expected);
 
 		$this->Form->data = array('Model' => array('user_id' => null));
-		$view =& ClassRegistry::getObject('view');
+		$view = ClassRegistry::getObject('view');
 		$view->viewVars['users'] = array('value' => 'good', 'other' => 'bad');
 		$result = $this->Form->input('Model.user_id', array('empty' => 'Some Empty'));
 		$expected = array(
@@ -1818,7 +1814,7 @@ class FormHelperTest extends CakeTestCase {
 		$this->assertTags($result, $expected);
 
 		$this->Form->data = array('Model' => array('user_id' => 'value'));
-		$view =& ClassRegistry::getObject('view');
+		$view = ClassRegistry::getObject('view');
 		$view->viewVars['users'] = array('value' => 'good', 'other' => 'bad');
 		$result = $this->Form->input('Model.user_id', array('empty' => 'Some Empty'));
 		$expected = array(
@@ -1844,7 +1840,7 @@ class FormHelperTest extends CakeTestCase {
 		extract($this->dateRegex);
 
 		$this->Form->data = array('Contact' => array('created' => null));
-		$view =& ClassRegistry::getObject('view');
+		$view = ClassRegistry::getObject('view');
 		$view->viewVars['users'] = array('value' => 'good', 'other' => 'bad');
 		$result = $this->Form->input('Contact.created', array('empty' => 'Date Unknown'));
 		$expected = array(
@@ -1869,7 +1865,7 @@ class FormHelperTest extends CakeTestCase {
 		$this->assertTags($result, $expected);
 
 		$this->Form->data = array('User' => array('User' => array('value')));
-		$view =& ClassRegistry::getObject('view');
+		$view = ClassRegistry::getObject('view');
 		$view->viewVars['users'] = array('value' => 'good', 'other' => 'bad');
 		$result = $this->Form->input('User.User', array('empty' => true));
 		$expected = array(
@@ -2553,26 +2549,6 @@ class FormHelperTest extends CakeTestCase {
 			'/label'
 		);
 		$this->assertTags($result, $expected);
-
-
-		$result = $this->Form->radio('Model.field', array('option A', 'option B'), array('name' => 'data[Model][custom]'));
-		$expected = array(
-			'fieldset' => array(),
-			'legend' => array(),
-			'Field',
-			'/legend',
-			'input' => array('type' => 'hidden', 'name' => 'data[Model][custom]', 'value' => '', 'id' => 'ModelField_'),
-			array('input' => array('type' => 'radio', 'name' => 'data[Model][custom]', 'value' => '0', 'id' => 'ModelField0')),
-			array('label' => array('for' => 'ModelField0')),
-			'option A',
-			'/label',
-			array('input' => array('type' => 'radio', 'name' => 'data[Model][custom]', 'value' => '1', 'id' => 'ModelField1')),
-			array('label' => array('for' => 'ModelField1')),
-			'option B',
-			'/label',
-			'/fieldset'
-		);
-		$this->assertTags($result, $expected);
 	}
 /**
  * testSelect method
@@ -3165,21 +3141,6 @@ class FormHelperTest extends CakeTestCase {
 		);
 		$this->assertTags($result, $expected);
 	}
-	
-/**
- * Test that specifying false in the 'disabled' option will not disable either the hidden input or the checkbox input
- *
- * @return void
- **/
-	function testCheckboxHiddenDisabling() {
-		$result = $this->Form->checkbox('Account.show_name', array('disabled' => false));
-		$expected = array(
-			array('input' => array('type' => 'hidden', 'name' => 'data[Account][show_name]', 'value' => '0', 'id' => 'AccountShowName_')),
-			array('input' => array('type' => 'checkbox', 'name' => 'data[Account][show_name]', 'value' => '1', 'id' => 'AccountShowName'))
-		);
-		$this->assertTags($result, $expected);
-	}
-	
 /**
  * testDateTime method
  *
@@ -4262,14 +4223,6 @@ class FormHelperTest extends CakeTestCase {
 			'/textarea',
 		);
 		$this->assertTags($result, $expected);
-
-		$this->Form->data['Model']['0']['OtherModel']['field'] = null;
-		$result = $this->Form->textarea('Model.0.OtherModel.field');
-		$expected = array(
-			'textarea' => array('name' => 'data[Model][0][OtherModel][field]', 'id' => 'Model0OtherModelField'),
-			'/textarea'
-		);
-		$this->assertTags($result, $expected);
 	}
 /**
  * testTextAreaWithStupidCharacters method
@@ -4336,11 +4289,11 @@ class FormHelperTest extends CakeTestCase {
  **/
 	function testFileUploadOnOtherModel() {
 		ClassRegistry::removeObject('view');
-		$controller =& new Controller();
+		$controller = new Controller();
 		$controller->name = 'ValidateUsers';
 		$controller->uses = array('ValidateUser');
 		$controller->constructClasses();
-		$view =& new View($controller, true);
+		$view = new View($controller, true);
 
 		$this->Form->create('ValidateUser', array('type' => 'file'));
 		$result = $this->Form->file('ValidateProfile.city');
@@ -4370,9 +4323,6 @@ class FormHelperTest extends CakeTestCase {
 
 		$result = $this->Form->button('Options', array('type' => 'reset', 'name' => 'Post.options', 'id' => 'Opt'));
 		$this->assertTags($result, array('input' => array('type' => 'reset', 'name' => 'data[Post][options]', 'id' => 'Opt', 'value' => 'Options')));
-
-		$result = $this->Form->button('Upload Text', array('onClick' => "$('#postAddForm').ajaxSubmit({target: '#postTextUpload', url: '/posts/text'});return false;'", 'escape' => false));
-		$this->assertNoPattern('/\&039/', $result);
 	}
 /**
  * testSubmitButton method
@@ -4573,32 +4523,6 @@ class FormHelperTest extends CakeTestCase {
 			'/fieldset'
 		);
 		$this->assertTags($result, $expected);
-	}
-/**
- * Test base form url when url param is passed with multiple parameters (&)
- *
- */
-	function testFormCreateQuerystringParams() {
-		$result = $this->Form->create('Contact', array(
-			'type' => 'post',
-			'escape' => false,
-			'url' => array(
-				'controller' => 'controller',
-				'action' => 'action',
-				'?' => array('param1' => 'value1', 'param2' => 'value2')
-			)
-		));
-		$expected = array(
-			'form' => array(
-				'id' => 'ContactAddForm',
-				'method' => 'post',
-				'action' => '/controller/action/?param1=value1&amp;param2=value2'
-			),
-			'fieldset' => array('style' => 'preg:/display\s*\:\s*none;\s*/'),
-			'input' => array('type' => 'hidden', 'name' => '_method', 'value' => 'POST'),
-			'/fieldset'
-		);
-		$this->assertTags($result, $expected, true);
 	}
 /**
  * testGetFormCreate method

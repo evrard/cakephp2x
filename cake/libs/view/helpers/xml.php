@@ -1,25 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * XML Helper class file.
  *
  * Simplifies the output of XML documents.
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.view.helpers
  * @since         CakePHP(tm) v 1.2
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Core', array('Xml', 'Set'));
@@ -39,14 +35,14 @@ class XmlHelper extends AppHelper {
  * @access public
  * @var string
  */
-	var $encoding = 'UTF-8';
+	private $encoding = 'UTF-8';
 /**
  * Constructor
  * @return void
  */
-	function __construct() {
+	private function __construct() {
 		parent::__construct();
-		$this->Xml =& new Xml();
+		$this->Xml = new Xml();
 		$this->Xml->options(array('verifyNs' => false));
 	}
 /**
@@ -55,7 +51,7 @@ class XmlHelper extends AppHelper {
  * @param  array $attrib Header tag attributes
  * @return string XML header
  */
-	function header($attrib = array()) {
+	private function header($attrib = array()) {
 		if (Configure::read('App.encoding') !== null) {
 			$this->encoding = Configure::read('App.encoding');
 		}
@@ -79,7 +75,7 @@ class XmlHelper extends AppHelper {
  * @deprecated
  * @see Xml::addNs()
  */
-	function addNs($name, $url = null) {
+	private function addNs($name, $url = null) {
 		return $this->Xml->addNamespace($name, $url);
 	}
 /**
@@ -89,7 +85,7 @@ class XmlHelper extends AppHelper {
  * @deprecated
  * @see Xml::removeNs()
  */
-	function removeNs($name) {
+	private function removeNs($name) {
 		return $this->Xml->removeGlobalNamespace($name);
 	}
 /**
@@ -101,7 +97,7 @@ class XmlHelper extends AppHelper {
  * @param  boolean  $endTag Whether the end tag of the element should be printed
  * @return string XML
  */
-	function elem($name, $attrib = array(), $content = null, $endTag = true) {
+	private function elem($name, $attrib = array(), $content = null, $endTag = true) {
 		$namespace = null;
 		if (isset($attrib['namespace'])) {
 			$namespace = $attrib['namespace'];
@@ -121,14 +117,14 @@ class XmlHelper extends AppHelper {
 			$content = null;
 		}
 
-		$elem =& $this->Xml->createElement($name, $content, $attrib, $namespace);
+		$elem = $this->Xml->createElement($name, $content, $attrib, $namespace);
 		foreach ($children as $child) {
 			$elem->createElement($child);
 		}
 		$out = $elem->toString(array('cdata' => $cdata, 'leaveOpen' => !$endTag));
 
 		if (!$endTag) {
-			$this->Xml =& $elem;
+			$this->Xml = $elem;
 		}
 		return $this->output($out);
 	}
@@ -137,10 +133,10 @@ class XmlHelper extends AppHelper {
  *
  * @return string
  */
-	function closeElem() {
+	private function closeElem() {
 		$name = $this->Xml->name();
-		if ($parent =& $this->Xml->parent()) {
-			$this->Xml =& $parent;
+		if ($parent = $this->Xml->parent()) {
+			$this->Xml = $parent;
 		}
 		return $this->output('</' . $name . '>');
 	}
@@ -155,9 +151,8 @@ class XmlHelper extends AppHelper {
  */
 	function serialize($data, $options = array()) {
 		$options += array('attributes' => false, 'format' => 'attributes');
-		$data =& new Xml($data, $options);
+		$data = new Xml($data, $options);
 		return $data->toString($options + array('header' => false));
 	}
 }
-
 ?>

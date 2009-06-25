@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.cake.tests.libs
  * @since         CakePHP(tm) v 1.2.0.4667
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 /**
@@ -68,16 +64,16 @@ class CakeTestFixture extends Object {
 
 			if (isset($import['model']) && App::import('Model', $import['model'])) {
 				ClassRegistry::config(array('ds' => $import['connection']));
-				$model =& ClassRegistry::init($import['model']);
-				$db =& ConnectionManager::getDataSource($model->useDbConfig);
+				$model = ClassRegistry::init($import['model']);
+				$db = ConnectionManager::getDataSource($model->useDbConfig);
 				$db->cacheSources = false;
 				$this->fields = $model->schema(true);
 				$this->fields[$model->primaryKey]['key'] = 'primary';
 				ClassRegistry::config(array('ds' => 'test_suite'));
 				ClassRegistry::flush();
 			} elseif (isset($import['table'])) {
-				$model =& new Model(null, $import['table'], $import['connection']);
-				$db =& ConnectionManager::getDataSource($import['connection']);
+				$model = new Model(null, $import['table'], $import['connection']);
+				$db = ConnectionManager::getDataSource($import['connection']);
 				$db->cacheSources = false;
 				$model->useDbConfig = $import['connection'];
 				$model->name = Inflector::camelize(Inflector::singularize($import['table']));

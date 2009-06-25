@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Framework debugging and PHP error-handling class
  *
  * Provides enhanced logging, stack traces, and rendering debug views
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 1.2.4560
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -50,33 +46,33 @@ class Debugger extends Object {
  * @var array
  * @access public
  */
-	var $errors = array();
+	private $errors = array();
 /**
  * Contains the base URL for error code documentation.
  *
  * @var string
  * @access public
  */
-	var $helpPath = null;
+	private $helpPath = null;
 /**
  * The current output format.
  *
  * @var string
  * @access protected
  */
-	var $_outputFormat = 'js';
+	protected $_outputFormat = 'js';
 /**
  * Holds current output data when outputFormat is false.
  *
  * @var string
  * @access private
  */
-	var $__data = array();
+	private $__data = array();
 /**
  * Constructor.
  *
  */
-	function __construct() {
+	public function __construct() {
 		$docRef = ini_get('docref_root');
 		if (empty($docRef)) {
 			ini_set('docref_root', 'http://php.net/');
@@ -92,11 +88,11 @@ class Debugger extends Object {
  * @access public
  * @static
  */
-	function &getInstance($class = null) {
+	public static function &getInstance($class = null) {
 		static $instance = array();
 		if (!empty($class)) {
 			if (!$instance || strtolower($class) != strtolower(get_class($instance[0]))) {
-				$instance[0] = & new $class();
+				$instance[0] = new $class();
 				if (Configure::read() > 0) {
 					Configure::version(); // Make sure the core config is loaded
 					$instance[0]->helpPath = Configure::read('Cake.Debugger.HelpPath');
@@ -105,7 +101,7 @@ class Debugger extends Object {
 		}
 
 		if (!$instance) {
-			$instance[0] =& new Debugger();
+			$instance[0] = new Debugger();
 			if (Configure::read() > 0) {
 				Configure::version(); // Make sure the core config is loaded
 				$instance[0]->helpPath = Configure::read('Cake.Debugger.HelpPath');
@@ -123,7 +119,7 @@ class Debugger extends Object {
  * @static
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
 */
-	function dump($var) {
+	private function dump($var) {
 		$_this = Debugger::getInstance();
 		pr($_this->exportVar($var));
 	}
@@ -137,7 +133,7 @@ class Debugger extends Object {
  * @static
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
  */
-	function log($var, $level = LOG_DEBUG) {
+	private function log($var, $level = LOG_DEBUG) {
 		$_this = Debugger::getInstance();
 		$trace = $_this->trace(array('start' => 1, 'depth' => 2, 'format' => 'array'));
 		$source = null;
@@ -162,7 +158,7 @@ class Debugger extends Object {
  * @return boolean true if error was handled
  * @access public
  */
-	function handleError($code, $description, $file = null, $line = null, $context = null) {
+	public function handleError($code, $description, $file = null, $line = null, $context = null) {
 		if (error_reporting() == 0 || $code === 2048) {
 			return;
 		}
@@ -239,7 +235,7 @@ class Debugger extends Object {
  * @static
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
  */
-	function trace($options = array()) {
+	private function trace($options = array()) {
 		$options = array_merge(array(
 				'depth'		=> 999,
 				'format'	=> '',
@@ -316,7 +312,7 @@ class Debugger extends Object {
  * @access public
  * @static
  */
-	function trimPath($path) {
+	private function trimPath($path) {
 		if (!defined('CAKE_CORE_INCLUDE_PATH') || !defined('APP')) {
 			return $path;
 		}
@@ -347,7 +343,7 @@ class Debugger extends Object {
  * @static
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
  */
-	function excerpt($file, $line, $context = 2) {
+	private function excerpt($file, $line, $context = 2) {
 		$data = $lines = array();
 		if (!file_exists($file)) {
 			return array();
@@ -379,7 +375,7 @@ class Debugger extends Object {
  * @static
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
  */
-	function exportVar($var, $recursion = 0) {
+	private function exportVar($var, $recursion = 0) {
 		$_this =  Debugger::getInstance();
 		switch (strtolower(gettype($var))) {
 			case 'boolean':
@@ -432,7 +428,7 @@ class Debugger extends Object {
  * @access private
  * @see Debugger:exportVar()
  */
-	function __object($var) {
+	private function __object($var) {
 		$out = array();
 
 		if (is_object($var)) {
@@ -460,7 +456,7 @@ class Debugger extends Object {
  * @param string $var Object to convert
  * @access protected
  */
-	function output($format = 'js') {
+	private function output($format = 'js') {
 		$_this = Debugger::getInstance();
 		$data = null;
 
@@ -477,9 +473,9 @@ class Debugger extends Object {
  * Handles object conversion to debug string.
  *
  * @param string $var Object to convert
- * @access private
+ * @access protected
  */
-	function _output($level, $error, $code, $helpCode, $description, $file, $line, $kontext) {
+	protected function _output($level, $error, $code, $helpCode, $description, $file, $line, $kontext) {
 		$files = $this->trace(array('start' => 2, 'format' => 'points'));
 		$listing = $this->excerpt($files[0]['file'], $files[0]['line'] - 1, 1);
 		$trace = $this->trace(array('start' => 2, 'depth' => '20'));
@@ -552,7 +548,7 @@ class Debugger extends Object {
  * @access public
  * @static
  */
-	function checkSessionKey() {
+	public static function checkSessionKey() {
 		if (Configure::read('Security.salt') == 'DYhG93b0qyJfIxfs2guVoUubWwvniR2G0FgaC9mi') {
 			trigger_error(__('Please change the value of \'Security.salt\' in app/config/core.php to a salt value specific to your application', true), E_USER_NOTICE);
 		}
@@ -566,7 +562,7 @@ class Debugger extends Object {
  * @static
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
  */
-	function invoke(&$debugger) {
+	public static function invoke(&$debugger) {
 		set_error_handler(array(&$debugger, 'handleError'));
 	}
 }

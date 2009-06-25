@@ -1,6 +1,6 @@
-# $Id$
+# $Id: sessions.sql 15 2009-01-14 06:52:30Z phpnut $
 #
-# Copyright 2005-2008,	Cake Software Foundation, Inc.
+# Copyright 2005-2009,	Cake Software Foundation, Inc.
 #								1785 E. Sahara Avenue, Suite 490-204
 #								Las Vegas, Nevada 89104
 #

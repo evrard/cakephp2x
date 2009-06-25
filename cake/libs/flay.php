@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Text-to-HTML parser.
  *
  * Text-to-html parser, similar to {@link http://textism.com/tools/textile/ Textile} or {@link http://www.whytheluckystiff.net/ruby/redcloth/ RedCloth}.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 0.2.9
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -46,20 +42,20 @@ class Flay extends Object{
  * @var string
  * @access public
  */
-	var $text = null;
+	private $text = null;
 /**
  * Set this to allow HTML in the markup.
  *
  * @var boolean
  * @access public
  */
-	var $allow_html = false;
+	private $allow_html = false;
 /**
  * Constructor.
  *
  * @param string $text Text to transform
  */
-	function __construct($text = null) {
+	private function __construct($text = null) {
 		$this->text = $text;
 		parent::__construct();
 	}
@@ -72,7 +68,7 @@ class Flay extends Object{
  * @return string Formatted text
  * @access public
  */
-	function toHtml($text = null, $bare = false, $allowHtml = false) {
+	private function toHtml($text = null, $bare = false, $allowHtml = false) {
 		if (empty($text) && empty($this->text)) {
 			return false;
 		}
@@ -187,7 +183,7 @@ class Flay extends Object{
  * @return array Array of words
  * @access public
  */
-	function extractWords($string) {
+	private function extractWords($string) {
 		$split = preg_split('/[\s,\.:\/="!\(\)<>~\[\]]+/', $string);
 		return $split;
 	 }
@@ -201,7 +197,7 @@ class Flay extends Object{
  * @see colorMark
  * @access public
  */
-	function markedSnippets($words, $string, $max_snippets = 5) {
+	private function markedSnippets($words, $string, $max_snippets = 5) {
 		$string = strip_tags($string);
 		$snips = array();
 		$rest = $string;
@@ -229,7 +225,7 @@ class Flay extends Object{
  * @return string String with words colorized
  * @access public
  */
-	function colorMark($words, $string) {
+	private function colorMark($words, $string) {
 		$colors=array('yl', 'gr', 'rd', 'bl', 'fu', 'cy');
 		$nextColorIndex = 0;
 		foreach ($words as $word) {
@@ -245,7 +241,7 @@ class Flay extends Object{
  * @return string Cleaned text
  * @access public
  */
-	function toClean($text) {
+	private function toClean($text) {
 		$strip = strip_tags(html_entity_decode($text, ENT_QUOTES));
 		return $strip;
 	}
@@ -256,7 +252,7 @@ class Flay extends Object{
  * @return string Cleaned text
  * @access public
  */
-	function toParsedAndClean($text) {
+	private function toParsedAndClean($text) {
 		return $this->toClean(Flay::toHtml($text));
 	}
 /**
@@ -268,7 +264,7 @@ class Flay extends Object{
  * @return string Fragment
  * @access public
  */
-	function fragment($text, $length, $ellipsis = '...') {
+	private function fragment($text, $length, $ellipsis = '...') {
 		$soft = $length - 5;
 		$hard = $length + 5;
 		$rx = '/(.{' . $soft . ',' . $hard . '})[\s,\.:\/="!\(\)<>~\[\]]+.*/';

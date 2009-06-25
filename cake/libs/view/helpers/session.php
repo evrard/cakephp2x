@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.view.helpers
  * @since         CakePHP(tm) v 1.1.7.3328
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 if (!class_exists('cakesession')) {
@@ -43,19 +39,19 @@ class SessionHelper extends CakeSession {
  *
  * @var array
  */
-	var $helpers = null;
+	public $helpers = null;
 /**
  * Used to determine if methods implementation is used, or bypassed
  *
  * @var boolean
  */
-	var $__active = true;
+	private $__active = true;
 /**
  * Class constructor
  *
  * @param string $base
  */
-	function __construct($base = null) {
+	public function __construct($base = null) {
 		if (Configure::read('Session.start') === true) {
 			parent::__construct($base, false);
 		} else {
@@ -67,7 +63,7 @@ class SessionHelper extends CakeSession {
  *
  * @param string $base
  */
-	function activate($base = null) {
+	public function activate($base = null) {
 		$this->__active = true;
 	}
 /**
@@ -81,7 +77,7 @@ class SessionHelper extends CakeSession {
  * @return values from the session vars
  * @access public
  */
-	function read($name = null) {
+	public function read($name = null) {
 		if ($this->__active === true && $this->__start()) {
 			return parent::read($name);
 		}
@@ -96,7 +92,7 @@ class SessionHelper extends CakeSession {
  * @return boolean
  * @access public
  */
-	function check($name) {
+	public function check($name) {
 		if ($this->__active === true && $this->__start()) {
 			return parent::check($name);
 		}
@@ -110,7 +106,7 @@ class SessionHelper extends CakeSession {
  * @return string last error
  * @access public
  */
-	function error() {
+	public function error() {
 		if ($this->__active === true && $this->__start()) {
 			return parent::error();
 		}
@@ -126,7 +122,7 @@ class SessionHelper extends CakeSession {
  * @return string Will echo the value if $key is set, or false if not set.
  * @access public
  */
-	function flash($key = 'flash') {
+	public function flash($key = 'flash') {
 		if ($this->__active === true && $this->__start()) {
 			if (parent::check('Message.' . $key)) {
 				$flash = parent::read('Message.' . $key);
@@ -141,7 +137,7 @@ class SessionHelper extends CakeSession {
 				} elseif ($flash['layout'] == '' || $flash['layout'] == null) {
 					$out = $flash['message'];
 				} else {
-					$view =& ClassRegistry::getObject('view');
+					$view = ClassRegistry::getObject('view');
 					list($tmpLayout, $tmpVars, $tmpTitle) = array($view->layout, $view->viewVars, $view->pageTitle);
 					list($view->layout, $view->viewVars, $view->pageTitle) = array($flash['layout'], $flash['params'], '');
 					$out = $view->renderLayout($flash['message']);
@@ -160,7 +156,7 @@ class SessionHelper extends CakeSession {
  * @return boolean
  * @access public
  */
-	function valid() {
+	public function valid() {
 		if ($this->__active === true && $this->__start()) {
 			return parent::valid();
 		}
@@ -172,7 +168,7 @@ class SessionHelper extends CakeSession {
  * @return boolean
  * @access public
  */
-	function write() {
+	private function write() {
 		trigger_error(__('You can not write to a Session from the view', true), E_USER_WARNING);
 	}
 /**
@@ -181,7 +177,7 @@ class SessionHelper extends CakeSession {
  * @return string Session id
  * @access public
  */
-	function id() {
+	public function id() {
 		return parent::id();
 	}
 /**
@@ -192,7 +188,7 @@ class SessionHelper extends CakeSession {
  * Session could not be started
  * @access public
  */
-	function __start() {
+	private function __start() {
 		if (!parent::started()) {
 			parent::start();
 		}

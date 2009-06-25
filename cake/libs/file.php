@@ -1,25 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Convenience class for reading, writing and appending to files.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 0.2.9
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -45,35 +41,14 @@ class File extends Object {
  * @var Folder
  * @access public
  */
-	var $Folder = null;
+	public $Folder = null;
 /**
  * Filename
  *
  * @var string
  * @access public
  */
-	var $name = null;
-/**
- * file info
- *
- * @var string
- * @access public
- */
-	var $info = array();
-/**
- * Holds the file handler resource if the file is opened
- *
- * @var resource
- * @access public
- */
-	var $handle = null;
-/**
- * enable locking for file reading and writing
- *
- * @var boolean
- * @access public
- */
-	var $lock = null;
+	public $name = null;
 /**
  * path property
  *
@@ -82,18 +57,39 @@ class File extends Object {
  * @var mixed null
  * @access public
  */
-	var $path = null;
+	public $path = null;
+/**
+ * file info
+ *
+ * @var string
+ * @access public
+ */
+	private $info = array();
+/**
+ * Holds the file handler resource if the file is opened
+ *
+ * @var resource
+ * @access public
+ */
+	private $handle = null;
+/**
+ * enable locking for file reading and writing
+ *
+ * @var boolean
+ * @access public
+ */
+	private $lock = null;
 /**
  * Constructor
  *
  * @param string $path Path to file
  * @param boolean $create Create file if it does not exist (if true)
  * @param integer $mode Mode to apply to the folder holding the file
- * @access private
+ * @access public
  */
-	function __construct($path, $create = false, $mode = 0755) {
+	public function __construct($path, $create = false, $mode = 0755) {
 		parent::__construct();
-		$this->Folder =& new Folder(dirname($path), $create, $mode);
+		$this->Folder = new Folder(dirname($path), $create, $mode);
 		if (!is_dir($path)) {
 			$this->name = basename($path);
 		}
@@ -114,7 +110,7 @@ class File extends Object {
  *
  * @access private
  */
-	function __destruct() {
+	public function __destruct() {
 		$this->close();
 	}
 /**
@@ -123,7 +119,7 @@ class File extends Object {
  * @return boolean Success
  * @access public
  */
-	function create() {
+	private function create() {
 		$dir = $this->Folder->pwd();
 		if (is_dir($dir) && is_writable($dir) && !$this->exists()) {
 			$old = umask(0);
@@ -142,7 +138,7 @@ class File extends Object {
  * @return boolean True on success, false on failure
  * @access public
  */
-	function open($mode = 'r', $force = false) {
+	private function open($mode = 'r', $force = false) {
 		if (!$force && is_resource($this->handle)) {
 			return true;
 		}
@@ -168,7 +164,7 @@ class File extends Object {
  * @return mixed string on success, false on failure
  * @access public
  */
-	function read($bytes = false, $mode = 'rb', $force = false) {
+	public function read($bytes = false, $mode = 'rb', $force = false) {
 		if ($bytes === false && $this->lock === null) {
 			return file_get_contents($this->path);
 		}
@@ -204,7 +200,7 @@ class File extends Object {
  * @return mixed True on success, false on failure (set mode), false on failure or integer offset on success (get mode)
  * @access public
  */
-	function offset($offset = false, $seek = SEEK_SET) {
+	private function offset($offset = false, $seek = SEEK_SET) {
 		if ($offset === false) {
 			if (is_resource($this->handle)) {
 				return ftell($this->handle);
@@ -222,7 +218,7 @@ class File extends Object {
  * @return string
  * @access public
  */
-	function prepare($data, $forceWindows = false) {
+	private function prepare($data, $forceWindows = false) {
 		$lineBreak = "\n";
 		if (DIRECTORY_SEPARATOR == '\\' || $forceWindows === true) {
 			$lineBreak = "\r\n";
@@ -239,7 +235,7 @@ class File extends Object {
  * @return boolean Success
  * @access public
  */
-	function write($data, $mode = 'w', $force = false) {
+	public function write($data, $mode = 'w', $force = false) {
 		$success = false;
 		if ($this->open($mode, $force) === true) {
 			if ($this->lock !== null) {
@@ -265,7 +261,7 @@ class File extends Object {
  * @return boolean Success
  * @access public
  */
-	function append($data, $force = false) {
+	public function append($data, $force = false) {
 		return $this->write($data, 'a', $force);
 	}
 /**
@@ -274,7 +270,7 @@ class File extends Object {
  * @return boolean True if closing was successful or file was already closed, otherwise false
  * @access public
  */
-	function close() {
+	public function close() {
 		if (!is_resource($this->handle)) {
 			return true;
 		}
@@ -286,7 +282,7 @@ class File extends Object {
  * @return boolean Success
  * @access public
  */
-	function delete() {
+	public function delete() {
 		clearstatcache();
 		if ($this->exists()) {
 			return unlink($this->path);
@@ -299,7 +295,7 @@ class File extends Object {
  * @return string The File extension
  * @access public
  */
-	function info() {
+	private function info() {
 		if ($this->info == null) {
 			$this->info = pathinfo($this->path);
 		}
@@ -314,7 +310,7 @@ class File extends Object {
  * @return string The File extension
  * @access public
  */
-	function ext() {
+	private function ext() {
 		if ($this->info == null) {
 			$this->info();
 		}
@@ -329,7 +325,7 @@ class File extends Object {
  * @return string The File name without extension.
  * @access public
  */
-	function name() {
+	private function name() {
 		if ($this->info == null) {
 			$this->info();
 		}
@@ -347,7 +343,7 @@ class File extends Object {
  * @return string $ext the extension of the file
  * @access public
  */
-	function safe($name = null, $ext = null) {
+	private function safe($name = null, $ext = null) {
 		if (!$name) {
 			$name = $this->name;
 		}
@@ -363,7 +359,7 @@ class File extends Object {
  * @return string md5 Checksum {@link http://php.net/md5_file See md5_file()}
  * @access public
  */
-	function md5($maxsize = 5) {
+	private function md5($maxsize = 5) {
 		if ($maxsize === true) {
 			return md5_file($this->path);
 		} else {
@@ -380,7 +376,7 @@ class File extends Object {
  * @return string Full path to file
  * @access public
  */
-	function pwd() {
+	public function pwd() {
 		if (is_null($this->path)) {
 			$this->path = $this->Folder->slashTerm($this->Folder->pwd()) . $this->name;
 		}
@@ -392,7 +388,7 @@ class File extends Object {
  * @return boolean true if it exists, false otherwise
  * @access public
  */
-	function exists() {
+	public function exists() {
 		return (file_exists($this->path) && is_file($this->path));
 	}
 /**
@@ -401,7 +397,7 @@ class File extends Object {
  * @return string Permissions for the file
  * @access public
  */
-	function perms() {
+	private function perms() {
 		if ($this->exists()) {
 			return substr(sprintf('%o', fileperms($this->path)), -4);
 		}
@@ -413,7 +409,7 @@ class File extends Object {
  * @return integer size of the file in bytes, or false in case of an error
  * @access public
  */
-	function size() {
+	private function size() {
 		if ($this->exists()) {
 			return filesize($this->path);
 		}
@@ -425,7 +421,7 @@ class File extends Object {
  * @return boolean true if its writable, false otherwise
  * @access public
  */
-	function writable() {
+	public function writable() {
 		return is_writable($this->path);
 	}
 /**
@@ -434,7 +430,7 @@ class File extends Object {
  * @return boolean true if its executable, false otherwise
  * @access public
  */
-	function executable() {
+	private function executable() {
 		return is_executable($this->path);
 	}
 /**
@@ -443,7 +439,7 @@ class File extends Object {
  * @return boolean true if file is readable, false otherwise
  * @access public
  */
-	function readable() {
+	private function readable() {
 		return is_readable($this->path);
 	}
 /**
@@ -452,7 +448,7 @@ class File extends Object {
  * @return integer the Fileowner
  * @access public
  */
-	function owner() {
+	private function owner() {
 		if ($this->exists()) {
 			return fileowner($this->path);
 		}
@@ -464,7 +460,7 @@ class File extends Object {
  * @return integer the Filegroup
  * @access public
  */
-	function group() {
+	private function group() {
 		if ($this->exists()) {
 			return filegroup($this->path);
 		}
@@ -476,7 +472,7 @@ class File extends Object {
  * @return integer timestamp Timestamp of last access time
  * @access public
  */
-	function lastAccess() {
+	private function lastAccess() {
 		if ($this->exists()) {
 			return fileatime($this->path);
 		}
@@ -488,7 +484,7 @@ class File extends Object {
  * @return integer timestamp Timestamp of last modification
  * @access public
  */
-	function lastChange() {
+	public function lastChange() {
 		if ($this->exists()) {
 			return filemtime($this->path);
 		}
@@ -500,7 +496,7 @@ class File extends Object {
  * @return Folder Current folder
  * @access public
  */
-	function &Folder() {
+	private function &Folder() {
 		return $this->Folder;
 	}
 }

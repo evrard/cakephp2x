@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Error handler
  *
  * Provides Error Capturing for Framework errors.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 0.10.5.1732
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Controller', 'App');
@@ -34,20 +30,20 @@ App::import('Controller', 'App');
  * @subpackage    cake.cake.libs
  */
 class CakeErrorController extends AppController {
-	var $name = 'CakeError';
+	public $name = 'CakeError';
 /**
  * Uses Property
  *
  * @var array
  */
-	var $uses = array();
+	public $uses = array();
 /**
  * __construct
  *
  * @access public
  * @return void
  */
-	function __construct() {
+	public function __construct() {
 		parent::__construct();
 		$this->_set(Router::getPaths());
 		$this->params = Router::getParams();
@@ -73,22 +69,22 @@ class ErrorHandler extends Object {
  * @var Controller
  * @access public
  */
-	var $controller = null;
+	private $controller = null;
 /**
  * Class constructor.
  *
  * @param string $method Method producing the error
  * @param array $messages Error messages
  */
-	function __construct($method, $messages) {
+	public function __construct($method, $messages) {
 		App::import('Core', 'Sanitize');
 		static $__previousError = null;
 
 		if ($__previousError != array($method, $messages)) {
 			$__previousError = array($method, $messages);
-			$this->controller =& new CakeErrorController();
+			$this->controller = new CakeErrorController();
 		} else {
-			$this->controller =& new Controller();
+			$this->controller = new Controller();
 			$this->controller->viewPath = 'errors';
 		}
 
@@ -124,7 +120,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	function error($params) {
+	private function error($params) {
 		extract($params, EXTR_OVERWRITE);
 		$this->controller->set(array(
 			'code' => $code,
@@ -140,7 +136,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	function error404($params) {
+	private function error404($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		if (!isset($url)) {
@@ -162,7 +158,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	function missingController($params) {
+	private function missingController($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$controllerName = str_replace('Controller', '', $className);
@@ -179,7 +175,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	function missingAction($params) {
+	private function missingAction($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$controllerName = str_replace('Controller', '', $className);
@@ -197,7 +193,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	function privateAction($params) {
+	private function privateAction($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -213,7 +209,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	function missingTable($params) {
+	public function missingTable($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -229,7 +225,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	function missingDatabase($params = array()) {
+	private function missingDatabase($params = array()) {
 		$this->controller->set(array(
 			'title' => __('Scaffold Missing Database Connection', true)
 		));
@@ -241,7 +237,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	function missingView($params) {
+	private function missingView($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -258,7 +254,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	function missingLayout($params) {
+	private function missingLayout($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->layout = 'default';
@@ -274,7 +270,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	function missingConnection($params) {
+	private function missingConnection($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -289,7 +285,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	function missingHelperFile($params) {
+	private function missingHelperFile($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -305,7 +301,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	function missingHelperClass($params) {
+	private function missingHelperClass($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -321,7 +317,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	function missingComponentFile($params) {
+	private function missingComponentFile($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -338,7 +334,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	function missingComponentClass($params) {
+	private function missingComponentClass($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -355,7 +351,7 @@ class ErrorHandler extends Object {
  * @param unknown_type $params Parameters for controller
  * @access public
  */
-	function missingModel($params) {
+	private function missingModel($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -369,7 +365,7 @@ class ErrorHandler extends Object {
  *
  * @access protected
  */
-	function _outputMessage($template) {
+	protected function _outputMessage($template) {
 		$this->controller->render($template);
 		$this->controller->afterFilter();
 		echo $this->controller->output;

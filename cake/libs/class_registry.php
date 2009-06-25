@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Class collections.
  *
  * A repository for class objects, each registered with a key.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 0.9.2
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -34,41 +30,28 @@
  * @package       cake
  * @subpackage    cake.cake.libs
  */
-class ClassRegistry {
+final class ClassRegistry {
 /**
  * Names of classes with their objects.
  *
  * @var array
  * @access private
  */
-	var $__objects = array();
+	private static $__objects = array();
 /**
  * Names of class names mapped to the object in the registry.
  *
  * @var array
  * @access private
  */
-	var $__map = array();
+	private static $__map = array();
 /**
  * Default constructor parameter settings, indexed by type
  *
  * @var array
  * @access private
  */
-	var $__config = array();
-/**
- * Return a singleton instance of the ClassRegistry.
- *
- * @return ClassRegistry instance
- * @access public
- */
-	function &getInstance() {
-		static $instance = array();
-		if (!$instance) {
-			$instance[0] =& new ClassRegistry();
-		}
-		return $instance[0];
-	}
+	private static $__config = array();
 /**
  * Loads a class, registers the object in the registry and returns instance of the object.
  *
@@ -95,8 +78,7 @@ class ClassRegistry {
  * @access public
  * @static
  */
-	function &init($class, $type = null) {
-		$_this =& ClassRegistry::getInstance();
+	public static function &init($class, $type = null) {
 		$id = $false = false;
 		$true = true;
 
@@ -112,7 +94,7 @@ class ClassRegistry {
 		} else {
 			$objects = array(array('class' => $class));
 		}
-		$defaults = isset($_this->__config[$type]) ? $_this->__config[$type] : array();
+		$defaults = isset(self::$__config[$type]) ? self::$__config[$type] : array();
 		$count = count($objects);
 
 		foreach ($objects as $key => $settings) {
@@ -131,13 +113,13 @@ class ClassRegistry {
 				}
 				$alias = $settings['alias'];
 
-				if ($model =& $_this->__duplicate($alias, $class)) {
-					$_this->map($alias, $class);
+				if ($model = self::__duplicate($alias, $class)) {
+					self::map($alias, $class);
 					return $model;
 				}
 
 				if (class_exists($class) || App::import($type, $pluginPath . $class)) {
-					${$class} =& new $class($settings);
+					${$class} = new $class($settings);
 				} elseif ($type === 'Model') {
 					if ($plugin && class_exists($plugin . 'AppModel')) {
 						$appModel = $plugin . 'AppModel';
@@ -145,7 +127,7 @@ class ClassRegistry {
 						$appModel = 'AppModel';
 					}
 					$settings['name'] = $class;
-					${$class} =& new $appModel($settings);
+					${$class} = new $appModel($settings);
 				}
 
 				if (!isset(${$class})) {
@@ -154,9 +136,9 @@ class ClassRegistry {
 				}
 
 				if ($type !== 'Model') {
-					$_this->addObject($alias, ${$class});
+					self::addObject($alias, ${$class});
 				} else {
-					$_this->map($alias, $class);
+					self::map($alias, $class);
 				}
 			} elseif (is_numeric($settings)) {
 				trigger_error(__('(ClassRegistry::init() Attempted to create instance of a class with a numeric name', true), E_USER_WARNING);
@@ -178,11 +160,10 @@ class ClassRegistry {
  * @access public
  * @static
  */
-	function addObject($key, &$object) {
-		$_this =& ClassRegistry::getInstance();
+	public static function addObject($key, &$object) {
 		$key = Inflector::underscore($key);
-		if (!isset($_this->__objects[$key])) {
-			$_this->__objects[$key] =& $object;
+		if (!isset(self::$__objects[$key])) {
+			self::$__objects[$key] = $object;
 			return true;
 		}
 		return false;
@@ -195,11 +176,10 @@ class ClassRegistry {
  * @access public
  * @static
  */
-	function removeObject($key) {
-		$_this =& ClassRegistry::getInstance();
+	public static function removeObject($key) {
 		$key = Inflector::underscore($key);
-		if (isset($_this->__objects[$key])) {
-			unset($_this->__objects[$key]);
+		if (isset(self::$__objects[$key])) {
+			unset(self::$__objects[$key]);
 		}
 	}
 /**
@@ -210,12 +190,11 @@ class ClassRegistry {
  * @access public
  * @static
  */
-	function isKeySet($key) {
-		$_this =& ClassRegistry::getInstance();
+	public static function isKeySet($key) {
 		$key = Inflector::underscore($key);
-		if (isset($_this->__objects[$key])) {
+		if (isset(self::$__objects[$key])) {
 			return true;
-		} elseif (isset($_this->__map[$key])) {
+		} elseif (isset(self::$__map[$key])) {
 			return true;
 		}
 		return false;
@@ -227,9 +206,8 @@ class ClassRegistry {
  * @access public
  * @static
  */
-	function keys() {
-		$_this =& ClassRegistry::getInstance();
-		return array_keys($_this->__objects);
+	public static function keys() {
+		return array_keys(self::$__objects);
 	}
 /**
  * Return object which corresponds to given key.
@@ -239,19 +217,17 @@ class ClassRegistry {
  * @access public
  * @static
  */
-	function &getObject($key) {
-		$_this =& ClassRegistry::getInstance();
+	public static function &getObject($key) {
 		$key = Inflector::underscore($key);
-		$return = false;
-		if (isset($_this->__objects[$key])) {
-			$return =& $_this->__objects[$key];
+		if (isset(self::$__objects[$key])) {
+			return self::$__objects[$key];
 		} else {
-			$key = $_this->__getMap($key);
-			if (isset($_this->__objects[$key])) {
-				$return =& $_this->__objects[$key];
+			$key = self::__getMap($key);
+			if (isset(self::$__objects[$key])) {
+				return self::$__objects[$key];
 			}
 		}
-		return $return;
+		return false;
 	}
 /**
  * Sets the default constructor parameter for an object type
@@ -264,18 +240,52 @@ class ClassRegistry {
  * @access public
  * @static
  */
-	function config($type, $param = array()) {
-		$_this =& ClassRegistry::getInstance();
-
+	public static function config($type, $param = array()) {
 		if (empty($param) && is_array($type)) {
 			$param = $type;
 			$type = 'Model';
 		} elseif (is_null($param)) {
-			unset($_this->__config[$type]);
+			unset(self::$__config[$type]);
 		} elseif (empty($param) && is_string($type)) {
-			return isset($_this->__config[$type]) ? $_this->__config[$type] : null;
+			return isset(self::$__config[$type]) ? self::$__config[$type] : null;
 		}
-		$_this->__config[$type] = $param;
+		self::$__config[$type] = $param;
+	}
+/**
+ * Add a key name pair to the registry to map name to class in the registry.
+ *
+ * @param string $key Key to include in map
+ * @param string $name Key that is being mapped
+ * @access public
+ * @static
+ */
+	public static function map($key, $name) {
+		$key = Inflector::underscore($key);
+		$name = Inflector::underscore($name);
+		if (!isset(self::$__map[$key])) {
+			self::$__map[$key] = $name;
+		}
+	}
+/**
+ * Get all keys from the map in the registry.
+ *
+ * @return array Keys of registry's map
+ * @access public
+ * @static
+ */
+	public static function mapKeys() {
+		return array_keys(self::$__map);
+	}
+/**
+ * Flushes all objects from the ClassRegistry.
+ *
+ * @return void
+ * @access public
+ * @static
+ */
+	public static function flush() {
+		self::$__objects = array();
+		self::$__map = array();
 	}
 /**
  * Checks to see if $alias is a duplicate $class Object
@@ -286,43 +296,16 @@ class ClassRegistry {
  * @access private
  * @static
  */
-	function &__duplicate($alias,  $class) {
+	private static function __duplicate($alias,  $class) {
 		$duplicate = false;
-		if ($this->isKeySet($alias)) {
-			$model =& $this->getObject($alias);
+		if (self::isKeySet($alias)) {
+			$model = self::getObject($alias);
 			if (is_object($model) && (is_a($model, $class) || $model->alias === $class)) {
-				$duplicate =& $model;
+				$duplicate = $model;
 			}
 			unset($model);
 		}
 		return $duplicate;
-	}
-/**
- * Add a key name pair to the registry to map name to class in the registry.
- *
- * @param string $key Key to include in map
- * @param string $name Key that is being mapped
- * @access public
- * @static
- */
-	function map($key, $name) {
-		$_this =& ClassRegistry::getInstance();
-		$key = Inflector::underscore($key);
-		$name = Inflector::underscore($name);
-		if (!isset($_this->__map[$key])) {
-			$_this->__map[$key] = $name;
-		}
-	}
-/**
- * Get all keys from the map in the registry.
- *
- * @return array Keys of registry's map
- * @access public
- * @static
- */
-	function mapKeys() {
-		$_this =& ClassRegistry::getInstance();
-		return array_keys($_this->__map);
 	}
 /**
  * Return the name of a class in the registry.
@@ -332,22 +315,10 @@ class ClassRegistry {
  * @access private
  * @static
  */
-	function __getMap($key) {
-		if (isset($this->__map[$key])) {
-			return $this->__map[$key];
+	private static function __getMap($key) {
+		if (isset(self::$__map[$key])) {
+			return self::$__map[$key];
 		}
-	}
-/**
- * Flushes all objects from the ClassRegistry.
- *
- * @return void
- * @access public
- * @static
- */
-	function flush() {
-		$_this =& ClassRegistry::getInstance();
-		$_this->__objects = array();
-		$_this->__map = array();
 	}
 }
 ?>

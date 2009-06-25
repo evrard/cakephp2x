@@ -1,34 +1,30 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * CodeCoverageManagerTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'CodeCoverageManager');
 require_once CAKE . 'tests' . DS . 'lib' . DS . 'cli_reporter.php';
 require_once CAKE . 'tests' . DS . 'lib' . DS . 'cake_reporter.php';
 /**
- * CodeCoverageManagerTest class
+ * Short description for class.
  *
  * @package       cake
  * @subpackage    cake.tests.cases.libs
@@ -68,7 +64,7 @@ class CodeCoverageManagerTest extends CakeTestCase {
 	function testNoTestCaseSupplied() {
 		if (PHP_SAPI != 'cli') {
 			unset($_GET['group']);
-			CodeCoverageManager::start(substr(md5(microtime()), 0, 5), new CakeHtmlReporter());
+			CodeCoverageManager::start(substr(md5(microtime(true)), 0, 5), new CakeHtmlReporter());
 			CodeCoverageManager::report(false);
 			$this->assertError();
 
@@ -110,14 +106,11 @@ class CodeCoverageManagerTest extends CakeTestCase {
  * @return void
  */
 	function testGetTestObjectFileNameFromTestCaseFile() {
-		$manager =& CodeCoverageManager::getInstance();
+		$manager = CodeCoverageManager::getInstance();
 		$manager->reporter = new CakeHtmlReporter();
 
 		$expected = $manager->__testObjectFileFromCaseFile('models/some_file.test.php', true);
 		$this->assertIdentical(APP.'models'.DS.'some_file.php', $expected);
-
-		$expected = $manager->__testObjectFileFromCaseFile('datasources/some_file.test.php', true);
-		$this->assertIdentical(APP.'models'.DS.'datasources'.DS.'some_file.php', $expected);
 
 		$expected = $manager->__testObjectFileFromCaseFile('controllers/some_file.test.php', true);
 		$this->assertIdentical(APP.'controllers'.DS.'some_file.php', $expected);
@@ -150,7 +143,7 @@ class CodeCoverageManagerTest extends CakeTestCase {
  * @return void
  */
 	function testOfHtmlReport() {
-		$manager =& CodeCoverageManager::getInstance();
+		$manager = CodeCoverageManager::getInstance();
 		$code = <<<PHP
 /**
  * Set class
@@ -307,7 +300,7 @@ PHP;
  * @return void
  */
 	function testOfHtmlDiffReport() {
-		$manager =& CodeCoverageManager::getInstance();
+		$manager = CodeCoverageManager::getInstance();
 		$code = <<<PHP
 /**
  * Set class
@@ -567,7 +560,7 @@ PHP;
  * @return void
  */
 	function testArrayStrrpos() {
-		$manager =& CodeCoverageManager::getInstance();
+		$manager = CodeCoverageManager::getInstance();
 
 		$a = array(
 			'apples',
@@ -599,9 +592,9 @@ PHP;
  * @return void
  */
 	function testGetExecutableLines() {
-		$manager =& CodeCoverageManager::getInstance();
+		$manager = CodeCoverageManager::getInstance();
 		$code = <<<HTML
-			\$manager =& CodeCoverageManager::getInstance();
+			\$manager = CodeCoverageManager::getInstance();
 HTML;
 		$result = $manager->__getExecutableLines($code);
 		foreach ($result as $line) {
@@ -636,7 +629,7 @@ HTML;
  * @return void
  */
 	function testCalculateCodeCoverage() {
-		$manager =& CodeCoverageManager::getInstance();
+		$manager = CodeCoverageManager::getInstance();
 		$data = array(
 			'25' => array(100, 25),
 			'50' => array(100, 50),

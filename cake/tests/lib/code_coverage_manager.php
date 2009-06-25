@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * A class to manage all aspects for Code Coverage Analysis
  *
  * This class
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.cake.tests.lib
  * @since         CakePHP(tm) v 1.2.0.4433
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'Folder');
@@ -78,7 +74,7 @@ class CodeCoverageManager {
 	function &getInstance() {
 		static $instance = array();
 		if (!$instance) {
-			$instance[0] =& new CodeCoverageManager();
+			$instance[0] = new CodeCoverageManager();
 		}
 		return $instance[0];
 	}
@@ -91,7 +87,7 @@ class CodeCoverageManager {
  * @return void
  */
 	function start($testCaseFile, &$reporter) {
-		$manager =& CodeCoverageManager::getInstance();
+		$manager = CodeCoverageManager::getInstance();
 		$manager->reporter = $reporter;
 		$testCaseFile = str_replace(DS . DS, DS, $testCaseFile);
 		$thisFile = str_replace('.php', '.test.php', basename(__FILE__));
@@ -120,7 +116,7 @@ class CodeCoverageManager {
  * @return void
  */
 	function report($output = true) {
-		$manager =& CodeCoverageManager::getInstance();
+		$manager = CodeCoverageManager::getInstance();
 
 		if (!$manager->groupTest) {
 			$testObjectFile = $manager->__testObjectFileFromCaseFile($manager->testCaseFile, $manager->appTest);
@@ -467,8 +463,7 @@ class CodeCoverageManager {
 		$folderPrefixMap = array(
 			'behaviors' => 'models',
 			'components' => 'controllers',
-			'helpers' => 'views',
-			'datasources' => 'models'
+			'helpers' => 'views'
 		);
 
 		foreach ($folderPrefixMap as $dir => $prefix) {
@@ -477,10 +472,10 @@ class CodeCoverageManager {
 				break;
 			}
 		}
-		$testManager =& new TestManager();
+		$testManager = new TestManager();
 		$testFile = str_replace(array('/', $testManager->_testExtension), array(DS, '.php'), $file);
 
-		$folder =& new Folder();
+		$folder = new Folder();
 		$folder->cd(ROOT . DS . CAKE_TESTS_LIB);
 		$contents = $folder->ls();
 
@@ -506,7 +501,7 @@ class CodeCoverageManager {
  */
 	function __testObjectFilesFromGroupFile($groupFile, $isApp = true) {
 		$manager = CodeCoverageManager::getInstance();
-		$testManager =& new TestManager();
+		$testManager = new TestManager();
 
 		$path = TESTS . 'groups';
 
@@ -606,7 +601,7 @@ class CodeCoverageManager {
  * @access private
  */
 	function __paintHeader($lineCount, $coveredCount, $report) {
-		$manager =& CodeCoverageManager::getInstance();
+		$manager = CodeCoverageManager::getInstance();
 		$codeCoverage = $manager->__calcCoverage($lineCount, $coveredCount);
 		return $report = '<h2>Code Coverage: ' . $codeCoverage . '%</h2>
 						<div class="code-coverage-results"><pre>' . $report . '</pre></div>';
@@ -629,7 +624,7 @@ class CodeCoverageManager {
  * @access private
  */
 	function __paintGroupResultLine($file, $lineCount, $coveredCount) {
-		$manager =& CodeCoverageManager::getInstance();
+		$manager = CodeCoverageManager::getInstance();
 		$codeCoverage = $manager->__calcCoverage($lineCount, $coveredCount);
 		$class = 'result-bad';
 
@@ -650,7 +645,7 @@ class CodeCoverageManager {
  * @access private
  */
 	function __paintGroupResultLineCli($file, $lineCount, $coveredCount) {
-		$manager =& CodeCoverageManager::getInstance();
+		$manager = CodeCoverageManager::getInstance();
 		$codeCoverage = $manager->__calcCoverage($lineCount, $coveredCount);
 		$class = 'bad';
 
@@ -671,7 +666,7 @@ class CodeCoverageManager {
  * @access private
  */
 	function __paintHeaderCli($lineCount, $coveredCount, $report) {
-		$manager =& CodeCoverageManager::getInstance();
+		$manager = CodeCoverageManager::getInstance();
 		$codeCoverage = $manager->__calcCoverage($lineCount, $coveredCount);
 		return $report = 'Code Coverage: ' . $codeCoverage . '%';
 	}

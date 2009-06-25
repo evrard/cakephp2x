@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * The ModelTask handles creating and updating models files.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.console.libs.tasks
  * @since         CakePHP(tm) v 1.2
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Model', 'ConnectionManager');
@@ -101,7 +97,7 @@ class ModelTask extends Shell {
 		}
 
 		$currentModelName = $this->getName($useDbConfig);
-		$db =& ConnectionManager::getDataSource($useDbConfig);
+		$db = ConnectionManager::getDataSource($useDbConfig);
 		$useTable = Inflector::tableize($currentModelName);
 		$fullTableName = $db->fullTableName($useTable, false);
 		$tableIsGood = false;
@@ -710,7 +706,7 @@ class ModelTask extends Shell {
 			$out .= "\tvar \${$className} = null;\n";
 			$out .= "\tvar \$fixtures = array($fixture);\n\n";
 			$out .= "\tfunction startTest() {\n";
-			$out .= "\t\t\$this->{$className} =& ClassRegistry::init('{$className}');\n";
+			$out .= "\t\t\$this->{$className} = ClassRegistry::init('{$className}');\n";
 			$out .= "\t}\n\n";
 			$out .= "\tfunction test{$className}Instance() {\n";
 			$out .= "\t\t\$this->assertTrue(is_a(\$this->{$className}, '{$className}'));\n";
@@ -733,7 +729,7 @@ class ModelTask extends Shell {
 			$this->out("\nBaking unit test for $className...");
 
 			$header = '$Id';
-			$content = "<?php \n/* SVN FILE: $header$ */\n/* ". $className ." Test cases generated on: " . date('Y-m-d H:m:s') . " : ". time() . "*/\n{$out}?>";
+			$content = "<?php \n/* ". $className ." Test cases generated on: " . date('Y-m-d H:m:s') . " : ". time() . "*/\n{$out}?>";
 			return $this->createFile($path . $filename, $content);
 		}
 		return false;
@@ -745,7 +741,7 @@ class ModelTask extends Shell {
  * @access public
  */
 	function listAll($useDbConfig = 'default', $interactive = true) {
-		$db =& ConnectionManager::getDataSource($useDbConfig);
+		$db = ConnectionManager::getDataSource($useDbConfig);
 		$usePrefix = empty($db->config['prefix']) ? '' : $db->config['prefix'];
 		if ($usePrefix) {
 			$tables = array();
@@ -927,7 +923,7 @@ class ModelTask extends Shell {
 		}
 		$filename = Inflector::underscore($model).'_fixture.php';
 		$header = '$Id';
-		$content = "<?php \n/* SVN FILE: $header$ */\n/* ". $model ." Fixture generated on: " . date('Y-m-d H:m:s') . " : ". time() . "*/\n{$out}?>";
+		$content = "<?php \n/* ". $model ." Fixture generated on: " . date('Y-m-d H:m:s') . " : ". time() . "*/\n{$out}?>";
 		$this->out("\nBaking test fixture for $model...");
 		if ($this->createFile($path . $filename, $content)) {
 			return str_replace("\t\t", "\t\t\t", $records);

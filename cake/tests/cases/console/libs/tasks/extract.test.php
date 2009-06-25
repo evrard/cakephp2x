@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * ExtractTaskTest file
  *
  * Test Case for i18n extraction shell task
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2006-2008, Cake Software Foundation, Inc.
+ * CakePHP : Rapid  Development Framework (http://www.cakephp.org)
+ * Copyright 2006-2009, Cake Software Foundation, Inc.
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2006-2008, Cake Software Foundation, Inc.
+ * @copyright     Copyright 2006-2009, Cake Software Foundation, Inc.
  * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP Project
  * @package       cake
  * @subpackage    cake.tests.cases.console.libs.tasks
  * @since         CakePHP v 1.2.0.7726
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Core', array('Shell', 'Folder'));
@@ -59,8 +55,8 @@ class ExtractTaskTest extends CakeTestCase {
  * @access public
  */
 	function setUp() {
-		$this->Dispatcher =& new TestExtractTaskMockShellDispatcher();
-		$this->Task =& new ExtractTask($this->Dispatcher);
+		$this->Dispatcher = new TestExtractTaskMockShellDispatcher();
+		$this->Task = new ExtractTask($this->Dispatcher);
 	}
 /**
  * tearDown method

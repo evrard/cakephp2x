@@ -1,25 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * A custom view class that is used for themeing
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.view
  * @since         CakePHP(tm) v 0.10.0.1076
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -34,27 +30,27 @@ class ThemeView extends View {
  *
  * @var string
  */
-	var $themeElement = null;
+	private $themeElement = null;
 /**
  * System path to themed layout: themed . DS . theme . DS . layouts . DS
  *
  * @var string
  */
-	var $themeLayout = null;
+	private $themeLayout = null;
 /**
  * System path to themed: themed . DS . theme . DS
  *
  * @var string
  */
-	var $themePath = null;
+	private $themePath = null;
 /**
  * Enter description here...
  *
  * @param unknown_type $controller
  */
-	function __construct (&$controller) {
+	private function __construct (&$controller) {
 		parent::__construct($controller);
-		$this->theme =& $controller->theme;
+		$this->theme = $controller->theme;
 
 		if (!empty($this->theme)) {
 			if (is_dir(WWW_ROOT . 'themed' . DS . $this->theme)) {
@@ -74,7 +70,7 @@ class ThemeView extends View {
  * @return array paths
  * @access private
  */
-	function _paths($plugin = null, $cached = true) {
+	private function _paths($plugin = null, $cached = true) {
 		$paths = parent::_paths($plugin, $cached);
 
 		if (!empty($this->theme)) {

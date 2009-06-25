@@ -1,25 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Javascript Helper class file.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.view.helpers
  * @since         CakePHP(tm) v 0.10.0.1076
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -37,7 +33,7 @@ class JavascriptHelper extends AppHelper {
  * @var boolean
  * @access public
  */
-	var $useNative = false;
+	private $useNative = false;
 /**
  * If true, automatically writes events to the end of a script or to an external JavaScript file
  * at the end of page execution
@@ -45,21 +41,21 @@ class JavascriptHelper extends AppHelper {
  * @var boolean
  * @access public
  */
-	var $enabled = true;
+	private $enabled = true;
 /**
  * Indicates whether <script /> blocks should be written 'safely,' i.e. wrapped in CDATA blocks
  *
  * @var boolean
  * @access public
  */
-	var $safe = false;
+	private $safe = false;
 /**
  * HTML tags used by this helper.
  *
  * @var array
  * @access public
  */
-	var $tags = array(
+	private $tags = array(
 		'javascriptblock' => '<script type="text/javascript">%s</script>',
 		'javascriptstart' => '<script type="text/javascript">',
 		'javascriptlink' => '<script type="text/javascript" src="%s"></script>',
@@ -72,7 +68,7 @@ class JavascriptHelper extends AppHelper {
  * @access protected
  * @see JavascriptHelper::codeBlock()
  */
-	var $_blockOptions = array();
+	private $_blockOptions = array();
 /**
  * Caches events written by event() for output at the end of page execution
  *
@@ -80,7 +76,7 @@ class JavascriptHelper extends AppHelper {
  * @access protected
  * @see JavascriptHelper::event()
  */
-	var $_cachedEvents = array();
+	private $_cachedEvents = array();
 /**
  * Indicates whether generated events should be cached for later output (can be written at the
  * end of the page, in the <head />, or to an external file).
@@ -90,7 +86,7 @@ class JavascriptHelper extends AppHelper {
  * @see JavascriptHelper::event()
  * @see JavascriptHelper::writeEvents()
  */
-	var $_cacheEvents = false;
+	private $_cacheEvents = false;
 /**
  * Indicates whether cached events should be written to an external file
  *
@@ -99,7 +95,7 @@ class JavascriptHelper extends AppHelper {
  * @see JavascriptHelper::event()
  * @see JavascriptHelper::writeEvents()
  */
-	var $_cacheToFile = false;
+	private $_cacheToFile = false;
 /**
  * Indicates whether *all* generated JavaScript should be cached for later output
  *
@@ -108,7 +104,7 @@ class JavascriptHelper extends AppHelper {
  * @see JavascriptHelper::codeBlock()
  * @see JavascriptHelper::blockEnd()
  */
-	var $_cacheAll = false;
+	private $_cacheAll = false;
 /**
  * Contains event rules attached with CSS selectors.  Used with the event:Selectors JavaScript
  * library.
@@ -118,18 +114,18 @@ class JavascriptHelper extends AppHelper {
  * @see JavascriptHelper::event()
  * @link          http://alternateidea.com/event-selectors/
  */
-	var $_rules = array();
+	private $_rules = array();
 /**
  * @var string
  * @access private
  */
-	var $__scriptBuffer = null;
+	private $__scriptBuffer = null;
 /**
  * Constructor. Checks for presence of native PHP JSON extension to use for object encoding
  *
  * @access public
  */
-	function __construct($options = array()) {
+	private function __construct($options = array()) {
 		if (!empty($options)) {
 			foreach ($options as $key => $val) {
 				if (is_numeric($key)) {
@@ -166,7 +162,7 @@ class JavascriptHelper extends AppHelper {
  * @return string The full SCRIPT element, with the JavaScript inside it, or null,
  *   if 'inline' is set to false.
  */
-	function codeBlock($script = null, $options = array()) {
+	private function codeBlock($script = null, $options = array()) {
 		if (!empty($options) && !is_array($options)) {
 			$options = array('allowCache' => $options);
 		} elseif (empty($options)) {
@@ -206,7 +202,7 @@ class JavascriptHelper extends AppHelper {
 					return $this->tags['javascriptstart'] . $safe;
 				}
 			} elseif ($block) {
-				$view =& ClassRegistry::getObject('view');
+				$view = ClassRegistry::getObject('view');
 				$view->addScript(sprintf($this->tags['javascriptblock'], $script));
 			}
 		}
@@ -216,7 +212,7 @@ class JavascriptHelper extends AppHelper {
  *
  * @return mixed
  */
-	function blockEnd() {
+	private function blockEnd() {
 		$script = @ob_get_contents();
 		@ob_end_clean();
 		ob_start();
@@ -228,7 +224,7 @@ class JavascriptHelper extends AppHelper {
 		$this->inBlock = false;
 
 		if (isset($options['inline']) && !$options['inline']) {
-			$view =& ClassRegistry::getObject('view');
+			$view = ClassRegistry::getObject('view');
 			$view->addScript(sprintf($this->tags['javascriptblock'], $script));
 		}
 
@@ -249,7 +245,7 @@ class JavascriptHelper extends AppHelper {
  * @see JS_URL
  * @return string
  */
-	function link($url, $inline = true) {
+	private function link($url, $inline = true) {
 		if (is_array($url)) {
 			$out = '';
 			foreach ($url as $i) {
@@ -290,7 +286,7 @@ class JavascriptHelper extends AppHelper {
 		if ($inline) {
 			return $out;
 		} else {
-			$view =& ClassRegistry::getObject('view');
+			$view = ClassRegistry::getObject('view');
 			$view->addScript($out);
 		}
 	}
@@ -300,7 +296,7 @@ class JavascriptHelper extends AppHelper {
  * @param string $script string that might have javascript elements
  * @return string escaped string
  */
-	function escapeScript($script) {
+	private function escapeScript($script) {
 		$script = str_replace(array("\r\n", "\n", "\r"), '\n', $script);
 		$script = str_replace(array('"', "'"), array('\"', "\\'"), $script);
 		return $script;
@@ -318,7 +314,7 @@ class JavascriptHelper extends AppHelper {
  * @param  string $script String that needs to get escaped.
  * @return string Escaped string.
  */
-	function escapeString($string) {
+	private function escapeString($string) {
 		$escape = array('\n' => '\\\n', "\r\n" => '\n', "\r" => '\n', "\n" => '\n', '"' => '\"', "'" => "\\'");
 		return str_replace(array_keys($escape), array_values($escape), $string);
 	}
@@ -331,7 +327,7 @@ class JavascriptHelper extends AppHelper {
  * @param array $options Set options: useCapture, allowCache, safe
  * @return boolean true on success
  */
-	function event($object, $event, $observer = null, $options = array()) {
+	private function event($object, $event, $observer = null, $options = array()) {
 		if (!empty($options) && !is_array($options)) {
 			$options = array('useCapture' => $options);
 		} else if (empty($options)) {
@@ -391,7 +387,7 @@ class JavascriptHelper extends AppHelper {
  * @param boolean $all If true, all code written with JavascriptHelper will be sent to a file
  * @return null
  */
-	function cacheEvents($file = false, $all = false) {
+	private function cacheEvents($file = false, $all = false) {
 		$this->_cacheEvents = true;
 		$this->_cacheToFile = $file;
 		$this->_cacheAll = $all;
@@ -402,7 +398,7 @@ class JavascriptHelper extends AppHelper {
  * @param boolean $clear
  * @return string
  */
-	function getCache($clear = true) {
+	private function getCache($clear = true) {
 		$out = '';
 		$rules = array();
 
@@ -432,7 +428,7 @@ class JavascriptHelper extends AppHelper {
  * @param array $options Set options for codeBlock
  * @return string
  */
-	function writeEvents($inline = true, $options = array()) {
+	private function writeEvents($inline = true, $options = array()) {
 		$out = '';
 		$rules = array();
 
@@ -458,7 +454,7 @@ class JavascriptHelper extends AppHelper {
 		if ($inline) {
 			return $out;
 		} else {
-			$view =& ClassRegistry::getObject('view');
+			$view = ClassRegistry::getObject('view');
 			$view->addScript($out);
 		}
 	}
@@ -474,7 +470,7 @@ class JavascriptHelper extends AppHelper {
  * @param array $options Set options for codeBlock
  * @return string script with all javascript in/javascripts folder
  */
-	function includeScript($script = "", $options = array()) {
+	private function includeScript($script = "", $options = array()) {
 		if ($script == "") {
 			$files = scandir(JS);
 			$javascript = '';
@@ -502,7 +498,7 @@ class JavascriptHelper extends AppHelper {
  * @param string $q DEPRECATED, use $options['q'] instead. The type of quote to use
  * @return string A JSON code block
  */
-	function object($data = array(), $options = array(), $prefix = null, $postfix = null, $stringKeys = null, $quoteKeys = null, $q = null) {
+	private function object($data = array(), $options = array(), $prefix = null, $postfix = null, $stringKeys = null, $quoteKeys = null, $q = null) {
 		if (!empty($options) && !is_array($options)) {
 			$options = array('block' => $options);
 		} else if (empty($options)) {
@@ -578,7 +574,7 @@ class JavascriptHelper extends AppHelper {
  * @param boolean $quoteStrings If false, leaves string values unquoted
  * @return string a JavaScript-safe/JSON representation of $val
  */
-	function value($val, $quoteStrings = true) {
+	private function value($val, $quoteStrings = true) {
 		switch (true) {
 			case (is_array($val) || is_object($val)):
 				$val = $this->object($val);
@@ -609,7 +605,7 @@ class JavascriptHelper extends AppHelper {
  *
  * @return null
  */
-	function afterRender() {
+	private function afterRender() {
 		if (!$this->enabled) {
 			return;
 		}

@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
  * @since         CakePHP(tm) v 1.2.0.4213
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -47,7 +43,7 @@ class CookieComponent extends Object {
  * @var string
  * @access public
  */
-	var $name = 'CakeCookie';
+	private $name = 'CakeCookie';
 /**
  * The time a cookie will remain valid.
  *
@@ -59,7 +55,7 @@ class CookieComponent extends Object {
  * @var mixed
  * @access public
  */
-	var $time = null;
+	private $time = null;
 /**
  * Cookie path.
  *
@@ -74,7 +70,7 @@ class CookieComponent extends Object {
  * @var string
  * @access public
  */
-	var $path = '/';
+	private $path = '/';
 /**
  * Domain path.
  *
@@ -89,7 +85,7 @@ class CookieComponent extends Object {
  * @var string
  * @access public
  */
-	var $domain = '';
+	private $domain = '';
 /**
  * Secure HTTPS only cookie.
  *
@@ -102,7 +98,7 @@ class CookieComponent extends Object {
  * @var boolean
  * @access public
  */
-	var $secure = false;
+	private $secure = false;
 /**
  * Encryption key.
  *
@@ -112,7 +108,7 @@ class CookieComponent extends Object {
  * @var string
  * @access protected
  */
-	var $key = null;
+	private $key = null;
 /**
  * Values stored in the cookie.
  *
@@ -122,7 +118,7 @@ class CookieComponent extends Object {
  * @var string
  * @access private
  */
-	var $__values = array();
+	private $__values = array();
 /**
  * Type of encryption to use.
  *
@@ -133,14 +129,14 @@ class CookieComponent extends Object {
  * @access private
  * @todo add additional encryption methods
  */
-	var $__type = 'cipher';
+	private $__type = 'cipher';
 /**
  * Used to reset cookie time if $expire is passed to CookieComponent::write()
  *
  * @var string
  * @access private
  */
-	var $__reset = null;
+	private $__reset = null;
 /**
  * Expire time of the cookie
  *
@@ -149,14 +145,14 @@ class CookieComponent extends Object {
  * @var string
  * @access private
  */
-	var $__expires = 0;
+	private $__expires = 0;
 /**
  * Main execution method.
  *
  * @param object $controller A reference to the instantiating controller object
  * @access public
  */
-	function initialize(&$controller, $settings) {
+	private function initialize(&$controller, $settings) {
 		$this->key = Configure::read('Security.salt');
 		$this->_set($settings);
 	}
@@ -165,7 +161,7 @@ class CookieComponent extends Object {
  *
  * @access public
  */
-	function startup() {
+	private function startup() {
 		$this->__expire($this->time);
 
 		if (isset($_COOKIE[$this->name])) {
@@ -190,7 +186,7 @@ class CookieComponent extends Object {
  * @param string $expires Can be either Unix timestamp, or date string
  * @access public
  */
-	function write($key, $value = null, $encrypt = true, $expires = null) {
+	private function write($key, $value = null, $encrypt = true, $expires = null) {
 		if (is_null($encrypt)) {
 			$encrypt = true;
 		}
@@ -233,7 +229,7 @@ class CookieComponent extends Object {
  * @return string or null, value for specified key
  * @access public
  */
-	function read($key = null) {
+	private function read($key = null) {
 		if (empty($this->__values) && isset($_COOKIE[$this->name])) {
 			$this->__values = $this->__decrypt($_COOKIE[$this->name]);
 		}
@@ -271,7 +267,7 @@ class CookieComponent extends Object {
  * @return void
  * @access public
  */
-	function del($key) {
+	private function del($key) {
 		if (empty($this->__values)) {
 			$this->read();
 		}
@@ -302,7 +298,7 @@ class CookieComponent extends Object {
  * @return void
  * @access public
  */
-	function destroy() {
+	private function destroy() {
 		if (isset($_COOKIE[$this->name])) {
 			$this->__values = $this->__decrypt($_COOKIE[$this->name]);
 		}
@@ -325,7 +321,7 @@ class CookieComponent extends Object {
  * @access public
  * @todo NOT IMPLEMENTED
  */
-	function type($type = 'cipher') {
+	private function type($type = 'cipher') {
 		$this->__type = 'cipher';
 	}
 /**
@@ -342,7 +338,7 @@ class CookieComponent extends Object {
  * @return int Unix timestamp
  * @access private
  */
-	function __expire($expires = null) {
+	private function __expire($expires = null) {
 		$now = time();
 		if (is_null($expires)) {
 			return $this->__expires;
@@ -360,7 +356,7 @@ class CookieComponent extends Object {
  * @param string $value Value for cookie
  * @access private
  */
-	function __write($name, $value) {
+	private function __write($name, $value) {
 		setcookie($this->name . "$name", $this->__encrypt($value), $this->__expires, $this->path, $this->domain, $this->secure);
 
 		if (!is_null($this->__reset)) {
@@ -374,7 +370,7 @@ class CookieComponent extends Object {
  * @param string $name Name of cookie
  * @access private
  */
-	function __delete($name) {
+	private function __delete($name) {
 		setcookie($this->name . $name, '', time() - 42000, $this->path, $this->domain, $this->secure);
 	}
 /**
@@ -384,7 +380,7 @@ class CookieComponent extends Object {
  * @return string encrypted string
  * @access private
  */
-	function __encrypt($value) {
+	private function __encrypt($value) {
 		if (is_array($value)) {
 			$value = $this->__implode($value);
 		}
@@ -402,7 +398,7 @@ class CookieComponent extends Object {
  * @return string decrypted string
  * @access private
  */
-	function __decrypt($values) {
+	private function __decrypt($values) {
 		$decrypted = array();
 		$type = $this->__type;
 
@@ -439,7 +435,7 @@ class CookieComponent extends Object {
  * @return array Extracted names
  * @access private
  */
-	function __cookieVarNames($name) {
+	private function __cookieVarNames($name) {
 		if (is_string($name)) {
 			if (strpos($name, ".")) {
 				$name = explode(".", $name);
@@ -456,7 +452,7 @@ class CookieComponent extends Object {
  * @return string String in the form key1|value1,key2|value2
  * @access private
  */
-	function __implode($array) {
+	private function __implode($array) {
 		$string = '';
 		foreach ($array as $key => $value) {
 			$string .= ',' . $key . '|' . $value;
@@ -470,7 +466,7 @@ class CookieComponent extends Object {
  * @return array Map of key and values
  * @access private
  */
-	function __explode($string) {
+	private function __explode($string) {
 		$array = array();
 		foreach (explode(',', $string) as $pair) {
 			$key = explode('|', $pair);

@@ -1,25 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Methods to display or download any type of file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.view
  * @since         CakePHP(tm) v 1.2.0.5714
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 class MediaView extends View {
@@ -29,7 +25,7 @@ class MediaView extends View {
  * @var array
  * @access public
  */
-	var $mimeType = array('ai' => 'application/postscript', 'bcpio' => 'application/x-bcpio', 'bin' => 'application/octet-stream',
+	private $mimeType = array('ai' => 'application/postscript', 'bcpio' => 'application/x-bcpio', 'bin' => 'application/octet-stream',
 								'ccad' => 'application/clariscad', 'cdf' => 'application/x-netcdf', 'class' => 'application/octet-stream',
 								'cpio' => 'application/x-cpio', 'cpt' => 'application/mac-compactpro', 'csh' => 'application/x-csh',
 								'csv' => 'application/csv', 'dcr' => 'application/x-director', 'dir' => 'application/x-director',
@@ -85,13 +81,13 @@ class MediaView extends View {
  * @var array
  * @access protected
  */
-	var $_headers = array();
+	protected $_headers = array();
 /**
  * Constructor
  *
  * @param object $controller
  */
-	function __construct(&$controller) {
+	private function __construct(&$controller) {
 		parent::__construct($controller);
 	}
 /**
@@ -99,7 +95,7 @@ class MediaView extends View {
  *
  * @return unknown
  */
-	function render() {
+	private function render() {
 		$name = $download = $extension = $id = $modified = $path = $size = $cache = $mimeType = null;
 		extract($this->viewVars, EXTR_OVERWRITE);
 
@@ -221,7 +217,7 @@ class MediaView extends View {
  * @param boolean $boolean
  * @access protected
  */
-	function _header($header, $boolean = true) {
+	protected function _header($header, $boolean = true) {
 		if (is_array($header)) {
 			foreach ($header as $string => $boolean) {
 				if (is_numeric($string)) {
@@ -239,7 +235,7 @@ class MediaView extends View {
  * Method to output headers
  * @access protected
  */
-	function _output() {
+	protected function _output() {
 		foreach ($this->_headers as $key => $value) {
 			$header = key($value);
 			header($header, $value[$header]);

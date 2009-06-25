@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Sybase layer for DBO
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model.datasources.dbo
  * @since         CakePHP(tm) v 1.2.0.3097
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -38,25 +34,25 @@ class DboSybase extends DboSource {
  *
  * @var string
  */
-	var $description = "Sybase DBO Driver";
+	private $description = "Sybase DBO Driver";
 /**
  * Start quote for quoted identifiers
  *
  * @var string
  */
-	var $startQuote = "";
+	private $startQuote = "";
 /**
  * End quote for quoted identifiers
  *
  * @var string
  */
-	var $endQuote = "";
+	private $endQuote = "";
 /**
  * Base configuration settings for Sybase driver
  *
  * @var array
  */
-	var $_baseConfig = array(
+	private $_baseConfig = array(
 		'persistent' => true,
 		'host' => 'localhost',
 		'login' => 'sa',
@@ -69,7 +65,7 @@ class DboSybase extends DboSource {
  *
  * @var array
  */
-	var $columns = array(
+	private $columns = array(
 		'primary_key' => array('name' => 'numeric(9,0) IDENTITY PRIMARY KEY'),
 		'string' => array('name' => 'varchar', 'limit' => '255'),
 		'text' => array('name' => 'text'),
@@ -87,7 +83,7 @@ class DboSybase extends DboSource {
  *
  * @return boolean True if the database could be connected, else false
  */
-	function connect() {
+	private function connect() {
 		$config = $this->config;
 		$this->connected = false;
 
@@ -107,7 +103,7 @@ class DboSybase extends DboSource {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	function disconnect() {
+	private function disconnect() {
 		$this->connected = !@sybase_close($this->connection);
 		return !$this->connected;
 	}
@@ -118,7 +114,7 @@ class DboSybase extends DboSource {
  * @return resource Result resource identifier
  * @access protected
  */
-	function _execute($sql) {
+	private function _execute($sql) {
 		return sybase_query($sql, $this->connection);
 	}
 /**
@@ -126,7 +122,7 @@ class DboSybase extends DboSource {
  *
  * @return array Array of tablenames in the database
  */
-	function listSources() {
+	private function listSources() {
 		$cache = parent::listSources();
 		if ($cache != null) {
 			return $cache;
@@ -152,7 +148,7 @@ class DboSybase extends DboSource {
  * @param string $tableName Name of database table to inspect
  * @return array Fields in table. Keys are name and type
  */
-	function describe(&$model) {
+	private function describe(&$model) {
 
 		$cache = parent::describe($model);
 		if ($cache != null) {
@@ -186,7 +182,7 @@ class DboSybase extends DboSource {
  * @param boolean $safe Whether or not numeric data should be handled automagically if no column data is provided
  * @return string Quoted and escaped data
  */
-	function value($data, $column = null, $safe = false) {
+	private function value($data, $column = null, $safe = false) {
 		$parent = parent::value($data, $column, $safe);
 
 		if ($parent != null) {
@@ -219,7 +215,7 @@ class DboSybase extends DboSource {
  * @return boolean True on success, false on fail
  * (i.e. if the database/model does not support transactions).
  */
-	function begin(&$model) {
+	private function begin(&$model) {
 		if (parent::begin($model)) {
 			if ($this->execute('BEGIN TRAN')) {
 				$this->_transactionStarted = true;
@@ -236,7 +232,7 @@ class DboSybase extends DboSource {
  * (i.e. if the database/model does not support transactions,
  * or a transaction has not started).
  */
-	function commit(&$model) {
+	private function commit(&$model) {
 		if (parent::commit($model)) {
 			$this->_transactionStarted = false;
 			return $this->execute('COMMIT TRAN');
@@ -251,7 +247,7 @@ class DboSybase extends DboSource {
  * (i.e. if the database/model does not support transactions,
  * or a transaction has not started).
  */
-	function rollback(&$model) {
+	private function rollback(&$model) {
 		if (parent::rollback($model)) {
 			return $this->execute('ROLLBACK TRAN');
 		}
@@ -263,7 +259,7 @@ class DboSybase extends DboSource {
  * @todo not implemented
  * @return string Error message with error number
  */
-	function lastError() {
+	private function lastError() {
 		return null;
 	}
 /**
@@ -272,7 +268,7 @@ class DboSybase extends DboSource {
  *
  * @return integer Number of affected rows
  */
-	function lastAffected() {
+	private function lastAffected() {
 		if ($this->_result) {
 			return sybase_affected_rows($this->connection);
 		}
@@ -284,7 +280,7 @@ class DboSybase extends DboSource {
  *
  * @return integer Number of rows in resultset
  */
-	function lastNumRows() {
+	private function lastNumRows() {
 		if ($this->hasResult()) {
 			return @sybase_num_rows($this->_result);
 		}
@@ -296,7 +292,7 @@ class DboSybase extends DboSource {
  * @param unknown_type $source
  * @return in
  */
-	function lastInsertId($source = null) {
+	private function lastInsertId($source = null) {
 		$result=$this->fetchRow('SELECT @@IDENTITY');
 		return $result[0];
 	}
@@ -306,7 +302,7 @@ class DboSybase extends DboSource {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return string Abstract column type (i.e. "string")
  */
-	function column($real) {
+	private function column($real) {
 		if (is_array($real)) {
 			$col = $real['name'];
 			if (isset($real['limit']))
@@ -343,7 +339,7 @@ class DboSybase extends DboSource {
  *
  * @param unknown_type $results
  */
-	function resultSet(&$results) {
+	private function resultSet(&$results) {
 		$this->results =& $results;
 		$this->map = array();
 		$num_fields = sybase_num_fields($results);
@@ -366,7 +362,7 @@ class DboSybase extends DboSource {
  *
  * @return unknown
  */
-	function fetchResult() {
+	private function fetchResult() {
 		if ($row = sybase_fetch_row($this->results)) {
 			$resultRow = array();
 			$i = 0;

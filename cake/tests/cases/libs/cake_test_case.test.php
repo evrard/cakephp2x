@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * CakeTestCaseTest file
  *
  * Test Case for CakeTestCase class
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2006-2008, Cake Software Foundation, Inc.
+ * CakePHP : Rapid  Development Framework (http://www.cakephp.org)
+ * Copyright 2006-2009, Cake Software Foundation, Inc.
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2006-2008, Cake Software Foundation, Inc.
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP Project
+ * @copyright     Copyright 2006-2009, Cake Software Foundation, Inc.
+ * @link          http://cakephp.org CakePHP Project
  * @package       cake
  * @subpackage    cake.cake.libs.
  * @since         CakePHP v 1.2.0.4487
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Core', 'CakeTestCase');
@@ -78,8 +74,8 @@ class CakeTestCaseTest extends CakeTestCase {
  * @return void
  */
 	function setUp() {
-		$this->Case =& new SubjectCakeTestCase();
-		$reporter =& new MockCakeHtmlReporter();
+		$this->Case = new SubjectCakeTestCase();
+		$reporter = new MockCakeHtmlReporter();
 		$this->Case->setReporter($reporter);
 		$this->Reporter = $reporter;
 	}
@@ -306,7 +302,7 @@ class CakeTestCaseTest extends CakeTestCase {
 		$this->assertEqual(array_keys($result['data']), array('name', 'pork'));
 
 
-		$db =& ConnectionManager::getDataSource('test_suite');
+		$db = ConnectionManager::getDataSource('test_suite');
 		$_backPrefix = $db->config['prefix'];
 		$db->config['prefix'] = 'cake_testaction_test_suite_';
 
@@ -314,9 +310,9 @@ class CakeTestCaseTest extends CakeTestCase {
 		$config['prefix'] = 'cake_testcase_test_';
 
 		ConnectionManager::create('cake_test_case', $config);
-		$db =& ConnectionManager::getDataSource('cake_test_case');
+		$db = ConnectionManager::getDataSource('cake_test_case');
 
-		$fixture =& new PostFixture($db);
+		$fixture = new PostFixture($db);
 		$fixture->create($db);
 		$fixture->insert($db);
 
@@ -332,13 +328,13 @@ class CakeTestCaseTest extends CakeTestCase {
 
 		$fixture->drop($db);
 
-		$db =& ConnectionManager::getDataSource('test_suite');
+		$db = ConnectionManager::getDataSource('test_suite');
 		$db->config['prefix'] = $_backPrefix;
 		$fixture->drop($db);
 
 
 		//test that drop tables behaves as exepected with testAction
-		$db =& ConnectionManager::getDataSource('test_suite');
+		$db = ConnectionManager::getDataSource('test_suite');
 		$_backPrefix = $db->config['prefix'];
 		$db->config['prefix'] = 'cake_testaction_test_suite_';
 
@@ -346,8 +342,8 @@ class CakeTestCaseTest extends CakeTestCase {
 		$config['prefix'] = 'cake_testcase_test_';
 
 		ConnectionManager::create('cake_test_case', $config);
-		$db =& ConnectionManager::getDataSource('cake_test_case');
-		$fixture =& new PostFixture($db);
+		$db = ConnectionManager::getDataSource('cake_test_case');
+		$fixture = new PostFixture($db);
 		$fixture->create($db);
 		$fixture->insert($db);
 
@@ -362,7 +358,7 @@ class CakeTestCaseTest extends CakeTestCase {
 		$this->assertTrue(in_array('cake_testaction_test_suite_posts', $tables));
 
 		$fixture->drop($db);
-		$db =& ConnectionManager::getDataSource('test_suite');
+		$db = ConnectionManager::getDataSource('test_suite');
 		$db->config['prefix'] = $_backPrefix;
 		$fixture->drop($db);
 
@@ -397,8 +393,8 @@ class CakeTestCaseTest extends CakeTestCase {
 		Configure::write('viewPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views' . DS));
 		Configure::write('pluginPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS));
 
-		$Dispatcher =& new CakeTestDispatcher();
-		$Case =& new CakeDispatcherMockTestCase();
+		$Dispatcher = new CakeTestDispatcher();
+		$Case = new CakeDispatcherMockTestCase();
 
 		$Case->expectOnce('startController');
 		$Case->expectOnce('endController');

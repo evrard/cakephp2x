@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * L10nTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.5432
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'l10n');
@@ -39,7 +35,7 @@ class L10nTest extends CakeTestCase {
  * @return void
  */
 	function testGet() {
-		$l10n =& new L10n();
+		$l10n = new L10n();
 
 		// Catalog Entry
 		$l10n->get('en');
@@ -124,7 +120,7 @@ class L10nTest extends CakeTestCase {
 		$__SERVER = $_SERVER;
 		$_SERVER['HTTP_ACCEPT_LANGUAGE'] = 'inexistent,en-ca';
 
-		$l10n =& new L10n();
+		$l10n = new L10n();
 		$l10n->get();
 		$result = $l10n->language;
 		$expected = 'English (Canadian)';
@@ -175,7 +171,7 @@ class L10nTest extends CakeTestCase {
  * @return void
  */
 	function testMap() {
-		$l10n =& new L10n();
+		$l10n = new L10n();
 
 		$result = $l10n->map(array('afr', 'af'));
 		$expected = array('afr' => 'af', 'af' => 'afr');
@@ -496,7 +492,7 @@ class L10nTest extends CakeTestCase {
  * @return void
  */
 	function testCatalog() {
-		$l10n =& new L10n();
+		$l10n = new L10n();
 
 		$result = $l10n->catalog(array('af'));
 		$expected = array(

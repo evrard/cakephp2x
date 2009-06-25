@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * TextHelperTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.view.helpers
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Helper', 'Text');
@@ -70,7 +66,7 @@ class TextHelperTest extends CakeTestCase {
 		$m = $this->method;
 		$text1 = 'The quick brown fox jumps over the lazy dog';
 		$text2 = 'Heiz&ouml;lr&uuml;cksto&szlig;abd&auml;mpfung';
-		$text3 = '<b>&copy; 2005-2007, Cake Software Foundation, Inc.</b><br />written by Alexander Wegener';
+		$text3 = '<b>&copy; 2005-2009, Cake Software Foundation, Inc.</b><br />written by Alexander Wegener';
 		$text4 = '<img src="mypic.jpg"> This image tag is not XHTML conform!<br><hr/><b>But the following image tag should be conform <img src="mypic.jpg" alt="Me, myself and I" /></b><br />Great, or?';
 		$text5 = '0<b>1<i>2<span class="myclass">3</span>4<u>5</u>6</i>7</b>8<b>9</b>0';
         $text6 = '<p><strong>Extra dates have been announced for this year\'s tour.</strong></p><p>Tickets for the new shows in</p>';
@@ -90,7 +86,7 @@ class TextHelperTest extends CakeTestCase {
 		$this->assertIdentical($this->Text->{$m}($text1, 15, '...', false, true), 'The quick...');
 		$this->assertIdentical($this->Text->{$m}($text2, 10, '...', true, true), 'Heiz&ouml;lr...');
 		$this->assertIdentical($this->Text->{$m}($text2, 10, '...', false, true), '...');
-		$this->assertIdentical($this->Text->{$m}($text3, 20, '...', true, true), '<b>&copy; 2005-2007, Cake...</b>');
+		$this->assertIdentical($this->Text->{$m}($text3, 20, '...', true, true), '<b>&copy; 2005-2009, Cake...</b>');
 		$this->assertIdentical($this->Text->{$m}($text4, 15, '...', true, true), '<img src="mypic.jpg"> This image ...');
 		$this->assertIdentical($this->Text->{$m}($text4, 45, '...', true, true), '<img src="mypic.jpg"> This image tag is not XHTML conform!<br><hr/><b>But t...</b>');
 		$this->assertIdentical($this->Text->{$m}($text4, 90, '...', true, true), '<img src="mypic.jpg"> This image tag is not XHTML conform!<br><hr/><b>But the following image tag should be conform <img src="mypic.jpg" alt="Me, myself and I" /></b><br />Grea...');

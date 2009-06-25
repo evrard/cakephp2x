@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * DataSource base class
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model.datasources
  * @since         CakePHP(tm) v 0.10.5.1790
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -39,82 +35,84 @@ class DataSource extends Object {
  * @var boolean
  * @access public
  */
-	var $connected = false;
+	private $connected = false;
 /**
  * Print full query debug info?
  *
  * @var boolean
  * @access public
  */
-	var $fullDebug = false;
+	private $fullDebug = false;
 /**
  * Error description of last query
  *
  * @var unknown_type
  * @access public
  */
-	var $error = null;
+	private $error = null;
 /**
  * String to hold how many rows were affected by the last SQL operation.
  *
  * @var string
  * @access public
  */
-	var $affected = null;
+	private $affected = null;
 /**
  * Number of rows in current resultset
  *
  * @var int
  * @access public
  */
-	var $numRows = null;
+	private $numRows = null;
 /**
  * Time the last query took
  *
  * @var int
  * @access public
  */
-	var $took = null;
+	private $took = null;
 /**
  * The starting character that this DataSource uses for quoted identifiers.
  *
  * @var string
+ * @access protected
  */
-	var $startQuote = null;
+	protected $startQuote = null;
 /**
  * The ending character that this DataSource uses for quoted identifiers.
  *
  * @var string
+ * @access protected
  */
-	var $endQuote = null;
+	protected $endQuote = null;
 /**
  * Enter description here...
  *
  * @var array
  * @access private
  */
-	var $_result = null;
+	private $_result = null;
 /**
  * Queries count.
  *
  * @var int
  * @access private
  */
-	var $_queriesCnt = 0;
+	private $_queriesCnt = 0;
 /**
  * Total duration of all queries.
  *
  * @var unknown_type
  * @access private
  */
-	var $_queriesTime = null;
+	private $_queriesTime = null;
 /**
  * Log of queries executed by this DataSource
  *
  * @var unknown_type
  * @access private
  */
-	var $_queriesLog = array();
+	private $_queriesLog = array();
 /**
  * Maximum number of items in query log, to prevent query log taking over
  * too much memory on large amounts of queries -- I we've had problems at
@@ -123,74 +121,74 @@ class DataSource extends Object {
  * @var int Maximum number of queries in the queries log.
  * @access private
  */
-	var $_queriesLogMax = 200;
+	protected $_queriesLogMax = 200;
 /**
  * Caches serialzed results of executed queries
  *
  * @var array Maximum number of queries in the queries log.
  * @access private
  */
-	var $_queryCache = array();
+	private $_queryCache = array();
 /**
  * The default configuration of a specific DataSource
  *
  * @var array
  * @access public
  */
-	var $_baseConfig = array();
+	protected $_baseConfig = array();
 /**
  * Holds references to descriptions loaded by the DataSource
  *
  * @var array
  * @access private
  */
-	var $__descriptions = array();
+	private $__descriptions = array();
 /**
  * Holds a list of sources (tables) contained in the DataSource
  *
  * @var array
  * @access protected
  */
-	var $_sources = null;
+	private $_sources = null;
 /**
  * A reference to the physical connection of this DataSource
  *
  * @var array
  * @access public
  */
-	var $connection = null;
+	protected $connection = null;
 /**
  * The DataSource configuration
  *
  * @var array
  * @access public
  */
-	var $config = array();
+	public $config = array();
 /**
  * The DataSource configuration key name
  *
  * @var string
  * @access public
  */
-	var $configKeyName = null;
+	private $configKeyName = null;
 /**
  * Whether or not this DataSource is in the middle of a transaction
  *
  * @var boolean
  * @access protected
  */
-	var $_transactionStarted = false;
+	protected $_transactionStarted = false;
 /**
  * Whether or not source data like available tables and schema descriptions
  * should be cached
  *
  * @var boolean
  */
-	var $cacheSources = true;
+	public $cacheSources = true;
 /**
  * Constructor.
  */
-	function __construct($config = array()) {
+	public function __construct($config = array()) {
 		parent::__construct();
 		$this->setConfig($config);
 	}
@@ -199,7 +197,7 @@ class DataSource extends Object {
  *
  * @return array
  */
-	function listSources($data = null) {
+	protected function listSources($data = null) {
 		if ($this->cacheSources === false) {
 			return null;
 		}
@@ -225,7 +223,7 @@ class DataSource extends Object {
  *
  * @return array
  */
-	function sources($reset = false) {
+	private function sources($reset = false) {
 		if ($reset === true) {
 			$this->_sources = null;
 		}
@@ -237,18 +235,17 @@ class DataSource extends Object {
  * @param Model $model
  * @return mixed
  */
-	function describe($model) {
+	protected function describe($model) {
 		if ($this->cacheSources === false) {
 			return null;
 		}
-		$table = $this->fullTableName($model, false);
-		if (isset($this->__descriptions[$table])) {
-			return $this->__descriptions[$table];
+		if (isset($this->__descriptions[$model->tablePrefix . $model->table])) {
+			return $this->__descriptions[$model->tablePrefix . $model->table];
 		}
-		$cache = $this->__cacheDescription($table);
+		$cache = $this->__cacheDescription($model->tablePrefix . $model->table);
 
 		if ($cache !== null) {
-			$this->__descriptions[$table] =& $cache;
+			$this->__descriptions[$model->tablePrefix . $model->table] =& $cache;
 			return $cache;
 		}
 		return null;
@@ -258,7 +255,7 @@ class DataSource extends Object {
  *
  * @return boolean Returns true if a transaction is not in progress
  */
-	function begin(&$model) {
+	protected function begin(&$model) {
 		return !$this->_transactionStarted;
 	}
 /**
@@ -266,7 +263,7 @@ class DataSource extends Object {
  *
  * @return boolean Returns true if a transaction is in progress
  */
-	function commit(&$model) {
+	protected function commit(&$model) {
 		return $this->_transactionStarted;
 	}
 /**
@@ -274,7 +271,7 @@ class DataSource extends Object {
  *
  * @return boolean Returns true if a transaction is in progress
  */
-	function rollback(&$model) {
+	protected function rollback(&$model) {
 		return $this->_transactionStarted;
 	}
 /**
@@ -283,7 +280,7 @@ class DataSource extends Object {
  * @param string $real Real  column type (i.e. "varchar(255)")
  * @return string Abstract column type (i.e. "string")
  */
-	function column($real) {
+	private function column($real) {
 		return false;
 	}
 /**
@@ -294,7 +291,7 @@ class DataSource extends Object {
  * @param unknown_type $values
  * @return unknown
  */
-	function create(&$model, $fields = null, $values = null) {
+	private function create(&$model, $fields = null, $values = null) {
 		return false;
 	}
 /**
@@ -304,7 +301,7 @@ class DataSource extends Object {
  * @param unknown_type $queryData
  * @return unknown
  */
-	function read(&$model, $queryData = array()) {
+	private function read(&$model, $queryData = array()) {
 		return false;
 	}
 /**
@@ -315,7 +312,7 @@ class DataSource extends Object {
  * @param unknown_type $values
  * @return unknown
  */
-	function update(&$model, $fields = null, $values = null) {
+	private function update(&$model, $fields = null, $values = null) {
 		return false;
 	}
 /**
@@ -324,7 +321,7 @@ class DataSource extends Object {
  * @param unknown_type $model
  * @param unknown_type $id
  */
-	function delete(&$model, $id = null) {
+	private function delete(&$model, $id = null) {
 		if ($id == null) {
 			$id = $model->id;
 		}
@@ -335,7 +332,7 @@ class DataSource extends Object {
  * @param unknown_type $source
  * @return in
  */
-	function lastInsertId($source = null) {
+	private function lastInsertId($source = null) {
 		return false;
 	}
 /**
@@ -344,7 +341,7 @@ class DataSource extends Object {
  * @param unknown_type $source
  * @return in
  */
-	function lastNumRows($source = null) {
+	private function lastNumRows($source = null) {
 		return false;
 	}
 /**
@@ -353,7 +350,7 @@ class DataSource extends Object {
  * @param unknown_type $source
  * @return in
  */
-	function lastAffected($source = null) {
+	private function lastAffected($source = null) {
 		return false;
 	}
 /**
@@ -362,7 +359,7 @@ class DataSource extends Object {
  * @param string $interface The name of the interface (method)
  * @return boolean True on success
  */
-	function isInterfaceSupported($interface) {
+	public function isInterfaceSupported($interface) {
 		$methods = get_class_methods(get_class($this));
 		$methods = strtolower(implode('|', $methods));
 		$methods = explode('|', $methods);
@@ -375,7 +372,7 @@ class DataSource extends Object {
  * @param array $config The configuration array
  * @return void
  */
-	function setConfig($config = array()) {
+	private function setConfig($config = array()) {
 		$this->config = array_merge($this->_baseConfig, $this->config, $config);
 	}
 /**
@@ -384,7 +381,7 @@ class DataSource extends Object {
  * @param string $object The name of the object (model) to cache
  * @param mixed $data The description of the model, usually a string or array
  */
-	function __cacheDescription($object, $data = null) {
+	protected function __cacheDescription($object, $data = null) {
 		if ($this->cacheSources === false) {
 			return null;
 		}
@@ -415,7 +412,7 @@ class DataSource extends Object {
  * @param array $stack
  * @return unknown
  */
-	function insertQueryData($query, $data, $association, $assocData, &$model, &$linkModel, $stack) {
+	protected function insertQueryData($query, $data, $association, $assocData, &$model, &$linkModel, $stack) {
 		$keys = array('{$__cakeID__$}', '{$__cakeForeignKey__$}');
 
 		foreach ($keys as $key) {
@@ -490,14 +487,14 @@ class DataSource extends Object {
  * @param unknown_type $key
  * @return unknown
  */
-	function resolveKey($model, $key) {
+	private function resolveKey($model, $key) {
 		return $model->alias . $key;
 	}
 /**
  * Closes the current datasource.
  *
  */
-	function __destruct() {
+	private function __destruct() {
 		if ($this->_transactionStarted) {
 			$null = null;
 			$this->rollback($null);

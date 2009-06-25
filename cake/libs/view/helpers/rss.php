@@ -1,25 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * RSS Helper class file.
  *
  * Simplifies the output of RSS feeds.
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.view.helpers
  * @since         CakePHP(tm) v 1.2
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Helper', 'Xml');
@@ -39,70 +35,70 @@ class RssHelper extends XmlHelper {
  * @var array
  * @access public
  **/
-	var $helpers = array('Time');
+	private $helpers = array('Time');
 /**
  * Base URL
  *
  * @access public
  * @var string
  */
-	var $base = null;
+	private $base = null;
 /**
  * URL to current action.
  *
  * @access public
  * @var string
  */
-	var $here = null;
+	private $here = null;
 /**
  * Parameter array.
  *
  * @access public
  * @var array
  */
-	var $params = array();
+	private $params = array();
 /**
  * Current action.
  *
  * @access public
  * @var string
  */
-	var $action = null;
+	private $action = null;
 /**
  * POSTed model data
  *
  * @access public
  * @var array
  */
-	var $data = null;
+	private $data = null;
 /**
  * Name of the current model
  *
  * @access public
  * @var string
  */
-	var $model = null;
+	private $model = null;
 /**
  * Name of the current field
  *
  * @access public
  * @var string
  */
-	var $field = null;
+	private $field = null;
 /**
  * Default spec version of generated RSS
  *
  * @access public
  * @var string
  */
-	var $version = '2.0';
+	private $version = '2.0';
 /**
  * Returns an RSS document wrapped in <rss /> tags
  *
  * @param  array  $attrib <rss /> tag attributes
  * @return string An RSS document
  */
-	function document($attrib = array(), $content = null) {
+	private function document($attrib = array(), $content = null) {
 		if ($content === null) {
 			$content = $attrib;
 			$attrib = array();
@@ -121,8 +117,8 @@ class RssHelper extends XmlHelper {
  * @param  mixed  $content  Content (<item />'s belonging to this channel
  * @return string An RSS <channel />
  */
-	function channel($attrib = array(), $elements = array(), $content = null) {
-		$view =& ClassRegistry::getObject('view');
+	private function channel($attrib = array(), $elements = array(), $content = null) {
+		$view = ClassRegistry::getObject('view');
 
 		if (!isset($elements['title']) && !empty($view->pageTitle)) {
 			$elements['title'] = $view->pageTitle;
@@ -166,7 +162,7 @@ class RssHelper extends XmlHelper {
  *                          and a string method name
  * @return string A set of RSS <item /> elements
  */
-	function items($items, $callback = null) {
+	private function items($items, $callback = null) {
 		if ($callback != null) {
 			$items = array_map($callback, $items);
 		}
@@ -186,7 +182,7 @@ class RssHelper extends XmlHelper {
  * @param  array  $elements    The list of elements contained in this <item />
  * @return string An RSS <item /> element
  */
-	function item($att = array(), $elements = array()) {
+	private function item($att = array(), $elements = array()) {
 		$content = null;
 
 		if (isset($elements['link']) && !isset($elements['guid'])) {
@@ -270,7 +266,7 @@ class RssHelper extends XmlHelper {
  * @return string An RSS-formatted timestamp
  * @see TimeHelper::toRSS
  */
-	function time($time) {
+	private function time($time) {
 		return $this->Time->toRSS($time);
 	}
 }

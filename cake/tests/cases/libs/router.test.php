@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * RouterTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  *	Licensed under The Open Group Test Suite License
  *	Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', array('Router', 'Debugger'));
@@ -45,7 +41,7 @@ class RouterTest extends CakeTestCase {
 	function setUp() {
 		Configure::write('Routing.admin', null);
 		Router::reload();
-		$this->router =& Router::getInstance();
+		$this->router = Router::getInstance();
 	}
 /**
  * testReturnedInstanceReference method
@@ -658,23 +654,14 @@ class RouterTest extends CakeTestCase {
 
 		Router::reload();
 		Router::setRequestInfo(array(
-			array(
-				'plugin' => 'shows', 'controller' => 'show_tickets', 'action' => 'admin_edit',
-				'pass' => array('6'), 'prefix' => 'admin', 'admin' => true, 'form' => array(),
-				'url' => array('url' => 'admin/shows/show_tickets/edit/6')
-			),
-			array(
-				'plugin' => null, 'controller' => null, 'action' => null, 'base' => '',
-				'here' => '/admin/shows/show_tickets/edit/6', 'webroot' => '/'
-			)
-		));
+				array('plugin' => 'shows', 'controller' => 'show_tickets', 'action' => 'admin_edit', 'pass' =>
+						array(0 => '6'), 'prefix' => 'admin', 'admin' => true, 'form' => array(), 'url' =>
+						array('url' => 'admin/shows/show_tickets/edit/6')),
+				array('plugin' => NULL, 'controller' => NULL, 'action' => NULL, 'base' => '', 'here' => '/admin/shows/show_tickets/edit/6', 'webroot' => '/')));
 
 		Router::parse('/');
 
-		$result = Router::url(array(
-			'plugin' => 'shows', 'controller' => 'show_tickets', 'action' => 'edit', 'id' => '6',
-			'admin' => true, 'prefix' => 'admin'
-		));
+		$result = Router::url(array('plugin' => 'shows', 'controller' => 'show_tickets', 'action' => 'edit', 'id' => '6', 'admin' => true, 'prefix' => 'admin', ));
 		$expected = '/admin/shows/show_tickets/edit/6';
 		$this->assertEqual($result, $expected);
 	}
@@ -1217,7 +1204,7 @@ class RouterTest extends CakeTestCase {
  * @return void
  */
 	function testNamedArgsUrlParsing() {
-		$Router =& Router::getInstance();
+		$Router = Router::getInstance();
 		Router::reload();
 		$result = Router::parse('/controller/action/param1:value1:1/param2:value2:3/param:value');
 		$expected = array('pass' => array(), 'named' => array('param1' => 'value1:1', 'param2' => 'value2:3', 'param' => 'value'), 'controller' => 'controller', 'action' => 'action', 'plugin' => null);
@@ -1325,17 +1312,8 @@ class RouterTest extends CakeTestCase {
 		$expected = '/others/edit/1';
 		$this->assertEqual($result, $expected);
 
-		$result = Router::url(array('controller' => 'others', 'action' => 'edit', 1, 'protected' => true));
+		$result = Router::url(array('controller' => 'others', 'action' => 'edit', 1, 'protected' => true));;
 		$expected = '/protected/others/edit/1';
-		$this->assertEqual($result, $expected);
-		
-		$result = Router::url(array('controller' => 'others', 'action' => 'edit', 1, 'protected' => true, 'page' => 1));
-		$expected = '/protected/others/edit/1/page:1';
-		$this->assertEqual($result, $expected);
-		
-		Router::connectNamed(array('random'));
-		$result = Router::url(array('controller' => 'others', 'action' => 'edit', 1, 'protected' => true, 'random' => 'my-value'));
-		$expected = '/protected/others/edit/1/random:my-value';
 		$this->assertEqual($result, $expected);
 	}
 /**

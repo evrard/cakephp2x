@@ -1,25 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Cake Socket connection class.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 1.2.0
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Core', 'Validation');
@@ -38,14 +34,14 @@ class CakeSocket extends Object {
  * @var string
  * @access public
  */
-	var $description = 'Remote DataSource Network Socket Interface';
+	private $description = 'Remote DataSource Network Socket Interface';
 /**
  * Base configuration settings for the socket connection
  *
  * @var array
  * @access protected
  */
-	var $_baseConfig = array(
+	private $_baseConfig = array(
 		'persistent'	=> false,
 		'host'			=> 'localhost',
 		'protocol'		=> 'tcp',
@@ -58,34 +54,34 @@ class CakeSocket extends Object {
  * @var array
  * @access public
  */
-	var $config = array();
+	private $config = array();
 /**
  * Reference to socket connection resource
  *
  * @var resource
  * @access public
  */
-	var $connection = null;
+	private $connection = null;
 /**
  * This boolean contains the current state of the CakeSocket class
  *
  * @var boolean
  * @access public
  */
-	var $connected = false;
+	private $connected = false;
 /**
  * This variable contains an array with the last error number (num) and string (str)
  *
  * @var array
  * @access public
  */
-	var $lastError = array();
+	private $lastError = array();
 /**
  * Constructor.
  *
  * @param array $config Socket configuration, which will be merged with the base configuration
  */
-	function __construct($config = array()) {
+	private function __construct($config = array()) {
 		parent::__construct();
 
 		$this->config = array_merge($this->_baseConfig, $config);
@@ -99,7 +95,7 @@ class CakeSocket extends Object {
  * @return boolean Success
  * @access public
  */
-	function connect() {
+	private function connect() {
 		if ($this->connection != null) {
 			$this->disconnect();
 		}
@@ -129,7 +125,7 @@ class CakeSocket extends Object {
  * @return string Host name
  * @access public
  */
-	function host() {
+	private function host() {
 		if (Validation::ip($this->config['host'])) {
 			return gethostbyaddr($this->config['host']);
 		} else {
@@ -142,7 +138,7 @@ class CakeSocket extends Object {
  * @return string IP address
  * @access public
  */
-	function address() {
+	private function address() {
 		if (Validation::ip($this->config['host'])) {
 			return $this->config['host'];
 		} else {
@@ -155,7 +151,7 @@ class CakeSocket extends Object {
  * @return array IP addresses
  * @access public
  */
-	function addresses() {
+	private function addresses() {
 		if (Validation::ip($this->config['host'])) {
 			return array($this->config['host']);
 		} else {
@@ -168,7 +164,7 @@ class CakeSocket extends Object {
  * @return string Last error
  * @access public
  */
-	function lastError() {
+	private function lastError() {
 		if (!empty($this->lastError)) {
 			return $this->lastError['num'].': '.$this->lastError['str'];
 		} else {
@@ -182,7 +178,7 @@ class CakeSocket extends Object {
  * @param string $errStr Error string
  * @access public
  */
-	function setLastError($errNum, $errStr) {
+	private function setLastError($errNum, $errStr) {
 		$this->lastError = array('num' => $errNum, 'str' => $errStr);
 	}
 /**
@@ -192,7 +188,7 @@ class CakeSocket extends Object {
  * @return boolean Success
  * @access public
  */
-	function write($data) {
+	private function write($data) {
 		if (!$this->connected) {
 			if (!$this->connect()) {
 				return false;
@@ -210,7 +206,7 @@ class CakeSocket extends Object {
  * @return mixed Socket data
  * @access public
  */
-	function read($length = 1024) {
+	private function read($length = 1024) {
 		if (!$this->connected) {
 			if (!$this->connect()) {
 				return false;
@@ -229,7 +225,7 @@ class CakeSocket extends Object {
  * @return boolean Success
  * @access public
  */
-	function abort() {
+	private function abort() {
 	}
 /**
  * Disconnect the socket from the current connection.
@@ -237,7 +233,7 @@ class CakeSocket extends Object {
  * @return boolean Success
  * @access public
  */
-	function disconnect() {
+	private function disconnect() {
 		if (!is_resource($this->connection)) {
 			$this->connected = false;
 			return true;
@@ -254,7 +250,7 @@ class CakeSocket extends Object {
  *
  * @access private
  */
-	function __destruct() {
+	private function __destruct() {
 		$this->disconnect();
 	}
 /**
@@ -263,7 +259,7 @@ class CakeSocket extends Object {
  * @return boolean True on success
  * @access public
  */
-	function reset($state = null) {
+	private function reset($state = null) {
 		if (empty($state)) {
 			static $initalState = array();
 			if (empty($initalState)) {

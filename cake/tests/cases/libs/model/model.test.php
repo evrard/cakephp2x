@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * ModelTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.model
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', array('AppModel', 'Model'));
@@ -63,11 +59,9 @@ class ModelTest extends CakeTestCase {
 		'core.dependency', 'core.story', 'core.stories_tag', 'core.cd', 'core.book', 'core.basket',
 		'core.overall_favorite', 'core.account', 'core.content', 'core.content_account',
 		'core.film_file', 'core.test_plugin_article', 'core.test_plugin_comment', 'core.uuiditem',
-		'core.counter_cache_user', 'core.counter_cache_post',
-		'core.counter_cache_user_nonstandard_primary_key',
-		'core.counter_cache_post_nonstandard_primary_key', 'core.uuidportfolio',
-		'core.uuiditems_uuidportfolio', 'core.uuiditems_uuidportfolio_numericid', 'core.fruit',
-		'core.fruits_uuid_tag', 'core.uuid_tag'
+		'core.counter_cache_user', 'core.counter_cache_post', 'core.uuidportfolio',
+		'core.uuiditems_uuidportfolio', 'core.uuiditems_uuidportfolio_numericid',
+		'core.fruit', 'core.fruits_uuid_tag', 'core.uuid_tag'
 	);
 /**
  * start method
@@ -99,49 +93,6 @@ class ModelTest extends CakeTestCase {
 	function endTest() {
 		ClassRegistry::flush();
 	}
-
-/**
- * Tests getAssociated method
- *
- * @access public
- * @return void
- */
-	function testGetAssociated() {
-		$this->loadFixtures('Article');
-		$Article = ClassRegistry::init('Article');
-
-		$assocTypes = array('hasMany', 'hasOne', 'belongsTo', 'hasAndBelongsToMany');
-		foreach ($assocTypes as $type) {
-			 $this->assertEqual($Article->getAssociated($type), array_keys($Article->{$type}));
-		}
-
-		$Article->bindModel(array('hasMany' => array('Category')));
-		$this->assertEqual($Article->getAssociated('hasMany'), array('Comment', 'Category'));
-
-		$results = $Article->getAssociated();
-		$this->assertEqual(sort(array_keys($results)), array('Category', 'Comment', 'Tag'));
-
-		$Article->unbindModel(array('hasAndBelongsToMany' => array('Tag')));
-		$this->assertEqual($Article->getAssociated('hasAndBelongsToMany'), array());
-
-		$result = $Article->getAssociated('Category');
-		$expected = array(
-			'className' => 'Category',
-			'foreignKey' => 'article_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'dependent' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => '',
-			'association' => 'hasMany',
-		);
-		$this->assertEqual($result, $expected);
-	}
-
 /**
  * testAutoConstructAssociations method
  *
@@ -150,7 +101,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testAutoConstructAssociations() {
 		$this->loadFixtures('User', 'ArticleFeatured');
-		$TestModel =& new AssociationTest1();
+		$TestModel = new AssociationTest1();
 
 		$result = $TestModel->hasAndBelongsToMany;
 		$expected = array('AssociationTest2' => array(
@@ -166,8 +117,8 @@ class ModelTest extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 
 		// Tests related to ticket https://trac.cakephp.org/ticket/5594
-		$TestModel =& new ArticleFeatured();
-		$TestFakeModel =& new ArticleFeatured(array('table' => false));
+		$TestModel = new ArticleFeatured();
+		$TestFakeModel = new ArticleFeatured(array('table' => false));
 
 		$expected = array(
 			'User' => array(
@@ -238,12 +189,12 @@ class ModelTest extends CakeTestCase {
 	function testConstruct() {
 		$this->loadFixtures('Post', 'Comment');
 
-		$TestModel =& ClassRegistry::init('MergeVarPluginPost');
+		$TestModel = ClassRegistry::init('MergeVarPluginPost');
 		$this->assertEqual($TestModel->actsAs, array('Containable', 'Tree'));
 		$this->assertTrue(isset($TestModel->Behaviors->Containable));
 		$this->assertTrue(isset($TestModel->Behaviors->Tree));
 
-		$TestModel =& ClassRegistry::init('MergeVarPluginComment');
+		$TestModel = ClassRegistry::init('MergeVarPluginComment');
 		$expected = array('Containable', 'Containable' => array('some_settings'));
 		$this->assertEqual($TestModel->actsAs, $expected);
 		$this->assertTrue(isset($TestModel->Behaviors->Containable));
@@ -255,13 +206,13 @@ class ModelTest extends CakeTestCase {
  * @return void
  */
 	function testColumnTypeFetching() {
-		$model =& new Test();
+		$model = new Test();
 		$this->assertEqual($model->getColumnType('id'), 'integer');
 		$this->assertEqual($model->getColumnType('notes'), 'text');
 		$this->assertEqual($model->getColumnType('updated'), 'datetime');
 		$this->assertEqual($model->getColumnType('unknown'), null);
 
-		$model =& new Article();
+		$model = new Article();
 		$this->assertEqual($model->getColumnType('User.created'), 'datetime');
 		$this->assertEqual($model->getColumnType('Tag.id'), 'integer');
 		$this->assertEqual($model->getColumnType('Article.id'), 'integer');
@@ -277,7 +228,7 @@ class ModelTest extends CakeTestCase {
 			'DeviceType', 'DeviceTypeCategory', 'FeatureSet', 'ExteriorTypeCategory',
 			'Document', 'Device', 'DocumentDirectory'
 		);
-		$DeviceType =& new DeviceType();
+		$DeviceType = new DeviceType();
 
 		$DeviceType->recursive = 2;
 		$result = $DeviceType->read(null, 1);
@@ -320,7 +271,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testHabtmRecursiveBelongsTo() {
 		$this->loadFixtures('Portfolio', 'Item', 'ItemsPortfolio', 'Syfile', 'Image');
-		$Portfolio =& new Portfolio();
+		$Portfolio = new Portfolio();
 
 		$result = $Portfolio->find(array('id' => 2), null, null, 3);
 		$expected = array('Portfolio' => array(
@@ -353,7 +304,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testHabtmUuidWithUuidId() {
 		$this->loadFixtures('Uuidportfolio', 'Uuiditem', 'UuiditemsUuidportfolio');
-		$TestModel =& new Uuidportfolio();
+		$TestModel = new Uuidportfolio();
 
 		$data = array('Uuidportfolio' => array('name' => 'Portfolio 3'));
 		$data['Uuiditem']['Uuiditem'] = array('483798c8-c7cc-430e-8cf9-4fcc40cf8569');
@@ -371,7 +322,7 @@ class ModelTest extends CakeTestCase {
  **/
 	function testHabtmSavingWithNoPrimaryKeyUuidJoinTable() {
 		$this->loadFixtures('UuidTag', 'Fruit', 'FruitsUuidTag');
-		$Fruit =& new Fruit();
+		$Fruit = new Fruit();
 		$data = array(
 			'Fruit' => array(
 				'color' => 'Red',
@@ -394,7 +345,7 @@ class ModelTest extends CakeTestCase {
  **/
 	function testHabtmSavingWithNoPrimaryKeyUuidJoinTableNoWith() {
 		$this->loadFixtures('UuidTag', 'Fruit', 'FruitsUuidTag');
-		$Fruit =& new FruitNoWith();
+		$Fruit = new FruitNoWith();
 		$data = array(
 			'Fruit' => array(
 				'color' => 'Red',
@@ -418,7 +369,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testHabtmUuidWithNumericId() {
 		$this->loadFixtures('Uuidportfolio', 'Uuiditem', 'UuiditemsUuidportfolioNumericid');
-		$TestModel =& new Uuiditem();
+		$TestModel = new Uuiditem();
 
 		$data = array('Uuiditem' => array('name' => 'Item 7', 'published' => 0));
 		$data['Uuidportfolio']['Uuidportfolio'] = array('480af662-eb8c-47d3-886b-230540cf8569');
@@ -436,7 +387,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testHabtmFinderQuery() {
 		$this->loadFixtures('Article', 'Tag', 'ArticlesTag');
-		$Article =& new Article();
+		$Article = new Article();
 
 		$sql = $this->db->buildStatement(
 			array(
@@ -475,7 +426,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testHabtmLimitOptimization() {
 		$this->loadFixtures('Article', 'User', 'Comment', 'Tag', 'ArticlesTag');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$TestModel->hasAndBelongsToMany['Tag']['limit'] = 2;
 		$result = $TestModel->read(null, 2);
@@ -505,7 +456,7 @@ class ModelTest extends CakeTestCase {
  * @return void
  */
 	function testHabtmUniqueKey() {
-		$model =& new Item();
+		$model = new Item();
 		$this->assertFalse($model->hasAndBelongsToMany['Portfolio']['unique']);
 	}
 /**
@@ -516,7 +467,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testHasManyLimitOptimization() {
 		$this->loadFixtures('Project', 'Thread', 'Message', 'Bid');
-		$Project =& new Project();
+		$Project = new Project();
 		$Project->recursive = 3;
 
 		$result = $Project->find('all');
@@ -590,7 +541,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testWithAssociation() {
 		$this->loadFixtures('Something', 'SomethingElse', 'JoinThing');
-		$TestModel =& new Something();
+		$TestModel = new Something();
 		$result = $TestModel->SomethingElse->find('all');
 
 		$expected = array(
@@ -663,7 +614,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testDynamicAssociations() {
 		$this->loadFixtures('Article', 'Comment');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$TestModel->belongsTo = $TestModel->hasAndBelongsToMany = $TestModel->hasOne = array();
 		$TestModel->hasMany['Comment'] = array_merge($TestModel->hasMany['Comment'], array(
@@ -746,7 +697,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testFindAllRecursiveSelfJoin() {
 		$this->loadFixtures('Home', 'AnotherArticle', 'Advertisement');
-		$TestModel =& new Home();
+		$TestModel = new Home();
 		$TestModel->recursive = 2;
 
 		$result = $TestModel->find('all');
@@ -779,7 +730,7 @@ class ModelTest extends CakeTestCase {
 		$this->loadFixtures(
 			'MyCategoriesMyUsers', 'MyCategoriesMyProducts', 'MyCategory', 'MyUser', 'MyProduct'
 		);
-		$MyUser =& new MyUser();
+		$MyUser = new MyUser();
 		$MyUser->recursive = 2;
 
 		$result = $MyUser->find('all');
@@ -831,7 +782,7 @@ class ModelTest extends CakeTestCase {
 	function testFindSelfAssociations() {
 		$this->loadFixtures('Person');
 
-		$TestModel =& new Person();
+		$TestModel = new Person();
 		$TestModel->recursive = 2;
 		$result = $TestModel->read(null, 1);
 		$expected = array(
@@ -872,7 +823,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testPluginAssociations() {
 		$this->loadFixtures('TestPluginArticle', 'User', 'TestPluginComment');
-		$TestModel =& new TestPluginArticle();
+		$TestModel = new TestPluginArticle();
 
 		$result = $TestModel->find('all');
 		$expected = array(
@@ -909,17 +860,17 @@ class ModelTest extends CakeTestCase {
  * @return void
  */
 	function testIdentity() {
-		$TestModel =& new Test();
+		$TestModel = new Test();
 		$result = $TestModel->alias;
 		$expected = 'Test';
 		$this->assertEqual($result, $expected);
 
-		$TestModel =& new TestAlias();
+		$TestModel = new TestAlias();
 		$result = $TestModel->alias;
 		$expected = 'TestAlias';
 		$this->assertEqual($result, $expected);
 
-		$TestModel =& new Test(array('alias' => 'AnotherTest'));
+		$TestModel = new Test(array('alias' => 'AnotherTest'));
 		$result = $TestModel->alias;
 		$expected = 'AnotherTest';
 		$this->assertEqual($result, $expected);
@@ -932,11 +883,11 @@ class ModelTest extends CakeTestCase {
  */
 	function testCreation() {
 		$this->loadFixtures('Article');
-		$TestModel =& new Test();
+		$TestModel = new Test();
 		$result = $TestModel->create();
 		$expected = array('Test' => array('notes' => 'write some notes here'));
 		$this->assertEqual($result, $expected);
-		$TestModel =& new User();
+		$TestModel = new User();
 		$result = $TestModel->schema();
 
 		if (isset($this->db->columns['primary_key']['length'])) {
@@ -959,12 +910,12 @@ class ModelTest extends CakeTestCase {
 				'updated'=> array('type' => 'datetime',	'null' => true, 'default' => null,	'length' => null));
 		$this->assertEqual($result, $expected);
 
-		$TestModel =& new Article();
+		$TestModel = new Article();
 		$result = $TestModel->create();
 		$expected = array('Article' => array('published' => 'N'));
 		$this->assertEqual($result, $expected);
 
-		$FeaturedModel =& new Featured();
+		$FeaturedModel = new Featured();
 		$data = array(
 			'article_featured_id' => 1, 'category_id' => 1,
 			'published_date' => array('year' => 2008, 'month' => 06, 'day' => 11),
@@ -994,7 +945,7 @@ class ModelTest extends CakeTestCase {
  **/
 	function testResetOfExistsOnCreate() {
 		$this->loadFixtures('Article');
-		$Article =& new Article();
+		$Article = new Article();
 		$Article->id = 1;
 		$Article->saveField('title', 'Reset me');
 		$Article->delete();
@@ -1016,7 +967,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testCreationOfEmptyRecord() {
 		$this->loadFixtures('Author');
-		$TestModel =& new Author();
+		$TestModel = new Author();
 		$this->assertEqual($TestModel->find('count'), 4);
 
 		$TestModel->deleteAll(true, false, false);
@@ -1034,7 +985,7 @@ class ModelTest extends CakeTestCase {
  * @return void
  */
 	function testCreateWithPKFiltering() {
-		$TestModel =& new Article();
+		$TestModel = new Article();
 		$data = array('id' => 5, 'user_id' => 2, 'title' => 'My article', 'body' => 'Some text');
 
 		$result = $TestModel->create($data);
@@ -1072,8 +1023,8 @@ class ModelTest extends CakeTestCase {
  */
 	function testCreationWithMultipleData() {
 		$this->loadFixtures('Article', 'Comment');
-		$Article =& new Article();
-		$Comment =& new Comment();
+		$Article = new Article();
+		$Comment = new Comment();
 
 		$articles = $Article->find('all', array('fields' => array('id','title'), 'recursive' => -1));
 		$comments = $Comment->find('all', array('fields' => array('id','article_id','user_id','comment','published'), 'recursive' => -1));
@@ -1119,8 +1070,8 @@ class ModelTest extends CakeTestCase {
  */
 	function testCreationWithMultipleDataSameModel() {
 		$this->loadFixtures('Article');
-		$Article =& new Article();
-		$SecondaryArticle =& new Article();
+		$Article = new Article();
+		$SecondaryArticle = new Article();
 
 		$result = $Article->field('title', array('id' => 1));
 		$this->assertEqual($result, 'First Article');
@@ -1152,8 +1103,8 @@ class ModelTest extends CakeTestCase {
  */
 	function testCreationWithMultipleDataSameModelManualInstances() {
 		$this->loadFixtures('PrimaryModel');
-		$Primary =& new PrimaryModel();
-		$Secondary =& new PrimaryModel();
+		$Primary = new PrimaryModel();
+		$Secondary = new PrimaryModel();
 
 		$result = $Primary->field('primary_name', array('id' => 1));
 		$this->assertEqual($result, 'Primary Name Existing');
@@ -1184,7 +1135,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testReadFakeThread() {
 		$this->loadFixtures('CategoryThread');
-		$TestModel =& new CategoryThread();
+		$TestModel = new CategoryThread();
 
 		$fullDebug = $this->db->fullDebug;
 		$this->db->fullDebug = true;
@@ -1212,7 +1163,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testFindFakeThread() {
 		$this->loadFixtures('CategoryThread');
-		$TestModel =& new CategoryThread();
+		$TestModel = new CategoryThread();
 
 		$fullDebug = $this->db->fullDebug;
 		$this->db->fullDebug = true;
@@ -1240,7 +1191,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testFindAllFakeThread() {
 		$this->loadFixtures('CategoryThread');
-		$TestModel =& new CategoryThread();
+		$TestModel = new CategoryThread();
 
 		$fullDebug = $this->db->fullDebug;
 		$this->db->fullDebug = true;
@@ -1292,7 +1243,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testConditionalNumerics() {
 		$this->loadFixtures('NumericArticle');
-		$NumericArticle =& new NumericArticle();
+		$NumericArticle = new NumericArticle();
 		$data = array('title' => '12345abcde');
 		$result = $NumericArticle->find($data);
 		$this->assertTrue(!empty($result));
@@ -1311,7 +1262,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testFindAll() {
 		$this->loadFixtures('User');
-		$TestModel =& new User();
+		$TestModel = new User();
 		$TestModel->cacheQueries = false;
 
 		$result = $TestModel->find('all');
@@ -1408,14 +1359,14 @@ class ModelTest extends CakeTestCase {
 	function testGenerateFindList() {
 		$this->loadFixtures('Article', 'Apple', 'Post', 'Author', 'User');
 
-		$TestModel =& new Article();
+		$TestModel = new Article();
 		$TestModel->displayField = 'title';
 
 		$result = $TestModel->find('list', array('order' => 'Article.title ASC'));
 		$expected = array(1 => 'First Article', 2 => 'Second Article', 3 => 'Third Article');
 		$this->assertEqual($result, $expected);
 
-		$db =& ConnectionManager::getDataSource('test_suite');
+		$db = ConnectionManager::getDataSource('test_suite');
 		if ($db->config['driver'] == 'mysql') {
 			$result = $TestModel->find('list', array('order' => array('FIELD(Article.id, 3, 2) ASC', 'Article.title ASC')));
 			$expected = array(1 => 'First Article', 3 => 'Third Article', 2 => 'Second Article');
@@ -1444,13 +1395,13 @@ class ModelTest extends CakeTestCase {
 		$expected = array(1 => array(1 => 'First Article', 3 => 'Third Article'), 3 => array(2 => 'Second Article'));
 		$this->assertEqual($result, $expected);
 
-		$TestModel =& new Apple();
+		$TestModel = new Apple();
 		$expected = array(1 => 'Red Apple 1', 2 => 'Bright Red Apple', 3 => 'green blue', 4 => 'Test Name', 5 => 'Blue Green', 6 => 'My new apple', 7 => 'Some odd color');
 
 		$this->assertEqual($TestModel->find('list'), $expected);
 		$this->assertEqual($TestModel->Parent->find('list'), $expected);
 
-		$TestModel =& new Post();
+		$TestModel = new Post();
 		$result = $TestModel->find('list', array('fields' => 'Post.title'));
 		$expected = array(1 => 'First Post', 2 => 'Second Post', 3 => 'Third Post');
 		$this->assertEqual($result, $expected);
@@ -1483,12 +1434,12 @@ class ModelTest extends CakeTestCase {
 		$expected = array('mariano' => array(1 => 'First Post', 3 => 'Third Post'), 'larry' => array(2 => 'Second Post'));
 		$this->assertEqual($result, $expected);
 
-		$TestModel =& new User();
+		$TestModel = new User();
 		$result = $TestModel->find('list', array('fields' => array('User.user', 'User.password')));
 		$expected = array('mariano' => '5f4dcc3b5aa765d61d8327deb882cf99', 'nate' => '5f4dcc3b5aa765d61d8327deb882cf99', 'larry' => '5f4dcc3b5aa765d61d8327deb882cf99', 'garrett' => '5f4dcc3b5aa765d61d8327deb882cf99');
 		$this->assertEqual($result, $expected);
 
-		$TestModel =& new ModifiedAuthor();
+		$TestModel = new ModifiedAuthor();
 		$result = $TestModel->find('list', array('fields' => array('Author.id', 'Author.user')));
 		$expected = array(1 => 'mariano (CakePHP)', 2 => 'nate (CakePHP)', 3 => 'larry (CakePHP)', 4 => 'garrett (CakePHP)');
 		$this->assertEqual($result, $expected);
@@ -1501,7 +1452,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testRecordExists() {
 		$this->loadFixtures('User');
-		$TestModel =& new User();
+		$TestModel = new User();
 
 		$this->assertFalse($TestModel->exists());
 		$TestModel->read(null, 1);
@@ -1511,7 +1462,7 @@ class ModelTest extends CakeTestCase {
 		$TestModel->id = 4;
 		$this->assertTrue($TestModel->exists());
 
-		$TestModel =& new TheVoid();
+		$TestModel = new TheVoid();
 		$this->assertFalse($TestModel->exists());
 		$TestModel->id = 5;
 		$this->assertFalse($TestModel->exists());
@@ -1524,7 +1475,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testFindField() {
 		$this->loadFixtures('User');
-		$TestModel =& new User();
+		$TestModel = new User();
 
 		$TestModel->id = 1;
 		$result = $TestModel->field('user');
@@ -1551,7 +1502,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testFindUnique() {
 		$this->loadFixtures('User');
-		$TestModel =& new User();
+		$TestModel = new User();
 
 		$this->assertFalse($TestModel->isUnique(array('user' => 'nate')));
 		$TestModel->id = 2;
@@ -1566,7 +1517,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testUpdateExisting() {
 		$this->loadFixtures('User', 'Article', 'Comment');
-		$TestModel =& new User();
+		$TestModel = new User();
 		$TestModel->create();
 
 		$TestModel->save(array('User' => array('user' => 'some user', 'password' => 'some password')));
@@ -1580,8 +1531,8 @@ class ModelTest extends CakeTestCase {
 		$this->assertEqual($result['User']['user'], 'updated user');
 		$this->assertEqual($result['User']['password'], 'some password');
 
-		$Article =& new Article();
-		$Comment =& new Comment();
+		$Article = new Article();
+		$Comment = new Comment();
 		$data = array('Comment' => array('id' => 1, 'comment' => 'First Comment for First Article'),
 				'Article' => array('id' => 2, 'title' => 'Second Article'));
 
@@ -1599,7 +1550,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testUpdateMultiple() {
 		$this->loadFixtures('Comment', 'Article', 'User', 'CategoryThread');
-		$TestModel =& new Comment();
+		$TestModel = new Comment();
 		$result = Set::extract($TestModel->find('all'), '{n}.Comment.user_id');
 		$expected = array('2', '4', '1', '1', '1', '2');
 		$this->assertEqual($result, $expected);
@@ -1623,7 +1574,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testUpdateWithCalculation() {
 		$this->loadFixtures('DataTest');
-		$model =& new DataTest();
+		$model = new DataTest();
 		$result = $model->saveAll(array(
 			array('count' => 5, 'float' => 1.1),
 			array('count' => 3, 'float' => 1.2),
@@ -1651,7 +1602,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testBindUnbind() {
 		$this->loadFixtures('User', 'Comment', 'FeatureSet');
-		$TestModel =& new User();
+		$TestModel = new User();
 
 		$result = $TestModel->hasMany;
 		$expected = array();
@@ -1759,7 +1710,7 @@ class ModelTest extends CakeTestCase {
 				array('id' => '2', 'article_id' => '1', 'user_id' => '4', 'comment' => 'Second Comment for First Article', 'published' => 'Y', 'created' => '2007-03-18 10:47:23', 'updated' => '2007-03-18 10:49:31'))));
 		$this->assertEqual($result, $expected);
 
-		$TestModel2 =& new DeviceType();
+		$TestModel2 = new DeviceType();
 
 		$expected = array('className' => 'FeatureSet', 'foreignKey' => 'feature_set_id', 'conditions' => '', 'fields' => '', 'order' => '', 'counterCache' => '');
 		$this->assertEqual($TestModel2->belongsTo['FeatureSet'], $expected);
@@ -1786,7 +1737,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testBindMultipleTimes() {
 		$this->loadFixtures('User', 'Comment', 'Article');
-		$TestModel =& new User();
+		$TestModel = new User();
 
 		$result = $TestModel->hasMany;
 		$expected = array();
@@ -1823,24 +1774,6 @@ class ModelTest extends CakeTestCase {
 			array('User' => array('id' => '4', 'user' => 'garrett'), 'Items' => array()));
 		$this->assertEqual($result, $expected);
 	}
-
-/**
- * test that bindModel behaves with Custom primary Key associations
- *
- * @return void
- **/
-	function bindWithCustomPrimaryKey() {
-		$this->loadFixtures('Story', 'StoriesTag', 'Tag');
-		$Model =& ClassRegistry::init('StoriesTag');
-		$Model->bindModel(array(
-			'belongsTo' => array(
-				'Tag' => array('className' => 'Tag', 'foreignKey' => 'story')
-			)
-		));
-		$result = $Model->find('all');
-		$this->assertFalse(empty($result));
-	}
-
 /**
  * test find('count') method
  *
@@ -1850,7 +1783,7 @@ class ModelTest extends CakeTestCase {
 	function testFindCount() {
 		$this->loadFixtures('User', 'Project');
 
-		$TestModel =& new User();
+		$TestModel = new User();
 		$result = $TestModel->find('count');
 		$this->assertEqual($result, 4);
 
@@ -1867,7 +1800,7 @@ class ModelTest extends CakeTestCase {
 		$this->db->_queriesLog = array();
 		$this->db->fullDebug = $fullDebug;
 
-		$TestModel =& new Project();
+		$TestModel = new Project();
 		$TestModel->create(array('name' => 'project')) && $TestModel->save();
 		$TestModel->create(array('name' => 'project')) && $TestModel->save();
 		$TestModel->create(array('name' => 'project')) && $TestModel->save();
@@ -1887,7 +1820,7 @@ class ModelTest extends CakeTestCase {
 		}
 		$this->loadFixtures('Project');
 		$db = ConnectionManager::getDataSource('test_suite');
-		$TestModel =& new Project();
+		$TestModel = new Project();
 
 		$result = $TestModel->find('count', array('conditions' => array(
 			$db->expression('Project.name = \'Project 3\'')
@@ -1907,7 +1840,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testFindMagic() {
 		$this->loadFixtures('User');
-		$TestModel =& new User();
+		$TestModel = new User();
 
 		$result = $TestModel->findByUser('mariano');
 		$expected = array('User' => array('id' => '1', 'user' => 'mariano', 'password' => '5f4dcc3b5aa765d61d8327deb882cf99', 'created' => '2007-03-17 01:16:23', 'updated' => '2007-03-17 01:18:31'));
@@ -1925,7 +1858,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testRead() {
 		$this->loadFixtures('User', 'Article');
-		$TestModel =& new User();
+		$TestModel = new User();
 
 		$result = $TestModel->read();
 		$this->assertFalse($result);
@@ -1967,7 +1900,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testRecursiveRead() {
 		$this->loadFixtures('User', 'Article', 'Comment', 'Tag', 'ArticlesTag', 'Featured', 'ArticleFeatured');
-		$TestModel =& new User();
+		$TestModel = new User();
 
 		$result = $TestModel->bindModel(array('hasMany' => array('Article')), false);
 		$this->assertTrue($result);
@@ -2006,7 +1939,7 @@ class ModelTest extends CakeTestCase {
 		$this->db->truncate(new Featured());
 
 		$this->loadFixtures('User', 'Article', 'Comment', 'Tag', 'ArticlesTag', 'Attachment', 'ArticleFeatured', 'Featured', 'Category');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$result = $TestModel->find('all', array('conditions' => array('Article.user_id' => 1)));
 		$expected = array(
@@ -2107,7 +2040,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testRecursiveFindAllWithLimit() {
 		$this->loadFixtures('Article', 'User', 'Tag', 'ArticlesTag', 'Comment', 'Attachment');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$TestModel->hasMany['Comment']['limit'] = 2;
 
@@ -2165,7 +2098,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testAssociationAfterFind() {
 		$this->loadFixtures('Post', 'Author', 'Comment');
-		$TestModel =& new Post();
+		$TestModel = new Post();
 		$result = $TestModel->find('all');
 		$expected = array(
 			array(
@@ -2182,7 +2115,7 @@ class ModelTest extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 		unset($TestModel);
 
-		$Author =& new Author();
+		$Author = new Author();
 		$Author->Post->bindModel(array(
 			'hasMany' => array(
 				'Comment' => array(
@@ -2239,7 +2172,7 @@ class ModelTest extends CakeTestCase {
  * @return void
  */
 	function testValidatesBackwards() {
-		$TestModel =& new TestValidate();
+		$TestModel = new TestValidate();
 
 		$TestModel->validate = array(
 			'user_id' => VALID_NUMBER,
@@ -2284,7 +2217,7 @@ class ModelTest extends CakeTestCase {
  * @return void
  */
 	function testValidates() {
-		$TestModel =& new TestValidate();
+		$TestModel = new TestValidate();
 
 		$TestModel->validate = array(
 			'user_id' => 'numeric',
@@ -2531,7 +2464,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveField() {
 		$this->loadFixtures('Article');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$TestModel->id = 1;
 		$result = $TestModel->saveField('title', 'New First Article');
@@ -2573,7 +2506,7 @@ class ModelTest extends CakeTestCase {
 		$this->assertFalse($result);
 
 		$this->loadFixtures('Node', 'Dependency');
-		$Node =& new Node();
+		$Node = new Node();
 		$Node->set('id', 1);
 		$result = $Node->read();
 		$this->assertEqual(Set::extract('/ParentNode/name', $result), array('Second'));
@@ -2590,14 +2523,14 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveWithCreate() {
 		$this->loadFixtures('User', 'Article', 'User', 'Comment', 'Tag', 'ArticlesTag', 'Attachment');
-		$TestModel =& new User();
+		$TestModel = new User();
 
 		$data = array('User' => array('user' => 'user', 'password' => ''));
 		$result = $TestModel->save($data);
 		$this->assertFalse($result);
 		$this->assertTrue(!empty($TestModel->validationErrors));
 
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$data = array('Article' => array('user_id' => '', 'title' => '', 'body' => ''));
 		$result = $TestModel->create($data) && $TestModel->save();
@@ -2687,7 +2620,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveWithSet() {
 		$this->loadFixtures('Article');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		// Create record we will be updating later
 
@@ -2768,7 +2701,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveWithNonExistentFields() {
 		$this->loadFixtures('Article');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 		$TestModel->recursive = -1;
 
 		$data = array(
@@ -2836,7 +2769,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveHabtm() {
 		$this->loadFixtures('Article', 'User', 'Comment', 'Tag', 'ArticlesTag');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$result = $TestModel->findById(2);
 		$expected = array(
@@ -3103,7 +3036,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveHabtmCustomKeys() {
 		$this->loadFixtures('Story', 'StoriesTag', 'Tag');
-		$Story =& new Story();
+		$Story = new Story();
 
 		$data = array('Story' => array('story' => '1'), 'Tag' => array('Tag' => array(2, 3)));
 		$result = $Story->set($data);
@@ -3136,7 +3069,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testHabtmSaveKeyResolution() {
 		$this->loadFixtures('Apple', 'Device', 'ThePaperMonkies');
-		$ThePaper =& new ThePaper();
+		$ThePaper = new ThePaper();
 
 		$ThePaper->id = 1;
 		$ThePaper->save(array('Monkey' => array(2, 3)));
@@ -3185,7 +3118,7 @@ class ModelTest extends CakeTestCase {
 	function testHabtmDeleteLinksWhenNoPrimaryKeyInJoinTable() {
 
 		$this->loadFixtures('Apple', 'Device', 'ThePaperMonkies');
-		$ThePaper =& new ThePaper();
+		$ThePaper = new ThePaper();
 		$ThePaper->id = 1;
 		$ThePaper->save(array('Monkey' => array(2, 3)));
 
@@ -3196,7 +3129,7 @@ class ModelTest extends CakeTestCase {
 		);
 		$this->assertEqual($result['Monkey'], $expected);
 
-		$ThePaper =& new ThePaper();
+		$ThePaper = new ThePaper();
 		$ThePaper->id = 2;
 		$ThePaper->save(array('Monkey' => array(2, 3)));
 
@@ -3231,7 +3164,7 @@ class ModelTest extends CakeTestCase {
 		Configure::write('Cache.disable', false);
 
 		$this->loadFixtures('OverallFavorite');
-		$OverallFavorite =& new OverallFavorite();
+		$OverallFavorite = new OverallFavorite();
 
 		touch(CACHE . 'views' . DS . 'some_dir_overallfavorites_index.php');
 		touch(CACHE . 'views' . DS . 'some_dir_overall_favorites_index.php');
@@ -3260,7 +3193,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveAll() {
 		$this->loadFixtures('Post', 'Author', 'Comment', 'Attachment');
-		$TestModel =& new Post();
+		$TestModel = new Post();
 
 		$result = $TestModel->find('all');
 		$this->assertEqual(count($result), 3);
@@ -3299,7 +3232,7 @@ class ModelTest extends CakeTestCase {
 		);
 		$this->assertEqual($result, $expected);
 
-		$TestModel =& new Comment();
+		$TestModel = new Comment();
 		$ts = date('Y-m-d H:i:s');
 		$result = $TestModel->saveAll(array(
 			'Comment' => array('article_id' => 2, 'user_id' => 2, 'comment' => 'New comment with attachment', 'published' => 'Y'),
@@ -3338,7 +3271,7 @@ class ModelTest extends CakeTestCase {
 				array('comment' => 'Article comment', 'user_id' => 1),
 			),
 		);
-		$Article =& new Article();
+		$Article = new Article();
 		$result = $Article->saveAll($data);
 		$this->assertTrue($result);
 
@@ -3371,7 +3304,7 @@ class ModelTest extends CakeTestCase {
 			)
 		);
 
-		$Something =& new Something();
+		$Something = new Something();
 		$result = $Something->saveAll($data);
 		$this->assertTrue($result);
 		$result = $Something->read();
@@ -3496,7 +3429,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveAllAtomic() {
 		$this->loadFixtures('Article', 'User');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$result = $TestModel->saveAll(array(
 			'Article' => array('title' => 'Post with Author', 'body' => 'This post will be saved with an author', 'user_id' => 2),
@@ -3535,7 +3468,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveAllHasMany() {
 		$this->loadFixtures('Article', 'Comment');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 		$TestModel->belongsTo = $TestModel->hasAndBelongsToMany = array();
 
 		$result = $TestModel->saveAll(array(
@@ -3590,7 +3523,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveAllHasManyValidation() {
 		$this->loadFixtures('Article', 'Comment');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 		$TestModel->belongsTo = $TestModel->hasAndBelongsToMany = array();
 		$TestModel->Comment->validate = array('comment' => 'notEmpty');
 
@@ -3627,7 +3560,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveAllTransaction() {
 		$this->loadFixtures('Post', 'Author', 'Comment', 'Attachment');
-		$TestModel =& new Post();
+		$TestModel = new Post();
 
 		$TestModel->validate = array('title' => 'notEmpty');
 		$data = array(
@@ -3703,7 +3636,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveAllValidation() {
 		$this->loadFixtures('Post', 'Author', 'Comment', 'Attachment');
-		$TestModel =& new Post();
+		$TestModel = new Post();
 
 		$data = array(
 			array('id' => '1', 'title' => 'Baleeted First Post', 'body' => 'Baleeted!', 'published' => 'N'),
@@ -3782,7 +3715,7 @@ class ModelTest extends CakeTestCase {
  * @return void
  */
 	function testSaveAllValidationOnly() {
-		$TestModel =& new Comment();
+		$TestModel = new Comment();
 		$TestModel->Attachment->validate = array('attachment' => 'notEmpty');
 
 		$data = array(
@@ -3797,7 +3730,7 @@ class ModelTest extends CakeTestCase {
 		$result = $TestModel->saveAll($data, array('validate' => 'only'));
 		$this->assertFalse($result);
 
-		$TestModel =& new Article();
+		$TestModel = new Article();
 		$TestModel->validate = array('title' => 'notEmpty');
 		$result = $TestModel->saveAll(
 			array(
@@ -3834,7 +3767,7 @@ class ModelTest extends CakeTestCase {
  * @return void
  */
 	function testSaveAllValidateFirst() {
-		$model =& new Article();
+		$model = new Article();
 		$model->deleteAll(true);
 
 		$model->Comment->validate = array('comment' => 'notEmpty');
@@ -3896,8 +3829,8 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveWithCounterCache() {
 		$this->loadFixtures('Syfile', 'Item');
-		$TestModel =& new Syfile();
-		$TestModel2 =& new Item();
+		$TestModel = new Syfile();
+		$TestModel2 = new Item();
 
 		$result = $TestModel->findById(1);
 		$this->assertIdentical($result['Syfile']['item_count'], null);
@@ -3939,6 +3872,7 @@ class ModelTest extends CakeTestCase {
 		$result = $user[$User->alias]['post_count'];
 		$expected = 3;
 		$this->assertEqual($result, $expected);
+
 	}
 /**
  * Tests that counter caches are updated when records are deleted
@@ -3982,32 +3916,6 @@ class ModelTest extends CakeTestCase {
 		$this->assertEqual($users[1]['User']['post_count'], 2);
 	}
 /**
- * Test counter cache with models that use a non-standard (i.e. not using 'id')
- * as their primary key.
- *
- * @access public
- * @return void
- */
-    function testCounterCacheWithNonstandardPrimaryKey() {
-        $this->loadFixtures(
-			'CounterCacheUserNonstandardPrimaryKey',
-			'CounterCachePostNonstandardPrimaryKey'
-		);
-
-        $User = new CounterCacheUserNonstandardPrimaryKey();
-        $Post = new CounterCachePostNonstandardPrimaryKey();
-
-		$data = $Post->find('first', array(
-			'conditions' => array('pid' => 1),'recursive' => -1
-		));
-		$data[$Post->alias]['uid'] = 301;
-		$Post->save($data);
-
-		$users = $User->find('all',array('order' => 'User.uid'));
-		$this->assertEqual($users[0]['User']['post_count'], 1);
-		$this->assertEqual($users[1]['User']['post_count'], 2);
-    }
-/**
  * test Counter Cache With Self Joining table
  *
  * @return void
@@ -4016,11 +3924,11 @@ class ModelTest extends CakeTestCase {
 	function testCounterCacheWithSelfJoin() {
 		$this->loadFixtures('CategoryThread');
 		$this->db->query('ALTER TABLE '. $this->db->fullTableName('category_threads') . " ADD column child_count INT(11) DEFAULT '0'");
-		$Category =& new CategoryThread();
+		$Category = new CategoryThread();
 		$result = $Category->updateAll(array('CategoryThread.name' => "'updated'"), array('CategoryThread.parent_id' => 5));
 		$this->assertTrue($result);
 
-		$Category =& new CategoryThread();
+		$Category = new CategoryThread();
 		$Category->belongsTo['ParentCategory']['counterCache'] = 'child_count';
 		$Category->updateCounterCache(array('parent_id' => 5));
 		$result = Set::extract($Category->find('all', array('conditions' => array('CategoryThread.id' => 5))), '{n}.CategoryThread.child_count');
@@ -4035,8 +3943,8 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveWithCounterCacheScope() {
 		$this->loadFixtures('Syfile', 'Item');
-		$TestModel =& new Syfile();
-		$TestModel2 =& new Item();
+		$TestModel = new Syfile();
+		$TestModel2 = new Item();
 		$TestModel2->belongsTo['Syfile']['counterCache'] = true;
 		$TestModel2->belongsTo['Syfile']['counterScope'] = array('published' => true);
 
@@ -4051,10 +3959,6 @@ class ModelTest extends CakeTestCase {
 		$TestModel2->saveField('published', true);
 		$result = $TestModel->findById(1);
 		$this->assertIdentical($result['Syfile']['item_count'], '2');
-
-		$TestModel2->save(array('id' => 1, 'syfile_id' => 1, 'published'=> false));
-		$result = $TestModel->findById(1);
-		$this->assertIdentical($result['Syfile']['item_count'], '1');
 	}
 /**
  * testDel method
@@ -4064,7 +3968,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testDel() {
 		$this->loadFixtures('Article');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$result = $TestModel->del(2);
 		$this->assertTrue($result);
@@ -4092,36 +3996,6 @@ class ModelTest extends CakeTestCase {
 			array('Article' => array('id' => 1, 'title' => 'First Article' ))
 		);
 		$this->assertEqual($result, $expected);
-
-
-		// make sure deleting a non-existent record doesn't break save()
-		// ticket #6293
-		$this->loadFixtures('Uuid');
-		$Uuid =& new Uuid();
-		$data = array(
-			'B607DAB9-88A2-46CF-B57C-842CA9E3B3B3',
-			'52C8865C-10EE-4302-AE6C-6E7D8E12E2C8',
-			'8208C7FE-E89C-47C5-B378-DED6C271F9B8');
-		foreach ($data as $id) {
-			$Uuid->save(array('id' => $id));
-		}
-		$Uuid->del('52C8865C-10EE-4302-AE6C-6E7D8E12E2C8');
-		$Uuid->del('52C8865C-10EE-4302-AE6C-6E7D8E12E2C8');
-		foreach ($data as $id) {
-			$Uuid->save(array('id' => $id));
-		}
-		$result = $Uuid->find('all', array(
-			'conditions' => array('id' => $data),
-			'fields' => array('id'),
-			'order' => 'id'));
-		$expected = array(
-			array('Uuid' => array(
-				'id' => '52C8865C-10EE-4302-AE6C-6E7D8E12E2C8')),
-			array('Uuid' => array(
-				'id' => '8208C7FE-E89C-47C5-B378-DED6C271F9B8')),
-			array('Uuid' => array(
-				'id' => 'B607DAB9-88A2-46CF-B57C-842CA9E3B3B3')));
-		$this->assertEqual($result, $expected);
 	}
 /**
  * testDeleteAll method
@@ -4131,7 +4005,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testDeleteAll() {
 		$this->loadFixtures('Article');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$data = array('Article' => array('user_id' => 2, 'id' => 4, 'title' => 'Fourth Article', 'published' => 'N'));
 		$result = $TestModel->set($data) && $TestModel->save();
@@ -4189,7 +4063,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testRecursiveDel() {
 		$this->loadFixtures('Article', 'Comment', 'Attachment');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$result = $TestModel->del(2);
 		$this->assertTrue($result);
@@ -4224,7 +4098,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testDependentExclusiveDelete() {
 		$this->loadFixtures('Article', 'Comment');
-		$TestModel =& new Article10();
+		$TestModel = new Article10();
 
 		$result = $TestModel->find('all');
 		$this->assertEqual(count($result[0]['Comment']), 4);
@@ -4242,7 +4116,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testDeleteLinks() {
 		$this->loadFixtures('Article', 'ArticlesTag', 'Tag');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$result = $TestModel->ArticlesTag->find('all');
 		$expected = array(
@@ -4270,7 +4144,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testFindAllThreaded() {
 		$this->loadFixtures('Category');
-		$TestModel =& new Category();
+		$TestModel = new Category();
 
 		$result = $TestModel->find('threaded');
 		$expected = array(
@@ -4700,7 +4574,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testFindNeighbors() {
 		$this->loadFixtures('User', 'Article');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$TestModel->id = 1;
 		$result = $TestModel->find('neighbors', array('fields' => array('id')));
@@ -4835,7 +4709,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testFindNeighboursLegacy() {
 		$this->loadFixtures('User', 'Article');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$result = $TestModel->findNeighbours(null, 'Article.id', '2');
 		$expected = array('prev' => array('Article' => array('id' => 1)), 'next' => array('Article' => array('id' => 3)));
@@ -4860,7 +4734,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testFindCombinedRelations() {
 		$this->loadFixtures('Apple', 'Sample');
-		$TestModel =& new Apple();
+		$TestModel = new Apple();
 
 		$result = $TestModel->find('all');
 
@@ -4912,13 +4786,13 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveEmpty() {
 		$this->loadFixtures('Thread');
-		$TestModel =& new Thread();
+		$TestModel = new Thread();
 		$data = array();
 		$expected = $TestModel->save($data);
 		$this->assertFalse($expected);
 	}
 	// function testBasicValidation() {
-	// 	$TestModel =& new ValidationTest1();
+	// 	$TestModel = new ValidationTest1();
 	// 	$TestModel->testing = true;
 	// 	$TestModel->set(array('title' => '', 'published' => 1));
 	// 	$this->assertEqual($TestModel->invalidFields(), array('title' => 'This field cannot be left blank'));
@@ -4941,7 +4815,7 @@ class ModelTest extends CakeTestCase {
 	function testFindAllWithConditionInChildQuery() {
 		$this->loadFixtures('Basket', 'FilmFile');
 
-		$TestModel =& new Basket();
+		$TestModel = new Basket();
 		$recursive = 3;
 		$result = $TestModel->find('all', compact('conditions', 'recursive'));
 		$expected = array(
@@ -4982,7 +4856,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testFindAllWithConditionsHavingMixedDataTypes() {
 		$this->loadFixtures('Article');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 		$expected = array(
 			array(
 				'Article' => array(
@@ -5059,7 +4933,7 @@ class ModelTest extends CakeTestCase {
  * @return void
  */
 	function testMultipleValidation() {
-		$TestModel =& new ValidationTest1();
+		$TestModel = new ValidationTest1();
 	}
 /**
  * Tests validation parameter order in custom validation methods
@@ -5068,7 +4942,7 @@ class ModelTest extends CakeTestCase {
  * @return void
  */
 	function testValidationParams() {
-		$TestModel =& new ValidationTest1();
+		$TestModel = new ValidationTest1();
 		$TestModel->validate['title'] = array('rule' => 'customValidatorWithParams', 'required' => true);
 		$TestModel->create(array('title' => 'foo'));
 		$TestModel->invalidFields();
@@ -5095,7 +4969,7 @@ class ModelTest extends CakeTestCase {
  * @return void
  */
 	function testInvalidFieldsWithFieldListParams() {
-		$TestModel =& new ValidationTest1();
+		$TestModel = new ValidationTest1();
 		$TestModel->validate = $validate = array(
 			'title' => array('rule' => 'customValidator', 'required' => true),
 			'name' => array('rule' => 'allowEmpty', 'required' => true),
@@ -5130,7 +5004,7 @@ class ModelTest extends CakeTestCase {
  * @return void
  */
 	function testAllowSimulatedFields() {
-		$TestModel =& new ValidationTest1();
+		$TestModel = new ValidationTest1();
 
 		$TestModel->create(array('title' => 'foo', 'bar' => 'baz'));
 		$expected = array('ValidationTest1' => array('title' => 'foo', 'bar' => 'baz'));
@@ -5143,7 +5017,7 @@ class ModelTest extends CakeTestCase {
  * @return void
  */
 	function testInvalidAssociation() {
-		$TestModel =& new ValidationTest1();
+		$TestModel = new ValidationTest1();
 		$this->assertNull($TestModel->getAssociated('Foo'));
 	}
 /**
@@ -5170,7 +5044,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testRecursiveUnbind() {
 		$this->loadFixtures('Apple', 'Sample');
-		$TestModel =& new Apple();
+		$TestModel = new Apple();
 		$TestModel->recursive = 2;
 
 		$result = $TestModel->find('all');
@@ -5640,7 +5514,7 @@ class ModelTest extends CakeTestCase {
 		}
 
 		$this->loadFixtures('Uuid');
-		$TestModel =& new Uuid();
+		$TestModel = new Uuid();
 
 		$TestModel->save(array('title' => 'Test record'));
 		$result = $TestModel->findByTitle('Test record');
@@ -5659,7 +5533,7 @@ class ModelTest extends CakeTestCase {
 			'%s SQLite uses loose typing, this operation is unsupported'
 		);
 		$this->loadFixtures('DataTest');
-		$TestModel =& new DataTest();
+		$TestModel = new DataTest();
 
 		$TestModel->create(array());
 		$TestModel->save();
@@ -5675,7 +5549,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testNonNumericHabtmJoinKey() {
 		$this->loadFixtures('Post', 'Tag', 'PostsTag');
-		$Post =& new Post();
+		$Post = new Post();
 		$Post->bind('Tag', array('type' => 'hasAndBelongsToMany'));
 		$Post->Tag->primaryKey = 'tag';
 
@@ -5713,7 +5587,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testDeconstructFields() {
 		$this->loadFixtures('Apple');
-		$TestModel =& new Apple();
+		$TestModel = new Apple();
 
 		//test null/empty values first
 		$data['Apple']['created']['year'] = '';
@@ -5906,19 +5780,6 @@ class ModelTest extends CakeTestCase {
 		$TestModel->set($data);
 		$expected = array('Apple'=> array('mytime'=> '03:04:04'));
 		$this->assertEqual($TestModel->data, $expected);
-
-		$db = ConnectionManager::getDataSource('test_suite');
-		$data = array();
-		$data['Apple']['modified'] = $db->expression('NOW()');
-		$TestModel->data = null;
-		$TestModel->set($data);
-		$this->assertEqual($TestModel->data, $data);
-
-		$data = array();
-		$data['Apple']['mytime'] = $db->expression('NOW()');
-		$TestModel->data = null;
-		$TestModel->set($data);
-		$this->assertEqual($TestModel->data, $data);
 	}
 /**
  * testTablePrefixSwitching method
@@ -5977,7 +5838,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testDynamicBehaviorAttachment() {
 		$this->loadFixtures('Apple');
-		$TestModel =& new Apple();
+		$TestModel = new Apple();
 		$this->assertEqual($TestModel->Behaviors->attached(), array());
 
 		$TestModel->Behaviors->attach('Tree', array('left' => 'left_field', 'right' => 'right_field'));
@@ -6013,7 +5874,7 @@ class ModelTest extends CakeTestCase {
 			return;
 		}
 		$this->loadFixtures('Article', 'Tag', 'ArticlesTag', 'User', 'Comment');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 
 		$expected = array(
 			array(
@@ -6051,7 +5912,7 @@ class ModelTest extends CakeTestCase {
 		);
 		$this->assertEqual($TestModel->find('all'), $expected);
 
-		$db2 =& ConnectionManager::getDataSource('test2');
+		$db2 = ConnectionManager::getDataSource('test2');
 
 		foreach (array('User', 'Comment') as $class) {
 			$this->_fixtures[$this->_fixtureClassMap[$class]]->create($db2);
@@ -6155,7 +6016,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testOldQuery() {
 		$this->loadFixtures('Article');
-		$Article =& new Article();
+		$Article = new Article();
 
 		$query = 'SELECT title FROM ' . $this->db->fullTableName('articles') . ' WHERE ' . $this->db->fullTableName('articles') . '.id IN (1,2)';
 		$results = $Article->query($query);
@@ -6180,7 +6041,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testPreparedQuery() {
 		$this->loadFixtures('Article');
-		$Article =& new Article();
+		$Article = new Article();
 		$this->db->_queryCache = array();
 
 		$finalQuery = 'SELECT title, published FROM ' . $this->db->fullTableName('articles') . ' WHERE ' . $this->db->fullTableName('articles') . '.id = ' . $this->db->value(1) . ' AND ' . $this->db->fullTableName('articles') . '.published = ' . $this->db->value('Y');
@@ -6230,7 +6091,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testParameterMismatch() {
 		$this->loadFixtures('Article');
-		$Article =& new Article();
+		$Article = new Article();
 
 		$query = 'SELECT * FROM ' . $this->db->fullTableName('articles') . ' WHERE ' . $this->db->fullTableName('articles') . '.published = ? AND ' . $this->db->fullTableName('articles') . '.user_id = ?';
 		$params = array('Y');
@@ -6252,7 +6113,7 @@ class ModelTest extends CakeTestCase {
 		}
 
 		$this->loadFixtures('Article');
-		$Article =& new Article();
+		$Article = new Article();
 
 		$query = 'SELECT * FROM ? WHERE ? = ? AND ? = ?';
 		$param = array($this->db->fullTableName('articles'), $this->db->fullTableName('articles') . '.user_id', '3', $this->db->fullTableName('articles') . '.published', 'Y');
@@ -6269,7 +6130,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testUnderscoreFieldSave() {
 		$this->loadFixtures('UnderscoreField');
-		$UnderscoreField =& new UnderscoreField();
+		$UnderscoreField = new UnderscoreField();
 
 		$currentCount = $UnderscoreField->find('count');
 		$this->assertEqual($currentCount, 3);
@@ -6303,8 +6164,8 @@ class ModelTest extends CakeTestCase {
 		}
 
 		$this->loadFixtures('Project', 'Product', 'Thread', 'Message', 'Bid');
-		$Thread =& new Thread();
-		$Product =& new Product();
+		$Thread = new Thread();
+		$Product = new Product();
 
 		$result = $Thread->find('all', array(
 			'group' => 'Thread.project_id'
@@ -6412,7 +6273,7 @@ class ModelTest extends CakeTestCase {
 	function testSaveDateAsFirstEntry() {
 		$this->loadFixtures('Article');
 
-		$Article =& new Article();
+		$Article = new Article();
 
 		$data = array('Article' => array(
 			'created' => array(
@@ -6440,8 +6301,8 @@ class ModelTest extends CakeTestCase {
 	function testDeleteDependentWithConditions() {
 		$this->loadFixtures('Cd','Book','OverallFavorite');
 
-		$Cd =& new Cd();
-		$OverallFavorite =& new OverallFavorite();
+		$Cd = new Cd();
+		$OverallFavorite = new OverallFavorite();
 
 		$Cd->del(1);
 
@@ -6459,7 +6320,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testSaveAllHasManyValidationOnly() {
 		$this->loadFixtures('Article', 'Comment');
-		$TestModel =& new Article();
+		$TestModel = new Article();
 		$TestModel->belongsTo = $TestModel->hasAndBelongsToMany = array();
 		$TestModel->Comment->validate = array('comment' => 'notEmpty');
 
@@ -6510,22 +6371,22 @@ class ModelTest extends CakeTestCase {
 	function testPkInHabtmLinkModel() {
 		//Test Nonconformant Models
 		$this->loadFixtures('Content', 'ContentAccount', 'Account');
-		$TestModel =& new Content();
+		$TestModel = new Content();
 		$this->assertEqual($TestModel->ContentAccount->primaryKey, 'iContentAccountsId');
 
 		//test conformant models with no PK in the join table
 		$this->loadFixtures('Article', 'Tag');
-		$TestModel2 =& new Article();
+		$TestModel2 = new Article();
 		$this->assertEqual($TestModel2->ArticlesTag->primaryKey, 'article_id');
 
 		//test conformant models with PK in join table
 		$this->loadFixtures('Item', 'Portfolio', 'ItemsPortfolio');
-		$TestModel3 =& new Portfolio();
+		$TestModel3 = new Portfolio();
 		$this->assertEqual($TestModel3->ItemsPortfolio->primaryKey, 'id');
 
 		//test conformant models with PK in join table - join table contains extra field
 		$this->loadFixtures('JoinA', 'JoinB', 'JoinAB');
-		$TestModel4 =& new JoinA();
+		$TestModel4 = new JoinA();
 		$this->assertEqual($TestModel4->JoinAsJoinB->primaryKey, 'id');
 
 	}
@@ -6589,7 +6450,7 @@ class ModelTest extends CakeTestCase {
 	function testDeleteHabtmReferenceWithConditions() {
 		$this->loadFixtures('Portfolio', 'Item', 'ItemsPortfolio');
 
-		$Portfolio =& new Portfolio();
+		$Portfolio = new Portfolio();
 		$Portfolio->hasAndBelongsToMany['Item']['conditions'] = array('ItemsPortfolio.item_id >' => 1);
 
 		$result = $Portfolio->find('first', array('conditions' => array('Portfolio.id' => 1)));
@@ -6625,7 +6486,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testDeleteArticleBLinks() {
 		$this->loadFixtures('Article', 'ArticlesTag', 'Tag');
-		$TestModel =& new ArticleB();
+		$TestModel = new ArticleB();
 
 		$result = $TestModel->ArticlesTag->find('all');
 		$expected = array(
@@ -6653,7 +6514,7 @@ class ModelTest extends CakeTestCase {
  */
 	function testPkInHabtmLinkModelArticleB() {
 		$this->loadFixtures('Article', 'Tag');
-		$TestModel2 =& new ArticleB();
+		$TestModel2 = new ArticleB();
 		$this->assertEqual($TestModel2->ArticlesTag->primaryKey, 'article_id');
 	}
 }

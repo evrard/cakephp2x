@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * The ControllerTask handles creating and updating controller files.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008,	Cake Software Foundation, Inc.
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009,	Cake Software Foundation, Inc.
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.console.libs.tasks
  * @since         CakePHP(tm) v 1.2
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -249,7 +245,7 @@ class ControllerTask extends Shell {
 			exit;
 		}
 		$actions = null;
-		$modelObj =& new $currentModelName();
+		$modelObj = new $currentModelName();
 		$controllerPath = $this->_controllerPath($controllerName);
 		$pluralName = $this->_pluralName($currentModelName);
 		$singularName = Inflector::variable($currentModelName);
@@ -465,11 +461,11 @@ class ControllerTask extends Shell {
 		$out .= "\tvar \$autoRender = false;\n}\n\n";
 		$out .= "class {$className}ControllerTest extends CakeTestCase {\n";
 		$out .= "\tvar \${$className} = null;\n\n";
-		$out .= "\tfunction startTest() {\n\t\t\$this->{$className} = new Test{$className}();";
+		$out .= "\tfunction setUp() {\n\t\t\$this->{$className} = new Test{$className}();";
 		$out .= "\n\t\t\$this->{$className}->constructClasses();\n\t}\n\n";
 		$out .= "\tfunction test{$className}ControllerInstance() {\n";
 		$out .= "\t\t\$this->assertTrue(is_a(\$this->{$className}, '{$className}Controller'));\n\t}\n\n";
-		$out .= "\tfunction endTest() {\n\t\tunset(\$this->{$className});\n\t}\n}\n";
+		$out .= "\tfunction tearDown() {\n\t\tunset(\$this->{$className});\n\t}\n}\n";
 
 		$path = CONTROLLER_TESTS;
 		if (isset($this->plugin)) {
@@ -481,7 +477,7 @@ class ControllerTask extends Shell {
 		$this->out("\nBaking unit test for $className...");
 
 		$header = '$Id';
-		$content = "<?php \n/* SVN FILE: $header$ */\n/* ". $className ."Controller Test cases generated on: " . date('Y-m-d H:m:s') . " : ". time() . "*/\n{$out}?>";
+		$content = "<?php \n/* ". $className ."Controller Test cases generated on: " . date('Y-m-d H:m:s') . " : ". time() . "*/\n{$out}?>";
 		return $this->createFile($path . $filename, $content);
 	}
 /**
@@ -492,7 +488,7 @@ class ControllerTask extends Shell {
  * @access public
  */
 	function listAll($useDbConfig = 'default') {
-		$db =& ConnectionManager::getDataSource($useDbConfig);
+		$db = ConnectionManager::getDataSource($useDbConfig);
 		$usePrefix = empty($db->config['prefix']) ? '' : $db->config['prefix'];
 		if ($usePrefix) {
 			$tables = array();

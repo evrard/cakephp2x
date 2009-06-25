@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * RssHelperTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.view.helpers
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Helper', array('Rss', 'Time'));
@@ -39,11 +35,11 @@ class RssHelperTest extends CakeTestCase {
  * @return void
  */
 	function setUp() {
-		$this->Rss =& new RssHelper();
-		$this->Rss->Time =& new TimeHelper();
+		$this->Rss = new RssHelper();
+		$this->Rss->Time = new TimeHelper();
 		$this->Rss->beforeRender();
 
-		$manager =& XmlManager::getInstance();
+		$manager = XmlManager::getInstance();
 		$manager->namespaces = array();
 	}
 /**
@@ -63,7 +59,7 @@ class RssHelperTest extends CakeTestCase {
  */
 	function testAddNamespace() {
 		$this->Rss->addNs('custom', 'http://example.com/dtd.xml');
-		$manager =& XmlManager::getInstance();
+		$manager = XmlManager::getInstance();
 
 		$expected = array('custom' => 'http://example.com/dtd.xml');
 		$this->assertEqual($manager->namespaces, $expected);
@@ -91,7 +87,7 @@ class RssHelperTest extends CakeTestCase {
 	function testRemoveNamespace() {
 		$this->Rss->addNs('custom', 'http://example.com/dtd.xml');
 		$this->Rss->addNs('custom2', 'http://example.com/dtd2.xml');
-		$manager =& XmlManager::getInstance();
+		$manager = XmlManager::getInstance();
 
 		$expected = array('custom' => 'http://example.com/dtd.xml', 'custom2' => 'http://example.com/dtd2.xml');
 		$this->assertEqual($manager->namespaces, $expected);

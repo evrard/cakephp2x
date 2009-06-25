@@ -1,24 +1,20 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.controller
  * @since         CakePHP(tm) v TBD
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -35,14 +31,14 @@ class Component extends Object {
  * @var object
  * @access private
  */
-	var $__controllerVars = array('plugin' => null, 'name' => null, 'base' => null);
+	private $__controllerVars = array('plugin' => null, 'name' => null, 'base' => null);
 /**
  * List of loaded components.
  *
  * @var object
  * @access protected
  */
-	var $_loaded = array();
+	private $_loaded = array();
 /**
  * List of components attached directly to the controller, which callbacks
  * should be executed on.
@@ -50,14 +46,14 @@ class Component extends Object {
  * @var object
  * @access protected
  */
-	var $_primary = array();
+	private $_primary = array();
 /**
  * Settings for loaded components.
  *
  * @var array
  * @access private
  **/
-	var $__settings = array();
+	private $__settings = array();
 /**
  * Used to initialize the components for current controller.
  *
@@ -65,7 +61,7 @@ class Component extends Object {
  * @return void
  * @access public
  */
-	function init(&$controller) {
+	public function init(&$controller) {
 		if (!is_array($controller->components)) {
 			return;
 		}
@@ -84,9 +80,9 @@ class Component extends Object {
  * @access public
  * @link http://book.cakephp.org/view/65/MVC-Class-Access-Within-Components
  */
-	function initialize(&$controller) {
+	public function initialize(&$controller) {
 		foreach (array_keys($this->_loaded) as $name) {
-			$component =& $this->_loaded[$name];
+			$component = $this->_loaded[$name];
 
 			if (method_exists($component,'initialize') && $component->enabled === true) {
 				$settings = array();
@@ -105,9 +101,9 @@ class Component extends Object {
  * @access public
  * @link http://book.cakephp.org/view/65/MVC-Class-Access-Within-Components
  */
-	function startup(&$controller) {
+	public function startup(&$controller) {
 		foreach ($this->_primary as $name) {
-			$component =& $this->_loaded[$name];
+			$component = $this->_loaded[$name];
 			if ($component->enabled === true && method_exists($component, 'startup')) {
 				$component->startup($controller);
 			}
@@ -121,9 +117,9 @@ class Component extends Object {
  * @return void
  * @access public
  */
-	function beforeRender(&$controller) {
+	public function beforeRender(&$controller) {
 		foreach ($this->_primary as $name) {
-			$component =& $this->_loaded[$name];
+			$component = $this->_loaded[$name];
 			if ($component->enabled === true && method_exists($component,'beforeRender')) {
 				$component->beforeRender($controller);
 			}
@@ -136,11 +132,11 @@ class Component extends Object {
  * @return void
  * @access public
  */
-	function beforeRedirect(&$controller, $url, $status = null, $exit = true) {
+	private function beforeRedirect(&$controller, $url, $status = null, $exit = true) {
 		$response = array();
 
 		foreach ($this->_primary as $name) {
-			$component =& $this->_loaded[$name];
+			$component = $this->_loaded[$name];
 
 			if ($component->enabled === true && method_exists($component, 'beforeRedirect')) {
 				$resp = $component->beforeRedirect($controller, $url, $status, $exit);
@@ -159,9 +155,9 @@ class Component extends Object {
  * @return void
  * @access public
  */
-	function shutdown(&$controller) {
+	public function shutdown(&$controller) {
 		foreach ($this->_primary as $name) {
-			$component =& $this->_loaded[$name];
+			$component = $this->_loaded[$name];
 			if (method_exists($component,'shutdown') && $component->enabled === true) {
 				$component->shutdown($controller);
 			}
@@ -175,7 +171,7 @@ class Component extends Object {
  * @return void
  * @access protected
  */
-	function _loadComponents(&$object, $parent = null) {
+	private function _loadComponents(&$object, $parent = null) {
 		$base = $this->__controllerVars['base'];
 		$normal = Set::normalize($object->components);
 		if ($parent == null) {
@@ -225,7 +221,7 @@ class Component extends Object {
 			}
 
 			if (isset($this->_loaded[$component])) {
-				$object->{$component} =& $this->_loaded[$component];
+				$object->{$component} = $this->_loaded[$component];
 
 				if (!empty($config) && isset($this->__settings[$component])) {
 					$this->__settings[$component] = array_merge($this->__settings[$component], $config);
@@ -234,12 +230,12 @@ class Component extends Object {
 				}
 			} else {
 				if ($componentCn === 'SessionComponent') {
-					$object->{$component} =& new $componentCn($base);
+					$object->{$component} = new $componentCn($base);
 				} else {
-					$object->{$component} =& new $componentCn();
+					$object->{$component} = new $componentCn();
 				}
 				$object->{$component}->enabled = true;
-				$this->_loaded[$component] =& $object->{$component};
+				$this->_loaded[$component] = $object->{$component};
 				if (!empty($config)) {
 					$this->__settings[$component] = $config;
 				}

@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * AjaxHelperTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.view.helpers
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
@@ -166,12 +162,12 @@ class AjaxHelperTest extends CakeTestCase {
  */
 	function setUp() {
 		Router::reload();
-		$this->Ajax =& new TestAjaxHelper();
-		$this->Ajax->Html =& new HtmlHelper();
-		$this->Ajax->Form =& new FormHelper();
-		$this->Ajax->Javascript =& new JavascriptHelper();
-		$this->Ajax->Form->Html =& $this->Ajax->Html;
-		$view =& new View(new AjaxTestController());
+		$this->Ajax = new TestAjaxHelper();
+		$this->Ajax->Html = new HtmlHelper();
+		$this->Ajax->Form = new FormHelper();
+		$this->Ajax->Javascript = new JavascriptHelper();
+		$this->Ajax->Form->Html = $this->Ajax->Html;
+		$view = new View(new AjaxTestController());
 		ClassRegistry::addObject('view', $view);
 		ClassRegistry::addObject('PostAjaxTest', new PostAjaxTest());
 	}
@@ -300,10 +296,6 @@ class AjaxHelperTest extends CakeTestCase {
 			'/script'
 		);
 		$this->assertTags($result, $expected);
-
-		$result = $this->Ajax->drag('id', array('onDrag' => 'doDrag', 'onEnd' => 'doEnd'));
-		$this->assertPattern('/onDrag:doDrag/', $result);
-		$this->assertPattern('/onEnd:doEnd/', $result);
 	}
 /**
  * testDroppable method
@@ -799,7 +791,6 @@ class AjaxHelperTest extends CakeTestCase {
  * @return void
  */
 	function testDiv() {
-		ob_flush();
 		$oldXUpdate = env('HTTP_X_UPDATE');
 
 		$result = $this->Ajax->div('myDiv');
@@ -832,7 +823,7 @@ class AjaxHelperTest extends CakeTestCase {
  */
 	function testAfterRender() {
 		$oldXUpdate = env('HTTP_X_UPDATE');
-		$this->Ajax->Javascript =& new TestJavascriptHelper();
+		$this->Ajax->Javascript = new TestJavascriptHelper();
 
 		$_SERVER['HTTP_X_UPDATE'] = 'secondDiv myDiv anotherDiv';
 		$result = $this->Ajax->div('myDiv');

@@ -1,28 +1,24 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Dispatcher takes the URL information, parses it for paramters and
  * tells the involved controllers what to do.
  *
  * This is the heart of Cake's operation.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake
  * @since         CakePHP(tm) v 0.2.9
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -44,46 +40,46 @@ class Dispatcher extends Object {
  * @var string
  * @access public
  */
-	var $base = false;
+	private $base = false;
 /**
  * webroot path
  *
  * @var string
  * @access public
  */
-	var $webroot = '/';
+	public $webroot = '/';
 /**
  * Current URL
  *
  * @var string
  * @access public
  */
-	var $here = false;
+	private $here = false;
 /**
  * Admin route (if on it)
  *
  * @var string
  * @access public
  */
-	var $admin = false;
+	private $admin = false;
 /**
  * Plugin being served (if any)
  *
  * @var string
  * @access public
  */
-	var $plugin = null;
+	private $plugin = null;
 /**
  * the params for this request
  *
  * @var string
  * @access public
  */
-	var $params = null;
+	private $params = null;
 /**
  * Constructor.
  */
-	function __construct($url = null, $base = false) {
+	public function __construct($url = null, $base = false) {
 		if ($base !== false) {
 			Configure::write('App.base', $base);
 		}
@@ -103,7 +99,7 @@ class Dispatcher extends Object {
  * @return boolean Success
  * @access public
  */
-	function dispatch($url = null, $additionalParams = array()) {
+	public function dispatch($url = null, $additionalParams = array()) {
 		if ($this->base === false) {
 			$this->base = $this->baseUrl();
 		}
@@ -124,7 +120,7 @@ class Dispatcher extends Object {
 			$this->_stop();
 		}
 
-		$controller =& $this->__getController();
+		$controller = $this->__getController();
 
 		if (!is_object($controller)) {
 			Router::setRequestInfo(array($this->params, array('base' => $this->base, 'webroot' => $this->webroot)));
@@ -166,12 +162,12 @@ class Dispatcher extends Object {
 		$controller->here = $this->here;
 		$controller->webroot = $this->webroot;
 		$controller->plugin = $this->plugin;
-		$controller->params =& $this->params;
-		$controller->action =& $this->params['action'];
+		$controller->params = $this->params;
+		$controller->action = $this->params['action'];
 		$controller->passedArgs = array_merge($this->params['pass'], $this->params['named']);
 
 		if (!empty($this->params['data'])) {
-			$controller->data =& $this->params['data'];
+			$controller->data = $this->params['data'];
 		} else {
 			$controller->data = null;
 		}
@@ -203,7 +199,7 @@ class Dispatcher extends Object {
  * @return string Output as sent by controller
  * @access protected
  */
-	function _invoke(&$controller, $params) {
+	private function _invoke(&$controller, $params) {
 		$controller->constructClasses();
 		$controller->Component->initialize($controller);
 		$controller->beforeFilter();
@@ -247,7 +243,7 @@ class Dispatcher extends Object {
  * @return string $url
  * @access private
  */
-	function __extractParams($url, $additionalParams = array()) {
+	private function __extractParams($url, $additionalParams = array()) {
 		$defaults = array('pass' => array(), 'named' => array(), 'form' => array());
 		$this->params = array_merge($defaults, $url, $additionalParams);
 		return Router::url($url);
@@ -259,7 +255,7 @@ class Dispatcher extends Object {
  * @return array Parameters found in POST and GET.
  * @access public
  */
-	function parseParams($fromUrl) {
+	private function parseParams($fromUrl) {
 		$params = array();
 
 		if (isset($_POST)) {
@@ -331,7 +327,7 @@ class Dispatcher extends Object {
  * @return string Base URL
  * @access public
  */
-	function baseUrl() {
+	public function baseUrl() {
 		$dir = $webroot = null;
 		$config = Configure::read('App');
 		extract($config);
@@ -344,8 +340,7 @@ class Dispatcher extends Object {
 			return $this->base = $base;
 		}
 		if (!$baseUrl) {
-			$replace = array('<', '>', '*', '\'', '"');
-			$base = str_replace($replace, '', dirname(env('PHP_SELF')));
+			$base = dirname(env('PHP_SELF'));
 
 			if ($webroot === 'webroot' && $webroot === basename($base)) {
 				$base = dirname($base);
@@ -390,7 +385,7 @@ class Dispatcher extends Object {
  * @return array Restructured array
  * @access protected
  */
-	function _restructureParams($params, $reverse = false) {
+	private function _restructureParams($params, $reverse = false) {
 		if ($reverse === true) {
 			extract(Router::getArgs($params['action']));
 			$params = array_merge($params, array(
@@ -419,7 +414,7 @@ class Dispatcher extends Object {
  * @return mixed name of controller if not loaded, or object if loaded
  * @access private
  */
-	function &__getController($params = null) {
+	private function __getController($params = null) {
 		if (!is_array($params)) {
 			$original = $params = $this->params;
 		}
@@ -450,7 +445,7 @@ class Dispatcher extends Object {
 				$params = $this->_restructureParams($params, true);
 			}
 			$this->params = $params;
-			$controller =& new $ctrlClass();
+			$controller = new $ctrlClass();
 		}
 		return $controller;
 	}
@@ -461,7 +456,7 @@ class Dispatcher extends Object {
  * @return string|bool Name of controller class name
  * @access private
  */
-	function __loadController($params) {
+	private function __loadController($params) {
 		$pluginName = $pluginPath = $controller = null;
 		if (!empty($params['plugin'])) {
 			$this->plugin = $params['plugin'];
@@ -488,7 +483,7 @@ class Dispatcher extends Object {
  * @return string URI
  * @access public
  */
-	function uri() {
+	private function uri() {
 		foreach (array('HTTP_X_REWRITE_URL', 'REQUEST_URI', 'argv') as $var) {
 			if ($uri = env($var)) {
 				if ($var == 'argv') {
@@ -534,7 +529,7 @@ class Dispatcher extends Object {
  * @return string URL
  * @access public
  */
-	function getUrl($uri = null, $base = null) {
+	private function getUrl($uri = null, $base = null) {
 		if (empty($_GET['url'])) {
 			if ($uri == null) {
 				$uri = $this->uri();
@@ -582,7 +577,7 @@ class Dispatcher extends Object {
  * @param string $url Requested URL
  * @access public
  */
-	function cached($url) {
+	private function cached($url) {
 		if (strpos($url, 'css/') !== false || strpos($url, 'js/') !== false || strpos($url, 'img/') !== false) {
 			if (strpos($url, 'ccss/') === 0) {
 				include WWW_ROOT . DS . Configure::read('Asset.filter.css');
@@ -674,8 +669,8 @@ class Dispatcher extends Object {
 					App::import('Core', 'View');
 				}
 				$controller = null;
-				$view =& new View($controller, false);
-				return $view->renderCache($filename, getMicrotime());
+				$view = new View($controller, false);
+				return $view->renderCache($filename, microtime(true));
 			}
 		}
 		return false;

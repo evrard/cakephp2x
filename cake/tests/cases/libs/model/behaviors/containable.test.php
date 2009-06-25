@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * ContainableBehaviorTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.model.behaviors
  * @since         CakePHP(tm) v 1.2.0.5669
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', array('AppModel', 'Model'));
@@ -49,9 +45,9 @@ class ContainableBehaviorTest extends CakeTestCase {
  * @access public
  */
 	function startTest() {
-		$this->User =& ClassRegistry::init('User');
-		$this->Article =& ClassRegistry::init('Article');
-		$this->Tag =& ClassRegistry::init('Tag');
+		$this->User = ClassRegistry::init('User');
+		$this->Article = ClassRegistry::init('Article');
+		$this->Tag = ClassRegistry::init('Tag');
 
 		$this->User->bind(array(
 			'Article' => array('type' => 'hasMany'),
@@ -3117,7 +3113,7 @@ class ContainableBehaviorTest extends CakeTestCase {
  * @return void
  */
 	function testPaginate() {
-		$Controller =& new Controller();
+		$Controller = new Controller();
 		$Controller->uses = array('Article');
 		$Controller->passedArgs[] = '1';
 		$Controller->params['url'] = array();
@@ -3557,4 +3553,5 @@ class ContainableBehaviorTest extends CakeTestCase {
 		return $debug;
 	}
 }
+
 ?>

@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * ODBC for DBO
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model.dbo
  * @since         CakePHP(tm) v 0.10.5.1790
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -40,25 +35,25 @@ class DboOdbc extends DboSource {
  *
  * @var string
  */
-	var $description = "ODBC DBO Driver";
+	private $description = "ODBC DBO Driver";
 /**
  * Table/column starting quote
  *
  * @var string
  */
-	var $startQuote = "`";
+	private $startQuote = "`";
 /**
  * Table/column end quote
  *
  * @var string
  */
-	var $endQuote = "`";
+	private $endQuote = "`";
 /**
  * Driver base configuration
  *
  * @var array
  */
-	var $_baseConfig = array(
+	private $_baseConfig = array(
 		'persistent' => true,
 		'login' => 'root',
 		'password' => '',
@@ -70,9 +65,9 @@ class DboOdbc extends DboSource {
  *
  * @var unknown_type
  */
-	var $columns = array();
+	private $columns = array();
 
-	//	var $columns = array('primary_key' => array('name' => 'int(11) DEFAULT NULL auto_increment'),
+	//	private $columns = array('primary_key' => array('name' => 'int(11) DEFAULT NULL auto_increment'),
 	//						'string' => array('name' => 'varchar', 'limit' => '255'),
 	//						'text' => array('name' => 'text'),
 	//						'integer' => array('name' => 'int', 'limit' => '11'),
@@ -88,7 +83,7 @@ class DboOdbc extends DboSource {
  *
  * @return boolean True if the database could be connected, else false
  */
-	function connect() {
+	private function connect() {
 		$config = $this->config;
 		$connect = $config['connect'];
 		if (!$config['persistent']) {
@@ -110,7 +105,7 @@ class DboOdbc extends DboSource {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	function disconnect() {
+	private function disconnect() {
 		return @odbc_close($this->connection);
 	}
 /**
@@ -120,7 +115,7 @@ class DboOdbc extends DboSource {
  * @return resource Result resource identifier
  * @access protected
  */
-	function _execute($sql) {
+	private function _execute($sql) {
 		switch ($sql) {
 			case 'BEGIN':
 				return odbc_autocommit($this->connection, false);
@@ -137,7 +132,7 @@ class DboOdbc extends DboSource {
  *
  * @return array Array of tablenames in the database
  */
-	function listSources() {
+	private function listSources() {
 		$cache = parent::listSources();
 		if ($cache != null) {
 			return $cache;
@@ -159,7 +154,7 @@ class DboOdbc extends DboSource {
  * @param Model $model Model object to describe
  * @return array Fields in table. Keys are name and type
  */
-	function &describe(&$model) {
+	private function &describe(&$model) {
 		$cache=parent::describe($model);
 
 		if ($cache != null) {
@@ -192,7 +187,7 @@ class DboOdbc extends DboSource {
  * @return string Quoted and escaped
  * @todo Add logic that formats/escapes data based on column type
  */
-	function value($data, $column = null) {
+	private function value($data, $column = null) {
 		$parent=parent::value($data, $column);
 
 		if ($parent != null) {
@@ -214,7 +209,7 @@ class DboOdbc extends DboSource {
  *
  * @return string Error message with error number
  */
-	function lastError() {
+	private function lastError() {
 		if ($error = odbc_errormsg($this->connection)) {
 			return odbc_error($this->connection) . ': ' . $error;
 		}
@@ -226,7 +221,7 @@ class DboOdbc extends DboSource {
  *
  * @return integer Number of affected rows
  */
-	function lastAffected() {
+	private function lastAffected() {
 		if ($this->hasResult()) {
 			return odbc_num_rows($this->_result);
 		}
@@ -238,7 +233,7 @@ class DboOdbc extends DboSource {
  *
  * @return int Number of rows in resultset
  */
-	function lastNumRows() {
+	private function lastNumRows() {
 		if ($this->hasResult()) {
 			return odbc_num_rows($this->_result);
 		}
@@ -250,7 +245,7 @@ class DboOdbc extends DboSource {
  * @param unknown_type $source
  * @return int
  */
-	function lastInsertId($source = null) {
+	private function lastInsertId($source = null) {
 		$result = $this->fetchRow('SELECT @@IDENTITY');
 		return $result[0];
 	}
@@ -259,7 +254,7 @@ class DboOdbc extends DboSource {
  *
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  */
-	function column($real) {
+	private function column($real) {
 		if (is_array($real)) {
 			$col=$real['name'];
 			if (isset($real['limit'])) {
@@ -274,7 +269,7 @@ class DboOdbc extends DboSource {
 *
 * @param unknown_type $results
 */
-	function resultSet(&$results) {
+	private function resultSet(&$results) {
 		$this->results =& $results;
 		$num_fields = odbc_num_fields($results);
 		$this->map = array();
@@ -300,7 +295,7 @@ class DboOdbc extends DboSource {
 * @param mixed $fields
 * @return array
 */
-	function fields(&$model, $alias = null, $fields = null, $quote = true) {
+	private function fields(&$model, $alias = null, $fields = null, $quote = true) {
 		if (empty($alias)) {
 			$alias = $model->name;
 		}
@@ -343,7 +338,7 @@ class DboOdbc extends DboSource {
  *
  * @return unknown
  */
-	function fetchResult() {
+	private function fetchResult() {
 		if ($row = odbc_fetch_row($this->results)) {
 			$resultRow = array();
 			$numFields = odbc_num_fields($this->results);

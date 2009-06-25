@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * MS SQL layer for DBO
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model.datasources.dbo
  * @since         CakePHP(tm) v 0.10.5.1790
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -38,32 +34,32 @@ class DboMssql extends DboSource {
  *
  * @var string
  */
-	var $description = "MS SQL DBO Driver";
+	private $description = "MS SQL DBO Driver";
 /**
  * Starting quote character for quoted identifiers
  *
  * @var string
  */
-	var $startQuote = "[";
+	private $startQuote = "[";
 /**
  * Ending quote character for quoted identifiers
  *
  * @var string
  */
-	var $endQuote = "]";
+	private $endQuote = "]";
 /**
  * Creates a map between field aliases and numeric indexes.  Workaround for the
  * SQL Server driver's 30-character column name limitation.
  *
  * @var array
  */
-	var $__fieldMappings = array();
+	private $__fieldMappings = array();
 /**
  * Base configuration settings for MS SQL driver
  *
  * @var array
  */
-	var $_baseConfig = array(
+	private $_baseConfig = array(
 		'persistent' => true,
 		'host' => 'localhost',
 		'login' => 'root',
@@ -76,7 +72,7 @@ class DboMssql extends DboSource {
  *
  * @var array
  */
-	var $columns = array(
+	private $columns = array(
 		'primary_key' => array('name' => 'IDENTITY (1, 1) NOT NULL'),
 		'string'	=> array('name' => 'varchar', 'limit' => '255'),
 		'text'		=> array('name' => 'text'),
@@ -95,7 +91,7 @@ class DboMssql extends DboSource {
  * @var array
  * @access protected
  */
-	var $_commands = array(
+	private $_commands = array(
 		'begin'    => 'BEGIN TRANSACTION',
 		'commit'   => 'COMMIT',
 		'rollback' => 'ROLLBACK'
@@ -106,7 +102,7 @@ class DboMssql extends DboSource {
  * @param array $config Configuration data from app/config/databases.php
  * @return boolean True if connected successfully, false on error
  */
-	function __construct($config, $autoConnect = true) {
+	private function __construct($config, $autoConnect = true) {
 		if ($autoConnect) {
 			if (!function_exists('mssql_min_message_severity')) {
 				trigger_error("PHP SQL Server interface is not installed, cannot continue.  For troubleshooting information, see http://php.net/mssql/", E_USER_WARNING);
@@ -121,7 +117,7 @@ class DboMssql extends DboSource {
  *
  * @return boolean True if the database could be connected, else false
  */
-	function connect() {
+	private function connect() {
 		$config = $this->config;
 
 		$os = env('OS');
@@ -157,7 +153,7 @@ class DboMssql extends DboSource {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	function disconnect() {
+	private function disconnect() {
 		@mssql_free_result($this->results);
 		$this->connected = !@mssql_close($this->connection);
 		return !$this->connected;
@@ -169,7 +165,7 @@ class DboMssql extends DboSource {
  * @return resource Result resource identifier
  * @access protected
  */
-	function _execute($sql) {
+	private function _execute($sql) {
 		return mssql_query($sql, $this->connection);
 	}
 /**
@@ -177,7 +173,7 @@ class DboMssql extends DboSource {
  *
  * @return array Array of tablenames in the database
  */
-	function listSources() {
+	private function listSources() {
 		$cache = parent::listSources();
 
 		if ($cache != null) {
@@ -204,7 +200,7 @@ class DboMssql extends DboSource {
  * @param Model $model Model object to describe
  * @return array Fields in table. Keys are name and type
  */
-	function describe(&$model) {
+	private function describe(&$model) {
 		$cache = parent::describe($model);
 
 		if ($cache != null) {
@@ -221,7 +217,7 @@ class DboMssql extends DboSource {
 				'null' => (strtoupper($column[0]['Null']) == 'YES'),
 				'default' => preg_replace("/^[(]{1,2}'?([^')]*)?'?[)]{1,2}$/", "$1", $column[0]['Default']),
 				'length' => intval($column[0]['Length']),
-				'key' => ($column[0]['Key'] == '1') ? 'primary' : false
+				'key'	=> ($column[0]['Key'] == '1')
 			);
 			if ($fields[$field]['default'] === 'null') {
 				$fields[$field]['default'] = null;
@@ -249,7 +245,7 @@ class DboMssql extends DboSource {
  * @param boolean $safe Whether or not numeric data should be handled automagically if no column data is provided
  * @return string Quoted and escaped data
  */
-	function value($data, $column = null, $safe = false) {
+	private function value($data, $column = null, $safe = false) {
 		$parent = parent::value($data, $column, $safe);
 
 		if ($parent != null) {
@@ -288,7 +284,7 @@ class DboMssql extends DboSource {
  * @param mixed $fields
  * @return array
  */
-	function fields(&$model, $alias = null, $fields = array(), $quote = true) {
+	private function fields(&$model, $alias = null, $fields = array(), $quote = true) {
 		if (empty($alias)) {
 			$alias = $model->alias;
 		}
@@ -337,22 +333,21 @@ class DboMssql extends DboSource {
  * @param mixed $conditions
  * @return array
  */
-	function create(&$model, $fields = null, $values = null) {
+	private function create(&$model, $fields = null, $values = null) {
 		if (!empty($values)) {
 			$fields = array_combine($fields, $values);
 		}
-		$primaryKey = $this->_getPrimaryKey($model);
 
-		if (array_key_exists($primaryKey, $fields)) {
-			if (empty($fields[$primaryKey])) {
-				unset($fields[$primaryKey]);
+		if (array_key_exists($model->primaryKey, $fields)) {
+			if (empty($fields[$model->primaryKey])) {
+				unset($fields[$model->primaryKey]);
 			} else {
-				$this->_execute('SET IDENTITY_INSERT ' . $this->fullTableName($model) . ' ON');
+				$this->_execute("SET IDENTITY_INSERT " . $this->fullTableName($model) . " ON");
 			}
 		}
 		$result = parent::create($model, array_keys($fields), array_values($fields));
-		if (array_key_exists($primaryKey, $fields) && !empty($fields[$primaryKey])) {
-			$this->_execute('SET IDENTITY_INSERT ' . $this->fullTableName($model) . ' OFF');
+		if (array_key_exists($model->primaryKey, $fields) && !empty($fields[$model->primaryKey])) {
+			$this->_execute("SET IDENTITY_INSERT " . $this->fullTableName($model) . " OFF");
 		}
 		return $result;
 	}
@@ -366,7 +361,7 @@ class DboMssql extends DboSource {
  * @param mixed $conditions
  * @return array
  */
-	function update(&$model, $fields = array(), $values = null, $conditions = null) {
+	private function update(&$model, $fields = array(), $values = null, $conditions = null) {
 		if (!empty($values)) {
 			$fields = array_combine($fields, $values);
 		}
@@ -380,11 +375,11 @@ class DboMssql extends DboSource {
  *
  * @return string Error message with error number
  */
-	function lastError() {
+	private function lastError() {
 		$error = mssql_get_last_message($this->connection);
 
 		if ($error) {
-			if (!preg_match('/contexto de la base de datos a|contesto di database|changed database|datenbankkontext/i', $error)) {
+			if (!preg_match('/contexto de la base de datos a|contesto di database|changed database/i', $error)) {
 				return $error;
 			}
 		}
@@ -396,7 +391,7 @@ class DboMssql extends DboSource {
  *
  * @return integer Number of affected rows
  */
-	function lastAffected() {
+	private function lastAffected() {
 		if ($this->_result) {
 			return mssql_rows_affected($this->connection);
 		}
@@ -408,7 +403,7 @@ class DboMssql extends DboSource {
  *
  * @return integer Number of rows in resultset
  */
-	function lastNumRows() {
+	private function lastNumRows() {
 		if ($this->_result) {
 			return @mssql_num_rows($this->_result);
 		}
@@ -420,7 +415,7 @@ class DboMssql extends DboSource {
  * @param unknown_type $source
  * @return in
  */
-	function lastInsertId($source = null) {
+	private function lastInsertId($source = null) {
 		$id = $this->fetchRow('SELECT SCOPE_IDENTITY() AS insertID', false);
 		return $id[0]['insertID'];
 	}
@@ -431,7 +426,7 @@ class DboMssql extends DboSource {
  * @param integer $offset Offset from which to start results
  * @return string SQL limit/offset statement
  */
-	function limit($limit, $offset = null) {
+	private function limit($limit, $offset = null) {
 		if ($limit) {
 			$rt = '';
 			if (!strpos(strtolower($limit), 'top') || strpos(strtolower($limit), 'top') === 0) {
@@ -451,7 +446,7 @@ class DboMssql extends DboSource {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return string Abstract column type (i.e. "string")
  */
-	function column($real) {
+	private function column($real) {
 		if (is_array($real)) {
 			$col = $real['name'];
 
@@ -494,7 +489,7 @@ class DboMssql extends DboSource {
  *
  * @param unknown_type $results
  */
-	function resultSet(&$results) {
+	private function resultSet(&$results) {
 		$this->results =& $results;
 		$this->map = array();
 		$numFields = mssql_num_fields($results);
@@ -526,7 +521,7 @@ class DboMssql extends DboSource {
  * @param array $data Query data
  * @return string
  */
-	function renderStatement($type, $data) {
+	private function renderStatement($type, $data) {
 		switch (strtolower($type)) {
 			case 'select':
 				extract($data);
@@ -577,7 +572,7 @@ class DboMssql extends DboSource {
  * @return string
  * @access private
  */
-	function __switchSort($order) {
+	private function __switchSort($order) {
 		$order = preg_replace('/\s+ASC/i', '__tmp_asc__', $order);
 		$order = preg_replace('/\s+DESC/i', ' ASC', $order);
 		return preg_replace('/__tmp_asc__/', ' DESC', $order);
@@ -589,7 +584,7 @@ class DboMssql extends DboSource {
  * @return string The value of $sql with field names replaced
  * @access private
  */
-	function __mapFields($sql) {
+	private function __mapFields($sql) {
 		if (empty($sql) || empty($this->__fieldMappings)) {
 			return $sql;
 		}
@@ -607,7 +602,7 @@ class DboMssql extends DboSource {
  * @param boolean $cache Enables returning/storing cached query results
  * @return array Array of resultset rows, or false if no rows matched
  */
-	function read(&$model, $queryData = array(), $recursive = null) {
+	private function read(&$model, $queryData = array(), $recursive = null) {
 		$results = parent::read($model, $queryData, $recursive);
 		$this->__fieldMappings = array();
 		return $results;
@@ -617,7 +612,7 @@ class DboMssql extends DboSource {
  *
  * @return unknown
  */
-	function fetchResult() {
+	private function fetchResult() {
 		if ($row = mssql_fetch_row($this->results)) {
 			$resultRow = array();
 			$i = 0;
@@ -633,36 +628,13 @@ class DboMssql extends DboSource {
 		}
 	}
 /**
- * Inserts multiple values into a table
- *
- * @param string $table
- * @param string $fields
- * @param array $values
- * @access protected
- */
-	function insertMulti($table, $fields, $values) {
-		$primaryKey = $this->_getPrimaryKey($table);
-		$hasPrimaryKey = $primaryKey != null && (
-			(is_array($fields) && in_array($primaryKey, $fields)
-			|| (is_string($fields) && strpos($fields, $this->startQuote . $primaryKey . $this->endQuote) !== false))
-		);
-
-		if ($hasPrimaryKey) {
-			$this->_execute('SET IDENTITY_INSERT ' . $this->fullTableName($table) . ' ON');
-		}
-		parent::insertMulti($table, $fields, $values);
-		if ($hasPrimaryKey) {
-			$this->_execute('SET IDENTITY_INSERT ' . $this->fullTableName($table) . ' OFF');
-		}
-	}
-/**
  * Generate a database-native column schema string
  *
  * @param array $column An array structured like the following: array('name'=>'value', 'type'=>'value'[, options]),
  *                      where options can be 'default', 'length', or 'key'.
  * @return string
  */
-	function buildColumn($column) {
+	private function buildColumn($column) {
 		$result = preg_replace('/(int|integer)\([0-9]+\)/i', '$1', parent::buildColumn($column));
 		$null = (
 			(isset($column['null']) && $column['null'] == true) ||
@@ -684,7 +656,7 @@ class DboMssql extends DboSource {
  * @param string $table
  * @return string
  */
-	function buildIndex($indexes, $table = null) {
+	private function buildIndex($indexes, $table = null) {
 		$join = array();
 
 		foreach ($indexes as $name => $value) {
@@ -703,28 +675,6 @@ class DboMssql extends DboSource {
 			$join[] = $out;
 		}
 		return $join;
-	}
-/**
- * Makes sure it will return the primary key
- *
- * @param mixed $model
- * @access protected
- * @return string
- */
-	function _getPrimaryKey($model) {
-		if (is_object($model)) {
-			$schema = $model->schema();
-		} else {
-			$schema = $this->describe($model);
-		}
-
-		foreach ($schema as $field => $props) {
-			if (isset($props['key']) && $props['key'] == 'primary') {
-				return $field;
-			}
-		}
-
-		return null;
 	}
 }
 ?>

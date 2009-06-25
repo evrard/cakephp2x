@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Behavior for binding management.
  *
  * Behavior to simplify manipulating a model's bindings when doing a find operation
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.console.libs
  * @since         CakePHP(tm) v 1.2.0.5669
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -38,14 +34,14 @@ class ContainableBehavior extends ModelBehavior {
  * @var array
  * @access private
  */
-	var $types = array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany');
+	private $types = array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany');
 /**
  * Runtime configuration for this behavior
  *
  * @var array
  * @access private
  */
-	var $runtime = array();
+	private $runtime = array();
 /**
  * Initiate behavior for the model using specified settings.
  * 
@@ -64,7 +60,7 @@ class ContainableBehavior extends ModelBehavior {
  * @param array $settings Settings to override for model.
  * @access public
  */
-	function setup(&$Model, $settings = array()) {
+	private function setup(&$Model, $settings = array()) {
 		if (!isset($this->settings[$Model->alias])) {
 			$this->settings[$Model->alias] = array('recursive' => true, 'notices' => true, 'autoFields' => true);
 		}
@@ -93,7 +89,7 @@ class ContainableBehavior extends ModelBehavior {
  * @return array
  * @access public
  */
-	function beforeFind(&$Model, $query) {
+	private function beforeFind(&$Model, $query) {
 		$reset = (isset($query['reset']) ? $query['reset'] : true);
 		$noContain = ((isset($this->runtime[$Model->alias]['contain']) && empty($this->runtime[$Model->alias]['contain'])) || (isset($query['contain']) && empty($query['contain'])));
 		$contain = array();
@@ -120,7 +116,7 @@ class ContainableBehavior extends ModelBehavior {
 
 		$mandatory = array();
 		foreach ($containments['models'] as $name => $model) {
-			$instance =& $model['instance'];
+			$instance = $model['instance'];
 			$needed = $this->fieldDependencies($instance, $map, false);
 			if (!empty($needed)) {
 				$mandatory = array_merge($mandatory, $needed);
@@ -209,7 +205,7 @@ class ContainableBehavior extends ModelBehavior {
  * @param bool $primary true if this is the primary model that issued the find operation, false otherwise
  * @access public
  */
-	function afterFind(&$Model, $results, $primary) {
+	private function afterFind(&$Model, $results, $primary) {
 		if (!empty($Model->__backContainableAssociation)) {
 			foreach ($Model->__backContainableAssociation as $relation => $bindings) {
 				$Model->{$relation} = $bindings;
@@ -225,7 +221,7 @@ class ContainableBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	function contain(&$Model) {
+	private function contain(&$Model) {
 		$args = func_get_args();
 		$contain = call_user_func_array('am', array_slice($args, 1));
 		$this->runtime[$Model->alias]['contain'] = $contain;
@@ -239,7 +235,7 @@ class ContainableBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	function resetBindings(&$Model) {
+	private function resetBindings(&$Model) {
 		if (!empty($Model->__backOriginalAssociation)) {
 			$Model->__backAssociation = $Model->__backOriginalAssociation;
 			unset($Model->__backOriginalAssociation);
@@ -263,7 +259,7 @@ class ContainableBehavior extends ModelBehavior {
  * @return array Containments
  * @access public
  */
-	function containments(&$Model, $contain, $containments = array(), $throwErrors = null) {
+	private function containments(&$Model, $contain, $containments = array(), $throwErrors = null) {
 		$options = array('className', 'joinTable', 'with', 'foreignKey', 'associationForeignKey', 'conditions', 'fields', 'order', 'limit', 'offset', 'unique', 'finderQuery', 'deleteQuery', 'insertQuery');
 		$keep = array();
 		$depth = array();
@@ -366,7 +362,7 @@ class ContainableBehavior extends ModelBehavior {
  * @return array Fields
  * @access public
  */
-	function fieldDependencies(&$Model, $map, $fields = array()) {
+	private function fieldDependencies(&$Model, $map, $fields = array()) {
 		if ($fields === false) {
 			foreach ($map as $parent => $children) {
 				foreach ($children as $type => $bindings) {
@@ -411,10 +407,10 @@ class ContainableBehavior extends ModelBehavior {
  * @return array Built containments
  * @access public
  */
-	function containmentsMap($containments) {
+	private function containmentsMap($containments) {
 		$map = array();
 		foreach ($containments['models'] as $name => $model) {
-			$instance =& $model['instance'];
+			$instance = $model['instance'];
 			foreach ($this->types as $type) {
 				foreach ($instance->{$type} as $assoc => $options) {
 					if (isset($model['keep'][$assoc])) {

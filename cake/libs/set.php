@@ -1,25 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Library of array functions for Cake.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 1.2.0
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -31,11 +27,6 @@
  * @subpackage    cake.cake.libs
  */
 class Set extends Object {
-/**
- * Deprecated
- *
- */
-	var $value = array();
 /**
  * This function can be thought of as a hybrid between PHP's array_merge and array_merge_recursive. The difference
  * to the two is that if an array key contains another array then the function behaves recursive (unlike array_merge)
@@ -49,14 +40,14 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function merge($arr1, $arr2 = null) {
+	public static function merge($arr1, $arr2 = null) {
 		$args = func_get_args();
 
 		$r = (array)current($args);
 		while (($arg = next($args)) !== false) {
 			foreach ((array)$arg as $key => $val)	 {
 				if (is_array($val) && isset($r[$key]) && is_array($r[$key])) {
-					$r[$key] = Set::merge($r[$key], $val);
+					$r[$key] = self::merge($r[$key], $val);
 				} elseif (is_int($key)) {
 					$r[] = $val;
 				} else {
@@ -75,7 +66,7 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function filter($var, $isArray = false) {
+	public static function filter($var, $isArray = false) {
 		if (is_array($var) && (!empty($var) || $isArray)) {
 			return array_filter($var, array('Set', 'filter'));
 		}
@@ -94,7 +85,7 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function pushDiff($array, $array2) {
+	public static function pushDiff($array, $array2) {
 		if (empty($array) && !empty($array2)) {
 			return $array2;
 		}
@@ -104,7 +95,7 @@ class Set extends Object {
 					$array[$key] = $value;
 				} else {
 					if (is_array($value)) {
-						$array[$key] = Set::pushDiff($array[$key], $array2[$key]);
+						$array[$key] = self::pushDiff($array[$key], $array2[$key]);
 					}
 				}
 			}
@@ -121,7 +112,7 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function map($class = 'stdClass', $tmp = 'stdClass') {
+	public static function map($class = 'stdClass', $tmp = 'stdClass') {
 		if (is_array($class)) {
 			$val = $class;
 			$class = $tmp;
@@ -130,99 +121,7 @@ class Set extends Object {
 		if (empty($val)) {
 			return null;
 		}
-		return Set::__map($val, $class);
-	}
-
-/**
- * Get the array value of $array. If $array is null, it will return
- * the current array Set holds. If it is an object of type Set, it
- * will return its value. If it is another object, its object variables.
- * If it is anything else but an array, it will return an array whose first
- * element is $array.
- *
- * @param mixed $array Data from where to get the array.
- * @return array Array from $array.
- * @access private
- */
-	function __array($array) {
-		if (empty($array)) {
-			$array = array();
-		} elseif (is_object($array)) {
-			$array = get_object_vars($array);
-		} elseif (!is_array($array)) {
-			$array = array($array);
-		}
-		return $array;
-	}
-
-/**
- * Maps the given value as an object. If $value is an object,
- * it returns $value. Otherwise it maps $value as an object of
- * type $class, and if primary assign _name_ $key on first array.
- * If $value is not empty, it will be used to set properties of
- * returned object (recursively). If $key is numeric will maintain array
- * structure
- *
- * @param mixed $value Value to map
- * @param string $class Class name
- * @param boolean $primary whether to assign first array key as the _name_
- * @return mixed Mapped object
- * @access private
- * @static
- */
-	function __map(&$array, $class, $primary = false) {
-		if ($class === true) {
-			$out = new stdClass;
-		} else {
-			$out = new $class;
-		}
-		if (is_array($array)) {
-			$keys = array_keys($array);
-			foreach ($array as $key => $value) {
-				if ($keys[0] === $key && $class !== true) {
-					$primary = true;
-				}
-				if (is_numeric($key)) {
-					if (is_object($out)) {
-						$out = get_object_vars($out);
-					}
-					$out[$key] = Set::__map($value, $class);
-					if (is_object($out[$key])) {
-						if ($primary !== true && is_array($value) && Set::countDim($value, true) === 2) {
-							if (!isset($out[$key]->_name_)) {
-								$out[$key]->_name_ = $primary;
-							}
-						}
-					}
-				} elseif (is_array($value)) {
-					if ($primary === true) {
-						if (!isset($out->_name_)) {
-							$out->_name_ = $key;
-						}
-						$primary = false;
-						foreach ($value as $key2 => $value2) {
-							$out->{$key2} = Set::__map($value2, true);
-						}
-					} else {
-						if (!is_numeric($key)) {
-							$out->{$key} = Set::__map($value, true, $key);
-							if (is_object($out->{$key}) && !is_numeric($key)) {
-								if (!isset($out->{$key}->_name_)) {
-									$out->{$key}->_name_ = $key;
-								}
-							}
-						} else {
-							$out->{$key} = Set::__map($value, true);
-						}
-					}
-				} else {
-					$out->{$key} = $value;
-				}
-			}
-		} else {
-			$out = $array;
-		}
-		return $out;
+		return self::__map($val, $class);
 	}
 /**
  * Checks to see if all the values in the array are numeric
@@ -232,7 +131,7 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function numeric($array = null) {
+	public static function numeric($array = null) {
 		if (empty($array)) {
 			return null;
 		}
@@ -269,7 +168,7 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function enum($select, $list = null) {
+	public static function enum($select, $list = null) {
 		if (empty($list)) {
 			$list = array('no', 'yes');
 		}
@@ -292,8 +191,7 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function format($data, $format, $keys) {
-
+	public static function format($data, $format, $keys) {
 		$extracted = array();
 		$count = count($keys);
 
@@ -368,14 +266,14 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function extract($path, $data = null, $options = array()) {
+	public static function extract($path, $data = null, $options = array()) {
 		if (is_string($data)) {
 			$tmp = $data;
 			$data = $path;
 			$path = $tmp;
 		}
 		if (strpos($path, '/') === false) {
-			return Set::classicExtract($data, $path);
+			return self::classicExtract($data, $path);
 		}
 		if (empty($data)) {
 			return array();
@@ -407,7 +305,7 @@ class Set extends Object {
 						$context['trace'][] = $context['key'];
 					}
 					$parent = join('/', $context['trace']) . '/.';
-					$context['item'] = Set::extract($parent, $data);
+					$context['item'] = self::extract($parent, $data);
 					$context['key'] = array_pop($context['trace']);
 					if (isset($context['trace'][1]) && $context['trace'][1] > 0) {
 						$context['item'] = $context['item'][0];
@@ -478,7 +376,7 @@ class Set extends Object {
 					$filtered = array();
 					$length = count($matches);
 					foreach ($matches as $i => $match) {
-						if (Set::matches(array($condition), $match['item'], $i + 1, $length)) {
+						if (self::matches(array($condition), $match['item'], $i + 1, $length)) {
 							$filtered[] = $match;
 						}
 					}
@@ -513,12 +411,12 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function matches($conditions, $data = array(), $i = null, $length = null) {
+	public static function matches($conditions, $data = array(), $i = null, $length = null) {
 		if (empty($conditions)) {
 			return true;
 		}
 		if (is_string($conditions)) {
-			return !!Set::extract($conditions, $data);
+			return !!self::extract($conditions, $data);
 		}
 		foreach ($conditions as $condition) {
 			if ($condition === ':last') {
@@ -587,7 +485,7 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function classicExtract($data, $path = null) {
+	public static function classicExtract($data, $path = null) {
 		if (empty($path)) {
 			return $data;
 		}
@@ -624,7 +522,7 @@ class Set extends Object {
 						if (empty($tmpPath)) {
 							$tmp[] = $val;
 						} else {
-							$tmp[] = Set::classicExtract($val, $tmpPath);
+							$tmp[] = self::classicExtract($val, $tmpPath);
 						}
 					}
 				}
@@ -636,7 +534,7 @@ class Set extends Object {
 						if (empty($tmpPath)) {
 							$tmp[] = $val;
 						} else {
-							$tmp[] = Set::classicExtract($val, $tmpPath);
+							$tmp[] = self::classicExtract($val, $tmpPath);
 						}
 					}
 				}
@@ -650,7 +548,7 @@ class Set extends Object {
 						if (empty($tmpPath)) {
 							$tmp[$j] = $val;
 						} else {
-							$tmp[$j] = Set::classicExtract($val, $tmpPath);
+							$tmp[$j] = self::classicExtract($val, $tmpPath);
 						}
 					}
 				}
@@ -675,11 +573,11 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function insert($list, $path, $data = null) {
+	public static function insert($list, $path, $data = null) {
 		if (!is_array($path)) {
 			$path = explode('.', $path);
 		}
-		$_list =& $list;
+		$_list = $list;
 
 		foreach ($path as $i => $key) {
 			if (is_numeric($key) && intval($key) > 0 || $key === '0') {
@@ -691,7 +589,7 @@ class Set extends Object {
 				if (!isset($_list[$key])) {
 					$_list[$key] = array();
 				}
-				$_list =& $_list[$key];
+				$_list = $_list[$key];
 			}
 		}
 		return $list;
@@ -705,14 +603,14 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function remove($list, $path = null) {
+	public static function remove($list, $path = null) {
 		if (empty($path)) {
 			return $list;
 		}
 		if (!is_array($path)) {
 			$path = explode('.', $path);
 		}
-		$_list =& $list;
+		$_list = $list;
 
 		foreach ($path as $i => $key) {
 			if (is_numeric($key) && intval($key) > 0 || $key === '0') {
@@ -724,7 +622,7 @@ class Set extends Object {
 				if (!isset($_list[$key])) {
 					return $list;
 				}
-				$_list =& $_list[$key];
+				$_list = $_list[$key];
 			}
 		}
 		return $list;
@@ -738,7 +636,7 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function check($data, $path = null) {
+	public static function check($data, $path = null) {
 		if (empty($path)) {
 			return $data;
 		}
@@ -757,7 +655,7 @@ class Set extends Object {
 			if (!is_array($data) || !array_key_exists($key, $data)) {
 				return false;
 			}
-			$data =& $data[$key];
+			$data = $data[$key];
 		}
 		return true;
 	}
@@ -770,7 +668,7 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function diff($val1, $val2 = null) {
+	public static function diff($val1, $val2 = null) {
 		if (empty($val1)) {
 			return (array)$val2;
 		}
@@ -806,7 +704,7 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function isEqual($val1, $val2 = null) {
+	public static function isEqual($val1, $val2 = null) {
 		return ($val1 == $val2);
 	}
 /**
@@ -818,14 +716,14 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function contains($val1, $val2 = null) {
+	public static function contains($val1, $val2 = null) {
 		if (empty($val1) || empty($val2)) {
 			return false;
 		}
 
 		foreach ($val2 as $key => $val) {
 			if (is_numeric($key)) {
-				Set::contains($val, $val1);
+				self::contains($val, $val1);
 			} else {
 				if (!isset($val1[$key]) || $val1[$key] != $val) {
 					return false;
@@ -845,18 +743,18 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function countDim($array = null, $all = false, $count = 0) {
+	public static function countDim($array = null, $all = false, $count = 0) {
 		if ($all) {
 			$depth = array($count);
 			if (is_array($array) && reset($array) !== false) {
 				foreach ($array as $value) {
-					$depth[] = Set::countDim($value, true, $count + 1);
+					$depth[] = self::countDim($value, true, $count + 1);
 				}
 			}
 			$return = max($depth);
 		} else {
 			if (is_array(reset($array))) {
-				$return = Set::countDim(reset($array)) + 1;
+				$return = self::countDim(reset($array)) + 1;
 			} else {
 				$return = 1;
 			}
@@ -874,7 +772,7 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function normalize($list, $assoc = true, $sep = ',', $trim = true) {
+	public static function normalize($list, $assoc = true, $sep = ',', $trim = true) {
 		if (is_string($list)) {
 			$list = explode($sep, $list);
 			if ($trim) {
@@ -883,7 +781,7 @@ class Set extends Object {
 				}
 			}
 			if ($assoc) {
-				return Set::normalize($list);
+				return self::normalize($list);
 			}
 		} elseif (is_array($list)) {
 			$keys = array_keys($list);
@@ -926,7 +824,7 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function combine($data, $path1 = null, $path2 = null, $groupPath = null) {
+	public static function combine($data, $path1 = null, $path2 = null, $groupPath = null) {
 		if (empty($data)) {
 			return array();
 		}
@@ -937,17 +835,17 @@ class Set extends Object {
 
 		if (is_array($path1)) {
 			$format = array_shift($path1);
-			$keys = Set::format($data, $format, $path1);
+			$keys = self::format($data, $format, $path1);
 		} else {
-			$keys = Set::extract($data, $path1);
+			$keys = self::extract($data, $path1);
 		}
 
 		if (!empty($path2) && is_array($path2)) {
 			$format = array_shift($path2);
-			$vals = Set::format($data, $format, $path2);
+			$vals = self::format($data, $format, $path2);
 
 		} elseif (!empty($path2)) {
-			$vals = Set::extract($data, $path2);
+			$vals = self::extract($data, $path2);
 
 		} else {
 			$count = count($keys);
@@ -957,7 +855,7 @@ class Set extends Object {
 		}
 
 		if ($groupPath != null) {
-			$group = Set::extract($data, $groupPath);
+			$group = self::extract($data, $groupPath);
 			if (!empty($group)) {
 				$c = count($keys);
 				for ($i = 0; $i < $c; $i++) {
@@ -983,7 +881,7 @@ class Set extends Object {
  * @return array
  * @static
  */
-	function reverse($object) {
+	public static function reverse($object) {
 		$out = array();
 		if (is_a($object, 'XmlNode')) {
 			$out = $object->toArray();
@@ -997,12 +895,12 @@ class Set extends Object {
 			$new = array();
 			foreach ($keys as $key => $value) {
 				if (is_array($value)) {
-					$new[$key] = (array)Set::reverse($value);
+					$new[$key] = (array)self::reverse($value);
 				} else {
 					if (isset($value->_name_)) {
-						$new = array_merge($new, Set::reverse($value));
+						$new = array_merge($new, self::reverse($value));
 					} else {
-						$new[$key] = Set::reverse($value);
+						$new[$key] = self::reverse($value);
 					}
 				}
 			}
@@ -1013,7 +911,7 @@ class Set extends Object {
 			}
 		} elseif (is_array($object)) {
 			foreach ($object as $key => $value) {
-				$out[$key] = Set::reverse($value);
+				$out[$key] = self::reverse($value);
 			}
 		} else {
 			$out = $object;
@@ -1031,7 +929,7 @@ class Set extends Object {
  * @access public
  * @static
  */
-	function flatten($data, $separator = '.') {
+	public static function flatten($data, $separator = '.') {
 		$result = array();
 		$path = null;
 
@@ -1045,7 +943,7 @@ class Set extends Object {
 
 		foreach ($data as $key => $val) {
 			if (is_array($val)) {
-				$result += (array)Set::flatten($val, array(
+				$result += (array)self::flatten($val, array(
 					'separator' => $separator,
 					'path' => $path . $key
 				));
@@ -1056,29 +954,6 @@ class Set extends Object {
 		return $result;
 	}
 /**
- * Flattens an array for sorting
- *
- * @param array $results
- * @param string $key
- * @return array
- * @access private
- */
-	function __flatten($results, $key = null) {
-		$stack = array();
-		foreach ($results as $k => $r) {
-			$id = $k;
-			if (!is_null($key)) {
-				$id = $key;
-			}
-			if (is_array($r)) {
-				$stack = array_merge($stack, Set::__flatten($r, $id));
-			} else {
-				$stack[] = array('id' => $id, 'value' => $r);
-			}
-		}
-		return $stack;
-	}
-/**
  * Sorts an array by any value, determined by a Set-compatible path
  *
  * @param array $data
@@ -1087,9 +962,9 @@ class Set extends Object {
  * @return array
  * @static
  */
-	function sort($data, $path, $dir) {
-		$result = Set::__flatten(Set::extract($data, $path));
-		list($keys, $values) = array(Set::extract($result, '{n}.id'), Set::extract($result, '{n}.value'));
+	public static function sort($data, $path, $dir) {
+		$result = self::__flatten(self::extract($data, $path));
+		list($keys, $values) = array(self::extract($result, '{n}.id'), self::extract($result, '{n}.value'));
 
 		$dir = strtolower($dir);
 		if ($dir === 'asc') {
@@ -1108,11 +983,117 @@ class Set extends Object {
 		return $sorted;
 	}
 /**
- * Deprecated, Set class should be called statically
+ * Get the array value of $array. If $array is null, it will return
+ * the current array Set holds. If it is an object of type Set, it
+ * will return its value. If it is another object, its object variables.
+ * If it is anything else but an array, it will return an array whose first
+ * element is $array.
  *
+ * @param mixed $array Data from where to get the array.
+ * @return array Array from $array.
+ * @access private
  */
-	function &get() {
-		trigger_error('get() is deprecated. Set class should be called statically', E_USER_WARNING);
+	private static function __array($array) {
+		if (empty($array)) {
+			$array = array();
+		} elseif (is_object($array)) {
+			$array = get_object_vars($array);
+		} elseif (!is_array($array)) {
+			$array = array($array);
+		}
+		return $array;
+	}
+/**
+ * Flattens an array for sorting
+ *
+ * @param array $results
+ * @param string $key
+ * @return array
+ * @access private
+ */
+	private static function __flatten($results, $key = null) {
+		$stack = array();
+		foreach ($results as $k => $r) {
+			$id = $k;
+			if (!is_null($key)) {
+				$id = $key;
+			}
+			if (is_array($r)) {
+				$stack = array_merge($stack, self::__flatten($r, $id));
+			} else {
+				$stack[] = array('id' => $id, 'value' => $r);
+			}
+		}
+		return $stack;
+	}
+/**
+ * Maps the given value as an object. If $value is an object,
+ * it returns $value. Otherwise it maps $value as an object of
+ * type $class, and if primary assign _name_ $key on first array.
+ * If $value is not empty, it will be used to set properties of
+ * returned object (recursively). If $key is numeric will maintain array
+ * structure
+ *
+ * @param mixed $value Value to map
+ * @param string $class Class name
+ * @param boolean $primary whether to assign first array key as the _name_
+ * @return mixed Mapped object
+ * @access private
+ * @static
+ */
+	private static function __map(&$array, $class, $primary = false) {
+		if ($class === true) {
+			$out = new stdClass;
+		} else {
+			$out = new $class;
+		}
+		if (is_array($array)) {
+			$keys = array_keys($array);
+			foreach ($array as $key => $value) {
+				if ($keys[0] === $key && $class !== true) {
+					$primary = true;
+				}
+				if (is_numeric($key)) {
+					if (is_object($out)) {
+						$out = get_object_vars($out);
+					}
+					$out[$key] = Set::__map($value, $class);
+					if (is_object($out[$key])) {
+						if ($primary !== true && is_array($value) && Set::countDim($value, true) === 2) {
+							if (!isset($out[$key]->_name_)) {
+								$out[$key]->_name_ = $primary;
+							}
+						}
+					}
+				} elseif (is_array($value)) {
+					if ($primary === true) {
+						if (!isset($out->_name_)) {
+							$out->_name_ = $key;
+						}
+						$primary = false;
+						foreach ($value as $key2 => $value2) {
+							$out->{$key2} = Set::__map($value2, true);
+						}
+					} else {
+						if (!is_numeric($key)) {
+							$out->{$key} = Set::__map($value, true, $key);
+							if (is_object($out->{$key}) && !is_numeric($key)) {
+								if (!isset($out->{$key}->_name_)) {
+									$out->{$key}->_name_ = $key;
+								}
+							}
+						} else {
+							$out->{$key} = Set::__map($value, true);
+						}
+					}
+				} else {
+					$out->{$key} = $value;
+				}
+			}
+		} else {
+			$out = $array;
+		}
+		return $out;
 	}
 }
 ?>

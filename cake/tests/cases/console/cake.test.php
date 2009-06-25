@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * ShellDispatcherTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2007, Cake Software Foundation, Inc.
+ * Copyright 2005-2009, Cake Software Foundation, Inc.
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2007, Cake Software Foundation, Inc.
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc.
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.console
  * @since         CakePHP(tm) v 1.2.0.5432
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!defined('DISABLE_AUTO_DISPATCH')) {
@@ -151,7 +147,7 @@ class ShellDispatcherTest extends UnitTestCase {
  * @return void
  */
 	function testParseParams() {
-		$Dispatcher =& new TestShellDispatcher();
+		$Dispatcher = new TestShellDispatcher();
 
 		$params = array(
 			'/cake/1.2.x.x/cake/console/cake.php',
@@ -404,7 +400,7 @@ class ShellDispatcherTest extends UnitTestCase {
  * @return void
  */
 	function testBuildPaths() {
-		$Dispatcher =& new TestShellDispatcher();
+		$Dispatcher = new TestShellDispatcher();
 
 		$result = $Dispatcher->shellPaths;
 		$expected = array(
@@ -425,13 +421,13 @@ class ShellDispatcherTest extends UnitTestCase {
  * @return void
  */
 	function testDispatch() {
-		$Dispatcher =& new TestShellDispatcher(array('sample'));
+		$Dispatcher = new TestShellDispatcher(array('sample'));
 		$this->assertPattern('/This is the main method called from SampleShell/', $Dispatcher->stdout);
 
-		$Dispatcher =& new TestShellDispatcher(array('test_plugin_two.example'));
+		$Dispatcher = new TestShellDispatcher(array('test_plugin_two.example'));
 		$this->assertPattern('/This is the main method called from TestPluginTwo.ExampleShell/', $Dispatcher->stdout);
 
-		$Dispatcher =& new TestShellDispatcher(array('test_plugin_two.welcome', 'say_hello'));
+		$Dispatcher = new TestShellDispatcher(array('test_plugin_two.welcome', 'say_hello'));
 		$this->assertPattern('/This is the say_hello method called from TestPluginTwo.WelcomeShell/', $Dispatcher->stdout);
 	}
 /**
@@ -441,7 +437,7 @@ class ShellDispatcherTest extends UnitTestCase {
  * @return void
  */
 	function testHelpCommand() {
-		$Dispatcher =& new TestShellDispatcher();
+		$Dispatcher = new TestShellDispatcher();
 
 		$expected = "/ CORE(\\\|\/)tests(\\\|\/)test_app(\\\|\/)plugins(\\\|\/)test_plugin(\\\|\/)vendors(\\\|\/)shells:";
 	 	$expected .= "\n\t example";

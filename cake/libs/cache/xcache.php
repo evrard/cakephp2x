@@ -1,26 +1,22 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Xcache storage engine for cache.
  *
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.cache
  * @since         CakePHP(tm) v 1.2.0.4947
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -39,7 +35,7 @@ class XcacheEngine extends CacheEngine {
  * @var array
  * @access public
  */
-	var $settings = array();
+	private $settings = array();
 /**
  * Initialize the Cache Engine
  *
@@ -50,7 +46,7 @@ class XcacheEngine extends CacheEngine {
  * @return boolean True if the engine has been successfully initialized, false if not
  * @access public
  */
-	function init($settings) {
+	private function init($settings) {
 		parent::init(array_merge(array(
 			'engine' => 'Xcache', 'prefix' => Inflector::slug(APP_DIR) . '_', 'PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'
 			), $settings)
@@ -66,7 +62,7 @@ class XcacheEngine extends CacheEngine {
  * @return boolean True if the data was succesfully cached, false on failure
  * @access public
  */
-	function write($key, &$value, $duration) {
+	private function write($key, &$value, $duration) {
 		$expires = time() + $duration;
 		xcache_set($key.'_expires', $expires, $duration);
 		return xcache_set($key, $value, $duration);
@@ -78,7 +74,7 @@ class XcacheEngine extends CacheEngine {
  * @return mixed The cached data, or false if the data doesn't exist, has expired, or if there was an error fetching it
  * @access public
  */
-	function read($key) {
+	private function read($key) {
 		if (xcache_isset($key)) {
 			$time = time();
 			$cachetime = intval(xcache_get($key.'_expires'));
@@ -96,7 +92,7 @@ class XcacheEngine extends CacheEngine {
  * @return boolean True if the value was succesfully deleted, false if it didn't exist or couldn't be removed
  * @access public
  */
-	function delete($key) {
+	private function delete($key) {
 		return xcache_unset($key);
 	}
 /**
@@ -105,7 +101,7 @@ class XcacheEngine extends CacheEngine {
  * @return boolean True if the cache was succesfully cleared, false otherwise
  * @access public
  */
-	function clear() {
+	private function clear() {
 		$this->__auth();
 		$max = xcache_count(XC_TYPE_VAR);
 		for ($i = 0; $i < $max; $i++) {
@@ -124,7 +120,7 @@ class XcacheEngine extends CacheEngine {
  * @param boolean Revert changes
  * @access private
  */
-	function __auth($reverse = false) {
+	private function __auth($reverse = false) {
 		static $backup = array();
 		$keys = array('PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password');
 		foreach ($keys as $key => $setting) {

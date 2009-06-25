@@ -1,27 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * Firebird/Interbase layer for DBO
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model.dbo
  * @since         CakePHP(tm) v 1.2.0.5152
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
@@ -38,49 +34,49 @@ class DboFirebird extends DboSource {
  *
  * @var unknown_type
  */
-	var $description = "Firebird/Interbase DBO Driver";
+	private $description = "Firebird/Interbase DBO Driver";
 /**
  * Saves the original table name
  *
  * @var unknown_type
  */
-	var $modeltmp = array();
+	private $modeltmp = array();
 /**
  * Enter description here...
  *
  * @var unknown_type
  */
-	var $startQuote = "\'";
+	private $startQuote = "\'";
 /**
  * Enter description here...
  *
  * @var unknown_type
  */
-	var $endQuote = "\'";
+	private $endQuote = "\'";
 /**
  * Enter description here...
  *
  * @var unknown_type
  */
-	var $alias = ' ';
+	private $alias = ' ';
 /**
  * Enter description here...
  *
  * @var unknown_type
  */
-	var $goofyLimit = true;
+	private $goofyLimit = true;
 /**
  * Creates a map between field aliases and numeric indexes.
  *
  * @var array
  */
-	var $__fieldMappings = array();
+	private $__fieldMappings = array();
 /**
  * Base configuration settings for Firebird driver
  *
  * @var array
  */
-	var $_baseConfig = array(
+	private $_baseConfig = array(
 		'persistent' => true,
 		'host' => 'localhost',
 		'login' => 'SYSDBA',
@@ -94,7 +90,7 @@ class DboFirebird extends DboSource {
  *
  * @var array
  */
-	var $columns = array(
+	private $columns = array(
 		'primary_key' => array('name' => 'IDENTITY (1, 1) NOT NULL'),
 		'string'	=> array('name'	 => 'varchar', 'limit' => '255'),
 		'text'		=> array('name' => 'BLOB SUB_TYPE 1 SEGMENT SIZE 100 CHARACTER SET NONE'),
@@ -112,7 +108,7 @@ class DboFirebird extends DboSource {
  *
  * @var array
  **/
-	var $_commands = array(
+	private $_commands = array(
 		'begin'	   => 'SET TRANSACTION',
 		'commit'   => 'COMMIT',
 		'rollback' => 'ROLLBACK'
@@ -122,7 +118,7 @@ class DboFirebird extends DboSource {
  *
  * @return boolean True if the database could be connected, else false
  */
-	function connect() {
+	private function connect() {
 		$config = $this->config;
 		$connect = $config['connect'];
 
@@ -135,7 +131,7 @@ class DboFirebird extends DboSource {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	function disconnect() {
+	private function disconnect() {
 		$this->connected = false;
 		return @ibase_close($this->connection);
 	}
@@ -146,7 +142,7 @@ class DboFirebird extends DboSource {
  * @return resource Result resource identifier
  * @access protected
  */
-	function _execute($sql) {
+	private function _execute($sql) {
 		return @ibase_query($this->connection,	$sql);
 	}
 /**
@@ -154,7 +150,7 @@ class DboFirebird extends DboSource {
  *
  * @return array The fetched row as an array
  */
-	function fetchRow() {
+	private function fetchRow() {
 		if ($this->hasResult()) {
 			$this->resultSet($this->_result);
 			$resultRow = $this->fetchResult();
@@ -168,7 +164,7 @@ class DboFirebird extends DboSource {
  *
  * @return array Array of tablenames in the database
  */
-	function listSources() {
+	private function listSources() {
 		$cache = parent::listSources();
 
 		if ($cache != null) {
@@ -192,7 +188,7 @@ class DboFirebird extends DboSource {
  * @param Model $model Model object to describe
  * @return array Fields in table. Keys are name and type
  */
-	function describe(&$model) {
+	private function describe(&$model) {
 		$this->modeltmp[$model->table] = $model->alias;
 		$cache = parent::describe($model);
 
@@ -222,7 +218,7 @@ class DboFirebird extends DboSource {
  * @param string $data Name (table.field) to be prepared for use in an SQL statement
  * @return string Quoted for Firebird
  */
-	function name($data) {
+	private function name($data) {
 		if ($data == '*') {
 				return '*';
 		}
@@ -246,7 +242,7 @@ class DboFirebird extends DboSource {
  * @param boolean $safe Whether or not numeric data should be handled automagically if no column data is provided
  * @return string Quoted and escaped data
  */
-	function value($data, $column = null, $safe = false) {
+	private function value($data, $column = null, $safe = false) {
 		$parent = parent::value($data, $column, $safe);
 
 		if ($parent != null) {
@@ -281,7 +277,7 @@ class DboFirebird extends DboSource {
  * @param array $values
  * @return array
  */
-	function update(&$model, $fields = array(), $values = array()) {
+	private function update(&$model, $fields = array(), $values = array()) {
 		foreach ($fields as $i => $field) {
 			if ($field == $model->primaryKey) {
 				unset ($fields[$i]);
@@ -296,7 +292,7 @@ class DboFirebird extends DboSource {
  *
  * @return string Error message with error number
  */
-	function lastError() {
+	private function lastError() {
 		$error = ibase_errmsg();
 
 		if ($error !== false) {
@@ -310,7 +306,7 @@ class DboFirebird extends DboSource {
  *
  * @return integer Number of affected rows
  */
-	function lastAffected() {
+	private function lastAffected() {
 		if ($this->_result) {
 			return ibase_affected_rows($this->connection);
 		}
@@ -322,7 +318,7 @@ class DboFirebird extends DboSource {
  *
  * @return integer Number of rows in resultset
  */
-	function lastNumRows() {
+	private function lastNumRows() {
 		return $this->_result? /*ibase_affected_rows($this->_result)*/ 1: false;
 	}
 /**
@@ -331,7 +327,7 @@ class DboFirebird extends DboSource {
  * @param unknown_type $source
  * @return in
  */
-	function lastInsertId($source = null, $field = 'id') {
+	private function lastInsertId($source = null, $field = 'id') {
 		$query = "SELECT RDB\$TRIGGER_SOURCE
 		FROM RDB\$TRIGGERS WHERE RDB\$RELATION_NAME = '".  strtoupper($source) .  "' AND
 		RDB\$SYSTEM_FLAG IS NULL AND  RDB\$TRIGGER_TYPE = 1 ";
@@ -370,7 +366,7 @@ class DboFirebird extends DboSource {
  * @param integer $offset Offset from which to start results
  * @return string SQL limit/offset statement
  */
-	function limit($limit, $offset = null) {
+	private function limit($limit, $offset = null) {
 		if ($limit) {
 			$rt = '';
 
@@ -392,7 +388,7 @@ class DboFirebird extends DboSource {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return string Abstract column type (i.e. "string")
  */
-	function column($real) {
+	private function column($real) {
 		if (is_array($real)) {
 			$col = $real['name'];
 
@@ -442,7 +438,7 @@ class DboFirebird extends DboSource {
  *
  * @param unknown_type $results
  */
-	function resultSet(&$results) {
+	private function resultSet(&$results) {
 		$this->results =& $results;
 		$this->map = array();
 		$num_fields = ibase_num_fields($results);
@@ -466,7 +462,7 @@ class DboFirebird extends DboSource {
  * @param array $data Query data
  * @return string
  */
-	function renderStatement($type, $data) {
+	private function renderStatement($type, $data) {
 		extract($data);
 
 		if (strtolower($type) == 'select') {
@@ -489,7 +485,7 @@ class DboFirebird extends DboSource {
  *
  * @return unknown
  */
-	function fetchResult() {
+	private function fetchResult() {
 		if ($row = ibase_fetch_row($this->results, IBASE_TEXT)) {
 			$resultRow = array();
 			$i = 0;
