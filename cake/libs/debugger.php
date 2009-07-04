@@ -50,21 +50,21 @@ class Debugger extends Object {
  * @var array
  * @access public
  */
-	private $errors = array();
+	private static $errors = array();
 /**
  * Contains the base URL for error code documentation.
  *
  * @var string
  * @access public
  */
-	private $helpPath = null;
+	private static $helpPath = null;
 /**
  * The current output format.
  *
  * @var string
  * @access protected
  */
-	protected $_outputFormat = 'js';
+	protected static $_outputFormat = 'js';
 /**
  * Templates used when generating trace or error strings.  Can be global or indexed by the format
  * value used in $_outputFormat.
@@ -72,7 +72,7 @@ class Debugger extends Object {
  * @var string
  * @access protected
  */
-	var $_templates = array(
+	private static $_templates = array(
 		'log' => array(
 			'trace' => '{:reference} - {:path}, line {:line}',
 			'error' => "{:error} ({:code}): {:description} in [{:file}, line {:line}]"
@@ -107,7 +107,7 @@ class Debugger extends Object {
  * @var string
  * @access private
  */
-	private $__data = array();
+	private static $__data = array();
 /**
  * Constructor.
  *
@@ -205,8 +205,7 @@ class Debugger extends Object {
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
 */
 	private function dump($var) {
-		$_this = Debugger::getInstance();
-		pr($_this->exportVar($var));
+		pr(self::exportVar($var));
 	}
 /**
  * Creates a detailed stack trace log at the time of invocation, much like dump()
@@ -219,8 +218,7 @@ class Debugger extends Object {
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
  */
 	private function log($var, $level = LOG_DEBUG) {
-		$_this = Debugger::getInstance();
-		$trace = $_this->trace(array('start' => 1, 'depth' => 2, 'format' => 'array'));
+		$trace = self::trace(array('start' => 1, 'depth' => 2, 'format' => 'array'));
 		$source = null;
 
 		if (is_object($trace[0]['object']) && isset($trace[0]['object']->_reporter->_test_stack)) {
@@ -229,7 +227,7 @@ class Debugger extends Object {
 								array_shift($stack), array_pop($stack), array_pop($stack));
 		}
 
-		CakeLog::write($level, $source . $_this->exportVar($var));
+		CakeLog::write($level, $source . self::exportVar($var));
 	}
 
 /**
@@ -248,19 +246,17 @@ class Debugger extends Object {
 			return;
 		}
 
-		$_this = Debugger::getInstance();
-
 		if (empty($file)) {
 			$file = '[internal]';
 		}
 		if (empty($line)) {
 			$line = '??';
 		}
-		$path = $_this->trimPath($file);
+		$path = self::trimPath($file);
 
 		$info = compact('code', 'description', 'file', 'line');
-		if (!in_array($info, $_this->errors)) {
-			$_this->errors[] = $info;
+		if (!in_array($info, self::$errors)) {
+			self::$errors[] = $info;
 		} else {
 			return;
 		}
@@ -293,7 +289,7 @@ class Debugger extends Object {
 		}
 
 		$helpCode = null;
-		if (!empty($_this->helpPath) && preg_match('/.*\[([0-9]+)\]$/', $description, $codes)) {
+		if (!empty(self::$helpPath) && preg_match('/.*\[([0-9]+)\]$/', $description, $codes)) {
 			if (isset($codes[1])) {
 				$helpID = $codes[1];
 				$description = trim(preg_replace('/\[[0-9]+\]$/', '', $description));
@@ -301,10 +297,10 @@ class Debugger extends Object {
 		}
 
 		$data = compact('level', 'error', 'code', 'helpID', 'description', 'file', 'path', 'line', 'context');
-		echo $_this->_output($data);
+		echo self::_output($data);
 
 		if (Configure::read('log')) {
-			$tpl = $_this->_templates['log']['error'];
+			$tpl = self::$_templates['log']['error'];
 			$options = array('before' => '{:', 'after' => '}');
 			CakeLog::write($level, String::insert($tpl, $data, $options));
 		}
@@ -326,7 +322,7 @@ class Debugger extends Object {
 	function trace($options = array()) {
 		$defaults = array(
 			'depth'   => 999,
-			'format'  => $_this->_outputFormat,
+			'format'  => self::$_outputFormat,
 			'args'    => false,
 			'start'   => 0,
 			'scope'   => null,
@@ -374,10 +370,10 @@ class Debugger extends Object {
 			} elseif ($options['format'] == 'array') {
 				$back[] = $trace;
 			} else {
-				if (isset($_this->_templates[$options['format']]['traceLine'])) {
-					$tpl = $_this->_templates[$options['format']]['traceLine'];
+				if (isset(self::$_templates[$options['format']]['traceLine'])) {
+					$tpl = self::$_templates[$options['format']]['traceLine'];
 				} else {
-					$tpl = $_this->_templates['base']['traceLine'];
+					$tpl = self::$_templates['base']['traceLine'];
 				}
 				$trace['path'] = Debugger::trimPath($trace['file']);
 				$trace['reference'] = $reference;
@@ -464,7 +460,6 @@ class Debugger extends Object {
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
  */
 	private function exportVar($var, $recursion = 0) {
-		$_this =  Debugger::getInstance();
 		switch (strtolower(gettype($var))) {
 			case 'boolean':
 				return ($var) ? 'true' : 'false';
@@ -480,17 +475,17 @@ class Debugger extends Object {
 				return '"' . h($var) . '"';
 			break;
 			case 'object':
-				return get_class($var) . "\n" . $_this->__object($var);
+				return get_class($var) . "\n" . self::__object($var);
 			case 'array':
 				$out = "array(";
 				$vars = array();
 				foreach ($var as $key => $val) {
 					if ($recursion >= 0) {
 						if (is_numeric($key)) {
-							$vars[] = "\n\t" . $_this->exportVar($val, $recursion - 1);
+							$vars[] = "\n\t" . self::exportVar($val, $recursion - 1);
 						} else {
-							$vars[] = "\n\t" .$_this->exportVar($key, $recursion - 1)
-										. ' => ' . $_this->exportVar($val, $recursion - 1);
+							$vars[] = "\n\t" .self::exportVar($key, $recursion - 1)
+										. ' => ' . self::exportVar($val, $recursion - 1);
 						}
 					}
 				}
@@ -550,31 +545,31 @@ class Debugger extends Object {
 		$data = null;
 
 		if (is_null($format)) {
-			return $_this->_outputFormat;
+			return self::$_outputFormat;
 		}
 
 		if (!empty($strings)) {
-			if (isset($_this->_templates[$format])) {
+			if (isset(self::$_templates[$format])) {
 				if (isset($strings['links'])) {
-					$_this->_templates[$format]['links'] = array_merge(
-						$_this->_templates[$format]['links'],
+					self::$_templates[$format]['links'] = array_merge(
+						self::$_templates[$format]['links'],
 						$strings['links']
 					);
 					unset($strings['links']);
 				}
-				$_this->_templates[$format] = array_merge($_this->_templates[$format], $strings);
+				self::$_templates[$format] = array_merge(self::$_templates[$format], $strings);
 			} else {
-				$_this->_templates[$format] = $strings;
+				self::$_templates[$format] = $strings;
 			}
-			return $_this->_templates[$format];
+			return self::$_templates[$format];
 		}
 
-		if ($format === true && !empty($_this->__data)) {
-			$data = $_this->__data;
-			$_this->__data = array();
+		if ($format === true && !empty(self::$__data)) {
+			$data = self::$__data;
+			self::$__data = array();
 			$format = false;
 		}
-		$_this->_outputFormat = $format;
+		self::$_outputFormat = $format;
 
 		return $data;
 	}
