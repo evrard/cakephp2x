@@ -1175,7 +1175,7 @@ class Router extends Object {
  * @return string Normalized URL
  * @access public
  */
-	private static function normalize($url = '/') {
+	public static function normalize($url = '/') {
 		if (is_array($url)) {
 			$url = self::url($url);
 		} elseif (preg_match('/^[a-z\-]+:\/\//', $url)) {

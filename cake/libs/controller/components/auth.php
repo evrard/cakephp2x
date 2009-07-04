@@ -223,7 +223,7 @@ class AuthComponent extends Object {
  * @return void
  * @access public
  */
-	private function initialize(&$controller) {
+	public function initialize(&$controller) {
 		$this->params = $controller->params;
 		$crud = array('create', 'read', 'update', 'delete');
 		$this->actionMap = array_merge($this->actionMap, array_combine($crud, $crud));
@@ -256,7 +256,7 @@ class AuthComponent extends Object {
  * @return boolean
  * @access public
  */
-	private function startup(&$controller) {
+	public function startup(&$controller) {
 		$methods = array_flip($controller->methods);
 		$isErrorOrTests = (
 			strtolower($controller->name) == 'cakeerror' ||

@@ -120,7 +120,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	private function error($params) {
+	public function error($params) {
 		extract($params, EXTR_OVERWRITE);
 		$this->controller->set(array(
 			'code' => $code,
@@ -136,7 +136,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	private function error404($params) {
+	public function error404($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		if (!isset($url)) {
@@ -158,7 +158,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	private function missingController($params) {
+	public function missingController($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$controllerName = str_replace('Controller', '', $className);
@@ -175,7 +175,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	private function missingAction($params) {
+	public function missingAction($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$controllerName = str_replace('Controller', '', $className);
@@ -193,7 +193,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	private function privateAction($params) {
+	public function privateAction($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -225,7 +225,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	private function missingDatabase($params = array()) {
+	public function missingDatabase($params = array()) {
 		$this->controller->set(array(
 			'title' => __('Scaffold Missing Database Connection', true)
 		));
@@ -237,7 +237,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	private function missingView($params) {
+	public function missingView($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -254,7 +254,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	private function missingLayout($params) {
+	public function missingLayout($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->layout = 'default';
@@ -270,7 +270,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	private function missingConnection($params) {
+	public function missingConnection($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -285,7 +285,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	private function missingHelperFile($params) {
+	public function missingHelperFile($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -301,7 +301,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	private function missingHelperClass($params) {
+	public function missingHelperClass($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -317,7 +317,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	private function missingComponentFile($params) {
+	public function missingComponentFile($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -334,7 +334,7 @@ class ErrorHandler extends Object {
  * @param array $params Parameters for controller
  * @access public
  */
-	private function missingComponentClass($params) {
+	public function missingComponentClass($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
@@ -351,7 +351,7 @@ class ErrorHandler extends Object {
  * @param unknown_type $params Parameters for controller
  * @access public
  */
-	private function missingModel($params) {
+	public function missingModel($params) {
 		extract($params, EXTR_OVERWRITE);
 
 		$this->controller->set(array(
