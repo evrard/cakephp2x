@@ -516,7 +516,7 @@ class Folder extends Object {
  * @return boolean Success
  * @access public
  */
-	private function delete($path = null) {
+	public function delete($path = null) {
 		if (!$path) {
 			$path = $this->pwd();
 		}
@@ -544,7 +544,7 @@ class Folder extends Object {
 						return false;
 					}
 				}
-			}
+		}
 			$path = substr($path, 0, strlen($path) - 1);
 			if (rmdir($path) === false) {
 				$this->__errors[] = sprintf(__('%s NOT removed', true), $path);

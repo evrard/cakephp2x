@@ -659,10 +659,10 @@ class App extends Object {
 				$path = array_flip(array_flip((array_merge(
 					self::$$type, (array)$paths[$type], $merge
 				))));
-				self::$$type = array_values($path);
+				self::${$type} = array_values($path);
 			} else {
-				$path = array_flip(array_flip((array_merge($_this->{$type}, $merge))));
-				self::$$type = array_values($path);
+				$path = array_flip(array_flip((array_merge(self::${$type}, $merge))));
+				self::${$type} = array_values($path);
 			}
 		}
 	}
