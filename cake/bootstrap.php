@@ -24,7 +24,7 @@ if (!defined('PHP5')) {
 	define('PHP5', (PHP_VERSION >= 5));
 }
 require CORE_PATH . 'cake' . DS . 'basics.php';
-$TIME_START = getMicrotime();
+$TIME_START = microtime(true);
 require CORE_PATH . 'cake' . DS . 'config' . DS . 'paths.php';
 require LIBS . 'object.php';
 require LIBS . 'inflector.php';

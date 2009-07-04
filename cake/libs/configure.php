@@ -452,7 +452,7 @@ class App extends Object {
  * @var array
  * @access public
  */
-	var $types = array(
+	private static $types = array(
 		'class' => array('suffix' => '.php', 'extends' => null, 'core' => true),
 		'file' => array('suffix' => '.php', 'extends' => null, 'core' => true),
 		'model' => array('suffix' => '.php', 'extends' => 'AppModel', 'core' => false),
@@ -472,70 +472,70 @@ class App extends Object {
  * @var array
  * @access public
  */
-	var $models = array();
+	private static $models = array();
 /**
  * List of additional path(s) where behavior files reside.
  *
  * @var array
  * @access public
  */
-	var $behaviors = array();
+	private static $behaviors = array();
 /**
  * List of additional path(s) where controller files reside.
  *
  * @var array
  * @access public
  */
-	var $controllers = array();
+	private static $controllers = array();
 /**
  * List of additional path(s) where component files reside.
  *
  * @var array
  * @access public
  */
-	var $components = array();
+	private static $components = array();
 /**
  * List of additional path(s) where view files reside.
  *
  * @var array
  * @access public
  */
-	var $views = array();
+	private static $views = array();
 /**
  * List of additional path(s) where helper files reside.
  *
  * @var array
  * @access public
  */
-	var $helpers = array();
+	private static $helpers = array();
 /**
  * List of additional path(s) where plugins reside.
  *
  * @var array
  * @access public
  */
-	var $plugins = array();
+	private static $plugins = array();
 /**
  * List of additional path(s) where vendor packages reside.
  *
  * @var array
  * @access public
  */
-	var $vendors = array();
+	private static $vendors = array();
 /**
  * List of additional path(s) where locale files reside.
  *
  * @var array
  * @access public
  */
-	var $locales = array();
+	private static $locales = array();
 /**
  * List of additional path(s) where console shell files reside.
  *
  * @var array
  * @access public
  */
-	var $shells = array();
+	private static $shells = array();
 /**
  * Paths to search for files.
  *
@@ -584,7 +584,7 @@ class App extends Object {
  * @var array
  * @access private
  */
-	var $__objects = array();
+	private static $__objects = array();
 /**
  * Used to read information stored path
  *
@@ -596,11 +596,10 @@ class App extends Object {
  * @access public
  */
 	function path($type) {
-		$_this =& App::getInstance();
-		if (!isset($_this->{$type})) {
+		if (!isset(self::$$type)) {
 			return array();
 		}
-		return $_this->{$type};
+		return self::$$type;
 	}
 /**
  * Build path references. Merges the supplied $paths
@@ -612,7 +611,6 @@ class App extends Object {
  * @access public
  */
 	function build($paths = array(), $reset = false) {
-		$_this =& App::getInstance();
 		$defaults = array(
 			'models' => array(MODELS),
 			'behaviors' => array(BEHAVIORS),
@@ -629,12 +627,12 @@ class App extends Object {
 
 		if ($reset == true) {
 			foreach ($paths as $type => $new) {
-				$_this->{$type} = (array)$new;
+				self::$$type = (array)$new;
 			}
 			return $paths;
 		}
 
-		$core = $_this->core();
+		$core = self::core();
 		$app = array('models' => true, 'controllers' => true, 'helpers' => true);
 
 		foreach ($defaults as $type => $default) {
@@ -647,16 +645,16 @@ class App extends Object {
 				$merge = array_merge($merge, (array)$core[$type]);
 			}
 
-			$_this->{$type} = $default;
+			self::$$type = $default;
 
 			if (!empty($paths[$type])) {
 				$path = array_flip(array_flip((array_merge(
-					$_this->{$type}, (array)$paths[$type], $merge
+					self::$$type, (array)$paths[$type], $merge
 				))));
-				$_this->{$type} = array_values($path);
+				self::$$type = array_values($path);
 			} else {
 				$path = array_flip(array_flip((array_merge($_this->{$type}, $merge))));
-				$_this->{$type} = array_values($path);
+				self::$$type = array_values($path);
 			}
 		}
 	}
@@ -730,14 +728,13 @@ class App extends Object {
 			$extension = true;
 			$name = $type . str_replace(DS, '', $path);
 		}
-		$_this =& App::getInstance();
 
-		if (empty($_this->__objects) && $cache === true) {
-			$_this->__objects = Cache::read('object_map', '_cake_core_');
+		if (empty(self::$__objects) && $cache === true) {
+			self::$__objects = Cache::read('object_map', '_cake_core_');
 		}
 
-		if (empty($_this->__objects) || !isset($_this->__objects[$type]) || $cache !== true) {
-			$types = $_this->types;
+		if (empty(self::$__objects) || !isset(self::$__objects[$type]) || $cache !== true) {
+			$types = self::$types;
 
 			if (!isset($types[$type])) {
 				return false;
@@ -745,7 +742,8 @@ class App extends Object {
 			$objects = array();
 
 			if (empty($path)) {
-				$path = $_this->{"{$type}s"};
+				$pathName = $type . 's';
+				$path = self::$$pathName;
 				if (isset($types[$type]['core']) && $types[$type]['core'] === false) {
 					array_pop($path);
 				}
@@ -754,7 +752,7 @@ class App extends Object {
 
 			foreach ((array)$path as $dir) {
 				if ($type === 'file' || $type === 'class' || strpos($dir, $type) !== false) {
-					$items = $_this->__list($dir, $types[$type]['suffix'], $extension);
+					$items = self::__list($dir, $types[$type]['suffix'], $extension);
 					$objects = array_merge($items, array_diff($objects, $items));
 				}
 			}
@@ -765,13 +763,13 @@ class App extends Object {
 				}
 			}
 			if ($cache === true && !empty($objects)) {
-				$_this->__objects[$name] = $objects;
-				$_this->__cache = true;
+				self::$__objects[$name] = $objects;
+				self::$__cache = true;
 			} else {
 				return $objects;
 			}
 		}
-		return $_this->__objects[$name];
+		return self::$__objects[$name];
 	}
 /**
  * Finds classes based on $name or specific file(s) to search.
