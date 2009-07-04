@@ -204,7 +204,7 @@ class Debugger extends Object {
  * @static
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
 */
-	private function dump($var) {
+	public function dump($var) {
 		pr(self::exportVar($var));
 	}
 /**
@@ -217,7 +217,7 @@ class Debugger extends Object {
  * @static
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
  */
-	private function log($var, $level = LOG_DEBUG) {
+	public function log($var, $level = LOG_DEBUG) {
 		$trace = self::trace(array('start' => 1, 'depth' => 2, 'format' => 'array'));
 		$source = null;
 
@@ -396,7 +396,7 @@ class Debugger extends Object {
  * @access public
  * @static
  */
-	private function trimPath($path) {
+	public function trimPath($path) {
 		if (!defined('CAKE_CORE_INCLUDE_PATH') || !defined('APP')) {
 			return $path;
 		}
@@ -427,7 +427,7 @@ class Debugger extends Object {
  * @static
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
  */
-	private function excerpt($file, $line, $context = 2) {
+	public function excerpt($file, $line, $context = 2) {
 		$data = $lines = array();
 		if (!file_exists($file)) {
 			return array();
@@ -459,7 +459,7 @@ class Debugger extends Object {
  * @static
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
  */
-	private function exportVar($var, $recursion = 0) {
+	public function exportVar($var, $recursion = 0) {
 		switch (strtolower(gettype($var))) {
 			case 'boolean':
 				return ($var) ? 'true' : 'false';
@@ -540,7 +540,7 @@ class Debugger extends Object {
  *        straight HTML output, or 'text' for unformatted text.
  * @access protected
  */
-	private function output($format = null, $strings = array()) {
+	public function output($format = null, $strings = array()) {
 		$_this = Debugger::getInstance();
 		$data = null;
 

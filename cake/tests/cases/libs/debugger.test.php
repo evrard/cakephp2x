@@ -149,7 +149,7 @@ class DebuggerTest extends CakeTestCase {
 			),
 			'b' => array(), 'Notice', '/b', ' (8)'
 		));
-		
+
 		$this->assertPattern('/Undefined variable: buzz/', $result[1]);
 		$this->assertPattern('/<a[^>]+>Code/', $result[1]);
 		$this->assertPattern('/<a[^>]+>Context/', $result[2]);
@@ -210,8 +210,8 @@ class DebuggerTest extends CakeTestCase {
  * @return void
  */
 	function testExportVar() {
-		App::import('Controller');
-		$Controller = new Controller();
+		App::import('AppController');
+		$Controller = new AppController();
 		$Controller->helpers = array('Html', 'Form');
 		$View = new View($Controller);
 		$result = Debugger::exportVar($View);
