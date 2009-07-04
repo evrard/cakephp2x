@@ -2,7 +2,7 @@
 /**
  * Basic Cake functionality.
  *
- * Core functions for including other source files, loading models and so forth.
+ * Handles loading of core files needed on every request
  *
  * PHP Version 5.x
  *
@@ -20,22 +20,17 @@
  * @since         CakePHP(tm) v 0.2.9
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-/**
- * Configuration, directory layout and standard libraries
- */
-	if (!isset($bootstrap)) {
-		require CORE_PATH . 'cake' . DS . 'basics.php';
-		$TIME_START = microtime(true);
-		require CORE_PATH . 'cake' . DS . 'config' . DS . 'paths.php';
-		require LIBS . 'object.php';
-		require LIBS . 'inflector.php';
-		require LIBS . 'configure.php';
-	}
-	require LIBS . 'cache.php';
-
-	Configure::getInstance();
-
-	$url = null;
-
-	App::import('Core', array('Dispatcher'));
+if (!defined('PHP5')) {
+	define('PHP5', (PHP_VERSION >= 5));
+}
+require CORE_PATH . 'cake' . DS . 'basics.php';
+$TIME_START = getMicrotime();
+require CORE_PATH . 'cake' . DS . 'config' . DS . 'paths.php';
+require LIBS . 'object.php';
+require LIBS . 'inflector.php';
+require LIBS . 'configure.php';
+require LIBS . 'set.php';
+require LIBS . 'cache.php';
+Configure::getInstance();
+require CAKE . 'dispatcher.php';
 ?>

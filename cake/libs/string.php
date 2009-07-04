@@ -92,14 +92,16 @@ final class String extends Object {
 		}
 
 		list($timeMid, $timeLow) = explode(' ', microtime());
-		$uuid = sprintf("%08x-%04x-%04x-%02x%02x-%04x%08x", (int)$timeLow, (int)substr($timeMid, 2) & 0xffff,
-					mt_rand(0, 0xfff) | 0x4000, mt_rand(0, 0x3f) | 0x80, mt_rand(0, 0xff), $pid, $node);
+		$uuid = sprintf(
+			"%08x-%04x-%04x-%02x%02x-%04x%08x", (int)$timeLow, (int)substr($timeMid, 2) & 0xffff,
+			mt_rand(0, 0xfff) | 0x4000, mt_rand(0, 0x3f) | 0x80, mt_rand(0, 0xff), $pid, $node
+		);
 
 		return $uuid;
 	}
 /**
- * Tokenizes a string using $separator, ignoring any instance of $separator that appears between $leftBound
- * and $rightBound
+ * Tokenizes a string using $separator, ignoring any instance of $separator that appears between
+ * $leftBound and $rightBound
  *
  * @param string $data The data to tokenize
  * @param string $separator The token to split the data on
@@ -121,7 +123,11 @@ final class String extends Object {
 
 		while ($offset <= $length) {
 			$tmpOffset = -1;
-			$offsets = array(strpos($data, $separator, $offset), strpos($data, $leftBound, $offset), strpos($data, $rightBound, $offset));
+			$offsets = array(
+				strpos($data, $separator, $offset),
+				strpos($data, $leftBound, $offset),
+				strpos($data, $rightBound, $offset)
+			);
 			for ($i = 0; $i < 3; $i++) {
 				if ($offsets[$i] !== false && ($offsets[$i] < $tmpOffset || $tmpOffset == -1)) {
 					$tmpOffset = $offsets[$i];
@@ -171,21 +177,22 @@ final class String extends Object {
 		return $data;
 	}
 /**
- * Replaces variable placeholders inside a $str with any given $data. Each key in the $data array corresponds to a variable
- * placeholder name in $str. Example:
- *
- * Sample: String::insert('My name is :name and I am :age years old.', array('name' => 'Bob', '65'));
- * Returns: My name is Bob and I am 65 years old.
+ * Replaces variable placeholders inside a $str with any given $data. Each key in the $data array
+ * corresponds to a variable placeholder name in $str.
+ * Example: String::insert(':name is :age years old.', array('name' => 'Bob', '65'));
+ * Returns: Bob is 65 years old.
  *
  * Available $options are:
  * 	before: The character or string in front of the name of the variable placeholder (Defaults to ':')
  * 	after: The character or string after the name of the variable placeholder (Defaults to null)
  * 	escape: The character or string used to escape the before character / string (Defaults to '\')
- * 	format: A regex to use for matching variable placeholders. Default is: '/(?<!\\)\:%s/' (Overwrites before, after, breaks escape / clean)
+ * 	format: A regex to use for matching variable placeholders. Default is: '/(?<!\\)\:%s/'
+ *         (Overwrites before, after, breaks escape / clean)
  * 	clean: A boolean or array with instructions for String::cleanInsert
  *
  * @param string $str A string containing variable placeholders
- * @param string $data A key => val array where each key stands for a placeholder variable name to be replaced with val
+ * @param string $data A key => val array where each key stands for a placeholder variable name
+ *        to be replaced with val
  * @param string $options An array of options, see description above
  * @return string
  * @access public
@@ -218,6 +225,8 @@ final class String extends Object {
 				$str = substr_replace($str, $val, $pos, 1);
 			}
 		} else {
+			asort($data);
+
 			$hashKeys = array_map('md5', array_keys($data));
 			$tempData = array_combine(array_keys($data), array_values($hashKeys));
 			foreach ($tempData as $key => $hashVal) {
@@ -226,6 +235,9 @@ final class String extends Object {
 			}
 			$dataReplacements = array_combine($hashKeys, array_values($data));
 			foreach ($dataReplacements as $tmpHash => $data) {
+				if (is_array($data)) {
+					$data = '';
+				}
 				$str = str_replace($tmpHash, $data, $str);
 			}
 		}
@@ -239,15 +251,17 @@ final class String extends Object {
 		return self::cleanInsert($str, $options);
 	}
 /**
- * Cleans up a Set::insert formated string with given $options depending on the 'clean' key in $options. The default method used is
- * text but html is also available. The goal of this function is to replace all whitespace and uneeded markup around placeholders
- * that did not get replaced by Set::insert.
+ * Cleans up a Set::insert formated string with given $options depending on the 'clean' key in
+ * $options. The default method used is text but html is also available. The goal of this function
+ * is to replace all whitespace and uneeded markup around placeholders that did not get replaced
+ * by Set::insert.
  *
  * @param string $str
  * @param string $options
  * @return string
  * @access public
  * @static
+ * @see Set::insert()
  */
 	public static function cleanInsert($str, $options) {
 		$clean = $options['clean'];

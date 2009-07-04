@@ -19,7 +19,7 @@
  * @since         CakePHP(tm) v 1.2.0.5550
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-App::import('Core', 'Schema');
+App::import('Core', 'CakeSchema');
 /**
  * Test for Schema database management
  *

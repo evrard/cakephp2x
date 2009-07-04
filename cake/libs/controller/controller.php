@@ -51,7 +51,7 @@ abstract class Controller extends Object {
  */
 	public $here = null;
 /**
- * The webroot of the application. Helpful if your application is placed in a folder under the current domain name.
+ * The webroot of the application.
  *
  * @var string
  * @access public
@@ -321,7 +321,8 @@ abstract class Controller extends Object {
 		if ($this->name === null) {
 			$r = null;
 			if (!preg_match('/(.*)Controller/i', get_class($this), $r)) {
-				die (__("Controller::__construct() : Can not get or parse my own class name, exiting."));
+				__("Controller::__construct() : Can not get or parse my own class name, exiting.");
+				$this->_stop();
 			}
 			$this->name = $r[1];
 		}
@@ -389,7 +390,7 @@ abstract class Controller extends Object {
 					if ($var === 'components') {
 						$normal = Set::normalize($this->{$var});
 						$app = Set::normalize($appVars[$var]);
-						$this->{$var} = Set::merge($normal, $app);
+						$this->{$var} = Set::merge($app, $normal);
 					} else {
 						$this->{$var} = Set::merge($this->{$var}, array_diff($appVars[$var], $this->{$var}));
 					}
@@ -458,7 +459,7 @@ abstract class Controller extends Object {
 	}
 /**
  * Loads and instantiates models required by this controller.
- * If Controller::persistModel; is true, controller will create cached model instances on first request,
+ * If Controller::persistModel; is true, controller will cache model instances on first request,
  * additional request will used cached models.
  * If the model is non existent, it will throw a missing database table error, as Cake generates
  * dynamic models for the time being.
@@ -513,7 +514,8 @@ abstract class Controller extends Object {
  * Redirects to given $url, after turning off $this->autoRender.
  * Script execution is halted after the redirect.
  *
- * @param mixed $url A string or array-based URL pointing to another location within the app, or an absolute URL
+ * @param mixed $url A string or array-based URL pointing to another location within the app,
+ *        or an absolute URL
  * @param integer $status Optional HTTP status code (eg: 404)
  * @param boolean $exit If true, exit() will be called after the redirect
  * @return mixed void if $exit = false. Terminates script if $exit = true
@@ -771,7 +773,8 @@ abstract class Controller extends Object {
 				if (isset($this->$currentModel) && is_a($this->$currentModel, 'Model')) {
 					$models[] = Inflector::underscore($currentModel);
 				}
-				if (isset($this->$currentModel) && is_a($this->$currentModel, 'Model') && !empty($this->$currentModel->validationErrors)) {
+				$isValidModel = isset($this->$currentModel) && is_a($this->$currentModel, 'Model') && !empty($this->$currentModel->validationErrors);
+				if ($isValidModel) {
 					$View->validationErrors[Inflector::camelize($currentModel)] = $this->$currentModel->validationErrors;
 				}
 			}
@@ -816,7 +819,8 @@ abstract class Controller extends Object {
 		}
 
 		if ($default != null) {
-			return $default;
+			$url = Router::url($default, true);
+			return $url;
 		}
 		return '/';
 	}
@@ -858,9 +862,11 @@ abstract class Controller extends Object {
  * Converts POST'ed form data to a model conditions array, suitable for use in a Model::find() call.
  *
  * @param array $data POST'ed data organized by model and field
- * @param mixed $op A string containing an SQL comparison operator, or an array matching operators to fields
+ * @param mixed $op A string containing an SQL comparison operator, or an array matching operators
+ *        to fields
  * @param string $bool SQL boolean operator: AND, OR, XOR, etc.
- * @param boolean $exclusive If true, and $op is an array, fields not included in $op will not be included in the returned conditions
+ * @param boolean $exclusive If true, and $op is an array, fields not included in $op will not be
+ *        included in the returned conditions
  * @return array An array of model conditions
  * @access public
  * @link http://book.cakephp.org/view/432/postConditions
@@ -960,7 +966,11 @@ abstract class Controller extends Object {
 		}
 
 		if (!is_object($object)) {
-			trigger_error(sprintf(__('Controller::paginate() - can\'t find model %1$s in controller %2$sController', true), $object, $this->name), E_USER_WARNING);
+			trigger_error(sprintf(
+				__('Controller::paginate() - can\'t find model %1$s in controller %2$sController',
+					true
+				), $object, $this->name
+			), E_USER_WARNING);
 			return array();
 		}
 		$options = array_merge($this->params, $this->params['url'], $this->passedArgs);
@@ -1021,6 +1031,14 @@ abstract class Controller extends Object {
 		if (!isset($defaults['conditions'])) {
 			$defaults['conditions'] = array();
 		}
+
+		$type = 'all';
+
+		if (isset($defaults[0])) {
+			$type = $defaults[0];
+			unset($defaults[0]);
+		}
+
 		extract($options = array_merge(array('page' => 1, 'limit' => 20), $defaults, $options));
 
 		if (is_array($scope) && !empty($scope)) {
@@ -1031,12 +1049,7 @@ abstract class Controller extends Object {
 		if ($recursive === null) {
 			$recursive = $object->recursive;
 		}
-		$type = 'all';
 
-		if (isset($defaults[0])) {
-			$type = $defaults[0];
-			unset($defaults[0]);
-		}
 		$extra = array_diff_key($defaults, compact(
 			'conditions', 'fields', 'order', 'limit', 'page', 'recursive'
 		));
@@ -1063,7 +1076,9 @@ abstract class Controller extends Object {
 		$page = $options['page'] = (integer)$page;
 
 		if (method_exists($object, 'paginate')) {
-			$results = $object->paginate($conditions, $fields, $order, $limit, $page, $recursive, $extra);
+			$results = $object->paginate(
+				$conditions, $fields, $order, $limit, $page, $recursive, $extra
+			);
 		} else {
 			$parameters = compact('conditions', 'fields', 'order', 'limit', 'page');
 			if ($recursive != $object->recursive) {

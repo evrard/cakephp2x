@@ -21,6 +21,132 @@
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'HttpSocket');
+
+class TestHttpSocket extends HttpSocket {
+/**
+ * Convenience method for testing protected method
+ *
+ * @param mixed $uri URI (see {@link _parseUri()})
+ * @return array Current configuration settings
+ */
+	function configUri($uri = null) {
+		return parent::_configUri($uri);
+	}
+/**
+ * Convenience method for testing protected method
+ *
+ * @param string $uri URI to parse
+ * @param mixed $base If true use default URI config, otherwise indexed array to set 'scheme', 'host', 'port', etc.
+ * @return array Parsed URI
+ */
+	function parseUri($uri = null, $base = array()) {
+		return parent::_parseUri($uri, $base);
+	}
+/**
+ * Convenience method for testing protected method
+ *
+ * @param array $uri A $uri array, or uses $this->config if left empty
+ * @param string $uriTemplate The Uri template/format to use
+ * @return string A fully qualified URL formated according to $uriTemplate
+ */
+	function buildUri($uri = array(), $uriTemplate = '%scheme://%user:%pass@%host:%port/%path?%query#%fragment') {
+		return parent::_buildUri($uri, $uriTemplate);
+	}
+/**
+ * Convenience method for testing protected method
+ *
+ * @param array $header Header to build
+ * @return string Header built from array
+ */
+	function buildHeader($header, $mode = 'standard') {
+		return parent::_buildHeader($header, $mode);
+	}
+
+/**
+ * Convenience method for testing protected method
+ *
+ * @param string $message Message to parse
+ * @return array Parsed message (with indexed elements such as raw, status, header, body)
+ */
+	function parseResponse($message) {
+		return parent::_parseResponse($message);
+	}
+/**
+ * Convenience method for testing protected method
+ *
+ * @param array $header Header as an indexed array (field => value)
+ * @return array Parsed header
+ */
+	function parseHeader($header) {
+		return parent::_parseHeader($header);
+	}
+/**
+ * Convenience method for testing protected method
+ *
+ * @param mixed $query A query string to parse into an array or an array to return directly "as is"
+ * @return array The $query parsed into a possibly multi-level array. If an empty $query is given, an empty array is returned.
+ */
+	function parseQuery($query) {
+		return parent::_parseQuery($query);
+	}
+/**
+ * Convenience method for testing protected method
+ *
+ * @param string $body A string continaing the body to decode
+ * @param mixed $encoding Can be false in case no encoding is being used, or a string representing the encoding
+ * @return mixed Array or false
+ */
+	function decodeBody($body, $encoding = 'chunked') {
+		return parent::_decodeBody($body, $encoding);
+	}
+/**
+ * Convenience method for testing protected method
+ *
+ * @param string $body A string continaing the chunked body to decode
+ * @return mixed Array or false
+ */
+	function decodeChunkedBody($body) {
+		return parent::_decodeChunkedBody($body);
+	}
+/**
+ * Convenience method for testing protected method
+ *
+ * @param array $request Needs to contain a 'uri' key. Should also contain a 'method' key, otherwise defaults to GET.
+ * @param string $versionToken The version token to use, defaults to HTTP/1.1
+ * @return string Request line
+ */
+	function buildRequestLine($request = array(), $versionToken = 'HTTP/1.1') {
+		return parent::_buildRequestLine($request, $versionToken);
+	}
+/**
+ * Convenience method for testing protected method
+ *
+ * @param boolean $hex true to get them as HEX values, false otherwise
+ * @return array Escape chars
+ */
+	function tokenEscapeChars($hex = true, $chars = null) {
+		return parent::_tokenEscapeChars($hex, $chars);
+	}
+/**
+ * Convenience method for testing protected method
+ *
+ * @param string $token Token to escape
+ * @return string Escaped token
+ */
+	function EscapeToken($token, $chars = null) {
+		return parent::_escapeToken($token, $chars);
+	}
+/**
+ * Convenience method for testing protected method
+ *
+ * @param string $token Token to unescape
+ * @return string Unescaped token
+ */
+	function unescapeToken($token, $chars = null) {
+		return parent::_unescapeToken($token, $chars);
+	}
+}
+
 /**
  * HttpSocketTest class
  *
@@ -49,13 +175,13 @@ class HttpSocketTest extends CakeTestCase {
  * @return void
  */
 	function setUp() {
-		if (!class_exists('TestHttpSocket')) {
-			Mock::generatePartial('HttpSocket', 'TestHttpSocket', array('read', 'write', 'connect'));
-			Mock::generatePartial('HttpSocket', 'TestHttpSocketRequests', array('read', 'write', 'connect', 'request'));
+		if (!class_exists('MockHttpSocket')) {
+			Mock::generatePartial('TestHttpSocket', 'MockHttpSocket', array('read', 'write', 'connect'));
+			Mock::generatePartial('TestHttpSocket', 'MockHttpSocketRequests', array('read', 'write', 'connect', 'request'));
 		}
 
-		$this->Socket = new TestHttpSocket();
-		$this->RequestSocket = new TestHttpSocketRequests();
+		$this->Socket = new MockHttpSocket();
+		$this->RequestSocket = new MockHttpSocketRequests();
 	}
 /**
  * We use this function to clean up after the test case was executed
@@ -369,12 +495,6 @@ class HttpSocketTest extends CakeTestCase {
 
 			$r = array('config' => $this->Socket->config, 'request' => $this->Socket->request);
 			$v = $this->assertIdentical($r, $expectation, '%s in test #'.$i.' ');
-			if (!$v) {
-				debug('Result:');
-				debug($r);
-				debug('Expected:');
-				debug($expectation);
-			}
 			$expectation['request']['raw'] = $raw;
 		}
 
@@ -1152,7 +1272,8 @@ class HttpSocketTest extends CakeTestCase {
 		$header = array(
 			'Set-Cookie' => array(
 				'foo=bar',
-				'people=jim,jack,johnny";";Path=/accounts'
+				'people=jim,jack,johnny";";Path=/accounts',
+				'google=not=nice'
 			),
 			'Transfer-Encoding' => 'chunked',
 			'Date' => 'Sun, 18 Nov 2007 18:57:42 GMT',
@@ -1164,7 +1285,10 @@ class HttpSocketTest extends CakeTestCase {
 			),
 			'people' => array(
 				'value' => 'jim,jack,johnny";"',
-				'path' => '/accounts'
+				'path' => '/accounts',
+			),
+			'google' => array(
+				'value' => 'not=nice',
 			)
 		);
 		$this->assertEqual($cookies, $expected);
@@ -1175,7 +1299,7 @@ class HttpSocketTest extends CakeTestCase {
 		$this->assertEqual($cookies, $expected);
 
 		$header['Set-Cookie'] = 'foo=bar';
-		unset($expected['people'], $expected['cakephp']);
+		unset($expected['people'], $expected['cakephp'], $expected['google']);
 		$cookies = $this->Socket->parseCookies($header);
 		$this->assertEqual($cookies, $expected);
 	}

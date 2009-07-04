@@ -46,7 +46,7 @@ class CakeTestFixture extends Object {
  * @access public
  */
 	function __construct() {
-		App::import('Model', 'Schema');
+		App::import('Model', 'CakeSchema');
 		$this->Schema = new CakeSchema(array('name' => 'TestSuite', 'connection' => 'test_suite'));
 
 		$this->init();

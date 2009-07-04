@@ -6,8 +6,8 @@
  *
  * PHP Version 5.x
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The Open Group Test Suite License
  * Redistributions of files must retain the above copyright notice.
@@ -370,6 +370,15 @@ class ControllerTest extends CakeTestCase {
  */
 	var $fixtures = array('core.post', 'core.comment', 'core.name');
 /**
+ * endTest
+ *
+ * @access public
+ * @return void
+ */
+	function endTest() {
+		App::build();
+	}	
+/**
  * testConstructClasses method
  *
  * @access public
@@ -395,10 +404,7 @@ class ControllerTest extends CakeTestCase {
 
 		unset($Controller);
 
-		$_back = array(
-			'pluginPaths' => Configure::read('pluginPaths'),
-		);
-		Configure::write('pluginPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS));
+		App::build(array('plugins' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS)));
 
 		$Controller = new Controller();
 		$Controller->uses = array('TestPlugin.TestPluginPost');
@@ -408,7 +414,6 @@ class ControllerTest extends CakeTestCase {
 		$this->assertTrue(isset($Controller->TestPluginPost));
 		$this->assertTrue(is_a($Controller->TestPluginPost, 'TestPluginPost'));
 
-		Configure::write('pluginPaths', $_back['pluginPaths']);
 		unset($Controller);
 	}
 /**
@@ -601,6 +606,26 @@ class ControllerTest extends CakeTestCase {
 		$this->assertEqual($Controller->params['paging']['ControllerPost']['options'],$expected);
 	}
 /**
+ * Test that special paginate types are called and that the type param doesn't leak out into defaults or options.
+ *
+ * @return void
+ **/
+	function testPaginateSpecialType() {
+		$Controller =& new Controller();
+		$Controller->uses = array('ControllerPost', 'ControllerComment');
+		$Controller->passedArgs[] = '1';
+		$Controller->params['url'] = array();
+		$Controller->constructClasses();
+
+		$Controller->paginate = array('ControllerPost' => array('popular', 'fields' => array('id', 'title')));
+		$result = $Controller->paginate('ControllerPost');
+
+		$this->assertEqual(Set::extract($result, '{n}.ControllerPost.id'), array(2, 3));
+		$this->assertEqual($Controller->ControllerPost->lastQuery['conditions'], array('ControllerPost.id > ' => '1'));
+		$this->assertFalse(isset($Controller->params['paging']['ControllerPost']['defaults'][0]));
+		$this->assertFalse(isset($Controller->params['paging']['ControllerPost']['options'][0]));
+	}
+/**
  * testDefaultPaginateParams method
  *
  * @access public
@@ -661,7 +686,7 @@ class ControllerTest extends CakeTestCase {
 		$Controller->viewVars = array();
 		$viewVars = array('ModelName' => array('id' => 1, 'name' => 'value'));
 		$Controller->set($viewVars);
-		$this->assertTrue(array_key_exists('modelName', $Controller->viewVars));
+		$this->assertTrue(array_key_exists('ModelName', $Controller->viewVars));
 
 		$Controller->viewVars = array();
 		$Controller->set('variable_with_underscores', 'value');
@@ -670,7 +695,7 @@ class ControllerTest extends CakeTestCase {
 		$Controller->viewVars = array();
 		$viewVars = array('ModelName' => 'name');
 		$Controller->set($viewVars);
-		$this->assertTrue(array_key_exists('modelName', $Controller->viewVars));
+		$this->assertTrue(array_key_exists('ModelName', $Controller->viewVars));
 
 		$Controller->set('title', 'someTitle');
 		$this->assertIdentical($Controller->pageTitle, 'someTitle');
@@ -687,7 +712,7 @@ class ControllerTest extends CakeTestCase {
  * @return void
  */
 	function testRender() {
-		Configure::write('viewPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views'. DS, TEST_CAKE_CORE_INCLUDE_PATH . 'libs' . DS . 'view' . DS));
+		App::build(array('views' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views'. DS)));
 
 		$Controller = new Controller();
 		$Controller->viewPath = 'posts';
@@ -917,6 +942,22 @@ class ControllerTest extends CakeTestCase {
 		$this->assertTrue(isset($TestController->ControllerComment));
 	}
 /**
+ * test that options from child classes replace those in the parent classes.
+ *
+ * @access public
+ * @return void
+ **/
+	function testChildComponentOptionsSupercedeParents() {
+		if ($this->skipIf(defined('APP_CONTROLLER_EXISTS'), '%s Need a non-existent AppController')) {
+			return;
+		}
+		$TestController =& new TestController();
+		$expected = array('foo');
+		$TestController->components = array('Cookie' => $expected);
+		$TestController->constructClasses();
+		$this->assertEqual($TestController->components['Cookie'], $expected);
+	}
+/**
  * Ensure that __mergeVars is not being greedy and merging with
  * AppController when you make an instance of Controller
  *
@@ -946,6 +987,16 @@ class ControllerTest extends CakeTestCase {
 		$_SERVER['HTTP_REFERER'] = '';
 		$result = $Controller->referer('http://cakephp.org', false);
 		$expected = 'http://cakephp.org';
+		$this->assertIdentical($result, $expected);
+
+		$_SERVER['HTTP_REFERER'] = '';
+		$referer = array(
+			'controller' => 'pages',
+			'action' => 'display',
+			'home'
+		);
+		$result = $Controller->referer($referer, false);
+		$expected = 'http://' . env('HTTP_HOST') . '/pages/display/home';;
 		$this->assertIdentical($result, $expected);
 
 		$_SERVER['HTTP_REFERER'] = '';

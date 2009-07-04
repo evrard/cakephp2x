@@ -341,6 +341,7 @@ class EmailComponent extends Object{
 		$this->bcc = array();
 		$this->subject = null;
 		$this->additionalParams = null;
+		$this->smtpError = null;
 		$this->__header = array();
 		$this->__boundary = null;
 		$this->__message = array();
@@ -658,7 +659,7 @@ class EmailComponent extends Object{
  * @access private
  */
 	private function __smtp() {
-		App::import('Core', array('Socket'));
+		App::import('Core', array('CakeSocket'));
 
 		$this->__smtpConnection = new CakeSocket(array_merge(array('protocol'=>'smtp'), $this->smtpOptions));
 

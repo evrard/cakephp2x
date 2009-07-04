@@ -84,10 +84,18 @@ class DebuggerTest extends CakeTestCase {
  * @return void
  */
 	function testExcerpt() {
-		$return = Debugger::excerpt(__FILE__, 2, 2);
-		$this->assertTrue(is_array($return));
-		$this->assertEqual(count($return), 4);
-		$this->assertPattern('#/*&nbsp;SVN&nbsp;FILE:&nbsp;\$Id:&nbsp;debugger.test.php#', $return[1]);
+		$result = Debugger::excerpt(__FILE__, __LINE__, 2);
+		$this->assertTrue(is_array($result));
+		$this->assertEqual(count($result), 5);
+		$this->assertPattern('/function(.+)testExcerpt/', $result[1]);
+
+		$result = Debugger::excerpt(__FILE__, 2, 2);
+		$this->assertTrue(is_array($result));
+		$this->assertEqual(count($result), 4);
+
+		$expected = '<code><span style="color: #000000"><span style="color: #0000BB">&lt;?php';
+		$expected .= '</span></span></code>';
+		$this->assertEqual($result[0], $expected);
 
 		$return = Debugger::excerpt('[internal]', 2, 2);
 		$this->assertTrue(empty($return));
@@ -131,13 +139,59 @@ class DebuggerTest extends CakeTestCase {
 		ob_start();
 		Debugger::output('js');
 		$buzz .= '';
-		$result = ob_get_clean();
-		$this->assertPattern("/<a href\='javascript:void\(0\);' onclick\='/", $result);
-		$this->assertPattern('/<b>Notice<\/b>/', $result);
-		$this->assertPattern('/Undefined variable: buzz/', $result);
-		$this->assertPattern('/<a[^>]+>Code<\/a>/', $result);
-		$this->assertPattern('/<a[^>]+>Context<\/a>/', $result);
+		$result = explode('</a>', ob_get_clean());
+		$this->assertTags($result[0], array(
+			'a' => array(
+				'href' => "javascript:void(0);",
+				'onclick' => "document.getElementById('cakeErr4-trace').style.display = " .
+				             "(document.getElementById('cakeErr4-trace').style.display == 'none'" .
+				             " ? '' : 'none');"
+			),
+			'b' => array(), 'Notice', '/b', ' (8)'
+		));
+		
+		$this->assertPattern('/Undefined variable: buzz/', $result[1]);
+		$this->assertPattern('/<a[^>]+>Code/', $result[1]);
+		$this->assertPattern('/<a[^>]+>Context/', $result[2]);
 		set_error_handler('simpleTestErrorHandler');
+	}
+
+/**
+ * Tests that changes in output formats using Debugger::output() change the templates used.
+ *
+ * @return void
+ */
+	function testChangeOutputFormats() {
+		Debugger::invoke(Debugger::getInstance());
+		Debugger::output('js', array(
+			'traceLine' => '{:reference} - <a href="txmt://open?url=file://{:file}' .
+			               '&line={:line}">{:path}</a>, line {:line}'
+		));
+		$result = Debugger::trace();
+		$this->assertPattern('/' . preg_quote('txmt://open?url=file:///', '/') . '/', $result);
+
+		Debugger::output('xml', array(
+			'error' => '<error><code>{:code}</code><file>{:file}</file><line>{:line}</line>' .
+			           '{:description}</error>',
+			'context' => "<context>{:context}</context>",
+			'trace' => "<stack>{:trace}</stack>",
+		));
+		Debugger::output('xml');
+
+		ob_start();
+		$foo .= '';
+		$result = ob_get_clean();
+		set_error_handler('simpleTestErrorHandler');
+
+		$data = array(
+			'error' => array(),
+			'code' => array(), '8', '/code',
+			'file' => array(), 'preg:/[^<]+/', '/file',
+			'line' => array(), '' . (intval(__LINE__) + -8), '/line',
+			'Undefined variable: foo',
+			'/error'
+		);
+		$this->assertTags($result, $data, true);
 	}
 /**
  * testTrimPath method

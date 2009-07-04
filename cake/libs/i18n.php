@@ -105,6 +105,14 @@ class I18n extends Object {
  */
 	public static function translate($singular, $plural = null, $domain = null, $category = null, $count = null) {
 		self::init();
+
+		if (strpos($singular, "\r\n") !== false) {
+			$singular = str_replace("\r\n", "\n", $singular);
+		}
+		if ($plural !== null && strpos($plural, "\r\n") !== false) {
+			$plural = str_replace("\r\n", "\n", $plural);
+		}
+
 		if (is_numeric($category)) {
 			self::$category = self::$__categories[$category];
 		}
@@ -224,11 +232,11 @@ class I18n extends Object {
 		self::$__noLocale = true;
 		$core = true;
 		$merge = array();
-		$searchPaths = Configure::read('localePaths');
-		$plugins = Configure::listObjects('plugin');
+		$searchPaths = App::path('locales');;
+		$plugins = App::objects('plugin');
 
 		if (!empty($plugins)) {
-			$pluginPaths = Configure::read('pluginPaths');
+			$pluginPaths = App::path('plugins');
 
 			foreach ($plugins as $plugin) {
 				$plugin = Inflector::underscore($plugin);

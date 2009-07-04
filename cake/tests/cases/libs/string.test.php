@@ -84,6 +84,11 @@ class StringTest extends CakeTestCase {
 		$result = String::insert($string, array('sum' => '4', 'adjective' => 'yummy'), array('format' => '/([\d])([\d])%s\\2\\1/'));
 		$this->assertEqual($result, $expected);
 
+		$string = ':web :web_site';
+		$expected = 'www http';
+		$result = String::insert($string, array('web' => 'www', 'web_site' => 'http'));
+		$this->assertEqual($result, $expected);
+
 		$string = '2 + 2 = <sum. Cake is <adjective>.';
 		$expected = '2 + 2 = <sum. Cake is yummy.';
 		$result = String::insert($string, array('sum' => '4', 'adjective' => 'yummy'), array('before' => '<', 'after' => '>'));
@@ -217,6 +222,18 @@ class StringTest extends CakeTestCase {
 		$result = String::cleanInsert('<p class=":missing" id=":missing">Text here</p>', array('clean' => 'html', 'before' => ':', 'after' => ''));
 		$this->assertEqual($result, '<p>Text here</p>');
 	}
+/**
+ * Tests that non-insertable variables (i.e. arrays) are skipped when used as values in
+ * String::insert().
+ *
+ * @return void
+ */
+	function testAutoIgnoreBadInsertData() {
+		$data = array('foo' => 'alpha', 'bar' => 'beta', 'fale' => array());
+		$result = String::insert('(:foo > :bar || :fale!)', $data, array('clean' => 'text'));
+		$this->assertEqual($result, '(alpha > beta || !)');
+	}
+
 /**
  * testTokenize method
  *

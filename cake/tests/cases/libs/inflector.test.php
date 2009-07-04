@@ -1,8 +1,8 @@
 <?php
 /**
- * InflectorTest file
+ * InflectorTest
  *
- * Long description for file
+ * InflectorTest is used to test cases on the Inflector class
  *
  * PHP Version 5.x
  *
@@ -20,14 +20,25 @@
  * @since         CakePHP(tm) v 1.2.0.4206
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
+/**
+ * Included libraries.
+ *
+ */
 App::import('Core', 'Inflector');
 /**
  * InflectorTest class
  *
- * @package       cake
+ * @package       cake.tests
  * @subpackage    cake.tests.cases.libs
  */
 class InflectorTest extends CakeTestCase {
+/**
+ * Inflector property
+ *
+ * @var mixed null
+ * @access public
+ */
+	var $Inflector = null;
 /**
  * setUp method
  *
@@ -35,14 +46,16 @@ class InflectorTest extends CakeTestCase {
  * @return void
  */
 	function setUp() {
+		$this->Inflector = Inflector::getInstance();
 	}
 /**
- * tearDown method
+ * testInstantiation method
  *
  * @access public
  * @return void
  */
-	function tearDown() {
+	function testInstantiation() {
+		$this->assertEqual(new Inflector(), $this->Inflector);
 	}
 /**
  * testInflectingSingulars method
@@ -92,6 +105,7 @@ class InflectorTest extends CakeTestCase {
 		$this->assertEqual(Inflector::singularize('taxes'), 'tax');
 		$this->assertEqual(Inflector::singularize('faxes'), 'fax');
 		$this->assertEqual(Inflector::singularize('waxes'), 'wax');
+        $this->assertEqual(Inflector::singularize('niches'), 'niche');
 		$this->assertEqual(Inflector::singularize(''), '');
 	}
 /**
@@ -189,6 +203,21 @@ class InflectorTest extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 	}
 /**
+ * testInflectorSlugWithMap method
+ *
+ * @access public
+ * @return void
+ */
+	function testInflectorSlugWithMap() {
+		$result = Inflector::slug('replace every r', array('/r/' => '_'));
+		$expected = '_eplace_eve_y__';
+		$this->assertEqual($result, $expected);
+
+		$result = Inflector::slug('replace every r', '_', array('/r/' => '_'));
+		$expected = '_eplace_eve_y__';
+		$this->assertEqual($result, $expected);
+	}
+/**
  * testVariableNaming method
  *
  * @access public
@@ -232,6 +261,63 @@ class InflectorTest extends CakeTestCase {
 		$this->assertEqual(Inflector::humanize('posts'), 'Posts');
 		$this->assertEqual(Inflector::humanize('posts_tags'), 'Posts Tags');
 		$this->assertEqual(Inflector::humanize('file_systems'), 'File Systems');
+	}
+/**
+ * testCustomPluralRule method
+ *
+ * @access public
+ * @return void
+ */
+	function testCustomPluralRule() {
+		Inflector::rules('plural', array('/^(custom)$/i' => '\1izables'));
+		$this->assertEqual(Inflector::pluralize('custom'), 'customizables');
+
+        Inflector::rules('plural', array('uninflected' => array('uninflectable')));
+        $this->assertEqual(Inflector::pluralize('uninflectable'), 'uninflectable');
+
+        Inflector::rules('plural', array(
+            'rules' => array('/^(alert)$/i' => '\1ables'),
+            'uninflected' => array('noflect', 'abtuse'),
+            'irregular' => array('amaze' => 'amazable', 'phone' => 'phonezes')
+        ));
+        $this->assertEqual(Inflector::pluralize('noflect'), 'noflect');
+        $this->assertEqual(Inflector::pluralize('abtuse'), 'abtuse');
+        $this->assertEqual(Inflector::pluralize('alert'), 'alertables');
+        $this->assertEqual(Inflector::pluralize('amaze'), 'amazable');
+        $this->assertEqual(Inflector::pluralize('phone'), 'phonezes');
+	}
+/**
+ * testCustomSingularRule method
+ *
+ * @access public
+ * @return void
+ */
+    function testCustomSingularRule() {
+        Inflector::rules('singular', array('/(eple)r$/i' => '\1', '/(jente)r$/i' => '\1'));
+
+        $this->assertEqual(Inflector::singularize('epler'), 'eple');
+        $this->assertEqual(Inflector::singularize('jenter'), 'jente');
+
+        Inflector::rules('singular', array(
+            'rules' => array('/^(bil)er$/i' => '\1', '/^(inflec|contribu)tors$/i' => '\1ta'),
+            'uninflected' => array('singulars'),
+            'irregular' => array('spins' => 'spinor')
+        ));
+
+        $this->assertEqual(Inflector::singularize('inflectors'), 'inflecta');
+        $this->assertEqual(Inflector::singularize('contributors'), 'contributa');
+        $this->assertEqual(Inflector::singularize('spins'), 'spinor');
+        $this->assertEqual(Inflector::singularize('singulars'), 'singulars');
+    }
+
+/**
+ * tearDown method
+ *
+ * @access public
+ * @return void
+ */
+	function tearDown() {
+		unset($this->Inflector);
 	}
 }
 ?>

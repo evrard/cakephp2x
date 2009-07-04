@@ -89,7 +89,7 @@ class TestSuiteShell extends Shell {
 		require_once CAKE . 'tests' . DS . 'lib' . DS . 'test_manager.php';
 		require_once CAKE . 'tests' . DS . 'lib' . DS . 'cli_reporter.php';
 
-		$plugins = Configure::listObjects('plugin');
+		$plugins = App::objects('plugin');
 		foreach ($plugins as $p) {
 			$this->plugins[] = Inflector::underscore($p);
 		}
@@ -308,11 +308,19 @@ class TestSuiteShell extends Shell {
 		);
 
 		if (array_key_exists($category, $paths)) {
-			$folder = $paths[$category];
+			$folder = $paths[$category] . 'tests';
 		} else {
-			$folder = APP.'plugins'.DS.Inflector::underscore($category).DS;
+			$scoredCategory = Inflector::underscore($category);
+			$folder = APP . 'plugins' . DS . $scoredCategory . DS;
+			$pluginPaths = App::path('plugins');
+			foreach ($pluginPaths as $path) {
+				if (file_exists($path . $scoredCategory . DS . 'tests')) {
+					$folder = $path . $scoredCategory . DS . 'tests';
+					break;
+				}
+			}
 		}
-		return $folder.'tests';
+		return $folder;
 	}
 /**
  * Sets some get vars needed for TestManager

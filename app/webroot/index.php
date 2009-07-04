@@ -1,8 +1,8 @@
 <?php
 /**
- * Short description for file.
+ * Index
  *
- * Long description for file
+ * The Front Controller for handling every request
  *
  * PHP Version 5.x
  *
@@ -81,7 +81,7 @@
 		return;
 	} else {
 		$Dispatcher = new Dispatcher();
-		$Dispatcher->dispatch($url);
+		$Dispatcher->dispatch();
 	}
 	if (Configure::read() > 0) {
 		echo "<!-- " . round(microtime(true) - $TIME_START, 4) . "s -->";

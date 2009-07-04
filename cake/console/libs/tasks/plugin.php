@@ -20,9 +20,7 @@
  * @since         CakePHP(tm) v 1.2
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-if (!class_exists('File')) {
-	uses('file');
-}
+
 /**
  * Task class for creating a plugin
  *
@@ -58,8 +56,8 @@ class PluginTask extends Shell {
 	function execute() {
 		if (empty($this->params['skel'])) {
 			$this->params['skel'] = '';
-			if (is_dir(CAKE_CORE_INCLUDE_PATH.DS.'cake'.DS.'console'.DS.'libs'.DS.'templates'.DS.'skel') === true) {
-				$this->params['skel'] = CAKE_CORE_INCLUDE_PATH.DS.'cake'.DS.'console'.DS.'libs'.DS.'templates'.DS.'skel';
+			if (is_dir(CAKE_CORE_INCLUDE_PATH . DS . CONSOLE_LIBS . 'templates' . DS . 'skel') === true) {
+				$this->params['skel'] = CAKE_CORE_INCLUDE_PATH . DS . CONSOLE_LIBS . 'templates' . DS . 'skel';
 			}
 		}
 
@@ -67,14 +65,13 @@ class PluginTask extends Shell {
 
 		if (isset($this->args[0])) {
 			$plugin = Inflector::camelize($this->args[0]);
-			$pluginPath = Inflector::underscore($plugin) . DS;
+			$pluginPath = $this->_pluginPath($plugin);
 			$this->Dispatch->shiftArgs();
-			if (is_dir($this->path . $pluginPath)) {
-				$this->out(sprintf('Plugin: %s', $plugin));
-				$this->out(sprintf('Path: %s', $this->path . $pluginPath));
-				$this->hr();
+			if (is_dir($pluginPath)) {
+				$this->out(sprintf(__('Plugin: %s', true), $plugin));
+				$this->out(sprintf(__('Path: %s', true), $pluginPath));
 			} elseif (isset($this->args[0])) {
-				$this->err(sprintf('%s in path %s not found.', $plugin, $this->path . $pluginPath));
+				$this->err(sprintf(__('%s in path %s not found.', true), $plugin, $pluginPath));
 				$this->_stop();
 			} else {
 				$this->__interactive($plugin);
@@ -86,13 +83,13 @@ class PluginTask extends Shell {
 			$this->Dispatch->shiftArgs();
 			if (in_array($task, $this->tasks)) {
 				$this->{$task}->plugin = $plugin;
-				$this->{$task}->path = $this->path . $pluginPath . Inflector::underscore(Inflector::pluralize($task)) . DS;
+				$this->{$task}->path = $pluginPath . Inflector::underscore(Inflector::pluralize($task)) . DS;
 
 				if (!is_dir($this->{$task}->path)) {
 					$this->err(sprintf(__("%s directory could not be found.\nBe sure you have created %s", true), $task, $this->{$task}->path));
 				}
 				$this->{$task}->loadTasks();
-				$this->{$task}->execute();
+				return $this->{$task}->execute();
 			}
 		}
 	}
@@ -121,28 +118,33 @@ class PluginTask extends Shell {
  * @return bool
  */
 	function bake($plugin) {
-
 		$pluginPath = Inflector::underscore($plugin);
 
+		$pathOptions = Configure::read('pluginPaths');
+		if (count($pathOptions) > 1) {
+			$this->findPath($pathOptions);
+		}
+
 		$this->hr();
-		$this->out("Plugin Name: $plugin");
-		$this->out("Plugin Directory: {$this->path}{$pluginPath}");
+		$this->out(sprintf(__("Plugin Name: %s", true),  $plugin));
+		$this->out(sprintf(__("Plugin Directory: %s", true), $this->path . $pluginPath));
 		$this->hr();
 
+		$looksGood = $this->in(__('Look okay?', true), array('y', 'n', 'q'), 'y');
 
-		$looksGood = $this->in('Look okay?', array('y', 'n', 'q'), 'y');
-
-		if (low($looksGood) == 'y' || low($looksGood) == 'yes') {
+		if (strtolower($looksGood) == 'y') {
 			$verbose = $this->in(__('Do you want verbose output?', true), array('y', 'n'), 'n');
 
 			$Folder = new Folder($this->path . $pluginPath);
-			$directories = array('models' . DS . 'behaviors', 'controllers' . DS . 'components', 'views' . DS . 'helpers');
+			$directories = array('models' . DS . 'behaviors', 'controllers' . DS . 'components', 
+				'views' . DS . 'helpers', 'tests' . DS . 'cases', 'tests' . DS . 'groups', 
+				'tests' . DS . 'fixtures');
 
 			foreach ($directories as $directory) {
 				$Folder->create($this->path . $pluginPath . DS . $directory);
 			}
 
-			if (low($verbose) == 'y' || low($verbose) == 'yes') {
+			if (strtolower($verbose) == 'y') {
 				foreach ($Folder->messages() as $message) {
 					$this->out($message);
 				}
@@ -177,6 +179,27 @@ class PluginTask extends Shell {
 		return true;
 	}
 /**
+ * find and change $this->path to the user selection
+ *
+ * @return void
+ **/
+	function findPath($pathOptions) {
+		$valid = false;
+		$max = count($pathOptions);
+		while (!$valid) {
+			foreach ($pathOptions as $i => $option) {
+				$this->out($i + 1 .'. ' . $option);
+			}
+			$prompt = __('Choose a plugin path from the paths above.', true);
+			$choice = $this->in($prompt);
+			if (intval($choice) > 0 && intval($choice) <= $max) {
+				$valid = true;
+			}
+		}
+		$this->path = $pathOptions[$choice - 1];
+	}
+
+/**
  * Help
  *
  * @return void
@@ -187,10 +210,18 @@ class PluginTask extends Shell {
 		$this->out("Usage: cake bake plugin <arg1> <arg2>...");
 		$this->hr();
 		$this->out('Commands:');
-		$this->out("\n\tplugin <name>\n\t\tbakes plugin directory structure");
-		$this->out("\n\tplugin <name> model\n\t\tbakes model. Run 'cake bake model help' for more info.");
-		$this->out("\n\tplugin <name> controller\n\t\tbakes controller. Run 'cake bake controller help' for more info.");
-		$this->out("\n\tplugin <name> view\n\t\tbakes view. Run 'cake bake view help' for more info.");
+		$this->out('');
+		$this->out("plugin <name>");
+		$this->out("\tbakes plugin directory structure");
+		$this->out('');
+		$this->out("plugin <name> model");
+		$this->out("\tbakes model. Run 'cake bake model help' for more info.");
+		$this->out('');
+		$this->out("plugin <name> controller");
+		$this->out("\tbakes controller. Run 'cake bake controller help' for more info.");
+		$this->out('');
+		$this->out("plugin <name> view");
+		$this->out("\tbakes view. Run 'cake bake view help' for more info.");
 		$this->out("");
 		$this->_stop();
 	}

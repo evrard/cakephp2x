@@ -61,110 +61,6 @@ final class Configure extends Object {
 		}
 	}
 /**
- * Returns an index of objects of the given type, with the physical path to each object.
- *
- * @param string	$type Type of object, i.e. 'model', 'controller', 'helper', or 'plugin'
- * @param mixed		$path Optional
- * @return Configure instance
- * @access public
- */
-	public static function listObjects($type, $path = null, $cache = true) {
-		$objects = array();
-		$extension = false;
-		$name = $type;
-
-		if ($type === 'file' && !$path) {
-			return false;
-		} elseif ($type === 'file') {
-			$extension = true;
-			$name = $type . str_replace(DS, '', $path);
-		}
-
-		if (empty(self::$__objects) && $cache === true) {
-			self::$__objects = Cache::read('object_map', '_cake_core_');
-		}
-
-		if (empty(self::$__objects) || !isset(self::$__objects[$type]) || $cache !== true) {
-			$types = array(
-				'model' => array('suffix' => '.php', 'base' => 'AppModel', 'core' => false),
-				'behavior' => array('suffix' => '.php', 'base' => 'ModelBehavior'),
-				'controller' => array('suffix' => '_controller.php', 'base' => 'AppController'),
-				'component' => array('suffix' => '.php', 'base' => null),
-				'view' => array('suffix' => '.php', 'base' => null),
-				'helper' => array('suffix' => '.php', 'base' => 'AppHelper'),
-				'plugin' => array('suffix' => '', 'base' => null),
-				'vendor' => array('suffix' => '', 'base' => null),
-				'class' => array('suffix' => '.php', 'base' => null),
-				'file' => array('suffix' => '.php', 'base' => null)
-			);
-
-			if (!isset($types[$type])) {
-				return false;
-			}
-			$objects = array();
-
-			if (empty($path)) {
-				$path = self::$values[$type . 'Paths'];
-				if (isset($types[$type]['core']) && $types[$type]['core'] === false) {
-					array_pop($path);
-				}
-			}
-			$items = array();
-
-			foreach ((array)$path as $dir) {
-				if ($type === 'file' || $type === 'class' || strpos($dir, $type) !== false) {
-					$items = self::__list($dir, $types[$type]['suffix'], $extension);
-					$objects = array_merge($items, array_diff($objects, $items));
-				}
-			}
-
-			if ($type !== 'file') {
-				foreach ($objects as $key => $value) {
-					$objects[$key] = Inflector::camelize($value);
-				}
-			}
-			if ($cache === true && !empty($objects)) {
-				self::$__objects[$name] = $objects;
-				self::$__cache = true;
-			} else {
-				return $objects;
-			}
-		}
-		return self::$__objects[$name];
-	}
-/**
- * Returns an array of filenames of PHP files in the given directory.
- *
- * @param  string $path Path to scan for files
- * @param  string $suffix if false, return only directories. if string, match and return files
- * @return array  List of directories or files in directory
- */
-	private static function __list($path, $suffix = false, $extension = false) {
-		if (!class_exists('Folder')) {
-			require LIBS . 'folder.php';
-		}
-		$items = array();
-		$Folder = new Folder($path);
-		$contents = $Folder->read(false, true);
-
-		if (is_array($contents)) {
-			if (!$suffix) {
-				return $contents[0];
-			} else {
-				foreach ($contents[1] as $item) {
-					if (substr($item, - strlen($suffix)) === $suffix) {
-						if ($extension) {
-							$items[] = $item;
-						} else {
-							$items[] = substr($item, 0, strlen($item) - strlen($suffix));
-						}
-					}
-				}
-			}
-		}
-		return $items;
-	}
-/**
  * Used to store a dynamic variable in the Configure instance.
  *
  * Usage:
@@ -175,7 +71,7 @@ final class Configure extends Object {
  *     'key1' => 'value of the Configure::One[key1]',
  *     'key2' => 'value of the Configure::One[key2]'
  * );
- * 
+ *
  * Configure::write(array(
  *     'One.key1' => 'value of the Configure::One[key1]',
  *     'One.key2' => 'value of the Configure::One[key2]'
@@ -319,7 +215,7 @@ final class Configure extends Object {
 			include(CACHE . 'persistent' . DS . $fileName . '.php');
 			$found = true;
 		} else {
-			foreach (Configure::corePaths('cake') as $key => $path) {
+			foreach (App::core('cake') as $key => $path) {
 				if (file_exists($path . DS . 'config' . DS . $fileName . '.php')) {
 					include($path . DS . 'config' . DS . $fileName . '.php');
 					$found = true;
@@ -394,57 +290,6 @@ final class Configure extends Object {
 		Configure::__writeConfig($content, $name, $write);
 	}
 /**
- * Returns a key/value list of all paths where core libs are found.
- * Passing $type only returns the values for a given value of $key.
- *
- * @param string $type valid values are: 'model', 'behavior', 'controller', 'component',
- *                      'view', 'helper', 'datasource', 'libs', and 'cake'
- * @return array numeric keyed array of core lib paths
- * @access public
- */
-	public static function corePaths($type = null) {
-		$paths = Cache::read('core_paths', '_cake_core_');
-		if (!$paths) {
-			$paths = array();
-			$openBasedir = ini_get('open_basedir');
-			if ($openBasedir) {
-				$all = explode(PATH_SEPARATOR, $openBasedir);
-				$all = array_flip(array_flip((array_merge(array(CAKE_CORE_INCLUDE_PATH), $all))));
-			} else {
-				$all = explode(PATH_SEPARATOR, ini_get('include_path'));
-				$all = array_flip(array_flip((array_merge(array(CAKE_CORE_INCLUDE_PATH), $all))));
-			}
-			foreach ($all as $path) {
-				if ($path !== DS) {
-					$path = rtrim($path, DS);
-				}
-				if (empty($path) || $path === '.') {
-					continue;
-				}
-				$cake = $path .  DS . 'cake' . DS;
-				$libs = $cake . 'libs' . DS;
-				if (is_dir($libs)) {
-					$paths['libs'][] = $libs;
-					$paths['model'][] = $libs . 'model' . DS;
-					$paths['behavior'][] = $libs . 'model' . DS . 'behaviors' . DS;
-					$paths['controller'][] = $libs . 'controller' . DS;
-					$paths['component'][] = $libs . 'controller' . DS . 'components' . DS;
-					$paths['view'][] = $libs . 'view' . DS;
-					$paths['helper'][] = $libs . 'view' . DS . 'helpers' . DS;
-					$paths['cake'][] = $cake;
-					$paths['vendor'][] = $path . DS . 'vendors' . DS;
-					$paths['shell'][] = $cake . 'console' . DS . 'libs' . DS;
-					break;
-				}
-			}
-			Cache::write('core_paths', array_filter($paths), '_cake_core_');
-		}
-		if ($type && isset($paths[$type])) {
-			return $paths[$type];
-		}
-		return $paths;
-	}
-/**
  * Creates a cached version of a configuration file.
  * Appends values passed from Configure::store() to the cached file
  *
@@ -496,55 +341,25 @@ final class Configure extends Object {
 		return $name;
 	}
 /**
- * Build path references. Merges the supplied $paths
- * with the base paths and the default core paths.
- *
- * @param array $paths paths defines in config/bootstrap.php
- * @return void
- * @access public
+ * @deprecated
+ * @see App::objects()
  */
-	private static function buildPaths($paths) {
-		$core = self::corePaths();
-		$basePaths = array(
-			'model' => array(MODELS),
-			'behavior' => array(BEHAVIORS),
-			'controller' => array(CONTROLLERS),
-			'component' => array(COMPONENTS),
-			'view' => array(VIEWS),
-			'helper' => array(HELPERS),
-			'plugin' => array(APP . 'plugins' . DS),
-			'vendor' => array(APP . 'vendors' . DS, VENDORS),
-			'locale' => array(APP . 'locale' . DS),
-			'shell' => array(),
-			'datasource' => array(MODELS . 'datasources')
-		);
-
-		foreach ($basePaths as $type => $default) {
-			$pathsVar = $type . 'Paths';
-			$merge = array();
-
-			if (isset($core[$type])) {
-				$merge = $core[$type];
-			}
-			if ($type === 'model' || $type === 'controller' || $type === 'helper') {
-				$merge = array_merge(array(APP), $merge);
-			}
-
-			if (!is_array($default)) {
-				$default = array($default);
-			}
-			self::$values[$pathsVar] = $default;
-
-			if (isset($paths[$pathsVar]) && !empty($paths[$pathsVar])) {
-				$path = array_flip(array_flip((array_merge(
-					self::$values[$pathsVar], (array)$paths[$pathsVar], $merge
-				))));
-				self::$values[$pathsVar] = array_values($path);
-			} else {
-				$path = array_flip(array_flip((array_merge(self::$values[$pathsVar], $merge))));
-				self::$values[$pathsVar] = array_values($path);
-			}
-		}
+	function listObjects($type, $path = null, $cache = true) {
+		return App::objects($type, $path, $cache);
+	}
+/**
+ * @deprecated
+ * @see App::core()
+ */
+	function corePaths($type = null) {
+		return App::core($type);
+	}
+/**
+ * @deprecated
+ * @see App::build()
+ */
+	function buildPaths($paths) {
+		return App::build($paths);
 	}
 /**
  * Loads app/config/bootstrap.php.
@@ -605,9 +420,9 @@ final class Configure extends Object {
 				}
 				Cache::config('default');
 			}
-			self::buildPaths(compact(
-				'modelPaths', 'viewPaths', 'controllerPaths', 'helperPaths', 'componentPaths',
-				'behaviorPaths', 'pluginPaths', 'vendorPaths', 'localePaths', 'shellPaths'
+			App::build(compact(
+				'models', 'views', 'controllers', 'helpers', 'components',
+				'behaviors', 'plugins', 'vendors', 'locales', 'shells'
 			));
 		}
 	}
@@ -631,6 +446,96 @@ final class Configure extends Object {
  * @subpackage    cake.cake.libs
  */
 class App extends Object {
+/**
+ * List of object types and their properties
+ *
+ * @var array
+ * @access public
+ */
+	var $types = array(
+		'class' => array('suffix' => '.php', 'extends' => null, 'core' => true),
+		'file' => array('suffix' => '.php', 'extends' => null, 'core' => true),
+		'model' => array('suffix' => '.php', 'extends' => 'AppModel', 'core' => false),
+		'behavior' => array('suffix' => '.php', 'extends' => 'ModelBehavior', 'core' => true),
+		'controller' => array('suffix' => '_controller.php', 'extends' => 'AppController', 'core' => true),
+		'component' => array('suffix' => '.php', 'extends' => null, 'core' => true),
+		'view' => array('suffix' => '.php', 'extends' => null, 'core' => true),
+		'helper' => array('suffix' => '.php', 'extends' => 'AppHelper', 'core' => true),
+		'vendor' => array('suffix' => '', 'extends' => null, 'core' => true),
+		'shell' => array('suffix' => '.php', 'extends' => 'Shell', 'core' => true),
+		'plugin' => array('suffix' => '', 'extends' => null, 'core' => true)
+	);
+
+/**
+ * List of additional path(s) where model files reside.
+ *
+ * @var array
+ * @access public
+ */
+	var $models = array();
+/**
+ * List of additional path(s) where behavior files reside.
+ *
+ * @var array
+ * @access public
+ */
+	var $behaviors = array();
+/**
+ * List of additional path(s) where controller files reside.
+ *
+ * @var array
+ * @access public
+ */
+	var $controllers = array();
+/**
+ * List of additional path(s) where component files reside.
+ *
+ * @var array
+ * @access public
+ */
+	var $components = array();
+/**
+ * List of additional path(s) where view files reside.
+ *
+ * @var array
+ * @access public
+ */
+	var $views = array();
+/**
+ * List of additional path(s) where helper files reside.
+ *
+ * @var array
+ * @access public
+ */
+	var $helpers = array();
+/**
+ * List of additional path(s) where plugins reside.
+ *
+ * @var array
+ * @access public
+ */
+	var $plugins = array();
+/**
+ * List of additional path(s) where vendor packages reside.
+ *
+ * @var array
+ * @access public
+ */
+	var $vendors = array();
+/**
+ * List of additional path(s) where locale files reside.
+ *
+ * @var array
+ * @access public
+ */
+	var $locales = array();
+/**
+ * List of additional path(s) where console shell files reside.
+ *
+ * @var array
+ * @access public
+ */
+	var $shells = array();
 /**
  * Paths to search for files.
  *
@@ -673,6 +578,201 @@ class App extends Object {
  * @access private
  */
 	private static $__loaded = array();
+/**
+ * Holds and key => value array of object types.
+ *
+ * @var array
+ * @access private
+ */
+	var $__objects = array();
+/**
+ * Used to read information stored path
+ *
+ * Usage
+ * App::path('models'); will return all paths for models
+ *
+ * @param string $type type of path
+ * @return string array
+ * @access public
+ */
+	function path($type) {
+		$_this =& App::getInstance();
+		if (!isset($_this->{$type})) {
+			return array();
+		}
+		return $_this->{$type};
+	}
+/**
+ * Build path references. Merges the supplied $paths
+ * with the base paths and the default core paths.
+ *
+ * @param array $paths paths defines in config/bootstrap.php
+ * @param boolean $reset true will set paths, false merges paths [default] false
+ * @return void
+ * @access public
+ */
+	function build($paths = array(), $reset = false) {
+		$_this =& App::getInstance();
+		$defaults = array(
+			'models' => array(MODELS),
+			'behaviors' => array(BEHAVIORS),
+			'datasources' => array(MODELS . 'datasources'),
+			'controllers' => array(CONTROLLERS),
+			'components' => array(COMPONENTS),
+			'views' => array(VIEWS),
+			'helpers' => array(HELPERS),
+			'locales' => array(APP . 'locale' . DS),
+			'shells' => array(APP . 'vendors' . DS . 'shells', VENDORS . 'shells'),
+			'vendors' => array(APP . 'vendors' . DS, VENDORS),
+			'plugins' => array(APP . 'plugins' . DS),
+		);
+
+		if ($reset == true) {
+			foreach ($paths as $type => $new) {
+				$_this->{$type} = (array)$new;
+			}
+			return $paths;
+		}
+
+		$core = $_this->core();
+		$app = array('models' => true, 'controllers' => true, 'helpers' => true);
+
+		foreach ($defaults as $type => $default) {
+			$merge = array();
+
+			if (isset($app[$type])) {
+				$merge = array(APP);
+			}
+			if (isset($core[$type])) {
+				$merge = array_merge($merge, (array)$core[$type]);
+			}
+
+			$_this->{$type} = $default;
+
+			if (!empty($paths[$type])) {
+				$path = array_flip(array_flip((array_merge(
+					$_this->{$type}, (array)$paths[$type], $merge
+				))));
+				$_this->{$type} = array_values($path);
+			} else {
+				$path = array_flip(array_flip((array_merge($_this->{$type}, $merge))));
+				$_this->{$type} = array_values($path);
+			}
+		}
+	}
+/**
+ * Returns a key/value list of all paths where core libs are found.
+ * Passing $type only returns the values for a given value of $key.
+ *
+ * @param string $type valid values are: 'model', 'behavior', 'controller', 'component',
+ *                      'view', 'helper', 'datasource', 'libs', and 'cake'
+ * @return array numeric keyed array of core lib paths
+ * @access public
+ */
+	function core($type = null) {
+		$paths = Cache::read('core_paths', '_cake_core_');
+		if (!$paths) {
+			$paths = array();
+			$openBasedir = ini_get('open_basedir');
+			if ($openBasedir) {
+				$all = explode(PATH_SEPARATOR, $openBasedir);
+				$all = array_flip(array_flip((array_merge(array(CAKE_CORE_INCLUDE_PATH), $all))));
+			} else {
+				$all = explode(PATH_SEPARATOR, ini_get('include_path'));
+				$all = array_flip(array_flip((array_merge(array(CAKE_CORE_INCLUDE_PATH), $all))));
+			}
+			foreach ($all as $path) {
+				if ($path !== DS) {
+					$path = rtrim($path, DS);
+				}
+				if (empty($path) || $path === '.') {
+					continue;
+				}
+				$cake = $path .  DS . 'cake' . DS;
+				$libs = $cake . 'libs' . DS;
+				if (is_dir($libs)) {
+					$paths['cake'][] = $cake;
+					$paths['libs'][] = $libs;
+					$paths['models'][] = $libs . 'model' . DS;
+					$paths['behaviors'][] = $libs . 'model' . DS . 'behaviors' . DS;
+					$paths['controllers'][] = $libs . 'controller' . DS;
+					$paths['components'][] = $libs . 'controller' . DS . 'components' . DS;
+					$paths['views'][] = $libs . 'view' . DS;
+					$paths['helpers'][] = $libs . 'view' . DS . 'helpers' . DS;
+					$paths['vendors'][] = $path . DS . 'vendors' . DS;
+					$paths['shells'][] = $cake . 'console' . DS . 'libs' . DS;
+					break;
+				}
+			}
+			Cache::write('core_paths', array_filter($paths), '_cake_core_');
+		}
+		if ($type && isset($paths[$type])) {
+			return $paths[$type];
+		}
+		return $paths;
+	}
+/**
+ * Returns an index of objects of the given type, with the physical path to each object.
+ *
+ * @param string	$type Type of object, i.e. 'model', 'controller', 'helper', or 'plugin'
+ * @param mixed		$path Optional
+ * @return Configure instance
+ * @access public
+ */
+	function objects($type, $path = null, $cache = true) {
+		$objects = array();
+		$extension = false;
+		$name = $type;
+
+		if ($type === 'file' && !$path) {
+			return false;
+		} elseif ($type === 'file') {
+			$extension = true;
+			$name = $type . str_replace(DS, '', $path);
+		}
+		$_this =& App::getInstance();
+
+		if (empty($_this->__objects) && $cache === true) {
+			$_this->__objects = Cache::read('object_map', '_cake_core_');
+		}
+
+		if (empty($_this->__objects) || !isset($_this->__objects[$type]) || $cache !== true) {
+			$types = $_this->types;
+
+			if (!isset($types[$type])) {
+				return false;
+			}
+			$objects = array();
+
+			if (empty($path)) {
+				$path = $_this->{"{$type}s"};
+				if (isset($types[$type]['core']) && $types[$type]['core'] === false) {
+					array_pop($path);
+				}
+			}
+			$items = array();
+
+			foreach ((array)$path as $dir) {
+				if ($type === 'file' || $type === 'class' || strpos($dir, $type) !== false) {
+					$items = $_this->__list($dir, $types[$type]['suffix'], $extension);
+					$objects = array_merge($items, array_diff($objects, $items));
+				}
+			}
+
+			if ($type !== 'file') {
+				foreach ($objects as $key => $value) {
+					$objects[$key] = Inflector::camelize($value);
+				}
+			}
+			if ($cache === true && !empty($objects)) {
+				$_this->__objects[$name] = $objects;
+				$_this->__cache = true;
+			} else {
+				return $objects;
+			}
+		}
+		return $_this->__objects[$name];
+	}
 /**
  * Finds classes based on $name or specific file(s) to search.
  *
@@ -740,11 +840,12 @@ class App extends Object {
 
 		if ($name != null && strpos($name, '.') !== false) {
 			list($plugin, $name) = explode('.', $name);
+			$plugin = Inflector::camelize($plugin);
 		}
 		self::$return = $return;
 
 		if (isset($ext)) {
-			$file = Inflector::underscore($name) . ".$ext";
+			$file = Inflector::underscore($name) . ".{$ext}";
 		}
 		$ext = self::__settings($type, $plugin, $parent);
 		if (empty(self::$__map)) {
@@ -781,7 +882,6 @@ class App extends Object {
 					foreach ($paths as $key => $value) {
 						self::$search[$key] = $value . $ext['path'];
 					}
-					$plugin = Inflector::camelize($plugin);
 				}
 			}
 
@@ -883,7 +983,7 @@ class App extends Object {
  * @param string $file full path to file
  * @param string $name unique name for this map
  * @param string $type type object being mapped
- * @param string $plugin if object is from a plugin, the name of the plugin
+ * @param string $plugin camelized if object is from a plugin, the name of the plugin
  * @access private
  */
 	private static function __map($file, $name, $type, $plugin) {
@@ -899,7 +999,7 @@ class App extends Object {
  *
  * @param string $name unique name
  * @param string $type type object
- * @param string $plugin if object is from a plugin, the name of the plugin
+ * @param string $plugin camelized if object is from a plugin, the name of the plugin
  * @return mixed, file path if found, false otherwise
  * @access private
  */
@@ -923,7 +1023,7 @@ class App extends Object {
  * Returns a prefix or suffix needed for loading files.
  *
  * @param string $type type of object
- * @param string $plugin name of plugin
+ * @param string $plugin camelized name of plugin
  * @param boolean $parent false will not attempt to load parent
  * @return array
  * @access private
@@ -934,8 +1034,7 @@ class App extends Object {
 		}
 
 		if ($plugin) {
-			$plugin = Inflector::underscore($plugin);
-			$name = Inflector::camelize($plugin);
+			$pluginPath = Inflector::underscore($plugin);
 		}
 		$path = null;
 		$load = strtolower($type);
@@ -952,13 +1051,13 @@ class App extends Object {
 					if (!class_exists($name . 'AppModel')) {
 						self::import($type, $plugin . '.' . $name . 'AppModel', false, array(), $plugin . DS . $plugin . '_app_model.php');
 					}
-					$path = $plugin . DS . 'models' . DS;
+					$path = $pluginPath . DS . 'models' . DS;
 				}
 				return array('class' => null, 'suffix' => null, 'path' => $path);
 			break;
 			case 'behavior':
 				if ($plugin) {
-					$path = $plugin . DS . 'models' . DS . 'behaviors' . DS;
+					$path = $pluginPath . DS . 'models' . DS . 'behaviors' . DS;
 				}
 				return array('class' => $type, 'suffix' => null, 'path' => $path);
 			break;
@@ -972,13 +1071,13 @@ class App extends Object {
 			break;
 			case 'component':
 				if ($plugin) {
-					$path = $plugin . DS . 'controllers' . DS . 'components' . DS;
+					$path = $pluginPath . DS . 'controllers' . DS . 'components' . DS;
 				}
 				return array('class' => $type, 'suffix' => null, 'path' => $path);
 			break;
 			case 'view':
 				if ($plugin) {
-					$path = $plugin . DS . 'views' . DS;
+					$path = $pluginPath . DS . 'views' . DS;
 				}
 				return array('class' => $type, 'suffix' => null, 'path' => $path);
 			break;
@@ -987,13 +1086,13 @@ class App extends Object {
 					self::import($type, 'AppHelper', false);
 				}
 				if ($plugin) {
-					$path = $plugin . DS . 'views' . DS . 'helpers' . DS;
+					$path = $pluginPath . DS . 'views' . DS . 'helpers' . DS;
 				}
 				return array('class' => $type, 'suffix' => null, 'path' => $path);
 			break;
 			case 'vendor':
 				if ($plugin) {
-					$path = $plugin . DS . 'vendors' . DS;
+					$path = $pluginPath . DS . 'vendors' . DS;
 				}
 				return array('class' => null, 'suffix' => null, 'path' => $path);
 			break;
@@ -1014,7 +1113,7 @@ class App extends Object {
 		$type = strtolower($type);
 
 		if ($type === 'core') {
-			$path = Configure::corePaths();
+			$path = App::core();
 			$paths = array();
 
 			foreach ($path as $key => $value) {
@@ -1025,8 +1124,7 @@ class App extends Object {
 			}
 			return $paths;
 		}
-
-		if ($paths = Configure::read($type . 'Paths')) {
+		if ($paths = App::path($type .'s')) {
 			return $paths;
 		}
 
@@ -1048,7 +1146,7 @@ class App extends Object {
  *
  * @param string $name name of object
  * @param string $type type of object
- * @param string $plugin name of plugin
+ * @param string $plugin camelized name of plugin
  * @return void
  * @access private
  */
@@ -1061,6 +1159,38 @@ class App extends Object {
 		}
 	}
 /**
+ * Returns an array of filenames of PHP files in the given directory.
+ *
+ * @param  string $path Path to scan for files
+ * @param  string $suffix if false, return only directories. if string, match and return files
+ * @return array  List of directories or files in directory
+ */
+	function __list($path, $suffix = false, $extension = false) {
+		if (!class_exists('Folder')) {
+			require LIBS . 'folder.php';
+		}
+		$items = array();
+		$Folder =& new Folder($path);
+		$contents = $Folder->read(false, true);
+
+		if (is_array($contents)) {
+			if (!$suffix) {
+				return $contents[0];
+			} else {
+				foreach ($contents[1] as $item) {
+					if (substr($item, - strlen($suffix)) === $suffix) {
+						if ($extension) {
+							$items[] = $item;
+						} else {
+							$items[] = substr($item, 0, strlen($item) - strlen($suffix));
+						}
+					}
+				}
+			}
+		}
+		return $items;
+	}
+/**
  * Object destructor.
  *
  * Writes cache file if changes have been made to the $__map or $__paths
@@ -1070,7 +1200,7 @@ class App extends Object {
  */
 	public static function destruct() {
 		if (self::$__cache) {
-			$core = Configure::corePaths('cake');
+			$core = App::core('cake');
 			unset(self::$__paths[rtrim($core[0], DS)]);
 			Cache::write('dir_map', array_filter(self::$__paths), '_cake_core_');
 			Cache::write('file_map', array_filter(self::$__map), '_cake_core_');

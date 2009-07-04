@@ -276,9 +276,9 @@ class ComponentTest extends CakeTestCase {
  * @return void
  */
 	function setUp() {
-		$this->_pluginPaths = Configure::read('pluginPaths');
-		Configure::write('pluginPaths', array(
-			TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS
+		$this->_pluginPaths = App::path('plugins');
+		App::build(array(
+			'plugins' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS)
 		));
 	}
 /**
@@ -288,7 +288,7 @@ class ComponentTest extends CakeTestCase {
  * @return void
  */
 	function tearDown() {
-		Configure::write('pluginPaths', $this->_pluginPaths);
+		App::build();
 		ClassRegistry::flush();
 	}
 /**

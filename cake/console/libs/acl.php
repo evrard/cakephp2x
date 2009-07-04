@@ -201,7 +201,7 @@ class AclShell extends Shell {
 		extract($this->__dataVars());
 		$data = array(
 			$class => array(
-				'id' 		=> $this->args[1],
+				'id' => $this->args[1],
 				'parent_id' => $this->args[2]
 			)
 		);

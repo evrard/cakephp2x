@@ -337,17 +337,18 @@ class DboMssql extends DboSource {
 		if (!empty($values)) {
 			$fields = array_combine($fields, $values);
 		}
+		$primaryKey = $this->_getPrimaryKey($model);
 
-		if (array_key_exists($model->primaryKey, $fields)) {
-			if (empty($fields[$model->primaryKey])) {
-				unset($fields[$model->primaryKey]);
+		if (array_key_exists($primaryKey, $fields)) {
+			if (empty($fields[$primaryKey])) {
+				unset($fields[$primaryKey]);
 			} else {
-				$this->_execute("SET IDENTITY_INSERT " . $this->fullTableName($model) . " ON");
+				$this->_execute('SET IDENTITY_INSERT ' . $this->fullTableName($model) . ' ON');
 			}
 		}
 		$result = parent::create($model, array_keys($fields), array_values($fields));
-		if (array_key_exists($model->primaryKey, $fields) && !empty($fields[$model->primaryKey])) {
-			$this->_execute("SET IDENTITY_INSERT " . $this->fullTableName($model) . " OFF");
+		if (array_key_exists($primaryKey, $fields) && !empty($fields[$primaryKey])) {
+			$this->_execute('SET IDENTITY_INSERT ' . $this->fullTableName($model) . ' OFF');
 		}
 		return $result;
 	}
@@ -379,7 +380,7 @@ class DboMssql extends DboSource {
 		$error = mssql_get_last_message($this->connection);
 
 		if ($error) {
-			if (!preg_match('/contexto de la base de datos a|contesto di database|changed database/i', $error)) {
+			if (!preg_match('/contexto de la base de datos a|contesto di database|changed database|datenbankkontext/i', $error)) {
 				return $error;
 			}
 		}
@@ -628,6 +629,29 @@ class DboMssql extends DboSource {
 		}
 	}
 /**
+ * Inserts multiple values into a table
+ *
+ * @param string $table
+ * @param string $fields
+ * @param array $values
+ * @access protected
+ */
+	function insertMulti($table, $fields, $values) {
+		$primaryKey = $this->_getPrimaryKey($table);
+		$hasPrimaryKey = $primaryKey != null && (
+			(is_array($fields) && in_array($primaryKey, $fields)
+			|| (is_string($fields) && strpos($fields, $this->startQuote . $primaryKey . $this->endQuote) !== false))
+		);
+
+		if ($hasPrimaryKey) {
+			$this->_execute('SET IDENTITY_INSERT ' . $this->fullTableName($table) . ' ON');
+		}
+		parent::insertMulti($table, $fields, $values);
+		if ($hasPrimaryKey) {
+			$this->_execute('SET IDENTITY_INSERT ' . $this->fullTableName($table) . ' OFF');
+		}
+	}
+/**
  * Generate a database-native column schema string
  *
  * @param array $column An array structured like the following: array('name'=>'value', 'type'=>'value'[, options]),
@@ -675,6 +699,28 @@ class DboMssql extends DboSource {
 			$join[] = $out;
 		}
 		return $join;
+	}
+/**
+ * Makes sure it will return the primary key
+ *
+ * @param mixed $model
+ * @access protected
+ * @return string
+ */
+	function _getPrimaryKey($model) {
+		if (is_object($model)) {
+			$schema = $model->schema();
+		} else {
+			$schema = $this->describe($model);
+		}
+
+		foreach ($schema as $field => $props) {
+			if (isset($props['key']) && $props['key'] == 'primary') {
+				return $field;
+			}
+		}
+
+		return null;
 	}
 }
 ?>

@@ -24,12 +24,16 @@
  * Included libraries.
  *
  */
-	if (!class_exists('Object')) {
-		uses('object');
-	}
-	if (!class_exists('CakeLog')) {
-		uses('cake_log');
-	}
+if (!class_exists('Object')) {
+	require_once LIBS . 'object.php';
+}
+if (!class_exists('CakeLog')) {
+	require_once LIBS . 'cake_log.php';
+}
+if (!class_exists('String')) {
+	require_once LIBS . 'string.php';
+}
+
 /**
  * Provide custom logging and error handling.
  *
@@ -62,6 +66,42 @@ class Debugger extends Object {
  */
 	protected $_outputFormat = 'js';
 /**
+ * Templates used when generating trace or error strings.  Can be global or indexed by the format
+ * value used in $_outputFormat.
+ *
+ * @var string
+ * @access protected
+ */
+	var $_templates = array(
+		'log' => array(
+			'trace' => '{:reference} - {:path}, line {:line}',
+			'error' => "{:error} ({:code}): {:description} in [{:file}, line {:line}]"
+		),
+		'js' => array(
+			'error' => '',
+			'info' => '',
+			'trace' => '<pre class="stack-trace">{:trace}</pre>',
+			'code' => '',
+			'context' => '',
+			'links' => array()
+		),
+		'html' => array(
+			'trace' => '<pre class="cake-debug trace"><b>Trace</b> <p>{:trace}</p></pre>',
+			'context' => '<pre class="cake-debug context"><b>Context</b> <p>{:context}</p></pre>'
+		),
+		'txt' => array(
+			'error' => "{:error}: {:code} :: {:description} on line {:line} of {:path}\n{:info}",
+			'context' => "Context:\n{:context}\n",
+			'trace' => "Trace:\n{:trace}\n",
+			'code' => '',
+			'info' => ''
+		),
+		'base' => array(
+			'traceLine' => '{:reference} - {:path}, line {:line}'
+		)
+	);
+
+/**
  * Holds current output data when outputFormat is false.
  *
  * @var string
@@ -74,12 +114,57 @@ class Debugger extends Object {
  */
 	public function __construct() {
 		$docRef = ini_get('docref_root');
+
 		if (empty($docRef)) {
 			ini_set('docref_root', 'http://php.net/');
 		}
 		if (!defined('E_RECOVERABLE_ERROR')) {
 			define('E_RECOVERABLE_ERROR', 4096);
 		}
+		if (!defined('E_DEPRECATED')) {
+			define('E_DEPRECATED', 8192);
+		}
+
+		$e = '<a href="javascript:void(0);" onclick="document.getElementById(\'{:id}-trace\')';
+		$e .= '.style.display = (document.getElementById(\'{:id}-trace\').style.display == ';
+		$e .= '\'none\' ? \'\' : \'none\');"><b>{:error}</b> ({:code})</a>: {:description} ';
+		$e .= '[<b>{:path}</b>, line <b>{:line}</b>]';
+
+		$e .= '<div id="{:id}-trace" class="cake-stack-trace" style="display: none;">';
+		$e .= '{:links}{:info}</div>';
+		$this->_templates['js']['error'] = $e;
+
+		$t = '<div id="{:id}-trace" class="cake-stack-trace" style="display: none;">';
+		$t .= '{:context}{:code}{:trace}</div>';
+		$this->_templates['js']['info'] = $t;
+
+		$links = array();
+		$link = '<a href="javascript:void(0);" onclick="document.getElementById(\'{:id}-code\')';
+		$link .= '.style.display = (document.getElementById(\'{:id}-code\').style.display == ';
+		$link .= '\'none\' ? \'\' : \'none\')">Code</a>';
+		$links['code'] = $link;
+
+		$link = '<a href="javascript:void(0);" onclick="document.getElementById(\'{:id}-context\')';
+		$link .= '.style.display = (document.getElementById(\'{:id}-context\').style.display == ';
+		$link .= '\'none\' ? \'\' : \'none\')">Context</a>';
+		$links['context'] = $link;
+
+		$links['help'] = '<a href="{:helpPath}{:code}" target="_blank">Help</a>';
+		$this->_templates['js']['links'] = $links;
+
+		$this->_templates['js']['context'] = '<pre id="{:id}-context" class="cake-context" ';
+		$this->_templates['js']['context'] .= 'style="display: none;">{:context}</pre>';
+
+		$this->_templates['js']['code'] = '<div id="{:id}-code" class="cake-code-dump" ';
+		$this->_templates['js']['code'] .= 'style="display: none;"><pre>{:code}</pre></div>';
+
+
+		$e  = '<pre class="cake-debug"><b>{:error}</b> ({:code}) : {:description} ';
+		$e .= '[<b>{:path}</b>, line <b>{:line}]</b></pre>';
+		$this->_templates['html']['error'] = $e;
+
+		$this->_templates['html']['context'] = '<pre class="cake-debug context"><b>Context</b> ';
+		$this->_templates['html']['context'] .= '<p>{:context}</p></pre>';
 	}
 /**
  * Returns a reference to the Debugger singleton object instance.
@@ -171,7 +256,7 @@ class Debugger extends Object {
 		if (empty($line)) {
 			$line = '??';
 		}
-		$file = $_this->trimPath($file);
+		$path = $_this->trimPath($file);
 
 		$info = compact('code', 'description', 'file', 'line');
 		if (!in_array($info, $_this->errors)) {
@@ -210,15 +295,18 @@ class Debugger extends Object {
 		$helpCode = null;
 		if (!empty($_this->helpPath) && preg_match('/.*\[([0-9]+)\]$/', $description, $codes)) {
 			if (isset($codes[1])) {
-				$helpCode = $codes[1];
+				$helpID = $codes[1];
 				$description = trim(preg_replace('/\[[0-9]+\]$/', '', $description));
 			}
 		}
 
-		echo $_this->_output($level, $error, $code, $helpCode, $description, $file, $line, $context);
+		$data = compact('level', 'error', 'code', 'helpID', 'description', 'file', 'path', 'line', 'context');
+		echo $_this->_output($data);
 
 		if (Configure::read('log')) {
-			CakeLog::write($level, "{$error} ({$code}): {$description} in [{$file}, line {$line}]");
+			$tpl = $_this->_templates['log']['error'];
+			$options = array('before' => '{:', 'after' => '}');
+			CakeLog::write($level, String::insert($tpl, $data, $options));
 		}
 
 		if ($error == 'Fatal Error') {
@@ -235,66 +323,66 @@ class Debugger extends Object {
  * @static
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
  */
-	private function trace($options = array()) {
-		$options = array_merge(array(
-				'depth'		=> 999,
-				'format'	=> '',
-				'args'		=> false,
-				'start'		=> 0,
-				'scope'		=> null,
-				'exclude'	=> null
-			),
-			$options
+	function trace($options = array()) {
+		$defaults = array(
+			'depth'   => 999,
+			'format'  => $_this->_outputFormat,
+			'args'    => false,
+			'start'   => 0,
+			'scope'   => null,
+			'exclude' => null
 		);
+		$options += $defaults;
 
 		$backtrace = debug_backtrace();
-		$back = array();
 		$count = count($backtrace);
+		$back = array();
+
+		$_trace = array(
+			'line'     => '??',
+			'file'     => '[internal]',
+			'class'    => null,
+			'function' => '[main]'
+		);
 
 		for ($i = $options['start']; $i < $count && $i < $options['depth']; $i++) {
-			$trace = array_merge(
-				array(
-					'file' => '[internal]',
-					'line' => '??'
-				),
-				$backtrace[$i]
-			);
+			$trace = array_merge(array('file' => '[internal]', 'line' => '??'), $backtrace[$i]);
 
 			if (isset($backtrace[$i + 1])) {
-				$next = array_merge(
-					array(
-						'line'		=> '??',
-						'file'		=> '[internal]',
-						'class'		=> null,
-						'function'	=> '[main]'
-					),
-					$backtrace[$i + 1]
-				);
-				$function = $next['function'];
+				$next = array_merge($_trace, $backtrace[$i + 1]);
+				$reference = $next['function'];
 
 				if (!empty($next['class'])) {
-					$function = $next['class'] . '::' . $function . '(';
+					$reference = $next['class'] . '::' . $reference . '(';
 					if ($options['args'] && isset($next['args'])) {
 						$args = array();
 						foreach ($next['args'] as $arg) {
 							$args[] = Debugger::exportVar($arg);
 						}
-						$function .= join(', ', $args);
+						$reference .= join(', ', $args);
 					}
-					$function .= ')';
+					$reference .= ')';
 				}
 			} else {
-				$function = '[main]';
+				$reference = '[main]';
 			}
-			if (in_array($function, array('call_user_func_array', 'trigger_error'))) {
+			if (in_array($reference, array('call_user_func_array', 'trigger_error'))) {
 				continue;
 			}
 			if ($options['format'] == 'points' && $trace['file'] != '[internal]') {
 				$back[] = array('file' => $trace['file'], 'line' => $trace['line']);
-			} elseif (empty($options['format'])) {
-				$back[] = $function . ' - ' . Debugger::trimPath($trace['file']) . ', line ' . $trace['line'];
-			} else {
+			} elseif ($options['format'] == 'array') {
 				$back[] = $trace;
+			} else {
+				if (isset($_this->_templates[$options['format']]['traceLine'])) {
+					$tpl = $_this->_templates[$options['format']]['traceLine'];
+				} else {
+					$tpl = $_this->_templates['base']['traceLine'];
+				}
+				$trace['path'] = Debugger::trimPath($trace['file']);
+				$trace['reference'] = $reference;
+				unset($trace['object'], $trace['args']);
+				$back[] = String::insert($tpl, $trace, array('before' => '{:', 'after' => '}'));
 			}
 		}
 
@@ -451,14 +539,35 @@ class Debugger extends Object {
 		return join("\n", $out);
 	}
 /**
- * Handles object conversion to debug string.
+ * Switches output format, updates format strings
  *
- * @param string $var Object to convert
+ * @param string $format Format to use, including 'js' for JavaScript-enhanced HTML, 'html' for
+ *        straight HTML output, or 'text' for unformatted text.
  * @access protected
  */
-	private function output($format = 'js') {
+	private function output($format = null, $strings = array()) {
 		$_this = Debugger::getInstance();
 		$data = null;
+
+		if (is_null($format)) {
+			return $_this->_outputFormat;
+		}
+
+		if (!empty($strings)) {
+			if (isset($_this->_templates[$format])) {
+				if (isset($strings['links'])) {
+					$_this->_templates[$format]['links'] = array_merge(
+						$_this->_templates[$format]['links'],
+						$strings['links']
+					);
+					unset($strings['links']);
+				}
+				$_this->_templates[$format] = array_merge($_this->_templates[$format], $strings);
+			} else {
+				$_this->_templates[$format] = $strings;
+			}
+			return $_this->_templates[$format];
+		}
 
 		if ($format === true && !empty($_this->__data)) {
 			$data = $_this->__data;
@@ -470,77 +579,77 @@ class Debugger extends Object {
 		return $data;
 	}
 /**
- * Handles object conversion to debug string.
+ * Renders error messages
  *
- * @param string $var Object to convert
+ * @param array $data Data about the current error
  * @access protected
  */
-	protected function _output($level, $error, $code, $helpCode, $description, $file, $line, $kontext) {
-		$files = $this->trace(array('start' => 2, 'format' => 'points'));
-		$listing = $this->excerpt($files[0]['file'], $files[0]['line'] - 1, 1);
-		$trace = $this->trace(array('start' => 2, 'depth' => '20'));
-		$context = array();
+	protected function _output($data = array()) {
+		$defaults = array(
+			'level' => 0,
+			'error' => 0,
+			'code' => 0,
+			'helpID' => null,
+			'description' => '',
+			'file' => '',
+			'line' => 0,
+			'context' => array()
+		);
+		$data += $defaults;
 
-		foreach ((array)$kontext as $var => $value) {
+		$files = $this->trace(array('start' => 2, 'format' => 'points'));
+		$code = $this->excerpt($files[0]['file'], $files[0]['line'] - 1, 1);
+		$trace = $this->trace(array('start' => 2, 'depth' => '20'));
+		$insertOpts = array('before' => '{:', 'after' => '}');
+		$context = array();
+		$links = array();
+		$info = '';
+
+		foreach ((array)$data['context'] as $var => $value) {
 			$context[] = "\${$var}\t=\t" . $this->exportVar($value, 1);
 		}
 
 		switch ($this->_outputFormat) {
-			default:
-			case 'js':
-				$link = "document.getElementById(\"CakeStackTrace" . count($this->errors) . "\").style.display = (document.getElementById(\"CakeStackTrace" . count($this->errors) . "\").style.display == \"none\" ? \"\" : \"none\")";
-				$out = "<a href='javascript:void(0);' onclick='{$link}'><b>{$error}</b> ({$code})</a>: {$description} [<b>{$file}</b>, line <b>{$line}</b>]";
-				if (Configure::read() > 0) {
-					debug($out, false, false);
-					echo '<div id="CakeStackTrace' . count($this->errors) . '" class="cake-stack-trace" style="display: none;">';
-						$link = "document.getElementById(\"CakeErrorCode" . count($this->errors) . "\").style.display = (document.getElementById(\"CakeErrorCode" . count($this->errors) . "\").style.display == \"none\" ? \"\" : \"none\")";
-						echo "<a href='javascript:void(0);' onclick='{$link}'>Code</a>";
-
-						if (!empty($context)) {
-							$link = "document.getElementById(\"CakeErrorContext" . count($this->errors) . "\").style.display = (document.getElementById(\"CakeErrorContext" . count($this->errors) . "\").style.display == \"none\" ? \"\" : \"none\")";
-							echo " | <a href='javascript:void(0);' onclick='{$link}'>Context</a>";
-
-							if (!empty($helpCode)) {
-								echo " | <a href='{$this->helpPath}{$helpCode}' target='_blank'>Help</a>";
-							}
-
-							echo "<pre id=\"CakeErrorContext" . count($this->errors) . "\" class=\"cake-context\" style=\"display: none;\">";
-							echo implode("\n", $context);
-							echo "</pre>";
-						}
-
-						if (!empty($listing)) {
-							echo "<div id=\"CakeErrorCode" . count($this->errors) . "\" class=\"cake-code-dump\" style=\"display: none;\">";
-								pr(implode("\n", $listing) . "\n", false);
-							echo '</div>';
-						}
-						pr($trace, false);
-					echo '</div>';
-				}
-			break;
-			case 'html':
-				echo "<pre class=\"cake-debug\"><b>{$error}</b> ({$code}) : {$description} [<b>{$file}</b>, line <b>{$line}]</b></pre>";
-				if (!empty($context)) {
-					echo "Context:\n" .implode("\n", $context) . "\n";
-				}
-				echo "<pre class=\"cake-debug context\"><b>Context</b> <p>" . implode("\n", $context) . "</p></pre>";
-				echo "<pre class=\"cake-debug trace\"><b>Trace</b> <p>" . $trace. "</p></pre>";
-			break;
-			case 'text':
-			case 'txt':
-				echo "{$error}: {$code} :: {$description} on line {$line} of {$file}\n";
-				if (!empty($context)) {
-					echo "Context:\n" .implode("\n", $context) . "\n";
-				}
-				echo "Trace:\n" . $trace;
-			break;
-			case 'log':
-				$this->log(compact('error', 'code', 'description', 'line', 'file', 'context', 'trace'));
-			break;
 			case false:
-				$this->__data[] = compact('error', 'code', 'description', 'line', 'file', 'context', 'trace');
-			break;
+				$this->__data[] = compact('context', 'trace') + $data;
+				return;
+			case 'log':
+				$this->log(compact('context', 'trace') + $data);
+				return;
 		}
+
+		if (empty($this->_outputFormat) || !isset($this->_templates[$this->_outputFormat])) {
+			$this->_outputFormat = 'js';
+		}
+
+		$data['id'] = 'cakeErr' . count($this->errors);
+		$tpl = array_merge($this->_templates['base'], $this->_templates[$this->_outputFormat]);
+		$insert = array('context' => join("\n", $context), 'helpPath' => $this->helpPath) + $data;
+
+		$detect = array('help' => 'helpID', 'context' => 'context');
+
+		if (isset($tpl['links'])) {
+			foreach ($tpl['links'] as $key => $val) {
+				if (isset($detect[$key]) && empty($insert[$detect[$key]])) {
+					continue;
+				}
+				$links[$key] = String::insert($val, $insert, $insertOpts);
+			}
+		}
+
+		foreach (array('code', 'context', 'trace') as $key) {
+			if (empty($$key) || !isset($tpl[$key])) {
+				continue;
+			}
+			if (is_array($$key)) {
+				$$key = join("\n", $$key);
+			}
+			$info .= String::insert($tpl[$key], compact($key) + $insert, $insertOpts);
+		}
+		$links = join(' | ', $links);
+		unset($data['context']);
+
+		echo String::insert($tpl['error'], compact('links', 'info') + $data, $insertOpts);
 	}
 /**
  * Verifies that the application's salt value has been changed from the default value.
@@ -554,8 +663,8 @@ class Debugger extends Object {
 		}
 	}
 /**
- * Invokes the given debugger object as the current error handler, taking over control from the previous handler
- * in a stack-like hierarchy.
+ * Invokes the given debugger object as the current error handler, taking over control from the
+ * previous handler in a stack-like hierarchy.
  *
  * @param object $debugger A reference to the Debugger object
  * @access public

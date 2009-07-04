@@ -1,8 +1,9 @@
 <?php
 /**
- * Short description for file.
+ * This file is loaded automatically by the app/webroot/index.php file after the core bootstrap.php
  *
- * Long description for file
+ * This is an application wide file to load any function that is not used within a class
+ * define. You can also use this to include or require any files in your application.
  *
  * PHP Version 5.x
  *
@@ -21,20 +22,26 @@
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
- *
- * This file is loaded automatically by the app/webroot/index.php file after the core bootstrap.php is loaded
- * This is an application wide file to load any function that is not used within a class define.
- * You can also use this to include or require any files in your application.
- *
- */
-/**
  * The settings below can be used to set additional paths to models, views and controllers.
  * This is related to Ticket #470 (https://trac.cakephp.org/ticket/470)
  *
- * $modelPaths = array('full path to models', 'second full path to models', 'etc...');
- * $viewPaths = array('this path to views', 'second full path to views', 'etc...');
- * $controllerPaths = array('this path to controllers', 'second full path to controllers', 'etc...');
+ * $modelPaths 	= array('/full/path/to/models/', '/next/full/path/to/models/');
+ * $viewPaths = array('/full/path/to/views/', '/next/full/path/to/views/');
+ * $controllerPaths = array(/full/path/to/controllers/', '/next/full/path/to/controllers/');
+ * $pluginPaths = array('/full/path/to/plugins/', '/next/full/path/to/plugins/');
+ * $behaviorPaths = array('/full/path/to/behaviors/', '/next/full/path/to/behaviors/');
+ * $componentPaths = array('/full/path/to/components/', '/next/full/path/to/components/');
+ * $helperPaths = array('/full/path/to/helpers/', '/next/full/path/to/helpers/');
+ * $vendorPaths = array('/full/path/to/vendors/', '/next/full/path/to/vendors/');
+ * $shellPaths = array('/full/path/to/shells/', '/next/full/path/to/shells/');
+ * $localePaths = array('/full/path/to/locale/', '/next/full/path/to/locale/';
  *
  */
-//EOF
+/**
+ * As of 1.3, additional rules for the inflector are added below
+ *
+ * Inflector::rule('singular', array('rules' => array(), irregular' => array(), 'uninflected' => array()));
+ * Inflector::rule('plural', array('rules' => array(), 'irregular' => array(), 'uninflected' => array()));
+ *
+ */
 ?>

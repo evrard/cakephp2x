@@ -21,7 +21,7 @@
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**
- * Scaffolding is a set of automatic views, forms and controllers for starting web development work faster.
+ * Scaffolding is a set of automatic actions for starting web development work faster.
  *
  * Scaffold inspects your database tables, and making educated guesses, sets up a
  * number of pages for each of your Models. These pages have data forms that work,
@@ -110,6 +110,13 @@ class Scaffold extends Object {
  */
 	private $plugin = null;
 /**
+ * valid session.
+ *
+ * @var boolean
+ * @access public
+ */
+	var $_validSession = null;
+/**
  * List of variables to collect from the associated controller
  *
  * @var array
@@ -144,7 +151,9 @@ class Scaffold extends Object {
 		$this->modelKey = $controller->modelKey;
 
 		if (!is_object($this->controller->{$this->modelClass})) {
-			return $this->cakeError('missingModel', array(array('className' => $this->modelClass, 'webroot' => '', 'base' => $controller->base)));
+			return $this->cakeError('missingModel', array(array(
+				'className' => $this->modelClass, 'webroot' => '', 'base' => $controller->base
+			)));
 		}
 
 		$this->ScaffoldModel = $this->controller->{$this->modelClass};
@@ -162,13 +171,18 @@ class Scaffold extends Object {
 		$scaffoldFields = array_keys($this->ScaffoldModel->schema());
 		$associations = $this->__associations();
 
-		$this->controller->set(compact('modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
-								'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations'));
+		$this->controller->set(compact(
+			'modelClass', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
+			'singularHumanName', 'pluralHumanName', 'scaffoldFields', 'associations'
+		));
 
 		if ($this->controller->view && $this->controller->view !== 'Theme') {
 			$this->controller->view = 'scaffold';
 		}
 		$this->__scaffold($params);
+		$this->_validSession = (
+			isset($this->controller->Session) && $this->controller->Session->valid() != false
+		);
 	}
 /**
  * Outputs the content of a scaffold method passing it through the Controller::afterFilter()
@@ -192,16 +206,23 @@ class Scaffold extends Object {
 
 			if (isset($params['pass'][0])) {
 				$this->ScaffoldModel->id = $params['pass'][0];
-			} elseif (isset($this->controller->Session) && $this->controller->Session->valid() != false) {
-				$this->controller->Session->setFlash(sprintf(__("No id set for %s::view()", true), Inflector::humanize($this->modelKey)));
+			} elseif ($this->_validSession) {
+				$this->controller->Session->setFlash(sprintf(
+					__("No id set for %s::view()", true),
+					Inflector::humanize($this->modelKey
+				)));
 				$this->controller->redirect($this->redirect);
 			} else {
-				return $this->controller->flash(sprintf(__("No id set for %s::view()", true), Inflector::humanize($this->modelKey)),
-																		'/' . Inflector::underscore($this->controller->viewPath));
+				return $this->controller->flash(sprintf(
+					__("No id set for %s::view()", true), Inflector::humanize($this->modelKey)),
+					'/' . Inflector::underscore($this->controller->viewPath
+				));
 			}
 			$this->ScaffoldModel->recursive = 1;
 			$this->controller->data = $this->ScaffoldModel->read();
-			$this->controller->set(Inflector::variable($this->controller->modelClass), $this->controller->data);
+			$this->controller->set(
+				Inflector::variable($this->controller->modelClass), $this->controller->data
+			);
 			$this->controller->render($this->action, $this->layout);
 			$this->_output();
 		} elseif ($this->controller->_scaffoldError('view') === false) {
@@ -218,7 +239,9 @@ class Scaffold extends Object {
 	private function __scaffoldIndex($params) {
 		if ($this->controller->_beforeScaffold('index')) {
 			$this->ScaffoldModel->recursive = 0;
-			$this->controller->set(Inflector::variable($this->controller->name), $this->controller->paginate());
+			$this->controller->set(
+				Inflector::variable($this->controller->name), $this->controller->paginate()
+			);
 			$this->controller->render($this->action, $this->layout);
 			$this->_output();
 		} elseif ($this->controller->_scaffoldError('index') === false) {
@@ -259,11 +282,17 @@ class Scaffold extends Object {
 				}
 
 				if (!$this->ScaffoldModel->exists()) {
-					if (isset($this->controller->Session) && $this->controller->Session->valid() != false) {
-						$this->controller->Session->setFlash(sprintf(__("Invalid id for %s::edit()", true), Inflector::humanize($this->modelKey)));
+					if ($this->_validSession) {
+						$this->controller->Session->setFlash(sprintf(
+							__("Invalid id for %s::edit()", true),
+							Inflector::humanize($this->modelKey)
+						));
 						$this->controller->redirect($this->redirect);
 					} else {
-						return $this->controller->flash(sprintf(__("Invalid id for %s::edit()", true), Inflector::humanize($this->modelKey)), $this->redirect);
+						return $this->controller->flash(sprintf(
+							__("Invalid id for %s::edit()", true),
+							Inflector::humanize($this->modelKey)
+						), $this->redirect);
 					}
 				}
 			}
@@ -275,18 +304,26 @@ class Scaffold extends Object {
 
 				if ($this->ScaffoldModel->save($this->controller->data)) {
 					if ($this->controller->_afterScaffoldSave($action)) {
-						if (isset($this->controller->Session) && $this->controller->Session->valid() != false) {
-							$this->controller->Session->setFlash(sprintf(__('The %1$s has been %2$s', true), Inflector::humanize($this->modelClass), $success));
+						if ($this->_validSession) {
+							$this->controller->Session->setFlash(sprintf(
+								__('The %1$s has been %2$s', true),
+								Inflector::humanize($this->modelClass), $success
+							));
 							$this->controller->redirect($this->redirect);
 						} else {
-							return $this->controller->flash(sprintf(__('The %1$s has been %2$s', true), Inflector::humanize($this->modelClass), $success), $this->redirect);
+							return $this->controller->flash(sprintf(
+								__('The %1$s has been %2$s', true),
+								Inflector::humanize($this->modelClass), $success
+							), $this->redirect);
 						}
 					} else {
 						return $this->controller->_afterScaffoldSaveError($action);
 					}
 				} else {
-					if (isset($this->controller->Session) && $this->controller->Session->valid() != false) {
-						$this->controller->Session->setFlash(__('Please correct errors below.', true));
+					if ($this->_validSession) {
+						$this->controller->Session->setFlash(
+							__('Please correct errors below.', true
+						));
 					}
 				}
 			}
@@ -300,7 +337,9 @@ class Scaffold extends Object {
 			}
 
 			foreach ($this->ScaffoldModel->belongsTo as $assocName => $assocData) {
-				$varName = Inflector::variable(Inflector::pluralize(preg_replace('/(?:_id)$/', '', $assocData['foreignKey'])));
+				$varName = Inflector::variable(Inflector::pluralize(
+					preg_replace('/(?:_id)$/', '', $assocData['foreignKey'])
+				));
 				$this->controller->set($varName, $this->ScaffoldModel->{$assocName}->find('list'));
 			}
 			foreach ($this->ScaffoldModel->hasAndBelongsToMany as $assocName => $assocData) {
@@ -324,27 +363,42 @@ class Scaffold extends Object {
 		if ($this->controller->_beforeScaffold('delete')) {
 			if (isset($params['pass'][0])) {
 				$id = $params['pass'][0];
-			} elseif (isset($this->controller->Session) && $this->controller->Session->valid() != false) {
-				$this->controller->Session->setFlash(sprintf(__("No id set for %s::delete()", true), Inflector::humanize($this->modelKey)));
+			} elseif ($this->_validSession) {
+				$this->controller->Session->setFlash(sprintf(
+					__("No id set for %s::delete()", true), Inflector::humanize($this->modelKey)
+				));
 				$this->controller->redirect($this->redirect);
 			} else {
-				return $this->controller->flash(sprintf(__("No id set for %s::delete()", true), Inflector::humanize($this->modelKey)),
-																	'/' . Inflector::underscore($this->controller->viewPath));
+				return $this->controller->flash(sprintf(
+					__("No id set for %s::delete()", true), Inflector::humanize($this->modelKey)
+				), '/' . Inflector::underscore($this->controller->viewPath));
 			}
 
-			if ($this->ScaffoldModel->del($id)) {
-				if (isset($this->controller->Session) && $this->controller->Session->valid() != false) {
-					$this->controller->Session->setFlash(sprintf(__('The %1$s with id: %2$d has been deleted.', true), Inflector::humanize($this->modelClass), $id));
+			if ($this->ScaffoldModel->delete($id)) {
+				if ($this->_validSession) {
+					$this->controller->Session->setFlash(sprintf(
+						__('The %1$s with id: %2$d has been deleted.', true),
+						Inflector::humanize($this->modelClass), $id
+					));
 					$this->controller->redirect($this->redirect);
 				} else {
-					return $this->controller->flash(sprintf(__('The %1$s with id: %2$d has been deleted.', true), Inflector::humanize($this->modelClass), $id), '/' . $this->viewPath);
+					return $this->controller->flash(sprintf(
+						__('The %1$s with id: %2$d has been deleted.', true),
+						Inflector::humanize($this->modelClass), $id
+					), '/' . $this->viewPath);
 				}
 			} else {
-				if (isset($this->controller->Session) && $this->controller->Session->valid() != false) {
-					$this->controller->Session->setFlash(sprintf(__('There was an error deleting the %1$s with id: %2$d', true), Inflector::humanize($this->modelClass), $id));
+				if ($this->_validSession) {
+					$this->controller->Session->setFlash(sprintf(
+						__('There was an error deleting the %1$s with id: %2$d', true),
+						Inflector::humanize($this->modelClass), $id
+					));
 					$this->controller->redirect($this->redirect);
 				} else {
-					return $this->controller->flash(sprintf(__('There was an error deleting the %1$s with id: %2$d', true), Inflector::humanize($this->modelClass), $id), '/' . $this->viewPath);
+					return $this->controller->flash(sprintf(
+						__('There was an error deleting the %1$s with id: %2$d', true),
+						Inflector::humanize($this->modelClass), $id
+					), '/' . $this->viewPath);
 				}
 			}
 		} elseif ($this->controller->_scaffoldError('delete') === false) {
@@ -381,7 +435,10 @@ class Scaffold extends Object {
 			if (empty($this->scaffoldActions)) {
 				$this->scaffoldActions = array('index', 'list', 'view', 'add', 'create', 'edit', 'update', 'delete');
 			} elseif (!empty($admin) && $this->scaffoldActions === $admin) {
-				$this->scaffoldActions = array($admin .'_index', $admin .'_list', $admin .'_view', $admin .'_add', $admin .'_create', $admin .'_edit', $admin .'_update', $admin .'_delete');
+				$this->scaffoldActions = array(
+					$admin .'_index', $admin .'_list', $admin .'_view', $admin .'_add',
+					$admin .'_create', $admin .'_edit', $admin .'_update', $admin .'_delete'
+				);
 			}
 
 			if (in_array($params['action'], $this->scaffoldActions)) {
@@ -415,10 +472,12 @@ class Scaffold extends Object {
 					break;
 				}
 			} else {
-				return $this->cakeError('missingAction', array(array('className' => $this->controller->name . "Controller",
-																						'base' => $this->controller->base,
-																						'action' => $this->action,
-																						'webroot' => $this->controller->webroot)));
+				return $this->cakeError('missingAction', array(array(
+					'className' => $this->controller->name . "Controller",
+					'base' => $this->controller->base,
+					'action' => $this->action,
+					'webroot' => $this->controller->webroot
+				)));
 			}
 		} else {
 			return $this->cakeError('missingDatabase', array(array('webroot' => $this->controller->webroot)));

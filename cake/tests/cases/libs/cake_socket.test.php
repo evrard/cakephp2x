@@ -20,14 +20,14 @@
  * @since         CakePHP(tm) v 1.2.0.4206
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-App::import('Core', 'Socket');
+App::import('Core', 'CakeSocket');
 /**
  * SocketTest class
  *
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  */
-class SocketTest extends CakeTestCase {
+class CakeSocketTest extends CakeTestCase {
 /**
  * setUp method
  *

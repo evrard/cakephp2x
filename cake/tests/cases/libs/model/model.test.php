@@ -6,19 +6,18 @@
  *
  * PHP Version 5.x
  *
- * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
- * Licensed under The Open Group Test Suite License
+ * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
- * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.tests.cases.libs.model
  * @since         CakePHP(tm) v 1.2.0.4206
- * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
+ * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 App::import('Core', array('AppModel', 'Model'));
 require_once dirname(__FILE__) . DS . 'models.php';
@@ -3885,7 +3884,7 @@ class ModelTest extends CakeTestCase {
 		$User = new CounterCacheUser();
 		$Post = new CounterCachePost();
 
-		$Post->del(2);
+		$Post->delete(2);
 		$user = $User->find('first', array(
 			'conditions' => array('id' => 66),'recursive' => -1
 		));
@@ -3970,7 +3969,7 @@ class ModelTest extends CakeTestCase {
 		$this->loadFixtures('Article');
 		$TestModel = new Article();
 
-		$result = $TestModel->del(2);
+		$result = $TestModel->delete(2);
 		$this->assertTrue($result);
 
 		$result = $TestModel->read(null, 2);
@@ -3984,7 +3983,7 @@ class ModelTest extends CakeTestCase {
 		);
 		$this->assertEqual($result, $expected);
 
-		$result = $TestModel->del(3);
+		$result = $TestModel->delete(3);
 		$this->assertTrue($result);
 
 		$result = $TestModel->read(null, 3);
@@ -4065,7 +4064,7 @@ class ModelTest extends CakeTestCase {
 		$this->loadFixtures('Article', 'Comment', 'Attachment');
 		$TestModel = new Article();
 
-		$result = $TestModel->del(2);
+		$result = $TestModel->delete(2);
 		$this->assertTrue($result);
 
 		$TestModel->recursive = 2;
@@ -4699,31 +4698,6 @@ class ModelTest extends CakeTestCase {
 		$TestModel->id = 3;
 		$result = $TestModel->find('neighbors', array('recursive' => 2));
 		$expected = array('prev' => $two, 'next' => null);
-		$this->assertEqual($result, $expected);
-	}
-/**
- * test findNeighbours() method
- *
- * @return void
- * @access public
- */
-	function testFindNeighboursLegacy() {
-		$this->loadFixtures('User', 'Article');
-		$TestModel = new Article();
-
-		$result = $TestModel->findNeighbours(null, 'Article.id', '2');
-		$expected = array('prev' => array('Article' => array('id' => 1)), 'next' => array('Article' => array('id' => 3)));
-		$this->assertEqual($result, $expected);
-
-		$result = $TestModel->findNeighbours(null, 'Article.id', '3');
-		$expected = array('prev' => array('Article' => array('id' => 2)), 'next' => array());
-		$this->assertEqual($result, $expected);
-
-		$result = $TestModel->findNeighbours(array('User.id' => 1), array('Article.id', 'Article.title'), 2);
-		$expected = array(
-			'prev' => array('Article' => array('id' => 1, 'title' => 'First Article')),
-			'next' => array('Article' => array('id' => 3, 'title' => 'Third Article')),
-		);
 		$this->assertEqual($result, $expected);
 	}
 /**
@@ -6304,7 +6278,7 @@ class ModelTest extends CakeTestCase {
 		$Cd = new Cd();
 		$OverallFavorite = new OverallFavorite();
 
-		$Cd->del(1);
+		$Cd->delete(1);
 
 		$result = $OverallFavorite->find('all', array('fields' => array('model_type', 'model_id', 'priority')));
 		$expected = array(array('OverallFavorite' => array('model_type' => 'Book', 'model_id' => 1, 'priority' => 2)));

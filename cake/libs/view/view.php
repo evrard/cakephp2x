@@ -647,7 +647,6 @@ class View extends Object {
 				${$camelBackedHelper} = $loadedHelpers[$helper];
 				$this->loaded[$camelBackedHelper] = ${$camelBackedHelper};
 			}
-
 			$this->_triggerHelpers('beforeRender');
 		}
 
@@ -810,7 +809,7 @@ class View extends Object {
 		$defaultPath = $paths[0];
 
 		if ($this->plugin) {
-			$pluginPaths = Configure::read('pluginPaths');
+			$pluginPaths = App::path('plugins');
 			foreach ($paths as $path) {
 				if (strpos($path, $pluginPaths[0]) === 0) {
 					$defaultPath = $path;
@@ -886,14 +885,14 @@ class View extends Object {
 			return $this->__paths;
 		}
 		$paths = array();
-		$viewPaths = Configure::read('viewPaths');
+		$viewPaths = App::path('views');
 
 		if ($plugin !== null) {
 			$count = count($viewPaths);
 			for ($i = 0; $i < $count; $i++) {
 				$paths[] = $viewPaths[$i] . 'plugins' . DS . $plugin . DS;
 			}
-			$pluginPaths = Configure::read('pluginPaths');
+			$pluginPaths = App::path('plugins');
 			$count = count($pluginPaths);
 
 			for ($i = 0; $i < $count; $i++) {

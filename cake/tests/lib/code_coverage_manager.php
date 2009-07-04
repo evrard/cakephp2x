@@ -512,7 +512,7 @@ class CodeCoverageManager {
 		if (!!$manager->pluginTest) {
 			$path = APP . 'plugins' . DS . $manager->pluginTest . DS . 'tests' . DS . 'groups';
 
-			$pluginPaths = Configure::read('pluginPaths');
+			$pluginPaths = App::path('plugins');
 			foreach ($pluginPaths as $pluginPath) {
 				$tmpPath = $pluginPath . $manager->pluginTest . DS . 'tests' . DS. 'groups';
 				if (file_exists($tmpPath)) {
@@ -716,7 +716,7 @@ class CodeCoverageManager {
 		} elseif (!!$manager->pluginTest) {
 			$pluginPath = APP . 'plugins' . DS . $manager->pluginTest . DS;
 
-			$pluginPaths = Configure::read('pluginPaths');
+			$pluginPaths = App::path('plugins');
 			foreach ($pluginPaths as $tmpPath) {
 				$tmpPath = $tmpPath . $manager->pluginTest . DS;
 				if (file_exists($tmpPath)) {

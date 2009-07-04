@@ -364,7 +364,7 @@ class RequestHandlerComponent extends Object {
  *
  * @param string $name The name of the Content-type, i.e. "html", "xml", "css"
  * @param mixed $type The Content-type or array of Content-types assigned to the name,
- *                    i.e. "text/html", or "application/xml"
+ *    i.e. "text/html", or "application/xml"
  * @return void
  * @access public
  */
@@ -520,6 +520,7 @@ class RequestHandlerComponent extends Object {
 			return $this->ext;
 		}
 
+		$types = $type;
 		if (is_string($type)) {
 			$types = array($type);
 		}
@@ -546,7 +547,11 @@ class RequestHandlerComponent extends Object {
             return $accepts[0];
 		}
 
-		$accepts = array_intersect($this->__acceptTypes, $accepts);
+		$acceptedTypes = array();
+		foreach ($this->__acceptTypes as $type) {
+			$acceptedTypes[] = $this->mapType($type);
+		}
+		$accepts = array_intersect($acceptedTypes, $accepts);
 		return $accepts[0];
 	}
 /**

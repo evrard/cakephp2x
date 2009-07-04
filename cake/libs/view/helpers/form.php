@@ -436,7 +436,7 @@ class FormHelper extends AppHelper {
  *
  * @param string $fieldName This should be "Modelname.fieldname"
  * @param string $text Text that will appear in the label field.
- * @param array $attributes Array of HTML attributes.
+ * @param Mixed $attributes An array of HTML attributes, or a string, to be used as a class name.
  * @return string The formatted LABEL element
  */
 	private function label($fieldName = null, $text = null, $attributes = array()) {
@@ -455,6 +455,10 @@ class FormHelper extends AppHelper {
 				$text = substr($text, 0, strlen($text) - 3);
 			}
 			$text = __(Inflector::humanize(Inflector::underscore($text)), true);
+		}
+
+		if (is_string($attributes)) {
+			$attributes = array('class' => $attributes);
 		}
 
 		if (isset($attributes['for'])) {
@@ -555,7 +559,8 @@ class FormHelper extends AppHelper {
 /**
  * Generates a form input element complete with label and wrapper div
  *
- * Options - See each field type method for more information.
+ * Options - See each field type method for more information. Any options that are part of 
+ * $attributes or $options for the different type methods can be included in $options for input().
  *
  * - 'type' - Force the type of widget you want. e.g. ```type => 'select'```
  * - 'label' - control the label
@@ -848,7 +853,7 @@ class FormHelper extends AppHelper {
 			'id' => $options['id'] . '_', 'name' => $options['name'],
 			'value' => '0', 'secure' => false
 		);
-		if (isset($options['disabled'])) {
+		if (isset($options['disabled']) && $options['disabled'] == true) {
 			$hiddenOptions['disabled'] = 'disabled';
 		}
 		$output = $this->hidden($fieldName, $hiddenOptions);
@@ -930,7 +935,7 @@ class FormHelper extends AppHelper {
 
 		if (!isset($value) || $value === '') {
 			$hidden = $this->hidden($fieldName, array(
-				'id' => $attributes['id'] . '_', 'value' => ''
+				'id' => $attributes['id'] . '_', 'value' => '', 'name' => $attributes['name']
 			));
 		}
 		$out = $hidden . join($inbetween, $out);
