@@ -456,6 +456,7 @@ class App extends Object {
 		'class' => array('suffix' => '.php', 'extends' => null, 'core' => true),
 		'file' => array('suffix' => '.php', 'extends' => null, 'core' => true),
 		'model' => array('suffix' => '.php', 'extends' => 'AppModel', 'core' => false),
+		'datasources' => array('suffix' => '.php', 'extends' => 'DataSource', 'core' => false),
 		'behavior' => array('suffix' => '.php', 'extends' => 'ModelBehavior', 'core' => true),
 		'controller' => array('suffix' => '_controller.php', 'extends' => 'AppController', 'core' => true),
 		'component' => array('suffix' => '.php', 'extends' => null, 'core' => true),
@@ -466,6 +467,13 @@ class App extends Object {
 		'plugin' => array('suffix' => '', 'extends' => null, 'core' => true)
 	);
 
+/**
+ * List of additional path(s) where datasource files reside.
+ *
+ * @var array
+ * @access public
+ */
+	private static $datasources = array();
 /**
  * List of additional path(s) where model files reside.
  *
@@ -645,7 +653,7 @@ class App extends Object {
 				$merge = array_merge($merge, (array)$core[$type]);
 			}
 
-			self::$$type = $default;
+			self::${$type} = $default;
 
 			if (!empty($paths[$type])) {
 				$path = array_flip(array_flip((array_merge(

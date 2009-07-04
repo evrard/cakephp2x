@@ -604,7 +604,7 @@ class Debugger extends Object {
 			$context[] = "\${$var}\t=\t" . $this->exportVar($value, 1);
 		}
 
-		switch ($this->_outputFormat) {
+		switch (self::$_outputFormat) {
 			case false:
 				$this->__data[] = compact('context', 'trace') + $data;
 				return;
@@ -613,12 +613,12 @@ class Debugger extends Object {
 				return;
 		}
 
-		if (empty($this->_outputFormat) || !isset($this->_templates[$this->_outputFormat])) {
-			$this->_outputFormat = 'js';
+		if (empty(self::$_outputFormat) || !isset($this->_templates[self::$_outputFormat])) {
+			self::$_outputFormat = 'js';
 		}
 
-		$data['id'] = 'cakeErr' . count($this->errors);
-		$tpl = array_merge($this->_templates['base'], $this->_templates[$this->_outputFormat]);
+		$data['id'] = 'cakeErr' . count(self::$errors);
+		$tpl = array_merge(self::$_templates['base'], self::$_templates[self::$_outputFormat]);
 		$insert = array('context' => join("\n", $context), 'helpPath' => $this->helpPath) + $data;
 
 		$detect = array('help' => 'helpID', 'context' => 'context');
