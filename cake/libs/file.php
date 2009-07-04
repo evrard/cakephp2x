@@ -71,14 +71,14 @@ class File extends Object {
  * @var resource
  * @access public
  */
-	private $handle = null;
+	public $handle = null;
 /**
  * enable locking for file reading and writing
  *
  * @var boolean
  * @access public
  */
-	private $lock = null;
+	public $lock = null;
 /**
  * Constructor
  *
@@ -138,7 +138,7 @@ class File extends Object {
  * @return boolean True on success, false on failure
  * @access public
  */
-	private function open($mode = 'r', $force = false) {
+	public function open($mode = 'r', $force = false) {
 		if (!$force && is_resource($this->handle)) {
 			return true;
 		}
@@ -200,7 +200,7 @@ class File extends Object {
  * @return mixed True on success, false on failure (set mode), false on failure or integer offset on success (get mode)
  * @access public
  */
-	private function offset($offset = false, $seek = SEEK_SET) {
+	public function offset($offset = false, $seek = SEEK_SET) {
 		if ($offset === false) {
 			if (is_resource($this->handle)) {
 				return ftell($this->handle);
@@ -218,7 +218,7 @@ class File extends Object {
  * @return string
  * @access public
  */
-	private function prepare($data, $forceWindows = false) {
+	public function prepare($data, $forceWindows = false) {
 		$lineBreak = "\n";
 		if (DIRECTORY_SEPARATOR == '\\' || $forceWindows === true) {
 			$lineBreak = "\r\n";
@@ -295,7 +295,7 @@ class File extends Object {
  * @return string The File extension
  * @access public
  */
-	private function info() {
+	public function info() {
 		if ($this->info == null) {
 			$this->info = pathinfo($this->path);
 		}
@@ -310,7 +310,7 @@ class File extends Object {
  * @return string The File extension
  * @access public
  */
-	private function ext() {
+	public function ext() {
 		if ($this->info == null) {
 			$this->info();
 		}
@@ -325,7 +325,7 @@ class File extends Object {
  * @return string The File name without extension.
  * @access public
  */
-	private function name() {
+	public function name() {
 		if ($this->info == null) {
 			$this->info();
 		}
@@ -359,7 +359,7 @@ class File extends Object {
  * @return string md5 Checksum {@link http://php.net/md5_file See md5_file()}
  * @access public
  */
-	private function md5($maxsize = 5) {
+	public function md5($maxsize = 5) {
 		if ($maxsize === true) {
 			return md5_file($this->path);
 		} else {
@@ -397,7 +397,7 @@ class File extends Object {
  * @return string Permissions for the file
  * @access public
  */
-	private function perms() {
+	public function perms() {
 		if ($this->exists()) {
 			return substr(sprintf('%o', fileperms($this->path)), -4);
 		}
@@ -409,7 +409,7 @@ class File extends Object {
  * @return integer size of the file in bytes, or false in case of an error
  * @access public
  */
-	private function size() {
+	public function size() {
 		if ($this->exists()) {
 			return filesize($this->path);
 		}
@@ -430,7 +430,7 @@ class File extends Object {
  * @return boolean true if its executable, false otherwise
  * @access public
  */
-	private function executable() {
+	public function executable() {
 		return is_executable($this->path);
 	}
 /**
@@ -439,7 +439,7 @@ class File extends Object {
  * @return boolean true if file is readable, false otherwise
  * @access public
  */
-	private function readable() {
+	public function readable() {
 		return is_readable($this->path);
 	}
 /**
@@ -448,7 +448,7 @@ class File extends Object {
  * @return integer the Fileowner
  * @access public
  */
-	private function owner() {
+	public function owner() {
 		if ($this->exists()) {
 			return fileowner($this->path);
 		}
@@ -460,7 +460,7 @@ class File extends Object {
  * @return integer the Filegroup
  * @access public
  */
-	private function group() {
+	public function group() {
 		if ($this->exists()) {
 			return filegroup($this->path);
 		}
@@ -472,7 +472,7 @@ class File extends Object {
  * @return integer timestamp Timestamp of last access time
  * @access public
  */
-	private function lastAccess() {
+	public function lastAccess() {
 		if ($this->exists()) {
 			return fileatime($this->path);
 		}
@@ -496,7 +496,7 @@ class File extends Object {
  * @return Folder Current folder
  * @access public
  */
-	private function &Folder() {
+	public function &Folder() {
 		return $this->Folder;
 	}
 }
