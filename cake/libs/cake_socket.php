@@ -81,7 +81,7 @@ class CakeSocket extends Object {
  *
  * @param array $config Socket configuration, which will be merged with the base configuration
  */
-	private function __construct($config = array()) {
+	public function __construct($config = array()) {
 		parent::__construct();
 
 		$this->config = array_merge($this->_baseConfig, $config);

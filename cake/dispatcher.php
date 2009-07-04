@@ -40,7 +40,7 @@ class Dispatcher extends Object {
  * @var string
  * @access public
  */
-	private $base = false;
+	public $base = false;
 /**
  * webroot path
  *
@@ -255,7 +255,7 @@ class Dispatcher extends Object {
  * @return array Parameters found in POST and GET.
  * @access public
  */
-	private function parseParams($fromUrl) {
+	public function parseParams($fromUrl) {
 		$params = array();
 
 		if (isset($_POST)) {
@@ -530,7 +530,7 @@ class Dispatcher extends Object {
  * @return string URL
  * @access public
  */
-	private function getUrl($uri = null, $base = null) {
+	public function getUrl($uri = null, $base = null) {
 		if (empty($_GET['url'])) {
 			if ($uri == null) {
 				$uri = $this->uri();

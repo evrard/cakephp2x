@@ -37,7 +37,7 @@ class ConfigureTest extends CakeTestCase {
 	function setUp() {
 		$this->_cacheDisable = Configure::read('Cache.disable');
 		$this->_debug = Configure::read('debug');
-		
+
 		Configure::write('Cache.disable', true);
 	}
 /**
@@ -48,7 +48,7 @@ class ConfigureTest extends CakeTestCase {
  */
 	function endTest() {
 		App::build();
-	}	
+	}
 /**
  * tearDown method
  *
@@ -543,12 +543,12 @@ class AppImportTest extends UnitTestCase {
 			'plugins' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS),
 			'vendors' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'vendors'. DS),
 		), true);
-		
+
 		ob_start();
 		$result = App::import('Vendor', 'TestPlugin.TestPluginAsset', array('ext' => 'css'));
 		$text = ob_get_clean();
 		$this->assertTrue($result);
-		$this->assertEqual($text, 'this is the test plugin asset css file');
+		$this->assertEqual(trim($text), 'this is the test plugin asset css file');
 
 		ob_start();
 		$result = App::import('Vendor', 'TestAsset', array('ext' => 'css'));
@@ -568,31 +568,31 @@ class AppImportTest extends UnitTestCase {
 		$result = App::import('Vendor', 'SomeName', array('file' => 'some.name.php'));
 		$text = ob_get_clean();
 		$this->assertTrue($result);
-		$this->assertEqual($text, 'This is a file with dot in file name');
+		$this->assertEqual(trim($text), 'This is a file with dot in file name');
 
 		ob_start();
 		$result = App::import('Vendor', 'TestHello', array('file' => 'Test'.DS.'hello.php'));
 		$text = ob_get_clean();
 		$this->assertTrue($result);
-		$this->assertEqual($text, 'This is the hello.php file in Test directory');
+		$this->assertEqual(trim($text), 'This is the hello.php file in Test directory');
 
 		ob_start();
 		$result = App::import('Vendor', 'MyTest', array('file' => 'Test'.DS.'MyTest.php'));
 		$text = ob_get_clean();
 		$this->assertTrue($result);
-		$this->assertEqual($text, 'This is the MyTest.php file');
+		$this->assertEqual(trim($text), 'This is the MyTest.php file');
 
 		ob_start();
 		$result = App::import('Vendor', 'Welcome');
 		$text = ob_get_clean();
 		$this->assertTrue($result);
-		$this->assertEqual($text, 'This is the welcome.php file in vendors directory');
+		$this->assertEqual(trim($text), 'This is the welcome.php file in vendors directory');
 
 		ob_start();
 		$result = App::import('Vendor', 'TestPlugin.Welcome');
 		$text = ob_get_clean();
 		$this->assertTrue($result);
-		$this->assertEqual($text, 'This is the welcome.php file in test_plugin/vendors directory');
+		$this->assertEqual(trim($text), 'This is the welcome.php file in test_plugin/vendors directory');
 	}
 }
 ?>

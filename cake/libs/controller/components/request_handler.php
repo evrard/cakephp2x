@@ -22,7 +22,10 @@
  */
 
 if (!defined('REQUEST_MOBILE_UA')) {
-	define('REQUEST_MOBILE_UA', '(iPhone|MIDP|AvantGo|BlackBerry|J2ME|Opera Mini|DoCoMo|NetFront|Nokia|PalmOS|PalmSource|portalmmm|Plucker|ReqwirelessWeb|SonyEricsson|Symbian|UP\.Browser|Windows CE|Xiino)');
+	define(
+		'REQUEST_MOBILE_UA',
+		'(iPhone|MIDP|AvantGo|BlackBerry|J2ME|Opera Mini|DoCoMo|NetFront|Nokia|PalmOS|PalmSource|portalmmm|Plucker|ReqwirelessWeb|SonyEricsson|Symbian|UP\.Browser|Windows CE|Xiino)'
+	);
 }
 
 /**
@@ -137,7 +140,7 @@ class RequestHandlerComponent extends Object {
  * Constructor. Parses the accepted content types accepted by the client using HTTP_ACCEPT
  *
  */
-	private function __construct() {
+	public function __construct() {
 		$this->__acceptTypes = explode(',', env('HTTP_ACCEPT'));
 
 		foreach ($this->__acceptTypes as $i => $type) {

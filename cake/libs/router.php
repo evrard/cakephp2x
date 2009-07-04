@@ -162,7 +162,7 @@ class Router extends Object {
  * @access public
  * @static
  */
-	private function &getInstance() {
+	public function &getInstance() {
 		static $instance = array();
 
 		if (!$instance) {
@@ -689,7 +689,7 @@ class Router extends Object {
  * @return void
  * @static
  */
-	private static function reload() {
+	public static function reload() {
 		foreach (get_class_vars('Router') as $key => $val) {
 			self::${$key} = $val;
 		}
@@ -824,7 +824,7 @@ class Router extends Object {
 				if (isset($route[4]['persist'], self::$__params[0])) {
 					$url = array_merge(array_intersect_key($params, Set::combine($route[4]['persist'], '/')), $url);
 				}
-				if ($match = self::$mapRouteElements($route, $url)) {
+				if ($match = self::mapRouteElements($route, $url)) {
 					$output = trim($match, '/');
 					$url = array();
 					break;
