@@ -40,7 +40,7 @@ class Router extends Object {
  * @var array
  * @access public
  */
-	private static $routes = array();
+	public static $routes = array();
 /**
  * Caches admin setting from Configure class
  *
@@ -89,7 +89,7 @@ class Router extends Object {
  * @var string
  * @access public
  */
-	private static $named = array(
+	public static $named = array(
 		'default' => array('page', 'fields', 'order', 'limit', 'recursive', 'sort', 'direction', 'step'),
 		'greedy' => true,
 		'separator' => ':',
@@ -704,7 +704,7 @@ class Router extends Object {
  * @access public
  * @static
  */
-	private static function promote($which = null) {
+	public static function promote($which = null) {
 		if ($which === null) {
 			$which = count(self::$routes) - 1;
 		}
@@ -817,7 +817,7 @@ class Router extends Object {
 
 			foreach (self::$routes as $i => $route) {
 				if (count($route) === 3) {
-					$route = self::$compile($i);
+					$route = self::compile($i);
 				}
 				$originalUrl = $url;
 
@@ -1285,7 +1285,7 @@ class Router extends Object {
  * @return void
  * @static
  */
-	private static function parseExtensions() {
+	public static function parseExtensions() {
 		self::$__parseExtensions = true;
 		if (func_num_args() > 0) {
 			self::$__validExtensions = func_get_args();
