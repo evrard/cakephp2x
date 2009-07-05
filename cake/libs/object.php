@@ -62,7 +62,7 @@ class Object {
  * @return mixed Success (true/false) or contents if 'return' is set in $extra
  * @access public
  */
-	private function requestAction($url, $extra = array()) {
+	 public function requestAction($url, $extra = array()) {
 		if (empty($url)) {
 			return false;
 		}
@@ -126,7 +126,7 @@ class Object {
  * @return boolean Success of log write
  * @access public
  */
-	private function log($msg, $type = LOG_ERROR) {
+	public function log($msg, $type = LOG_ERROR) {
 		if (!class_exists('CakeLog')) {
 			uses('cake_log');
 		}
