@@ -35,7 +35,7 @@ class Security extends Object {
  * @var string
  * @access public
  */
-	private static $hashType = null;
+	public static $hashType = null;
 /**
   * Get allowed minutes of inactivity based on security level.
   *
@@ -147,7 +147,7 @@ class Security extends Object {
  * @access public
  * @static
  */
-	private function cipher($text, $key) {
+	public function cipher($text, $key) {
 		if (empty($key)) {
 			trigger_error(__('You cannot use an empty key for Security::cipher()', true), E_USER_WARNING);
 			return '';
