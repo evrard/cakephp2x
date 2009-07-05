@@ -167,7 +167,7 @@ class XmlNode extends Object {
  * @param string $value Node value
  * @return object XmlTextNode
  */
-	private function &createTextNode($value = null) {
+	public function &createTextNode($value = null) {
 		$node = new XmlTextNode($value);
 		$node->setParent($this);
 		return $node;
