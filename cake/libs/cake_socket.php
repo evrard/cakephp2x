@@ -34,14 +34,14 @@ class CakeSocket extends Object {
  * @var string
  * @access public
  */
-	private $description = 'Remote DataSource Network Socket Interface';
+	public $description = 'Remote DataSource Network Socket Interface';
 /**
  * Base configuration settings for the socket connection
  *
  * @var array
  * @access protected
  */
-	private $_baseConfig = array(
+	protected $_baseConfig = array(
 		'persistent'	=> false,
 		'host'			=> 'localhost',
 		'protocol'		=> 'tcp',
@@ -54,28 +54,28 @@ class CakeSocket extends Object {
  * @var array
  * @access public
  */
-	private $config = array();
+	public $config = array();
 /**
  * Reference to socket connection resource
  *
  * @var resource
  * @access public
  */
-	private $connection = null;
+	public $connection = null;
 /**
  * This boolean contains the current state of the CakeSocket class
  *
  * @var boolean
  * @access public
  */
-	private $connected = false;
+	public $connected = false;
 /**
  * This variable contains an array with the last error number (num) and string (str)
  *
  * @var array
  * @access public
  */
-	private $lastError = array();
+	public $lastError = array();
 /**
  * Constructor.
  *
@@ -95,7 +95,7 @@ class CakeSocket extends Object {
  * @return boolean Success
  * @access public
  */
-	private function connect() {
+	public function connect() {
 		if ($this->connection != null) {
 			$this->disconnect();
 		}
@@ -125,7 +125,7 @@ class CakeSocket extends Object {
  * @return string Host name
  * @access public
  */
-	private function host() {
+	public function host() {
 		if (Validation::ip($this->config['host'])) {
 			return gethostbyaddr($this->config['host']);
 		} else {
@@ -138,7 +138,7 @@ class CakeSocket extends Object {
  * @return string IP address
  * @access public
  */
-	private function address() {
+	public function address() {
 		if (Validation::ip($this->config['host'])) {
 			return $this->config['host'];
 		} else {
@@ -151,7 +151,7 @@ class CakeSocket extends Object {
  * @return array IP addresses
  * @access public
  */
-	private function addresses() {
+	public function addresses() {
 		if (Validation::ip($this->config['host'])) {
 			return array($this->config['host']);
 		} else {
@@ -164,7 +164,7 @@ class CakeSocket extends Object {
  * @return string Last error
  * @access public
  */
-	private function lastError() {
+	public function lastError() {
 		if (!empty($this->lastError)) {
 			return $this->lastError['num'].': '.$this->lastError['str'];
 		} else {
@@ -178,7 +178,7 @@ class CakeSocket extends Object {
  * @param string $errStr Error string
  * @access public
  */
-	private function setLastError($errNum, $errStr) {
+	public function setLastError($errNum, $errStr) {
 		$this->lastError = array('num' => $errNum, 'str' => $errStr);
 	}
 /**
@@ -188,7 +188,7 @@ class CakeSocket extends Object {
  * @return boolean Success
  * @access public
  */
-	private function write($data) {
+	public function write($data) {
 		if (!$this->connected) {
 			if (!$this->connect()) {
 				return false;
@@ -206,7 +206,7 @@ class CakeSocket extends Object {
  * @return mixed Socket data
  * @access public
  */
-	private function read($length = 1024) {
+	public function read($length = 1024) {
 		if (!$this->connected) {
 			if (!$this->connect()) {
 				return false;
