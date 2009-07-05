@@ -53,14 +53,14 @@ class CakeSession extends Object {
  * @var string
  * @access protected
  */
-	private $_userAgent = '';
+	protected $_userAgent = '';
 /**
  * Path to where the session is active.
  *
  * @var string
  * @access public
  */
-	private $path = '/';
+	public $path = '/';
 /**
  * Error number of last occurred error
  *
@@ -169,7 +169,7 @@ class CakeSession extends Object {
  * @return boolean True if variable is there
  * @access public
  */
-	protected function start() {
+	public function start() {
 		if (function_exists('session_write_close')) {
 			session_write_close();
 		}
@@ -182,7 +182,7 @@ class CakeSession extends Object {
  * @access public
  * @return boolean True if session has been started.
  */
-	protected function started() {
+	public function started() {
 		if (isset($_SESSION)) {
 			return true;
 		}
@@ -195,7 +195,7 @@ class CakeSession extends Object {
  * @return boolean True if variable is there
  * @access public
  */
-	protected function check($name) {
+	public function check($name) {
 		$var = $this->__validateKeys($name);
 		if (empty($var)) {
 			return false;
@@ -210,7 +210,7 @@ class CakeSession extends Object {
  * @return string Session id
  * @access public
  */
-	protected function id($id = null) {
+	public function id($id = null) {
 		if ($id) {
 			$this->id = $id;
 			session_id($this->id);
@@ -228,7 +228,7 @@ class CakeSession extends Object {
  * @return boolean Success
  * @access public
  */
-	private function del($name) {
+	public function del($name) {
 		if ($this->check($name)) {
 			if ($var = $this->__validateKeys($name)) {
 				if (in_array($var, $this->watchKeys)) {
@@ -280,7 +280,7 @@ class CakeSession extends Object {
  * @return mixed Error description as a string, or false.
  * @access public
  */
-	private function error() {
+	public function error() {
 		if ($this->lastError) {
 			return $this->__error($this->lastError);
 		} else {
@@ -293,7 +293,7 @@ class CakeSession extends Object {
  * @return boolean Success
  * @access public
  */
-	private function valid() {
+	public function valid() {
 		if ($this->read('Config')) {
 			if ((Configure::read('Session.checkAgent') === false || $this->_userAgent == $this->read('Config.userAgent')) && $this->time <= $this->read('Config.time')) {
 				if ($this->error === false) {
@@ -313,7 +313,7 @@ class CakeSession extends Object {
  * @return mixed The value of the session variable
  * @access public
  */
-	private function read($name = null) {
+	public function read($name = null) {
 		if (is_null($name)) {
 			return $this->__returnSessionVars();
 		}
@@ -348,7 +348,7 @@ class CakeSession extends Object {
  * @return void
  * @access public
  */
-	private function watch($var) {
+	public function watch($var) {
 		$var = $this->__validateKeys($var);
 		if (empty($var)) {
 			return false;
@@ -364,7 +364,7 @@ class CakeSession extends Object {
  * @return void
  * @access public
  */
-	private function ignore($var) {
+	public function ignore($var) {
 		$var = $this->__validateKeys($var);
 		if (!in_array($var, $this->watchKeys)) {
 			return;
@@ -385,7 +385,7 @@ class CakeSession extends Object {
  * @return boolean True if the write was successful, false if the write failed
  * @access public
  */
-	private function write($name, $value) {
+	public function write($name, $value) {
 		$var = $this->__validateKeys($name);
 
 		if (empty($var)) {
@@ -403,7 +403,7 @@ class CakeSession extends Object {
  * @return void
  * @access public
  */
-	private function destroy() {
+	public function destroy() {
 		$_SESSION = array();
 		$this->__construct($this->path);
 		$this->start();
@@ -714,7 +714,7 @@ class CakeSession extends Object {
  * @return boolean True for successful write, false otherwise.
  * @access private
  */
-	private function __write($id, $data) {
+	public function __write($id, $data) {
 		switch (Configure::read('Security.level')) {
 			case 'medium':
 				$factor = 100;
