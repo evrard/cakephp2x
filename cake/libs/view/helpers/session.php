@@ -168,7 +168,7 @@ class SessionHelper extends CakeSession {
  * @return boolean
  * @access public
  */
-	private function write() {
+	public function write() {
 		trigger_error(__('You can not write to a Session from the view', true), E_USER_WARNING);
 	}
 /**
