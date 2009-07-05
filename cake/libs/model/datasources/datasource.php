@@ -223,7 +223,7 @@ class DataSource extends Object {
  *
  * @return array
  */
-	private function sources($reset = false) {
+	public function sources($reset = false) {
 		if ($reset === true) {
 			$this->_sources = null;
 		}
