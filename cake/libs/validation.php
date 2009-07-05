@@ -55,7 +55,7 @@ class Validation extends Object {
  * @var string
  * @access public
  */
-	private $check = null;
+	public $check = null;
 /**
  * Set to a valid regular expression in the class methods.
  * Can be set from $regex param also
@@ -63,7 +63,7 @@ class Validation extends Object {
  * @var string
  * @access public
  */
-	private $regex = null;
+	public $regex = null;
 /**
  * Some complex patterns needed in multiple places
  *
@@ -88,7 +88,7 @@ class Validation extends Object {
  * @var string
  * @access public
  */
-	private $deep = null;
+	public $deep = null;
 /**
  * Some class methods use the $type param to determine which validation to perfom in the method
  *
