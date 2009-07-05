@@ -233,7 +233,7 @@ class CakeSocket extends Object {
  * @return boolean Success
  * @access public
  */
-	private function disconnect() {
+	public function disconnect() {
 		if (!is_resource($this->connection)) {
 			$this->connected = false;
 			return true;
@@ -250,7 +250,7 @@ class CakeSocket extends Object {
  *
  * @access private
  */
-	private function __destruct() {
+	public function __destruct() {
 		$this->disconnect();
 	}
 /**
@@ -259,7 +259,7 @@ class CakeSocket extends Object {
  * @return boolean True on success
  * @access public
  */
-	private function reset($state = null) {
+	public function reset($state = null) {
 		if (empty($state)) {
 			static $initalState = array();
 			if (empty($initalState)) {

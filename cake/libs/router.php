@@ -1146,7 +1146,7 @@ class Router extends Object {
  * @access public
  * @static
  */
-	private static function queryString($q, $extra = array(), $escape = false) {
+	public static function queryString($q, $extra = array(), $escape = false) {
 		if (empty($q) && empty($extra)) {
 			return null;
 		}
