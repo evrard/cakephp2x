@@ -373,7 +373,7 @@ class XmlNode extends Object {
  * @return object A reference to the appended child node
  * @access public
  */
-	private function &append(&$child, $options = array()) {
+	public function &append(&$child, $options = array()) {
 		if (empty($child)) {
 			$return = false;
 			return $return;
@@ -570,7 +570,7 @@ class XmlNode extends Object {
  * @return string String representation of the XML structure.
  * @access public
  */
-	private function toString($options = array(), $depth = 0) {
+	public function toString($options = array(), $depth = 0) {
 		if (is_int($options)) {
 			$depth = $options;
 			$options = array();
@@ -1023,7 +1023,7 @@ class Xml extends XmlNode {
  * @return string String representation
  * @access public
  */
-	private function toString($options = array()) {
+	public function toString($options = array()) {
 		if (is_bool($options)) {
 			$options = array('header' => $options);
 		}
@@ -1163,7 +1163,7 @@ class Xml extends XmlNode {
  * @access public
  * @static
  */
-	private function options($options = array()) {
+	public function options($options = array()) {
 		$_this = XmlManager::getInstance();
 		$_this->options = array_merge($_this->options, $options);
 		return $_this->options;
@@ -1291,7 +1291,7 @@ class XmlTextNode extends XmlNode {
  * @return boolean False - not supported
  * @todo make convertEntities work without mb support, convert entities to number entities
  */
-	private function append() {
+	public function append() {
 		return false;
 	}
 /**
