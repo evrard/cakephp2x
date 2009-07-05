@@ -119,7 +119,7 @@ class File extends Object {
  * @return boolean Success
  * @access public
  */
-	private function create() {
+	public function create() {
 		$dir = $this->Folder->pwd();
 		if (is_dir($dir) && is_writable($dir) && !$this->exists()) {
 			$old = umask(0);
