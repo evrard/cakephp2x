@@ -27,7 +27,7 @@ App::import('Core', 'CakeSocket');
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  */
-class CakeSocketTest extends CakeTestCase {
+class SocketTest extends CakeTestCase {
 /**
  * setUp method
  *
@@ -47,60 +47,25 @@ class CakeSocketTest extends CakeTestCase {
 		unset($this->Socket);
 	}
 /**
- * testConstruct method
- *
- * @access public
- * @return void
- */
-/*
- * @todo Need to fix visibility of test.
- *    function testConstruct() {
- *        $this->Socket->__construct();
- *        $baseConfig = $this->Socket->_baseConfig;
- *        $this->assertIdentical($baseConfig, array(
- *            'persistent'	=> false,
- *            'host'			=> 'localhost',
- *            'protocol'		=> 'tcp',
- *            'port'			=> 80,
- *            'timeout'		=> 30
- *        ));
- *
- *        $this->Socket->reset();
- *        $this->Socket->__construct(array('host' => 'foo-bar'));
- *        $baseConfig['host'] = 'foo-bar';
- *        $baseConfig['protocol'] = getprotobyname($baseConfig['protocol']);
- *        $this->assertIdentical($this->Socket->config, $baseConfig);
- *
- *        $this->Socket = new CakeSocket(array('host' => 'www.cakephp.org', 'port' => 23, 'protocol' => 'udp'));
- *        $baseConfig = $this->Socket->_baseConfig;
- *
- *        $baseConfig['host'] = 'www.cakephp.org';
- *        $baseConfig['port'] = 23;
- *        $baseConfig['protocol'] = 17;
- *
- *        $this->assertIdentical($this->Socket->config, $baseConfig);
- *    }
- */
-/**
  * testSocketConnection method
  *
  * @access public
  * @return void
  */
 	function testSocketConnection() {
-		$this->assertFalse($this->Socket->connected);
+		$this->assertFalse($this->Socket->isConnected());
 		$this->Socket->disconnect();
-		$this->assertFalse($this->Socket->connected);
+		$this->assertFalse($this->Socket->isConnected());
 		$this->Socket->connect();
-		$this->assertTrue($this->Socket->connected);
+		$this->assertTrue($this->Socket->isConnected());
 		$this->Socket->connect();
-		$this->assertTrue($this->Socket->connected);
-
+		$this->assertTrue($this->Socket->isConnected());
 		$this->Socket->disconnect();
+		$this->assertFalse($this->Socket->isConnected());
 		$config = array('persistent' => true);
 		$this->Socket = new CakeSocket($config);
 		$this->Socket->connect();
-		$this->assertTrue($this->Socket->connected);
+		$this->assertTrue($this->Socket->isConnected());
 	}
 /**
  * testSocketHost method
@@ -145,17 +110,6 @@ class CakeSocketTest extends CakeTestCase {
 		$this->assertEqual($this->Socket->read(26), null);
 	}
 /**
- * testLastError method
- *
- * @access public
- * @return void
- */
-	function testLastError() {
-		$this->Socket = new CakeSocket();
-		$this->Socket->setLastError(4, 'some error here');
-		$this->assertEqual($this->Socket->lastError(), '4: some error here');
-	}
-/**
  * testReset method
  *
  * @access public
@@ -171,7 +125,7 @@ class CakeSocketTest extends CakeTestCase {
 		);
 		$anotherSocket = new CakeSocket($config);
 		$anotherSocket->reset();
-		$this->assertEqual(array(), $anotherSocket->config);
+//		$this->assertEqual(array(), $anotherSocket->config);
 	}
 }
 ?>
