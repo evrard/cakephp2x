@@ -193,39 +193,6 @@ class HttpSocketTest extends CakeTestCase {
 		unset($this->Socket, $this->RequestSocket);
 	}
 /**
- * Test that HttpSocket::__construct does what one would expect it to do
- *
- * @access public
- * @return void
- */
-	function testConstruct() {
-		$this->Socket->reset();
-		$baseConfig = $this->Socket->config;
-		$this->Socket->expectNever('connect');
-		$this->Socket->__construct(array('host' => 'foo-bar'));
-
-		$baseConfig['host']	 = 'foo-bar';
-		$baseConfig['protocol'] = getprotobyname($baseConfig['protocol']);
-
-		$this->assertIdentical($this->Socket->config, $baseConfig);
-
-		$this->Socket->reset();
-		$baseConfig = $this->Socket->config;
-		$this->Socket->__construct('http://www.cakephp.org:23/');
-		$baseConfig['host']	 = 'www.cakephp.org';
-		$baseConfig['request']['uri']['host'] = 'www.cakephp.org';
-		$baseConfig['port']	 = 23;
-		$baseConfig['request']['uri']['port'] = 23;
-		$baseConfig['protocol'] = getprotobyname($baseConfig['protocol']);
-
-		$this->assertIdentical($this->Socket->config, $baseConfig);
-
-		$this->Socket->reset();
-		$this->Socket->__construct(array('request' => array('uri' => 'http://www.cakephp.org:23/')));
-
-		$this->assertIdentical($this->Socket->config, $baseConfig);
-	}
-/**
  * Test that HttpSocket::configUri works properly with different types of arguments
  *
  * @access public
@@ -242,14 +209,14 @@ class HttpSocketTest extends CakeTestCase {
 			'timeout' 	 =>	30,
 			'request' => array(
 				'uri' => array(
-					'scheme' => 'https'
-					, 'host' => 'www.cakephp.org'
-					, 'port' => 23
+					'scheme' => 'https',
+					'host' => 'www.cakephp.org',
+					'port' => 23
 				),
 				'auth' => array(
-					'method' => 'Basic'
-					, 'user' => 'bob'
-					, 'pass' => 'secret'
+					'method' => 'Basic',
+					'user' => 'bob',
+					'pass' => 'secret'
 				),
 				'cookies' => array(),
 			)
@@ -271,14 +238,14 @@ class HttpSocketTest extends CakeTestCase {
 			'timeout' 	 =>	30,
 			'request' => array(
 				'uri' => array(
-					'scheme' => 'http'
-					, 'host' => 'www.foo.com'
-					, 'port' => 80
+					'scheme' => 'http',
+					'host' => 'www.foo.com',
+					'port' => 80
 				),
 				'auth' => array(
-					'method' => 'Basic'
-					, 'user' => null
-					, 'pass' => null
+					'method' => 'Basic',
+					'user' => null,
+					'pass' => null
 				),
 				'cookies' => array()
 			)
@@ -300,177 +267,175 @@ class HttpSocketTest extends CakeTestCase {
  */
 	function testRequest() {
 		$this->Socket->reset();
-
-		$this->Socket->reset();
 		$response = $this->Socket->request(true);
 		$this->assertFalse($response);
 
 		$tests = array(
 			0 => array(
-				'request' => 'http://www.cakephp.org/?foo=bar'
-				, 'expectation' => array(
+				'request' => 'http://www.cakephp.org/?foo=bar',
+				'expectation' => array(
 					'config' => array(
-						'persistent' => false
-						, 'host' => 'www.cakephp.org'
-						, 'protocol' => 'tcp'
-						, 'port' => 80
-						, 'timeout' => 30
-						, 'request' => array(
+						'persistent' => false,
+						'host' => 'www.cakephp.org',
+						'protocol' => 'tcp',
+						'port' => 80,
+						'timeout' => 30,
+						'request' => array(
 							'uri' => array (
-								'scheme' => 'http'
-								, 'host' => 'www.cakephp.org'
-								, 'port' => 80,
-							)
-							, 'auth' => array(
-								'method' => 'Basic'
-								,'user' => null
-								,'pass' => null
+								'scheme' => 'http',
+								'host' => 'www.cakephp.org',
+								'port' => 80,
+							),
+							'auth' => array(
+								'method' => 'Basic',
+								'user' => null,
+								'pass' => null
 							),
 							'cookies' => array(),
 						),
-					)
-					, 'request' => array(
-						'method' => 'GET'
-						, 'uri' => array(
-							'scheme' => 'http'
-							, 'host' => 'www.cakephp.org'
-							, 'port' => 80
-							, 'user' => null
-							, 'pass' => null
-							, 'path' => '/'
-							, 'query' => array('foo' => 'bar')
-							, 'fragment' => null
-						)
-						, 'auth' => array(
-							'method' => 'Basic'
-							, 'user' => null
-							, 'pass' => null
-						)
-						, 'version' => '1.1'
-						, 'body' => ''
-						, 'line' => "GET /?foo=bar HTTP/1.1\r\n"
-						, 'header' => "Host: www.cakephp.org\r\nConnection: close\r\nUser-Agent: CakePHP\r\n"
-						, 'raw' => ""
-						, 'cookies' => array(),
+					),
+					'request' => array(
+						'method' => 'GET',
+						'uri' => array(
+							'scheme' => 'http',
+							'host' => 'www.cakephp.org',
+							'port' => 80,
+							'user' => null,
+							'pass' => null,
+							'path' => '/',
+							'query' => array('foo' => 'bar'),
+							'fragment' => null
+						),
+						'auth' => array(
+							'method' => 'Basic',
+							'user' => null,
+							'pass' => null
+						),
+						'version' => '1.1',
+						'body' => '',
+						'line' => "GET /?foo=bar HTTP/1.1\r\n",
+						'header' => "Host: www.cakephp.org\r\nConnection: close\r\nUser-Agent: CakePHP\r\n",
+						'raw' => "",
+						'cookies' => array()
 					)
 				)
-			)
-			, 1 => array(
+			),
+			1 => array(
 				'request' => array(
 					'uri' => array(
-						'host' => 'www.cakephp.org'
-						, 'query' => '?foo=bar'
+						'host' => 'www.cakephp.org',
+						'query' => '?foo=bar'
 					)
 				)
-			)
-			, 2 => array(
+			),
+			2 => array(
 				'request' => 'www.cakephp.org/?foo=bar'
-			)
-			, 3 => array(
-				'request' => array('host' => '192.168.0.1', 'uri' => 'http://www.cakephp.org/?foo=bar')
-				, 'expectation' => array(
+			),
+			3 => array(
+				'request' => array('host' => '192.168.0.1', 'uri' => 'http://www.cakephp.org/?foo=bar'),
+				'expectation' => array(
 					'request' => array(
 						'uri' => array('host' => 'www.cakephp.org')
-					)
-					, 'config' => array(
+					),
+					'config' => array(
 						'request' => array(
 							'uri' => array('host' => 'www.cakephp.org')
-						)
-						, 'host' => '192.168.0.1'
+						),
+						'host' => '192.168.0.1'
 					)
 				)
-			)
-			, 'reset4' => array(
+			),
+			'reset4' => array(
 				'request.uri.query' => array()
-			)
-			, 4 => array(
-				'request' => array('header' => array('Foo@woo' => 'bar-value'))
-				, 'expectation' => array(
+			),
+			4 => array(
+				'request' => array('header' => array('Foo@woo' => 'bar-value')),
+				'expectation' => array(
 					'request' => array(
-						'header' => "Host: www.cakephp.org\r\nConnection: close\r\nUser-Agent: CakePHP\r\nFoo\"@\"woo: bar-value\r\n"
-						, 'line' => "GET / HTTP/1.1\r\n"
+						'header' => "Host: www.cakephp.org\r\nConnection: close\r\nUser-Agent: CakePHP\r\nFoo\"@\"woo: bar-value\r\n",
+						'line' => "GET / HTTP/1.1\r\n"
 					)
 				)
-			)
-			, 5 => array(
-				'request' => array('header' => array('Foo@woo' => 'bar-value', 'host' => 'foo.com'), 'uri' => 'http://www.cakephp.org/')
-				, 'expectation' => array(
+			),
+			5 => array(
+				'request' => array('header' => array('Foo@woo' => 'bar-value', 'host' => 'foo.com'), 'uri' => 'http://www.cakephp.org/'),
+				'expectation' => array(
 					'request' => array(
 						'header' => "Host: foo.com\r\nConnection: close\r\nUser-Agent: CakePHP\r\nFoo\"@\"woo: bar-value\r\n"
-					)
-					, 'config' => array(
+					),
+					'config' => array(
 						'host' => 'www.cakephp.org'
 					)
 				)
-			)
-			, 6 => array(
-				'request' => array('header' => "Foo: bar\r\n")
-				, 'expectation' => array(
+			),
+			6 => array(
+				'request' => array('header' => "Foo: bar\r\n"),
+				'expectation' => array(
 					'request' => array(
 						'header' => "Foo: bar\r\n"
 					)
 				)
-			)
-			, 7 => array(
-				'request' => array('header' => "Foo: bar\r\n", 'uri' => 'http://www.cakephp.org/search?q=http_socket#ignore-me')
-				, 'expectation' => array(
+			),
+			7 => array(
+				'request' => array('header' => "Foo: bar\r\n", 'uri' => 'http://www.cakephp.org/search?q=http_socket#ignore-me'),
+				'expectation' => array(
 					'request' => array(
 						'uri' => array(
-							'path' => '/search'
-							, 'query' => array('q' => 'http_socket')
-							, 'fragment' => 'ignore-me'
-						)
-						, 'line' => "GET /search?q=http_socket HTTP/1.1\r\n"
+							'path' => '/search',
+							'query' => array('q' => 'http_socket'),
+							'fragment' => 'ignore-me'
+						),
+						'line' => "GET /search?q=http_socket HTTP/1.1\r\n"
 					)
 				)
-			)
-			, 'reset8' => array(
+			),
+			'reset8' => array(
 				'request.uri.query' => array()
-			)
-			, 8 => array(
-				'request' => array('method' => 'POST', 'uri' => 'http://www.cakephp.org/posts/add', 'body' => array('name' => 'HttpSocket-is-released', 'date' => 'today'))
-				, 'expectation' => array(
+			),
+			8 => array(
+				'request' => array('method' => 'POST', 'uri' => 'http://www.cakephp.org/posts/add', 'body' => array('name' => 'HttpSocket-is-released', 'date' => 'today')),
+				'expectation' => array(
 					'request' => array(
-						'method' => 'POST'
-						, 'uri' => array(
-							'path' => '/posts/add'
-							, 'fragment' => null
-						)
-						, 'body' => "name=HttpSocket-is-released&date=today"
-						, 'line' => "POST /posts/add HTTP/1.1\r\n"
-						, 'header' => "Host: www.cakephp.org\r\nConnection: close\r\nUser-Agent: CakePHP\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 38\r\n"
-						, 'raw' => "name=HttpSocket-is-released&date=today"
+						'method' => 'POST',
+						'uri' => array(
+							'path' => '/posts/add',
+							'fragment' => null
+						),
+						'body' => "name=HttpSocket-is-released&date=today",
+						'line' => "POST /posts/add HTTP/1.1\r\n",
+						'header' => "Host: www.cakephp.org\r\nConnection: close\r\nUser-Agent: CakePHP\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 38\r\n",
+						'raw' => "name=HttpSocket-is-released&date=today"
 					)
 				)
-			)
-			, 9 => array(
-				'request' => array('method' => 'POST', 'uri' => 'https://www.cakephp.org/posts/add', 'body' => array('name' => 'HttpSocket-is-released', 'date' => 'today'))
-				, 'expectation' => array(
+			),
+			9 => array(
+				'request' => array('method' => 'POST', 'uri' => 'https://www.cakephp.org/posts/add', 'body' => array('name' => 'HttpSocket-is-released', 'date' => 'today')),
+				'expectation' => array(
 					'config' => array(
-						'port' => 443
-						, 'request' => array(
+						'port' => 443,
+						'request' => array(
 							'uri' => array(
-								'scheme' => 'https'
-								, 'port' => 443
+								'scheme' => 'https',
+								'port' => 443
 							)
 						)
-					)
-					, 'request' => array(
+					),
+					'request' => array(
 						'uri' => array(
-							'scheme' => 'https'
-							, 'port' => 443
+							'scheme' => 'https',
+							'port' => 443
 						)
 					)
 				)
-			)
-			, 10 => array(
+			),
+			10 => array(
 				'request' => array(
-						'method' => 'POST',
-						'uri' => 'https://www.cakephp.org/posts/add',
-						'body' => array('name' => 'HttpSocket-is-released', 'date' => 'today'),
-						'cookies' => array('foo' => array('value' => 'bar'))
-				)
-				, 'expectation' => array(
+					'method' => 'POST',
+					'uri' => 'https://www.cakephp.org/posts/add',
+					'body' => array('name' => 'HttpSocket-is-released', 'date' => 'today'),
+					'cookies' => array('foo' => array('value' => 'bar'))
+				),
+				'expectation' => array(
 					'request' => array(
 						'header' => "Host: www.cakephp.org\r\nConnection: close\r\nUser-Agent: CakePHP\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 38\r\nCookie: foo=bar\r\n",
 						'cookies' => array(
