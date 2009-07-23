@@ -1054,8 +1054,8 @@ class App extends Object {
 					self::import($type, 'AppModel', false, Configure::read('modelPaths'));
 				}
 				if ($plugin) {
-					if (!class_exists($name . 'AppModel')) {
-						self::import($type, $plugin . '.' . $name . 'AppModel', false, array(), $plugin . DS . $plugin . '_app_model.php');
+					if (!class_exists($plugin . 'AppModel')) {
+						self::import($type, $plugin . '.' . $plugin . 'AppModel', false, array(), $plugin . DS . $plugin . '_app_model.php');
 					}
 					$path = $pluginPath . DS . 'models' . DS;
 				}
@@ -1070,7 +1070,7 @@ class App extends Object {
 			case 'controller':
 				self::import($type, 'AppController', false);
 				if ($plugin) {
-					self::import($type, $plugin . '.' . $name . 'AppController', false, array(), $plugin . DS . $plugin . '_app_controller.php');
+					self::import($type, $plugin . '.' . $plugin . 'AppController', false, array(), $plugin . DS . $plugin . '_app_controller.php');
 					$path = $plugin . DS . 'controllers' . DS;
 				}
 				return array('class' => $type, 'suffix' => $type, 'path' => $path);

@@ -199,7 +199,7 @@ class Dispatcher extends Object {
  * @return string Output as sent by controller
  * @access protected
  */
-	private function _invoke(&$controller, $params) {
+	protected function _invoke(&$controller, $params) {
 		$controller->constructClasses();
 		$controller->Component->initialize($controller);
 		$controller->beforeFilter();
@@ -246,6 +246,8 @@ class Dispatcher extends Object {
 	private function __extractParams($url, $additionalParams = array()) {
 		$defaults = array('pass' => array(), 'named' => array(), 'form' => array());
 		$this->params = array_merge($defaults, $url, $additionalParams);
+		debug($url);
+		debug(Router::url($url));
 		return Router::url($url);
 	}
 /**
