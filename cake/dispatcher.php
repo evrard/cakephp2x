@@ -246,8 +246,6 @@ class Dispatcher extends Object {
 	private function __extractParams($url, $additionalParams = array()) {
 		$defaults = array('pass' => array(), 'named' => array(), 'form' => array());
 		$this->params = array_merge($defaults, $url, $additionalParams);
-		debug($url);
-		debug(Router::url($url));
 		return Router::url($url);
 	}
 /**
@@ -392,8 +390,8 @@ class Dispatcher extends Object {
 		if ($reverse === true) {
 			extract(Router::getArgs($params['action']));
 			$params = array_merge($params, array(
-				'controller'=> $params['plugin'],
-				'action'=> $params['controller'],
+				'controller' => $params['plugin'],
+				'action' => $params['controller'],
 				'pass' => array_merge($pass, $params['pass']),
 				'named' => array_merge($named, $params['named'])
 			));
