@@ -1284,7 +1284,6 @@ class DispatcherTest extends CakeTestCase {
 		$url = 'admin/test_dispatch_pages/index/param:value/param2:value2';
 
 		Router::reload();
-		$Router = Router::getInstance();
 		$controller = $Dispatcher->dispatch($url, array('return' => 1));
 
 		$expected = 'TestDispatchPages';
