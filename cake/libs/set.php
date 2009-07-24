@@ -574,9 +574,7 @@ class Set extends Object {
  * @static
  */
 	public static function insert($list, $path, $data = null) {
-		if (!is_array($path)) {
-			$path = explode('.', $path);
-		}
+		$path = self::__convertPath($path);
 
 		$key = array_shift($path);
 		if (count($path) === 0) {
@@ -596,11 +594,9 @@ class Set extends Object {
  * @static
  */
 	public static function remove($list, $path = null) {
+		$path = self::__convertPath($path);
 		if (empty($path)) {
 			return $list;
-		}
-		if (!is_array($path)) {
-			$path = explode('.', $path);
 		}
 		$_list = $list;
 
@@ -629,11 +625,9 @@ class Set extends Object {
  * @static
  */
 	public static function check($data, $path = null) {
+		$path = self::__convertPath($path);
 		if (empty($path)) {
 			return $data;
-		}
-		if (!is_array($path)) {
-			$path = explode('.', $path);
 		}
 
 		foreach ($path as $i => $key) {
@@ -1086,6 +1080,20 @@ class Set extends Object {
 			$out = $array;
 		}
 		return $out;
+	}
+/**
+ * Convert the set path to the required format.
+ *
+ * @param mixed $path
+ * @return array $path
+ * @access private
+ * @static
+ */
+	private static function __convertPath($path = array()) {
+		if (!is_array($path)) {
+			$path = explode('.', $path);
+		}
+		return $path;
 	}
 }
 ?>
