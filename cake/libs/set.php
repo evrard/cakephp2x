@@ -575,11 +575,13 @@ class Set extends Object {
  */
 	public static function insert($list, $path, $data = null) {
 		$path = self::__convertPath($path);
-
-		$key = array_shift($path);
+		$key = self::__convertKey(array_shift($path));
 		if (count($path) === 0) {
 			$list[$key] = $data;
 		} else {
+			if (!isset($list[$key])) {
+				$list[$key] = array();
+			}
 			$list[$key] = self::insert($list[$key], $path, $data);
 		}
 		return $list;
@@ -598,20 +600,14 @@ class Set extends Object {
 		if (empty($path)) {
 			return $list;
 		}
-		$_list = $list;
-
-		foreach ($path as $i => $key) {
-			if (is_numeric($key) && intval($key) > 0 || $key === '0') {
-				$key = intval($key);
-			}
-			if ($i === count($path) - 1) {
-				unset($_list[$key]);
-			} else {
-				if (!isset($_list[$key])) {
-					return $list;
-				}
-				$_list = $_list[$key];
-			}
+		$key = self::__convertKey(array_shift($path));
+		if (!isset($list[$key])) {
+			return $list;
+		}
+		if (count($path) === 0) {
+			unset($list[$key]);
+		} else {
+			$list[$key] = self::remove($list[$key], $path);
 		}
 		return $list;
 	}
@@ -1085,7 +1081,7 @@ class Set extends Object {
  * Convert the set path to the required format.
  *
  * @param mixed $path
- * @return array $path
+ * @return array
  * @access private
  * @static
  */
@@ -1094,6 +1090,20 @@ class Set extends Object {
 			$path = explode('.', $path);
 		}
 		return $path;
+	}
+/**
+ * Adjust the key to reflect numberic indexes from string paths
+ *
+ * @param string $key
+ * @return mixed
+ * @access private
+ * @static
+ */
+	private static function __convertKey($key) {
+		if (is_numeric($key)) {
+			$key = intval($key);
+		}
+		return $key;
 	}
 }
 ?>
