@@ -577,20 +577,12 @@ class Set extends Object {
 		if (!is_array($path)) {
 			$path = explode('.', $path);
 		}
-		$_list = $list;
 
-		foreach ($path as $i => $key) {
-			if (is_numeric($key) && intval($key) > 0 || $key === '0') {
-				$key = intval($key);
-			}
-			if ($i === count($path) - 1) {
-				$_list[$key] = $data;
-			} else {
-				if (!isset($_list[$key])) {
-					$_list[$key] = array();
-				}
-				$_list = $_list[$key];
-			}
+		$key = array_shift($path);
+		if (count($path) === 0) {
+			$list[$key] = $data;
+		} else {
+			$list[$key] = self::insert($list[$key], $path, $data);
 		}
 		return $list;
 	}

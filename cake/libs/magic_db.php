@@ -40,7 +40,7 @@ class MagicDb extends Object {
  *
  * @var $magicDb mixed Can be an array containing the db, a magic db as a string, or a filename pointing to a magic db in .db or magic.db.php format
  * @return boolean Returns false if reading / validation failed or true on success.
- * @author        Felix
+ * @access private
  **/
 	private function read($magicDb = null) {
 		if (!is_string($magicDb) && !is_array($magicDb)) {
