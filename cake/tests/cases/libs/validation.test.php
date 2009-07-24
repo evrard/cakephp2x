@@ -642,53 +642,52 @@ class ValidationTest extends CakeTestCase {
  * @return void
  */
 	function testLuhn() {
-		$this->skipIf(true, "testLuhn needs implementation check");
 		//American Express
-		$this->assertTrue(Validation::luhn('370482756063980'));
+		$this->assertTrue(Validation::luhn('370482756063980', true));
 		//BankCard
-		$this->assertTrue(Validation::luhn('5610745867413420'));
+		$this->assertTrue(Validation::luhn('5610745867413420', true));
 		//Diners Club 14
-		$this->assertTrue(Validation::luhn('30155483651028'));
+		$this->assertTrue(Validation::luhn('30155483651028', true));
 		//2004 MasterCard/Diners Club Alliance International 14
-		$this->assertTrue(Validation::luhn('36747701998969'));
+		$this->assertTrue(Validation::luhn('36747701998969', true));
 		//2004 MasterCard/Diners Club Alliance US & Canada 16
-		$this->assertTrue(Validation::luhn('5597511346169950'));
+		$this->assertTrue(Validation::luhn('5597511346169950', true));
 		//Discover
-		$this->assertTrue(Validation::luhn('6011802876467237'));
+		$this->assertTrue(Validation::luhn('6011802876467237', true));
 		//enRoute
-		$this->assertTrue(Validation::luhn('201496944158937'));
+		$this->assertTrue(Validation::luhn('201496944158937', true));
 		//JCB 15 digit
-		$this->assertTrue(Validation::luhn('210034762247893'));
+		$this->assertTrue(Validation::luhn('210034762247893', true));
 		//JCB 16 digit
-		$this->assertTrue(Validation::luhn('3096806857839939'));
+		$this->assertTrue(Validation::luhn('3096806857839939', true));
 		//Maestro (debit card)
-		$this->assertTrue(Validation::luhn('5020147409985219'));
+		$this->assertTrue(Validation::luhn('5020147409985219', true));
 		//Mastercard
-		$this->assertTrue(Validation::luhn('5580424361774366'));
+		$this->assertTrue(Validation::luhn('5580424361774366', true));
 		//Solo 16
-		$this->assertTrue(Validation::luhn('6767432107064987'));
+		$this->assertTrue(Validation::luhn('6767432107064987', true));
 		//Solo 18
-		$this->assertTrue(Validation::luhn('676714834398858593'));
+		$this->assertTrue(Validation::luhn('676714834398858593', true));
 		//Solo 19
-		$this->assertTrue(Validation::luhn('6767838565218340113'));
+		$this->assertTrue(Validation::luhn('6767838565218340113', true));
 		//Switch 16
-		$this->assertTrue(Validation::luhn('5641829171515733'));
+		$this->assertTrue(Validation::luhn('5641829171515733', true));
 		//Switch 18
-		$this->assertTrue(Validation::luhn('493622764224625174'));
+		$this->assertTrue(Validation::luhn('493622764224625174', true));
 		//Switch 19
-		$this->assertTrue(Validation::luhn('6759603460617628716'));
+		$this->assertTrue(Validation::luhn('6759603460617628716', true));
 		//VISA 13 digit
-		$this->assertTrue(Validation::luhn('4024007174754'));
+		$this->assertTrue(Validation::luhn('4024007174754', true));
 		//VISA 16 digit
-		$this->assertTrue(Validation::luhn('4916375389940009'));
+		$this->assertTrue(Validation::luhn('4916375389940009', true));
 		//Visa Electron
-		$this->assertTrue(Validation::luhn('4175003346287100'));
+		$this->assertTrue(Validation::luhn('4175003346287100', true));
 		//Voyager
-		$this->assertTrue(Validation::luhn('869940697287073'));
+		$this->assertTrue(Validation::luhn('869940697287073', true));
 
-		$this->assertFalse(Validation::luhn('0000000000000000'));
+		$this->assertFalse(Validation::luhn('0000000000000000', true));
 
-		$this->assertFalse(Validation::luhn('869940697287173'));
+		$this->assertFalse(Validation::luhn('869940697287173', true));
 	}
 /**
  * testCustomRegexForCc method
