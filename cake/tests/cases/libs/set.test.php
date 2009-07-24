@@ -1314,18 +1314,32 @@ class SetTest extends CakeTestCase {
 		$this->assertFalse(Set::check($set, 'My Index 1.First.Seconds.Third.Fourth'));
 	}
 /**
- * testWritingWithFunkyKeys method
+ * testFunkyKeyInserts method
  *
  * @access public
  * @return void
  */
-	function testWritingWithFunkyKeys() {
+	function testFunkyKeyInserts() {
 		$set = Set::insert(array(), 'Session Test', "test");
 		$this->assertEqual(Set::extract($set, 'Session Test'), 'test');
-
-		$set = Set::remove($set, 'Session Test');
+	}
+/**
+ * testFunkyKeyRemoval method
+ *
+ * @access public
+ * @return void
+ */
+	function testFunkyKeyRemoval() {
+		$set = Set::remove(array('Session Test' => 'test'), 'Session Test');
 		$this->assertFalse(Set::check($set, 'Session Test'));
-
+	}
+/**
+ * testFunkyKeys method
+ *
+ * @access public
+ * @return void
+ */
+	function testFunkyKeys() {
 		$this->assertTrue($set = Set::insert(array(), 'Session Test.Test Case', "test"));
 		$this->assertTrue(Set::check($set, 'Session Test.Test Case'));
 	}
