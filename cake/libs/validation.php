@@ -729,7 +729,7 @@ class Validation extends Object {
 			'deep' => false,
 			'type' => null
 		);
-		$params = am($defaults, $params);
+		$params = array_merge($defaults, $params);
 		if ($params['country'] !== null) {
 			$params['country'] = strtolower($params['country']);
 		}
