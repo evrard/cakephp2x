@@ -149,7 +149,7 @@ class Cache extends Object {
 		}
 
 		if (self::$_Engine[$name]->init($settings)) {
-			if (time() % self::$_Engine[$name]->settings['probability'] === 0) {
+			if (time() % self::$_Engine[$name]->settings('probability') === 0) {
 				self::$_Engine[$name]->gc();
 			}
 			return true;
@@ -424,7 +424,7 @@ class CacheEngine extends Object {
  *
  * @access public
  */
-	protected function gc() {
+	public function gc() {
 	}
 /**
  * Write value for a key into cache
@@ -435,7 +435,7 @@ class CacheEngine extends Object {
  * @return boolean True if the data was succesfully cached, false on failure
  * @access public
  */
-	protected function write($key, &$value, $duration) {
+	public function write($key, &$value, $duration) {
 		trigger_error(sprintf(__('Method write() not implemented in %s', true), get_class($this)), E_USER_ERROR);
 	}
 /**
@@ -445,7 +445,7 @@ class CacheEngine extends Object {
  * @return mixed The cached data, or false if the data doesn't exist, has expired, or if there was an error fetching it
  * @access public
  */
-	protected function read($key) {
+	public function read($key) {
 		trigger_error(sprintf(__('Method read() not implemented in %s', true), get_class($this)), E_USER_ERROR);
 	}
 /**
@@ -455,7 +455,7 @@ class CacheEngine extends Object {
  * @return boolean True if the value was succesfully deleted, false if it didn't exist or couldn't be removed
  * @access public
  */
-	protected function delete($key) {
+	public function delete($key) {
 	}
 /**
  * Delete all keys from the cache
@@ -464,7 +464,7 @@ class CacheEngine extends Object {
  * @return boolean True if the cache was succesfully cleared, false otherwise
  * @access public
  */
-	protected function clear($check) {
+	public function clear($check) {
 	}
 /**
  * Cache Engine settings
@@ -472,8 +472,11 @@ class CacheEngine extends Object {
  * @return array settings
  * @access public
  */
-	public function settings() {
-		return $this->settings;
+	public function settings($key = null) {
+		if (empty($key) || !array_key_exists($this->settings[$key])) {
+			return $this->settings;
+		}
+		return $this->settings[$key];
 	}
 /**
  * generates a safe key
@@ -486,8 +489,7 @@ class CacheEngine extends Object {
 		if (empty($key)) {
 			return false;
 		}
-		$key = Inflector::underscore(str_replace(array(DS, '/', '.'), '_', strval($key)));
-		return $key;
+		return Inflector::underscore(str_replace(array(DS, '/', '.'), '_', strval($key)));
 	}
 }
 ?>

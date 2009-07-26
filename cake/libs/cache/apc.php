@@ -37,7 +37,7 @@ class ApcEngine extends CacheEngine {
  * @see CacheEngine::__defaults
  * @access public
  */
-	private function init($settings = array()) {
+	public function init($settings = array()) {
 		parent::init(array_merge(array('engine' => 'Apc', 'prefix' => Inflector::slug(APP_DIR) . '_'), $settings));
 		return function_exists('apc_cache_info');
 	}
@@ -50,7 +50,7 @@ class ApcEngine extends CacheEngine {
  * @return boolean True if the data was succesfully cached, false on failure
  * @access public
  */
-	private function write($key, &$value, $duration) {
+	public function write($key, &$value, $duration) {
 		$expires = time() + $duration;
 		apc_store($key.'_expires', $expires, $duration);
 		return apc_store($key, $value, $duration);
@@ -62,7 +62,7 @@ class ApcEngine extends CacheEngine {
  * @return mixed The cached data, or false if the data doesn't exist, has expired, or if there was an error fetching it
  * @access public
  */
-	private function read($key) {
+	public function read($key) {
 		$time = time();
 		$cachetime = intval(apc_fetch($key.'_expires'));
 		if ($cachetime < $time || ($time + $this->settings['duration']) < $cachetime) {
@@ -77,7 +77,7 @@ class ApcEngine extends CacheEngine {
  * @return boolean True if the value was succesfully deleted, false if it didn't exist or couldn't be removed
  * @access public
  */
-	private function delete($key) {
+	public function delete($key) {
 		return apc_delete($key);
 	}
 /**
@@ -86,7 +86,7 @@ class ApcEngine extends CacheEngine {
  * @return boolean True if the cache was succesfully cleared, false otherwise
  * @access public
  */
-	private function clear() {
+	public function clear() {
 		return apc_clear_cache('user');
 	}
 }
