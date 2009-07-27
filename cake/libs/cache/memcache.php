@@ -41,7 +41,7 @@ class MemcacheEngine extends CacheEngine {
  * @var array
  * @access public
  */
-	private $settings = array();
+	protected $settings = array();
 /**
  * Initialize the Cache Engine
  *
@@ -52,7 +52,7 @@ class MemcacheEngine extends CacheEngine {
  * @return boolean True if the engine has been successfully initialized, false if not
  * @access public
  */
-	private function init($settings = array()) {
+	public function init($settings = array()) {
 		if (!class_exists('Memcache')) {
 			return false;
 		}
@@ -94,7 +94,7 @@ class MemcacheEngine extends CacheEngine {
  * @return boolean True if the data was succesfully cached, false on failure
  * @access public
  */
-	private function write($key, &$value, $duration) {
+	public function write($key, &$value, $duration) {
 		$expires = time() + $duration;
 		$this->__Memcache->set($key.'_expires', $expires, $this->settings['compress'], $expires);
 		return $this->__Memcache->set($key, $value, $this->settings['compress'], $expires);
@@ -106,7 +106,7 @@ class MemcacheEngine extends CacheEngine {
  * @return mixed The cached data, or false if the data doesn't exist, has expired, or if there was an error fetching it
  * @access public
  */
-	private function read($key) {
+	public function read($key) {
 		$time = time();
 		$cachetime = intval($this->__Memcache->get($key.'_expires'));
 		if ($cachetime < $time || ($time + $this->settings['duration']) < $cachetime) {
@@ -121,7 +121,7 @@ class MemcacheEngine extends CacheEngine {
  * @return boolean True if the value was succesfully deleted, false if it didn't exist or couldn't be removed
  * @access public
  */
-	private function delete($key) {
+	public function delete($key) {
 		return $this->__Memcache->delete($key);
 	}
 /**
@@ -130,7 +130,7 @@ class MemcacheEngine extends CacheEngine {
  * @return boolean True if the cache was succesfully cleared, false otherwise
  * @access public
  */
-	private function clear() {
+	public function clear() {
 		return $this->__Memcache->flush();
 	}
 /**
