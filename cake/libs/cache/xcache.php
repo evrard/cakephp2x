@@ -35,7 +35,7 @@ class XcacheEngine extends CacheEngine {
  * @var array
  * @access public
  */
-	private $settings = array();
+	protected $settings = array();
 /**
  * Initialize the Cache Engine
  *
@@ -46,7 +46,7 @@ class XcacheEngine extends CacheEngine {
  * @return boolean True if the engine has been successfully initialized, false if not
  * @access public
  */
-	private function init($settings) {
+	public function init($settings) {
 		parent::init(array_merge(array(
 			'engine' => 'Xcache', 'prefix' => Inflector::slug(APP_DIR) . '_', 'PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password'
 			), $settings)
@@ -62,7 +62,7 @@ class XcacheEngine extends CacheEngine {
  * @return boolean True if the data was succesfully cached, false on failure
  * @access public
  */
-	private function write($key, &$value, $duration) {
+	public function write($key, &$value, $duration) {
 		$expires = time() + $duration;
 		xcache_set($key.'_expires', $expires, $duration);
 		return xcache_set($key, $value, $duration);
@@ -74,7 +74,7 @@ class XcacheEngine extends CacheEngine {
  * @return mixed The cached data, or false if the data doesn't exist, has expired, or if there was an error fetching it
  * @access public
  */
-	private function read($key) {
+	public function read($key) {
 		if (xcache_isset($key)) {
 			$time = time();
 			$cachetime = intval(xcache_get($key.'_expires'));
@@ -92,7 +92,7 @@ class XcacheEngine extends CacheEngine {
  * @return boolean True if the value was succesfully deleted, false if it didn't exist or couldn't be removed
  * @access public
  */
-	private function delete($key) {
+	public function delete($key) {
 		return xcache_unset($key);
 	}
 /**
@@ -101,7 +101,7 @@ class XcacheEngine extends CacheEngine {
  * @return boolean True if the cache was succesfully cleared, false otherwise
  * @access public
  */
-	private function clear() {
+	public function clear() {
 		$this->__auth();
 		$max = xcache_count(XC_TYPE_VAR);
 		for ($i = 0; $i < $max; $i++) {
