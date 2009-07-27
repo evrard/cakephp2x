@@ -161,19 +161,20 @@ class FileEngine extends CacheEngine {
 		}
 		$time = time();
 		$cachetime = intval($this->__File->read(11));
-
+		
 		if ($cachetime !== false && ($cachetime < $time || ($time + $this->settings['duration']) < $cachetime)) {
 			$this->__File->close();
 			$this->__File->delete();
 			return false;
 		}
-		$data = $this->__File->read(true);
-
+		$data = trim($this->__File->read(true));
+		
 		if ($data !== '' && !empty($this->settings['serialize'])) {
 			if ($this->settings['isWindows']) {
 				$data = str_replace('\\\\\\\\', '\\', $data);
 			}
 			$data = unserialize((string)$data);
+			
 		}
 		$this->__File->close();
 		return $data;

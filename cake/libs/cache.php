@@ -473,7 +473,7 @@ class CacheEngine extends Object {
  * @access public
  */
 	public function settings($key = null) {
-		if (empty($key) || !array_key_exists($this->settings[$key])) {
+		if (empty($key) || !array_key_exists($key, $this->settings)) {
 			return $this->settings;
 		}
 		return $this->settings[$key];
