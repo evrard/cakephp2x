@@ -381,16 +381,6 @@ final class Configure extends Object {
 			}
 		}
 	}
-/**
- * Caches the object map when the instance of the Configure class is destroyed
- *
- * @access public
- */
-	public static function destruct() {
-		if (self::$__cache) {
-			Cache::write('object_map', array_filter(self::$__objects), '_cake_core_');
-		}
-	}
 }
 
 /**
@@ -1159,25 +1149,5 @@ class App extends Object {
 		}
 		return $items;
 	}
-
-/**
- * Object destructor.
- *
- * Writes cache file if changes have been made to the $__map or $__paths
- *
- * @return void
- * @access private
- */
-	public static function destruct() {
-		if (self::$__cache) {
-			$core = App::core('cake');
-			unset(self::$__paths[rtrim($core[0], DS)]);
-			Cache::write('dir_map', array_filter(self::$__paths), '_cake_core_');
-			Cache::write('file_map', array_filter(self::$__map), '_cake_core_');
-			Cache::write('object_map', self::$__objects, '_cake_core_');
-		}
-	}
 }
-register_shutdown_function('App::destruct');
-register_shutdown_function('Configure::destruct');
 ?>
