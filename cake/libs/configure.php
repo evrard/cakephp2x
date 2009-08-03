@@ -580,10 +580,10 @@ class App extends Object {
  * @access public
  */
 	function path($type) {
-		if (!isset(self::$$type)) {
+		if (!isset(self::${$type})) {
 			return array();
 		}
-		return self::$$type;
+		return self::${$type};
 	}
 
 /**
@@ -612,7 +612,7 @@ class App extends Object {
 
 		if ($reset == true) {
 			foreach ($paths as $type => $new) {
-				self::$$type = (array)$new;
+				self::${$type} = (array)$new;
 			}
 			return $paths;
 		}
