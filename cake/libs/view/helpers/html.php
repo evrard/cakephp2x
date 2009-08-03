@@ -1,26 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Html Helper class file.
  *
  * Simplifies the construction of HTML elements.
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.view.helpers
  * @since         CakePHP(tm) v 0.9.1
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -33,21 +28,13 @@
  * @subpackage    cake.cake.libs.view.helpers
  */
 class HtmlHelper extends AppHelper {
-
-/*************************************************************************
- * Public variables
- *************************************************************************/
-
-/**#@+
- * @access public
- */
-
 /**
  * html tags used by this helper.
  *
  * @var array
+ * @access public
  */
-	var $tags = array(
+	public $tags = array(
 		'meta' => '<meta%s/>',
 		'metalink' => '<link href="%s"%s/>',
 		'link' => '<a href="%s"%s>%s</a>',
@@ -106,46 +93,41 @@ class HtmlHelper extends AppHelper {
  * Base URL
  *
  * @var string
+ * @access public
  */
-	var $base = null;
+	public $base = null;
 
 /**
  * URL to current action.
  *
  * @var string
+ * @access public
  */
-	var $here = null;
+	public $here = null;
 
 /**
  * Parameter array.
  *
  * @var array
+ * @access public
  */
-	var $params = array();
+	public $params = array();
 
 /**
  * Current action.
  *
  * @var string
+ * @access public
  */
-	var $action = null;
+	public $action = null;
 
 /**
  * Enter description here...
  *
  * @var array
+ * @access public
  */
-	var $data = null;
-
-/**#@-*/
-
-/*************************************************************************
- * Private variables
- *************************************************************************/
-
-/**#@+
- * @access private
- */
+	public $data = null;
 
 /**
  * Breadcrumbs.
@@ -153,7 +135,7 @@ class HtmlHelper extends AppHelper {
  * @var	array
  * @access private
  */
-	var $_crumbs = array();
+	private $_crumbs = array();
 
 /**
  * Document type definitions
@@ -161,7 +143,7 @@ class HtmlHelper extends AppHelper {
  * @var	array
  * @access private
  */
-	var $__docTypes = array(
+	private $__docTypes = array(
 		'html4-strict'  => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">',
 		'html4-trans'  => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">',
 		'html4-frame'  => '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">',
@@ -178,7 +160,7 @@ class HtmlHelper extends AppHelper {
  * @param string $link URL for link (if empty it won't be a link)
  * @param mixed $options Link attributes e.g. array('id'=>'selected')
  */
-	function addCrumb($name, $link = null, $options = null) {
+	private function addCrumb($name, $link = null, $options = null) {
 		$this->_crumbs[] = array($name, $link, $options);
 	}
 
@@ -197,7 +179,7 @@ class HtmlHelper extends AppHelper {
  * @param  string $type Doctype to use.
  * @return string Doctype.
  */
-	function docType($type = 'xhtml-strict') {
+	private function docType($type = 'xhtml-strict') {
 		if (isset($this->__docTypes[$type])) {
 			return $this->output($this->__docTypes[$type]);
 		}
@@ -213,7 +195,7 @@ class HtmlHelper extends AppHelper {
  * @param  boolean $inline If set to false, the generated tag appears in the head tag of the layout.
  * @return string
  */
-	function meta($type, $url = null, $attributes = array(), $inline = true) {
+	public function meta($type, $url = null, $attributes = array(), $inline = true) {
 		if (!is_array($type)) {
 			$types = array(
 				'rss'	=> array('type' => 'application/rss+xml', 'rel' => 'alternate', 'title' => $type, 'link' => $url),
@@ -262,7 +244,7 @@ class HtmlHelper extends AppHelper {
 		if ($inline) {
 			return $this->output($out);
 		} else {
-			$view =& ClassRegistry::getObject('view');
+			$view = ClassRegistry::getObject('view');
 			$view->addScript($out);
 		}
 	}
@@ -273,7 +255,7 @@ class HtmlHelper extends AppHelper {
  * @param  string  $charset The character set to be used in the meta tag. Example: "utf-8".
  * @return string A meta tag containing the specified character set.
  */
-	function charset($charset = null) {
+	public function charset($charset = null) {
 		if (empty($charset)) {
 			$charset = strtolower(Configure::read('App.encoding'));
 		}
@@ -296,7 +278,7 @@ class HtmlHelper extends AppHelper {
  * @param  boolean $escapeTitle	Whether or not $title should be HTML escaped.
  * @return string	An <a /> element.
  */
-	function link($title, $url = null, $htmlAttributes = array(), $confirmMessage = false, $escapeTitle = true) {
+	public function link($title, $url = null, $htmlAttributes = array(), $confirmMessage = false, $escapeTitle = true) {
 		if ($url !== null) {
 			$url = $this->url($url);
 		} else {
@@ -345,7 +327,7 @@ class HtmlHelper extends AppHelper {
  * @param boolean $inline If set to false, the generated tag appears in the head tag of the layout.
  * @return string CSS <link /> or <style /> tag, depending on the type of link.
  */
-	function css($path, $rel = null, $htmlAttributes = array(), $inline = true) {
+	public function css($path, $rel = null, $htmlAttributes = array(), $inline = true) {
 		if (is_array($path)) {
 			$out = '';
 			foreach ($path as $i) {
@@ -395,7 +377,7 @@ class HtmlHelper extends AppHelper {
 		if ($inline) {
 			return $out;
 		} else {
-			$view =& ClassRegistry::getObject('view');
+			$view = ClassRegistry::getObject('view');
 			$view->addScript($out);
 		}
 	}
@@ -407,7 +389,7 @@ class HtmlHelper extends AppHelper {
  * @param boolean $inline Whether or not the style block should be displayed inline
  * @return string CSS styling data
  */
-	function style($data, $inline = true) {
+	private function style($data, $inline = true) {
 		if (!is_array($data)) {
 			return $data;
 		}
@@ -428,7 +410,7 @@ class HtmlHelper extends AppHelper {
  * @param  string  $startText This will be the first crumb, if false it defaults to first crumb in array
  * @return string
  */
-	function getCrumbs($separator = '&raquo;', $startText = false) {
+	private function getCrumbs($separator = '&raquo;', $startText = false) {
 		if (count($this->_crumbs)) {
 			$out = array();
 			if ($startText) {
@@ -455,7 +437,7 @@ class HtmlHelper extends AppHelper {
  * @param array	$options Array of HTML attributes.
  * @return string
  */
-	function image($path, $options = array()) {
+	public function image($path, $options = array()) {
 		if (is_array($path)) {
 			$path = $this->url($path);
 		} elseif ($path[0] === '/') {
@@ -495,7 +477,7 @@ class HtmlHelper extends AppHelper {
  * @param array $thOptions	HTML options for TH elements.
  * @return string
  */
-	function tableHeaders($names, $trOptions = null, $thOptions = null) {
+	private function tableHeaders($names, $trOptions = null, $thOptions = null) {
 		$out = array();
 		foreach ($names as $arg) {
 			$out[] = sprintf($this->tags['tableheader'], $this->_parseAttributes($thOptions), $arg);
@@ -514,7 +496,7 @@ class HtmlHelper extends AppHelper {
  * @param bool $continueOddEven If false, will use a non-static $count variable, so that the odd/even count is reset to zero just for that call
  * @return string	Formatted HTML
  */
-	function tableCells($data, $oddTrOptions = null, $evenTrOptions = null, $useCount = false, $continueOddEven = true) {
+	private function tableCells($data, $oddTrOptions = null, $evenTrOptions = null, $useCount = false, $continueOddEven = true) {
 		if (empty($data[0]) || !is_array($data[0])) {
 			$data = array($data);
 		}
@@ -566,7 +548,7 @@ class HtmlHelper extends AppHelper {
  * @param boolean $escape If true, $text will be HTML-escaped
  * @return string The formatted tag element
  */
-	function tag($name, $text = null, $attributes = array(), $escape = false) {
+	private function tag($name, $text = null, $attributes = array(), $escape = false) {
 		if ($escape) {
 			$text = h($text);
 		}
@@ -591,7 +573,7 @@ class HtmlHelper extends AppHelper {
  * @param boolean $escape If true, $text will be HTML-escaped
  * @return string The formatted DIV element
  */
-	function div($class = null, $text = null, $attributes = array(), $escape = false) {
+	private function div($class = null, $text = null, $attributes = array(), $escape = false) {
 		if ($class != null && !empty($class)) {
 			$attributes['class'] = $class;
 		}
@@ -607,7 +589,7 @@ class HtmlHelper extends AppHelper {
  * @param boolean $escape If true, $text will be HTML-escaped
  * @return string The formatted P element
  */
-	function para($class, $text, $attributes = array(), $escape = false) {
+	private function para($class, $text, $attributes = array(), $escape = false) {
 		if ($escape) {
 			$text = h($text);
 		}
@@ -632,7 +614,7 @@ class HtmlHelper extends AppHelper {
  * @return string The nested list
  * @access public
  */
-	function nestedList($list, $attributes = array(), $itemAttributes = array(), $tag = 'ul') {
+	private function nestedList($list, $attributes = array(), $itemAttributes = array(), $tag = 'ul') {
 		if (is_string($attributes)) {
 			$tag = $attributes;
 			$attributes = array();
@@ -652,7 +634,7 @@ class HtmlHelper extends AppHelper {
  * @access private
  * @see nestedList()
  */
-	function __nestedListItem($items, $attributes, $itemAttributes, $tag) {
+	private function __nestedListItem($items, $attributes, $itemAttributes, $tag) {
 		$out = '';
 
 		$index = 1;

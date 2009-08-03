@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
  * @since         CakePHP(tm) v 1.2.0.3467
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Core', 'Multibyte');
@@ -45,7 +40,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	var $to = null;
+	private $to = null;
 
 /**
  * The mail which the email is sent from
@@ -53,7 +48,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	var $from = null;
+	private $from = null;
 
 /**
  * The email the recipient will reply to
@@ -61,7 +56,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	var $replyTo = null;
+	private $replyTo = null;
 
 /**
  * The read receipt email
@@ -69,7 +64,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	var $readReceipt = null;
+	private $readReceipt = null;
 
 /**
  * The mail that will be used in case of any errors like
@@ -80,7 +75,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	var $return = null;
+	private $return = null;
 
 /**
  * Carbon Copy
@@ -91,7 +86,7 @@ class EmailComponent extends Object{
  * @var array
  * @access public
  */
-	var $cc = array();
+	private $cc = array();
 
 /**
  * Blind Carbon Copy
@@ -102,7 +97,7 @@ class EmailComponent extends Object{
  * @var array
  * @access public
  */
-	var $bcc = array();
+	private $bcc = array();
 
 /**
  * The subject of the email
@@ -110,7 +105,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	var $subject = null;
+	private $subject = null;
 
 /**
  * Associative array of a user defined headers
@@ -119,7 +114,7 @@ class EmailComponent extends Object{
  * @var array
  * @access public
  */
-	var $headers = array();
+	private $headers = array();
 
 /**
  * List of additional headers
@@ -129,7 +124,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	var $additionalParams = null;
+	private $additionalParams = null;
 
 /**
  * Layout for the View
@@ -137,7 +132,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	var $layout = 'default';
+	private $layout = 'default';
 
 /**
  * Template for the view
@@ -145,7 +140,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	var $template = null;
+	private $template = null;
 
 /**
  * as per RFC2822 Section 2.1.1
@@ -153,12 +148,12 @@ class EmailComponent extends Object{
  * @var integer
  * @access public
  */
-	var $lineLength = 70;
+	private $lineLength = 70;
 
 /**
  * @deprecated see lineLength
  */
-	var $_lineLength = null;
+	private $_lineLength = null;
 
 /**
  * What format should the email be sent in
@@ -171,7 +166,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	var $sendAs = 'text';
+	private $sendAs = 'text';
 
 /**
  * What method should the email be sent by
@@ -184,7 +179,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	var $delivery = 'mail';
+	private $delivery = 'mail';
 
 /**
  * charset the email is sent in
@@ -192,7 +187,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	var $charset = 'utf-8';
+	private $charset = 'utf-8';
 
 /**
  * List of files that should be attached to the email.
@@ -202,7 +197,7 @@ class EmailComponent extends Object{
  * @var array
  * @access public
  */
-	var $attachments = array();
+	private $attachments = array();
 
 /**
  * What mailer should EmailComponent identify itself as
@@ -210,7 +205,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	var $xMailer = 'CakePHP Email Component';
+	private $xMailer = 'CakePHP Email Component';
 
 /**
  * The list of paths to search if an attachment isnt absolute
@@ -218,7 +213,7 @@ class EmailComponent extends Object{
  * @var array
  * @access public
  */
-	var $filePaths = array();
+	private $filePaths = array();
 
 /**
  * List of options to use for smtp mail method
@@ -233,7 +228,7 @@ class EmailComponent extends Object{
  * @var array
  * @access public
  */
-	var $smtpOptions = array(
+	private $smtpOptions = array(
 		'port'=> 25, 'host' => 'localhost', 'timeout' => 30
 	);
 
@@ -244,7 +239,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	var $smtpError = null;
+	private $smtpError = null;
 
 /**
  * If set to true, the mail method will be auto-set to 'debug'
@@ -252,7 +247,7 @@ class EmailComponent extends Object{
  * @var string
  * @access protected
  */
-	var $_debug = false;
+	private $_debug = false;
 
 /**
  * Temporary store of message header lines
@@ -260,7 +255,7 @@ class EmailComponent extends Object{
  * @var array
  * @access private
  */
-	var $__header = array();
+	private $__header = array();
 
 /**
  * If set, boundary to use for multipart mime messages
@@ -268,7 +263,7 @@ class EmailComponent extends Object{
  * @var string
  * @access private
  */
-	var $__boundary = null;
+	private $__boundary = null;
 
 /**
  * Temporary store of message lines
@@ -276,7 +271,7 @@ class EmailComponent extends Object{
  * @var array
  * @access private
  */
-	var $__message = array();
+	private $__message = array();
 
 /**
  * Variable that holds SMTP connection
@@ -284,7 +279,7 @@ class EmailComponent extends Object{
  * @var resource
  * @access private
  */
-	var $__smtpConnection = null;
+	private $__smtpConnection = null;
 
 /**
  * Initialize component
@@ -292,8 +287,8 @@ class EmailComponent extends Object{
  * @param object $controller Instantiating controller
  * @access public
  */
-	function initialize(&$controller, $settings = array()) {
-		$this->Controller =& $controller;
+	private function initialize(&$controller, $settings = array()) {
+		$this->Controller = $controller;
 		if (Configure::read('App.encoding') !== null) {
 			$this->charset = Configure::read('App.encoding');
 		}
@@ -306,7 +301,7 @@ class EmailComponent extends Object{
  * @param object $controller Instantiating controller
  * @access public
  */
-	function startup(&$controller) {}
+	private function startup(&$controller) {}
 
 /**
  * Send an email using the specified content, template and layout
@@ -317,7 +312,7 @@ class EmailComponent extends Object{
  * @return boolean Success
  * @access public
  */
-	function send($content = null, $template = null, $layout = null) {
+	private function send($content = null, $template = null, $layout = null) {
 		$this->__createHeader();
 
 		if ($template) {
@@ -368,7 +363,7 @@ class EmailComponent extends Object{
  *
  * @access public
  */
-	function reset() {
+	private function reset() {
 		$this->template = null;
 		$this->to = null;
 		$this->from = null;
@@ -392,7 +387,7 @@ class EmailComponent extends Object{
  * @return array Email ready to be sent
  * @access private
  */
-	function __renderTemplate($content) {
+	private function __renderTemplate($content) {
 		$viewClass = $this->Controller->view;
 
 		if ($viewClass != 'View') {
@@ -470,7 +465,7 @@ class EmailComponent extends Object{
  *
  * @access private
  */
-	function __createBoundary() {
+	private function __createBoundary() {
 		$this->__boundary = md5(uniqid(time()));
 	}
 
@@ -480,7 +475,7 @@ class EmailComponent extends Object{
  *
  * @access private
  */
-	function __createHeader() {
+	private function __createHeader() {
 		if ($this->delivery == 'smtp') {
 			$this->__header[] = 'To: ' . $this->__formatAddress($this->to);
 		}
@@ -538,7 +533,7 @@ class EmailComponent extends Object{
  * @param string $message Message to format
  * @access private
  */
-	function __formatMessage($message) {
+	private function __formatMessage($message) {
 		if (!empty($this->attachments)) {
 			$prefix = array('--' . $this->__boundary);
 			if ($this->sendAs === 'text') {
@@ -561,7 +556,7 @@ class EmailComponent extends Object{
  * @access private
  * @TODO: modify to use the core File class?
  */
-	function __attachFiles() {
+	private function __attachFiles() {
 		$files = array();
 		foreach ($this->attachments as $attachment) {
 			$file = $this->__findFiles($attachment);
@@ -593,7 +588,7 @@ class EmailComponent extends Object{
  * @return string Path to located file
  * @access private
  */
-	function __findFiles($attachment) {
+	private function __findFiles($attachment) {
 		if (file_exists($attachment)) {
 			return $attachment;
 		}
@@ -613,7 +608,7 @@ class EmailComponent extends Object{
  * @return array Wrapped message
  * @access private
  */
-	function __wrap($message) {
+	private function __wrap($message) {
 		$message = $this->__strip($message, true);
 		$message = str_replace(array("\r\n","\r"), "\n", $message);
 		$lines = explode("\n", $message);
@@ -641,7 +636,7 @@ class EmailComponent extends Object{
  * @return string Encoded string
  * @access private
  */
-	function __encode($subject) {
+	private function __encode($subject) {
 		$subject = $this->__strip($subject);
 
 		$nl = "\r\n";
@@ -658,7 +653,7 @@ class EmailComponent extends Object{
  * @return string Email address suitable for email headers or smtp pipe
  * @access private
  */
-	function __formatAddress($string, $smtp = false) {
+	private function __formatAddress($string, $smtp = false) {
 		if (strpos($string, '<') !== false) {
 			$value = explode('<', $string);
 			if ($smtp) {
@@ -678,7 +673,7 @@ class EmailComponent extends Object{
  * @return string Stripped value
  * @access private
  */
-	function __strip($value, $message = false) {
+	private function __strip($value, $message = false) {
 		$search  = '%0a|%0d|Content-(?:Type|Transfer-Encoding)\:';
 		$search .= '|charset\=|mime-version\:|multipart/mixed|(?:[^a-z]to|b?cc)\:.*';
 
@@ -698,7 +693,7 @@ class EmailComponent extends Object{
  * @return bool Success
  * @access private
  */
-	function __mail() {
+	private function __mail() {
 		$header = implode("\n", $this->__header);
 		$message = implode("\n", $this->__message);
 		if (ini_get('safe_mode')) {
@@ -713,10 +708,10 @@ class EmailComponent extends Object{
  * @return bool Success
  * @access private
  */
-	function __smtp() {
+	private function __smtp() {
 		App::import('Core', array('CakeSocket'));
 
-		$this->__smtpConnection =& new CakeSocket(array_merge(array('protocol'=>'smtp'), $this->smtpOptions));
+		$this->__smtpConnection = new CakeSocket(array_merge(array('protocol'=>'smtp'), $this->smtpOptions));
 
 		if (!$this->__smtpConnection->connect()) {
 			$this->smtpError = $this->__smtpConnection->lastError();
@@ -791,7 +786,7 @@ class EmailComponent extends Object{
  * @return bool Success
  * @access private
  */
-	function __smtpSend($data, $checkCode = '250') {
+	private function __smtpSend($data, $checkCode = '250') {
 		if (!is_null($data)) {
 			$this->__smtpConnection->write($data . "\r\n");
 		}
@@ -813,7 +808,7 @@ class EmailComponent extends Object{
  * @return boolean Success
  * @access private
  */
-	function __debug() {
+	private function __debug() {
 		$nl = "\n";
 		$header = implode($nl, $this->__header);
 		$message = implode($nl, $this->__message);

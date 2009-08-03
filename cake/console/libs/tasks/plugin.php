@@ -4,9 +4,9 @@
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
@@ -14,7 +14,7 @@
  *
  * @filesource
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.console.libs.tasks
  * @since         CakePHP(tm) v 1.2
@@ -34,7 +34,6 @@ class PluginTask extends Shell {
  *
  */
 	var $tasks = array('Model', 'Controller', 'View');
-
 /**
  * path to CONTROLLERS directory
  *
@@ -42,7 +41,6 @@ class PluginTask extends Shell {
  * @access public
  */
 	var $path = null;
-
 /**
  * initialize
  *
@@ -51,7 +49,6 @@ class PluginTask extends Shell {
 	function initialize() {
 		$this->path = APP . 'plugins' . DS;
 	}
-
 /**
  * Execution method always used for tasks
  *
@@ -64,6 +61,7 @@ class PluginTask extends Shell {
 				$this->params['skel'] = CAKE_CORE_INCLUDE_PATH . DS . CONSOLE_LIBS . 'templates' . DS . 'skel';
 			}
 		}
+
 		$plugin = null;
 
 		if (isset($this->args[0])) {
@@ -199,7 +197,6 @@ class PluginTask extends Shell {
 
 		return true;
 	}
-
 /**
  * find and change $this->path to the user selection
  *

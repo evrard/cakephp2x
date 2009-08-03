@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * ObjectTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.5432
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', array('Object', 'Controller', 'Model'));
@@ -305,6 +300,14 @@ class TestObject extends Object {
 	function testPersist($name, $return = null, &$object, $type = null) {
 		return $this->_persist($name, $return, $object, $type);
 	}
+/**
+ * testPersist
+ *
+ * @return void
+ **/
+	function testSet($properties = array()) {
+		return $this->_set($properties);
+	}
 }
 
 /**
@@ -400,16 +403,16 @@ class ObjectTest extends CakeTestCase {
  * @return void
  */
 	function testSet() {
-		$this->object->_set('a string');
+		$this->object->testSet('a string');
 		$this->assertEqual($this->object->firstName, 'Joel');
 
-		$this->object->_set(array('firstName'));
+		$this->object->testSet(array('firstName'));
 		$this->assertEqual($this->object->firstName, 'Joel');
 
-		$this->object->_set(array('firstName' => 'Ashley'));
+		$this->object->testSet(array('firstName' => 'Ashley'));
 		$this->assertEqual($this->object->firstName, 'Ashley');
 
-		$this->object->_set(array('firstName' => 'Joel', 'lastName' => 'Moose'));
+		$this->object->testSet(array('firstName' => 'Joel', 'lastName' => 'Moose'));
 		$this->assertEqual($this->object->firstName, 'Joel');
 		$this->assertEqual($this->object->lastName, 'Moose');
 	}
@@ -436,7 +439,7 @@ class ObjectTest extends CakeTestCase {
 
 		@unlink(CACHE . 'persistent' . DS . 'testmodel.php');
 
-		$model =& new ObjectTestModel();
+		$model = new ObjectTestModel();
 		$expected = ClassRegistry::keys();
 
 		ClassRegistry::flush();

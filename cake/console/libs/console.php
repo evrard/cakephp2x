@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.console.libs
  * @since         CakePHP(tm) v 1.2.0.5012
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -70,7 +65,7 @@ class ConsoleShell extends Shell {
 		foreach ($this->models as $model) {
 			$class = Inflector::camelize(r('.php', '', $model));
 			$this->models[$model] = $class;
-			$this->{$class} =& new $class();
+			$this->{$class} = new $class();
 		}
 		$this->out('Model classes:');
 		$this->out('--------------');
@@ -78,7 +73,7 @@ class ConsoleShell extends Shell {
 		foreach ($this->models as $model) {
 			$this->out(" - {$model}");
 		}
-		$this->_loadRoutes();
+		$this->__loadRoutes();
 	}
 
 /**
@@ -180,7 +175,7 @@ class ConsoleShell extends Shell {
 					$association = $tmp[2];
 					$modelB = $tmp[3];
 
-					if ($this->_isValidModel($modelA) && $this->_isValidModel($modelB) && in_array($association, $this->associations)) {
+					if ($this->__isValidModel($modelA) && $this->__isValidModel($modelB) && in_array($association, $this->associations)) {
 						$this->{$modelA}->bindModel(array($association => array($modelB => array('className' => $modelB))), false);
 						$this->out("Created $association association between $modelA and $modelB");
 					} else {
@@ -207,7 +202,7 @@ class ConsoleShell extends Shell {
 						}
 					}
 
-					if ($this->_isValidModel($modelA) && $this->_isValidModel($modelB) && in_array($association, $this->associations) && $validCurrentAssociation) {
+					if ($this->__isValidModel($modelA) && $this->__isValidModel($modelB) && in_array($association, $this->associations) && $validCurrentAssociation) {
 						$this->{$modelA}->unbindModel(array($association => array($modelB)));
 						$this->out("Removed $association association between $modelA and $modelB");
 					} else {
@@ -222,7 +217,7 @@ class ConsoleShell extends Shell {
 					// Do we have a valid model?
 					list($modelToCheck, $tmp) = explode('->', $command);
 
-					if ($this->_isValidModel($modelToCheck)) {
+					if ($this->__isValidModel($modelToCheck)) {
 						$findCommand = "\$data = \$this->$command;";
 						@eval($findCommand);
 
@@ -274,7 +269,7 @@ class ConsoleShell extends Shell {
 					$command = str_replace($this->badCommandChars, "", $command);
 					list($modelToSave, $tmp) = explode("->", $command);
 
-					if ($this->_isValidModel($modelToSave)) {
+					if ($this->__isValidModel($modelToSave)) {
 						// Extract the array of data we are trying to build
 						list($foo, $data) = explode("->save", $command);
 						$data = preg_replace('/^\(*(array)?\(*(.+?)\)*$/i', '\\2', $data);
@@ -286,7 +281,7 @@ class ConsoleShell extends Shell {
 				case (preg_match("/^(\w+) columns/", $command, $tmp) == true):
 					$modelToCheck = strip_tags(str_replace($this->badCommandChars, "", $tmp[1]));
 
-					if ($this->_isValidModel($modelToCheck)) {
+					if ($this->__isValidModel($modelToCheck)) {
 						// Get the column info for this model
 						$fieldsCommand = "\$data = \$this->{$modelToCheck}->getColumnTypes();";
 						@eval($fieldsCommand);
@@ -301,8 +296,8 @@ class ConsoleShell extends Shell {
 					}
 				break;
 				case (preg_match("/^routes\s+reload/i", $command, $tmp) == true):
-					$router =& Router::getInstance();
-					if (!$this->_loadRoutes()) {
+					$router = Router::getInstance();
+					if (!$this->__loadRoutes()) {
 						$this->out("There was an error loading the routes config.  Please check that the file");
 						$this->out("exists and is free of parse errors.");
 						break;
@@ -310,7 +305,7 @@ class ConsoleShell extends Shell {
 					$this->out("Routes configuration reloaded, " . count($router->routes) . " routes connected");
 				break;
 				case (preg_match("/^routes\s+show/i", $command, $tmp) == true):
-					$router =& Router::getInstance();
+					$router = Router::getInstance();
 					$this->out(join("\n", Set::extract($router->routes, '{n}.0')));
 				break;
 				case (preg_match("/^route\s+(\(.*\))$/i", $command, $tmp) == true):
@@ -334,9 +329,9 @@ class ConsoleShell extends Shell {
  *
  * @param string $modelToCheck
  * @return boolean true if is an available model, false otherwise
- * @access protected
+ * @access private
  */
-	function _isValidModel($modelToCheck) {
+	function __isValidModel($modelToCheck) {
 		return in_array($modelToCheck, $this->models);
 	}
 
@@ -345,10 +340,10 @@ class ConsoleShell extends Shell {
  * all routes found
  *
  * @return boolean True if config reload was a success, otherwise false
- * @access protected
+ * @access private
  */
-	function _loadRoutes() {
-		$router =& Router::getInstance();
+	function __loadRoutes() {
+		$router = Router::getInstance();
 
 		$router->reload();
 		extract($router->getNamedExpressions());

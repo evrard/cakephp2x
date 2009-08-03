@@ -1,3 +1,5 @@
-app/config
-app/tmp
-vendors
+nbproject/*
+.project
+.DS_Store
+/app/vendors/simpletest
+/app/config/database.php

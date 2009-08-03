@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * SocketTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'CakeSocket');
@@ -56,58 +51,25 @@ class CakeSocketTest extends CakeTestCase {
 	}
 
 /**
- * testConstruct method
- *
- * @access public
- * @return void
- */
-	function testConstruct() {
-		$this->Socket->__construct();
-		$baseConfig = $this->Socket->_baseConfig;
-		$this->assertIdentical($baseConfig, array(
-			'persistent'	=> false,
-			'host'			=> 'localhost',
-			'protocol'		=> 'tcp',
-			'port'			=> 80,
-			'timeout'		=> 30
-		));
-
-		$this->Socket->reset();
-		$this->Socket->__construct(array('host' => 'foo-bar'));
-		$baseConfig['host'] = 'foo-bar';
-		$baseConfig['protocol'] = getprotobyname($baseConfig['protocol']);
-		$this->assertIdentical($this->Socket->config, $baseConfig);
-
-		$this->Socket = new CakeSocket(array('host' => 'www.cakephp.org', 'port' => 23, 'protocol' => 'udp'));
-		$baseConfig = $this->Socket->_baseConfig;
-
-		$baseConfig['host'] = 'www.cakephp.org';
-		$baseConfig['port'] = 23;
-		$baseConfig['protocol'] = 17;
-
-		$this->assertIdentical($this->Socket->config, $baseConfig);
-	}
-
-/**
  * testSocketConnection method
  *
  * @access public
  * @return void
  */
 	function testSocketConnection() {
-		$this->assertFalse($this->Socket->connected);
+		$this->assertFalse($this->Socket->isConnected());
 		$this->Socket->disconnect();
-		$this->assertFalse($this->Socket->connected);
+		$this->assertFalse($this->Socket->isConnected());
 		$this->Socket->connect();
-		$this->assertTrue($this->Socket->connected);
+		$this->assertTrue($this->Socket->isConnected());
 		$this->Socket->connect();
-		$this->assertTrue($this->Socket->connected);
-
+		$this->assertTrue($this->Socket->isConnected());
 		$this->Socket->disconnect();
+		$this->assertFalse($this->Socket->isConnected());
 		$config = array('persistent' => true);
 		$this->Socket = new CakeSocket($config);
 		$this->Socket->connect();
-		$this->assertTrue($this->Socket->connected);
+		$this->assertTrue($this->Socket->isConnected());
 	}
 
 /**

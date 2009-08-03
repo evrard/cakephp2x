@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * SecurityTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.5432
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'Security');
@@ -34,24 +29,6 @@ App::import('Core', 'Security');
  * @subpackage    cake.tests.cases.libs
  */
 class SecurityTest extends CakeTestCase {
-
-/**
- * sut property
- *
- * @var mixed null
- * @access public
- */
-	var $sut = null;
-
-/**
- * setUp method
- *
- * @access public
- * @return void
- */
-	function setUp() {
-		$this->sut =& Security::getInstance();
-	}
 
 /**
  * testInactiveMins method
@@ -98,8 +75,7 @@ class SecurityTest extends CakeTestCase {
  * @return void
  */
 	function testHash() {
-		$Security = Security::getInstance();
-		$_hashType =  $Security->hashType;
+		$_hashType =  Security::$hashType;
 
 		$key = 'someKey';
 		$hash = 'someHash';
@@ -117,7 +93,7 @@ class SecurityTest extends CakeTestCase {
 
 		$hashType = 'sha1';
 		Security::setHash($hashType);
-		$this->assertIdentical($this->sut->hashType, $hashType);
+		$this->assertIdentical(Security::$hashType, $hashType);
 		$this->assertIdentical(strlen(Security::hash($key, null, true)), 40);
 		$this->assertIdentical(strlen(Security::hash($key, null, false)), 40);
 
@@ -126,7 +102,7 @@ class SecurityTest extends CakeTestCase {
 
 		$hashType = 'md5';
 		Security::setHash($hashType);
-		$this->assertIdentical($this->sut->hashType, $hashType);
+		$this->assertIdentical(Security::$hashType, $hashType);
 		$this->assertIdentical(strlen(Security::hash($key, null, false)), 32);
 		$this->assertIdentical(strlen(Security::hash($key, null, true)), 32);
 

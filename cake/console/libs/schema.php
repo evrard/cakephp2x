@@ -1,29 +1,24 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Command-line database management utility to automate programmer chores.
  *
  * Schema is CakePHP's database management utility. This helps you maintain versions of
  * of your database.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.console.libs
  * @since         CakePHP(tm) v 1.2.0.5550
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('File');
@@ -88,7 +83,7 @@ class SchemaShell extends Shell {
 			$connection = $this->params['connection'];
 		}
 
-		$this->Schema =& new CakeSchema(compact('name', 'path', 'file', 'connection'));
+		$this->Schema = new CakeSchema(compact('name', 'path', 'file', 'connection'));
 	}
 
 /**
@@ -150,7 +145,7 @@ class SchemaShell extends Shell {
 		$content['file'] = $this->params['file'];
 
 		if ($snapshot === true) {
-			$Folder =& new Folder($this->Schema->path);
+			$Folder = new Folder($this->Schema->path);
 			$result = $Folder->read();
 
 			$numToUse = false;
@@ -207,7 +202,7 @@ class SchemaShell extends Shell {
 				$write = $this->args[0];
 			}
 		}
-		$db =& ConnectionManager::getDataSource($this->Schema->connection);
+		$db = ConnectionManager::getDataSource($this->Schema->connection);
 		$contents = "#". $Schema->name ." sql generated on: " . date('Y-m-d H:i:s') . " : ". time()."\n\n";
 		$contents .= $db->dropSchema($Schema) . "\n\n". $db->createSchema($Schema);
 		if ($write) {
@@ -293,7 +288,7 @@ class SchemaShell extends Shell {
  * @access private
  */
 	function __create($Schema, $table = null) {
-		$db =& ConnectionManager::getDataSource($this->Schema->connection);
+		$db = ConnectionManager::getDataSource($this->Schema->connection);
 
 		$drop = $create = array();
 
@@ -337,7 +332,7 @@ class SchemaShell extends Shell {
  * @access private
  */
 	function __update($Schema, $table = null) {
-		$db =& ConnectionManager::getDataSource($this->Schema->connection);
+		$db = ConnectionManager::getDataSource($this->Schema->connection);
 
 		$this->out('Comparing Database to Schema...');
 		$Old = $this->Schema->read();
@@ -380,7 +375,7 @@ class SchemaShell extends Shell {
 			return;
 		}
 		Configure::write('debug', 2);
-		$db =& ConnectionManager::getDataSource($this->Schema->connection);
+		$db = ConnectionManager::getDataSource($this->Schema->connection);
 		$db->fullDebug = true;
 
 		$errors = array();

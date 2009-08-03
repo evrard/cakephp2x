@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model.behaviors
  * @since         CakePHP(tm) v 1.2.0.4525
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -39,7 +34,7 @@ class TranslateBehavior extends ModelBehavior {
 /**
  * Used for runtime configuration of model
  */
-	var $runtime = array();
+	private $runtime = array();
 
 /**
  * Callback
@@ -58,8 +53,8 @@ class TranslateBehavior extends ModelBehavior {
  * @return mixed
  * @access public
  */
-	function setup(&$model, $config = array()) {
-		$db =& ConnectionManager::getDataSource($model->useDbConfig);
+	private function setup(&$model, $config = array()) {
+		$db = ConnectionManager::getDataSource($model->useDbConfig);
 		if (!$db->connected) {
 			trigger_error(
 				sprintf(__('Datasource %s for TranslateBehavior of model %s is not connected', true), $model->useDbConfig, $model->alias),
@@ -80,7 +75,7 @@ class TranslateBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	function cleanup(&$model) {
+	private function cleanup(&$model) {
 		$this->unbindTranslation($model);
 		unset($this->settings[$model->alias]);
 		unset($this->runtime[$model->alias]);
@@ -93,14 +88,14 @@ class TranslateBehavior extends ModelBehavior {
  * @return array Modified query
  * @access public
  */
-	function beforeFind(&$model, $query) {
+	private function beforeFind(&$model, $query) {
 		$locale = $this->_getLocale($model);
 		if (empty($locale)) {
 			return $query;
 		}
-		$db =& ConnectionManager::getDataSource($model->useDbConfig);
+		$db = ConnectionManager::getDataSource($model->useDbConfig);
 		$tablePrefix = $db->config['prefix'];
-		$RuntimeModel =& $this->translateModel($model);
+		$RuntimeModel = $this->translateModel($model);
 
 		if (is_string($query['fields']) && 'COUNT(*) AS '.$db->name('count') == $query['fields']) {
 			$query['fields'] = 'COUNT(DISTINCT('.$db->name($model->alias . '.' . $model->primaryKey) . ')) ' . $db->alias . 'count';
@@ -215,7 +210,7 @@ class TranslateBehavior extends ModelBehavior {
  * @return array Modified results
  * @access public
  */
-	function afterFind(&$model, $results, $primary) {
+	private function afterFind(&$model, $results, $primary) {
 		$this->runtime[$model->alias]['fields'] = array();
 		$locale = $this->_getLocale($model);
 
@@ -258,7 +253,7 @@ class TranslateBehavior extends ModelBehavior {
  * @return boolean
  * @access public
  */
-	function beforeValidate(&$model) {
+	private function beforeValidate(&$model) {
 		$locale = $this->_getLocale($model);
 		if (empty($locale)) {
 			return true;
@@ -292,7 +287,7 @@ class TranslateBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	function afterSave(&$model, $created) {
+	private function afterSave(&$model, $created) {
 		if (!isset($this->runtime[$model->alias]['beforeSave'])) {
 			return true;
 		}
@@ -300,7 +295,7 @@ class TranslateBehavior extends ModelBehavior {
 		$tempData = $this->runtime[$model->alias]['beforeSave'];
 		unset($this->runtime[$model->alias]['beforeSave']);
 		$conditions = array('model' => $model->alias, 'foreign_key' => $model->id);
-		$RuntimeModel =& $this->translateModel($model);
+		$RuntimeModel = $this->translateModel($model);
 
 		foreach ($tempData as $field => $value) {
 			unset($conditions['content']);
@@ -335,8 +330,8 @@ class TranslateBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	function afterDelete(&$model) {
-		$RuntimeModel =& $this->translateModel($model);
+	private function afterDelete(&$model) {
+		$RuntimeModel = $this->translateModel($model);
 		$conditions = array('model' => $model->alias, 'foreign_key' => $model->id);
 		$RuntimeModel->deleteAll($conditions);
 	}
@@ -347,12 +342,12 @@ class TranslateBehavior extends ModelBehavior {
  * @return mixed string or false
  * @access protected
  */
-	function _getLocale(&$model) {
+	private function _getLocale(&$model) {
 		if (!isset($model->locale) || is_null($model->locale)) {
 			if (!class_exists('I18n')) {
 				App::import('Core', 'i18n');
 			}
-			$I18n =& I18n::getInstance();
+			$I18n = I18n::getInstance();
 			$I18n->l10n->get(Configure::read('Config.language'));
 			$model->locale = $I18n->l10n->locale;
 		}
@@ -366,7 +361,7 @@ class TranslateBehavior extends ModelBehavior {
  * @return object
  * @access public
  */
-	function &translateModel(&$model) {
+	private function &translateModel(&$model) {
 		if (!isset($this->runtime[$model->alias]['model'])) {
 			if (!isset($model->translateModel) || empty($model->translateModel)) {
 				$className = 'I18nModel';
@@ -374,11 +369,7 @@ class TranslateBehavior extends ModelBehavior {
 				$className = $model->translateModel;
 			}
 
-			if (PHP5) {
-				$this->runtime[$model->alias]['model'] = ClassRegistry::init($className, 'Model');
-			} else {
-				$this->runtime[$model->alias]['model'] =& ClassRegistry::init($className, 'Model');
-			}
+			$this->runtime[$model->alias]['model'] = ClassRegistry::init($className, 'Model');
 		}
 		if (!empty($model->translateTable) && $model->translateTable !== $this->runtime[$model->alias]['model']->useTable) {
 			$this->runtime[$model->alias]['model']->setSource($model->translateTable);
@@ -397,12 +388,12 @@ class TranslateBehavior extends ModelBehavior {
  * @param boolean $reset
  * @return bool
  */
-	function bindTranslation(&$model, $fields, $reset = true) {
+	private function bindTranslation(&$model, $fields, $reset = true) {
 		if (is_string($fields)) {
 			$fields = array($fields);
 		}
 		$associations = array();
-		$RuntimeModel =& $this->translateModel($model);
+		$RuntimeModel = $this->translateModel($model);
 		$default = array('className' => $RuntimeModel->alias, 'foreignKey' => 'foreign_key');
 
 		foreach ($fields as $key => $value) {
@@ -469,7 +460,7 @@ class TranslateBehavior extends ModelBehavior {
  * @param mixed string with field, or array(field1, field2=>AssocName, field3), or null for unbind all original translations
  * @return bool
  */
-	function unbindTranslation(&$model, $fields = null) {
+	private function unbindTranslation(&$model, $fields = null) {
 		if (empty($fields)) {
 			return $this->unbindTranslation($model, $this->settings[$model->alias]);
 		}
@@ -477,7 +468,7 @@ class TranslateBehavior extends ModelBehavior {
 		if (is_string($fields)) {
 			$fields = array($fields);
 		}
-		$RuntimeModel =& $this->translateModel($model);
+		$RuntimeModel = $this->translateModel($model);
 		$associations = array();
 
 		foreach ($fields as $key => $value) {
@@ -519,9 +510,9 @@ if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
  * @subpackage    cake.cake.libs.model.behaviors
  */
 	class I18nModel extends AppModel {
-		var $name = 'I18nModel';
-		var $useTable = 'i18n';
-		var $displayField = 'field';
+		private $name = 'I18nModel';
+		private $useTable = 'i18n';
+		private $displayField = 'field';
 	}
 }
 ?>

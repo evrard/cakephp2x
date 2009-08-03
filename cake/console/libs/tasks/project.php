@@ -3,9 +3,9 @@
  * The Project Task handles creating the base application
  *
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
@@ -13,7 +13,7 @@
  *
  * @filesource
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.console.bake
  * @since         CakePHP(tm) v 1.2
@@ -196,7 +196,7 @@ class ProjectTask extends Shell {
  * @access public
  */
 	function securitySalt($path) {
-		$File =& new File($path . 'config' . DS . 'core.php');
+		$File = new File($path . 'config' . DS . 'core.php');
 		$contents = $File->read();
 		if (preg_match('/([\\t\\x20]*Configure::write\\(\\\'Security.salt\\\',[\\t\\x20\'A-z0-9]*\\);)/', $contents, $match)) {
 			if (!class_exists('Security')) {
@@ -221,7 +221,7 @@ class ProjectTask extends Shell {
  */
 	function corePath($path) {
 		if (dirname($path) !== CAKE_CORE_INCLUDE_PATH) {
-			$File =& new File($path . 'webroot' . DS . 'index.php');
+			$File = new File($path . 'webroot' . DS . 'index.php');
 			$contents = $File->read();
 			if (preg_match('/([\\t\\x20]*define\\(\\\'CAKE_CORE_INCLUDE_PATH\\\',[\\t\\x20\'A-z0-9]*\\);)/', $contents, $match)) {
 				$result = str_replace($match[0], "\t\tdefine('CAKE_CORE_INCLUDE_PATH', '".CAKE_CORE_INCLUDE_PATH."');", $contents);
@@ -232,7 +232,7 @@ class ProjectTask extends Shell {
 				return false;
 			}
 
-			$File =& new File($path . 'webroot' . DS . 'test.php');
+			$File = new File($path . 'webroot' . DS . 'test.php');
 			$contents = $File->read();
 			if (preg_match('/([\\t\\x20]*define\\(\\\'CAKE_CORE_INCLUDE_PATH\\\',[\\t\\x20\'A-z0-9]*\\);)/', $contents, $match)) {
 				$result = str_replace($match[0], "\t\tdefine('CAKE_CORE_INCLUDE_PATH', '".CAKE_CORE_INCLUDE_PATH."');", $contents);
@@ -255,7 +255,7 @@ class ProjectTask extends Shell {
  */
 	function cakeAdmin($name) {
 		$path = (empty($this->configPath)) ? CONFIGS : $this->configPath;
-		$File =& new File($path . 'core.php');
+		$File = new File($path . 'core.php');
 		$contents = $File->read();
 		if (preg_match('%([/\\t\\x20]*Configure::write\(\'Routing.admin\',[\\t\\x20\'a-z]*\\);)%', $contents, $match)) {
 			$result = str_replace($match[0], "\t" . 'Configure::write(\'Routing.admin\', \''.$name.'\');', $contents);

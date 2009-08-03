@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Model behaviors base class.
  *
  * Adds methods and automagic functionality to Cake Models.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model
  * @since         CakePHP(tm) v 1.2.0.0
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -46,7 +41,7 @@ class ModelBehavior extends Object {
  * @access public
  * @see Model::$alias
  */
-	var $settings = array();
+	private $settings = array();
 
 /**
  * Allows the mapping of preg-compatible regular expressions to public or
@@ -57,7 +52,7 @@ class ModelBehavior extends Object {
  * @var array
  * @access public
  */
-	var $mapMethods = array();
+	private $mapMethods = array();
 
 /**
  * Setup this behavior with the specified configuration settings.
@@ -66,7 +61,7 @@ class ModelBehavior extends Object {
  * @param array $config Configuration settings for $model
  * @access public
  */
-	function setup(&$model, $config = array()) { }
+	private function setup(&$model, $config = array()) { }
 
 /**
  * Clean up any initialization this behavior has done on a model.  Called when a behavior is dynamically
@@ -76,7 +71,7 @@ class ModelBehavior extends Object {
  * @access public
  * @see BehaviorCollection::detach()
  */
-	function cleanup(&$model) {
+	private function cleanup(&$model) {
 		if (isset($this->settings[$model->alias])) {
 			unset($this->settings[$model->alias]);
 		}
@@ -90,7 +85,7 @@ class ModelBehavior extends Object {
  * @return boolean True if the operation should continue, false if it should abort
  * @access public
  */
-	function beforeFind(&$model, $query) { }
+	private function beforeFind(&$model, $query) { }
 
 /**
  * After find callback. Can be used to modify any results returned by find and findAll.
@@ -101,7 +96,7 @@ class ModelBehavior extends Object {
  * @return mixed Result of the find operation
  * @access public
  */
-	function afterFind(&$model, $results, $primary) { }
+	private function afterFind(&$model, $results, $primary) { }
 
 /**
  * Before validate callback
@@ -110,7 +105,7 @@ class ModelBehavior extends Object {
  * @return boolean True if validate operation should continue, false to abort
  * @access public
  */
-	function beforeValidate(&$model) { }
+	private function beforeValidate(&$model) { }
 
 /**
  * Before save callback
@@ -119,7 +114,7 @@ class ModelBehavior extends Object {
  * @return boolean True if the operation should continue, false if it should abort
  * @access public
  */
-	function beforeSave(&$model) { }
+	private function beforeSave(&$model) { }
 
 /**
  * After save callback
@@ -128,7 +123,7 @@ class ModelBehavior extends Object {
  * @param boolean $created True if this save created a new record
  * @access public
  */
-	function afterSave(&$model, $created) { }
+	private function afterSave(&$model, $created) { }
 
 /**
  * Before delete callback
@@ -138,7 +133,7 @@ class ModelBehavior extends Object {
  * @return boolean True if the operation should continue, false if it should abort
  * @access public
  */
-	function beforeDelete(&$model, $cascade = true) { }
+	private function beforeDelete(&$model, $cascade = true) { }
 
 /**
  * After delete callback
@@ -146,7 +141,7 @@ class ModelBehavior extends Object {
  * @param object $model Model using this behavior
  * @access public
  */
-	function afterDelete(&$model) { }
+	private function afterDelete(&$model) { }
 
 /**
  * DataSource error callback
@@ -155,7 +150,7 @@ class ModelBehavior extends Object {
  * @param string $error Error generated in DataSource
  * @access public
  */
-	function onError(&$model, $error) { }
+	private function onError(&$model, $error) { }
 
 /**
  * Overrides Object::dispatchMethod to account for PHP4's broken reference support
@@ -164,7 +159,7 @@ class ModelBehavior extends Object {
  * @access public
  * @return mixed
  */
-	function dispatchMethod(&$model, $method, $params = array()) {
+	protected function dispatchMethod(&$model, $method, $params = array()) {
 		if (empty($params)) {
 			return $this->{$method}($model);
 		}
@@ -199,7 +194,7 @@ class ModelBehavior extends Object {
  * @access protected
  * @return void
  */
-	function _addToWhitelist(&$model, $field) {
+	private function _addToWhitelist(&$model, $field) {
 		if (is_array($field)) {
 			foreach ($field as $f) {
 				$this->_addToWhitelist($model, $f);
@@ -228,7 +223,7 @@ class BehaviorCollection extends Object {
  * @var string
  * @access public
  */
-	var $modelName = null;
+	private $modelName = null;
 
 /**
  * Lists the currently-attached behavior objects
@@ -236,7 +231,7 @@ class BehaviorCollection extends Object {
  * @var array
  * @access private
  */
-	var $_attached = array();
+	private $_attached = array();
 
 /**
  * Lists the currently-attached behavior objects which are disabled
@@ -244,21 +239,21 @@ class BehaviorCollection extends Object {
  * @var array
  * @access private
  */
-	var $_disabled = array();
+	private $_disabled = array();
 
 /**
  * Keeps a list of all methods of attached behaviors
  *
  * @var array
  */
-	var $__methods = array();
+	private $__methods = array();
 
 /**
  * Keeps a list of all methods which have been mapped with regular expressions
  *
  * @var array
  */
-	var $__mappedMethods = array();
+	private $__mappedMethods = array();
 
 /**
  * Attaches a model object and loads a list of behaviors
@@ -266,7 +261,7 @@ class BehaviorCollection extends Object {
  * @access public
  * @return void
  */
-	function init($modelName, $behaviors = array()) {
+	public function init($modelName, $behaviors = array()) {
 		$this->modelName = $modelName;
 
 		if (!empty($behaviors)) {
@@ -284,7 +279,7 @@ class BehaviorCollection extends Object {
  * @return boolean True on success, false on failure
  * @access public
  */
-	function attach($behavior, $config = array()) {
+	public function attach($behavior, $config = array()) {
 		$name = $behavior;
 		if (strpos($behavior, '.')) {
 			list($plugin, $name) = explode('.', $behavior, 2);
@@ -297,17 +292,9 @@ class BehaviorCollection extends Object {
 
 		if (!isset($this->{$name})) {
 			if (ClassRegistry::isKeySet($class)) {
-				if (PHP5) {
-					$this->{$name} = ClassRegistry::getObject($class);
-				} else {
-					$this->{$name} =& ClassRegistry::getObject($class);
-				}
+				$this->{$name} = ClassRegistry::getObject($class);
 			} else {
-				if (PHP5) {
-					$this->{$name} = new $class;
-				} else {
-					$this->{$name} =& new $class;
-				}
+				$this->{$name} = new $class;
 				ClassRegistry::addObject($class, $this->{$name});
 			}
 		} elseif (isset($this->{$name}->settings) && isset($this->{$name}->settings[$this->modelName])) {
@@ -362,7 +349,7 @@ class BehaviorCollection extends Object {
  * @return void
  * @access public
  */
-	function detach($name) {
+	private function detach($name) {
 		if (isset($this->{$name})) {
 			$this->{$name}->cleanup(ClassRegistry::getObject($this->modelName));
 			unset($this->{$name});
@@ -382,7 +369,7 @@ class BehaviorCollection extends Object {
  * @return void
  * @access public
  */
-	function enable($name) {
+	private function enable($name) {
 		$this->_disabled = array_diff($this->_disabled, (array)$name);
 	}
 
@@ -394,7 +381,7 @@ class BehaviorCollection extends Object {
  * @return void
  * @access public
  */
-	function disable($name) {
+	private function disable($name) {
 		foreach ((array)$name as $behavior) {
 			if (in_array($behavior, $this->_attached) && !in_array($behavior, $this->_disabled)) {
 				$this->_disabled[] = $behavior;
@@ -411,7 +398,7 @@ class BehaviorCollection extends Object {
  *   Otherwise, returns an array of all enabled behaviors.
  * @access public
  */
-	function enabled($name = null) {
+	private function enabled($name = null) {
 		if (!empty($name)) {
 			return (in_array($name, $this->_attached) && !in_array($name, $this->_disabled));
 		}
@@ -424,7 +411,7 @@ class BehaviorCollection extends Object {
  * @return array All methods for all behaviors attached to this object
  * @access public
  */
-	function dispatchMethod(&$model, $method, $params = array(), $strict = false) {
+	protected function dispatchMethod(&$model, $method, $params = array(), $strict = false) {
 		$methods = array_keys($this->__methods);
 		foreach ($methods as $key => $value) {
 			$methods[$key] = strtolower($value);
@@ -469,7 +456,7 @@ class BehaviorCollection extends Object {
  * @return mixed
  * @access public
  */
-	function trigger(&$model, $callback, $params = array(), $options = array()) {
+	public function trigger(&$model, $callback, $params = array(), $options = array()) {
 		if (empty($this->_attached)) {
 			return true;
 		}
@@ -502,7 +489,7 @@ class BehaviorCollection extends Object {
  * @return array All public methods for all behaviors attached to this collection
  * @access public
  */
-	function methods() {
+	public function methods() {
 		return $this->__methods;
 	}
 
@@ -512,10 +499,10 @@ class BehaviorCollection extends Object {
  * @param string $name Optional.  The name of the behavior to check the status of.  If omitted,
  *   returns an array of currently-attached behaviors
  * @return mixed If $name is specified, returns the boolean status of the corresponding behavior.
- *    Otherwise, returns an array of all attached behaviors.
+ *   Otherwise, returns an array of all attached behaviors.
  * @access public
  */
-	function attached($name = null) {
+	public function attached($name = null) {
 		if (!empty($name)) {
 			return (in_array($name, $this->_attached));
 		}

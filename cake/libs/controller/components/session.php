@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
  * @since         CakePHP(tm) v 0.10.0.1232
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 if (!class_exists('cakesession')) {
@@ -46,7 +41,7 @@ class SessionComponent extends CakeSession {
  * @var boolean
  * @access private
  */
-	var $__active = true;
+	private $__active = true;
 
 /**
  * Used to determine if Session has been started
@@ -54,7 +49,7 @@ class SessionComponent extends CakeSession {
  * @var boolean
  * @access private
  */
-	var $__started = false;
+	private $__started = false;
 
 /**
  * Used to determine if request are from an Ajax request
@@ -62,14 +57,14 @@ class SessionComponent extends CakeSession {
  * @var boolean
  * @access private
  */
-	var $__bare = 0;
+	private $__bare = 0;
 
 /**
  * Class constructor
  *
  * @param string $base The base path for the Session
  */
-	function __construct($base = null) {
+	public function __construct($base = null) {
 		if (Configure::read('Session.start') === true) {
 			parent::__construct($base);
 		} else {
@@ -84,7 +79,7 @@ class SessionComponent extends CakeSession {
  * @return void
  * @access public
  */
-	function initialize(&$controller) {
+	public function initialize(&$controller) {
 		if (isset($controller->params['bare'])) {
 			$this->__bare = $controller->params['bare'];
 		}
@@ -97,7 +92,7 @@ class SessionComponent extends CakeSession {
  * @return void
  * @access public
  */
-	function startup(&$controller) {
+	public function startup(&$controller) {
 		if ($this->__started === false && $this->__active === true) {
 			$this->__start();
 		}
@@ -110,7 +105,7 @@ class SessionComponent extends CakeSession {
  * @return void
  * @access public
  */
-	function activate($base = null) {
+	public function activate($base = null) {
 		if ($this->__active === true) {
 			return;
 		}
@@ -129,7 +124,7 @@ class SessionComponent extends CakeSession {
  * @return boolean Success
  * @access public
  */
-	function write($name, $value = null) {
+	public function write($name, $value = null) {
 		if ($this->__active === true) {
 			$this->__start();
 			if (is_array($name)) {
@@ -158,7 +153,7 @@ class SessionComponent extends CakeSession {
  * @return mixed value from the session vars
  * @access public
  */
-	function read($name = null) {
+	public function read($name = null) {
 		if ($this->__active === true) {
 			$this->__start();
 			return parent::read($name);
@@ -175,7 +170,7 @@ class SessionComponent extends CakeSession {
  * @return boolean true is session variable is set and can be deleted, false is variable was not set.
  * @access public
  */
-	function del($name) {
+	public function del($name) {
 		if ($this->__active === true) {
 			$this->__start();
 			return parent::del($name);
@@ -192,7 +187,7 @@ class SessionComponent extends CakeSession {
  * @return boolean true is session variable is set and can be deleted, false is variable was not set.
  * @access public
  */
-	function delete($name) {
+	public function delete($name) {
 		if ($this->__active === true) {
 			$this->__start();
 			return $this->del($name);
@@ -209,7 +204,7 @@ class SessionComponent extends CakeSession {
  * @return boolean true is session variable is set, false if not
  * @access public
  */
-	function check($name) {
+	public function check($name) {
 		if ($this->__active === true) {
 			$this->__start();
 			return parent::check($name);
@@ -225,7 +220,7 @@ class SessionComponent extends CakeSession {
  * @return string Last session error
  * @access public
  */
-	function error() {
+	public function error() {
 		if ($this->__active === true) {
 			$this->__start();
 			return parent::error();
@@ -246,7 +241,7 @@ class SessionComponent extends CakeSession {
  * @param string $key Message key, default is 'flash'
  * @access public
  */
-	function setFlash($message, $layout = 'default', $params = array(), $key = 'flash') {
+	public function setFlash($message, $layout = 'default', $params = array(), $key = 'flash') {
 		if ($this->__active === true) {
 			$this->__start();
 			$this->write('Message.' . $key, compact('message', 'layout', 'params'));
@@ -261,7 +256,7 @@ class SessionComponent extends CakeSession {
  * @return void
  * @access public
  */
-	function renew() {
+	public function renew() {
 		if ($this->__active === true) {
 			$this->__start();
 			parent::renew();
@@ -276,7 +271,7 @@ class SessionComponent extends CakeSession {
  * @return boolean true is session is valid, false is session is invalid
  * @access public
  */
-	function valid() {
+	public function valid() {
 		if ($this->__active === true) {
 			$this->__start();
 			return parent::valid();
@@ -292,7 +287,7 @@ class SessionComponent extends CakeSession {
  * @return void
  * @access public
  */
-	function destroy() {
+	public function destroy() {
 		if ($this->__active === true) {
 			$this->__start();
 			parent::destroy();
@@ -309,7 +304,7 @@ class SessionComponent extends CakeSession {
  * @return string
  * @access public
  */
-	function id($id = null) {
+	public function id($id = null) {
 		return parent::id($id);
 	}
 
@@ -320,7 +315,7 @@ class SessionComponent extends CakeSession {
  * @return boolean
  * @access private
  */
-	function __start() {
+	private function __start() {
 		if ($this->__started === false) {
 			if (!$this->id() && parent::start()) {
 				$this->__started = true;

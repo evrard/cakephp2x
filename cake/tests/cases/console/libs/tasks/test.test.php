@@ -1,13 +1,12 @@
 <?php
-/* SVN FILE: $Id$ */
 /**
  * TestTaskTest file
  *
  * Test Case for test generation shell task
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP :  Rapid Development Framework (http://www.cakephp.org)
+ * CakePHP : Rapid  Development Framework (http://www.cakephp.org)
  * Copyright 2006-2009, Cake Software Foundation, Inc.
  *
  * Licensed under The MIT License
@@ -130,11 +129,11 @@ class TestTaskTest extends CakeTestCase {
  * @access public
  */
 	function startTest() {
-		$this->Dispatcher =& new TestTestTaskMockShellDispatcher();
+		$this->Dispatcher = new TestTestTaskMockShellDispatcher();
 		$this->Dispatcher->shellPaths = App::path('shells');
-		$this->Task =& new MockTestTask($this->Dispatcher);
-		$this->Task->Dispatch =& $this->Dispatcher;
-		$this->Task->Template =& new TemplateTask($this->Dispatcher);
+		$this->Task = new MockTestTask($this->Dispatcher);
+		$this->Task->Dispatch = $this->Dispatcher;
+		$this->Task->Template = new TemplateTask($this->Dispatcher);
 	}
 /**
  * endTest method

@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v .0.10.0.1233
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -42,22 +37,7 @@ class Security extends Object {
  * @var string
  * @access public
  */
-	var $hashType = null;
-
-/**
-  * Singleton implementation to get object instance.
-  *
-  * @return object
-  * @access public
-  * @static
-  */
-	function &getInstance() {
-		static $instance = array();
-		if (!$instance) {
-			$instance[0] =& new Security;
-		}
-		return $instance[0];
-	}
+	public static $hashType = null;
 
 /**
   * Get allowed minutes of inactivity based on security level.
@@ -66,8 +46,7 @@ class Security extends Object {
   * @access public
   * @static
   */
-	function inactiveMins() {
-		$_this =& Security::getInstance();
+	public static function inactiveMins() {
 		switch (Configure::read('Security.level')) {
 			case 'high':
 				return 10;
@@ -89,11 +68,11 @@ class Security extends Object {
   * @access public
   * @static
   */
-	function generateAuthKey() {
+	public static function generateAuthKey() {
 		if (!class_exists('String')) {
 			App::import('Core', 'String');
 		}
-		return Security::hash(String::uuid());
+		return self::hash(String::uuid());
 	}
 
 /**
@@ -105,7 +84,7 @@ class Security extends Object {
  * @static
  * @todo Complete implementation
  */
-	function validateAuthKey($authKey) {
+	public static function validateAuthKey($authKey) {
 		return true;
 	}
 
@@ -121,9 +100,7 @@ class Security extends Object {
  * @access public
  * @static
  */
-	function hash($string, $type = null, $salt = false) {
-		$_this =& Security::getInstance();
-
+	public static function hash($string, $type = null, $salt = false) {
 		if ($salt) {
 			if (is_string($salt)) {
 				$string = $salt . $string;
@@ -133,7 +110,7 @@ class Security extends Object {
 		}
 
 		if (empty($type)) {
-			$type = $_this->hashType;
+			$type = self::$hashType;
 		}
 		$type = strtolower($type);
 
@@ -165,9 +142,8 @@ class Security extends Object {
  * @static
  * @see Security::hash()
  */
-	function setHash($hash) {
-		$_this =& Security::getInstance();
-		$_this->hashType = $hash;
+	public static function setHash($hash) {
+		self::$hashType = $hash;
 	}
 
 /**
@@ -179,13 +155,11 @@ class Security extends Object {
  * @access public
  * @static
  */
-	function cipher($text, $key) {
+	public function cipher($text, $key) {
 		if (empty($key)) {
 			trigger_error(__('You cannot use an empty key for Security::cipher()', true), E_USER_WARNING);
 			return '';
 		}
-
-		$_this =& Security::getInstance();
 		if (!defined('CIPHER_SEED')) {
 			//This is temporary will change later
 			define('CIPHER_SEED', '76859309657453542496749683645');

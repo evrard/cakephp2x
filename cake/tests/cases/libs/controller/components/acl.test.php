@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * AclComponentTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.controller.components
  * @since         CakePHP(tm) v 1.2.0.5435
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
@@ -185,10 +180,10 @@ class DbAclTwoTest extends DbAcl {
  * @return void
  */
 	function __construct() {
-		$this->Aro =& new AroTwoTest();
-		$this->Aro->Permission =& new PermissionTwoTest();
-		$this->Aco =& new AcoTwoTest();
-		$this->Aro->Permission =& new PermissionTwoTest();
+		$this->Aro = new AroTwoTest();
+		$this->Aro->Permission = new PermissionTwoTest();
+		$this->Aco = new AcoTwoTest();
+		$this->Aro->Permission = new PermissionTwoTest();
 	}
 }
 
@@ -224,7 +219,7 @@ class AclComponentTest extends CakeTestCase {
  * @return void
  */
 	function startTest() {
-		$this->Acl =& new AclComponent();
+		$this->Acl = new AclComponent();
 	}
 
 /**

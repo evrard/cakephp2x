@@ -1,26 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Schema database management for CakePHP.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model
  * @since         CakePHP(tm) v 1.2.0.5550
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Model', 'ConnectionManager');
@@ -39,7 +34,7 @@ class CakeSchema extends Object {
  * @var string
  * @access public
  */
-	var $name = null;
+	private $name = null;
 
 /**
  * Path to write location
@@ -47,7 +42,7 @@ class CakeSchema extends Object {
  * @var string
  * @access public
  */
-	var $path = null;
+	private $path = null;
 
 /**
  * File to write
@@ -55,7 +50,7 @@ class CakeSchema extends Object {
  * @var string
  * @access public
  */
-	var $file = 'schema.php';
+	private $file = 'schema.php';
 
 /**
  * Connection used for read
@@ -63,7 +58,7 @@ class CakeSchema extends Object {
  * @var string
  * @access public
  */
-	var $connection = 'default';
+	private $connection = 'default';
 
 /**
  * Set of tables
@@ -71,14 +66,14 @@ class CakeSchema extends Object {
  * @var array
  * @access public
  */
-	var $tables = array();
+	public $tables = array();
 
 /**
  * Constructor
  *
  * @param array $options optional load object properties
  */
-	function __construct($options = array()) {
+	public function __construct($options = array()) {
 		parent::__construct();
 
 		if (empty($options['name'])) {
@@ -104,7 +99,7 @@ class CakeSchema extends Object {
  * @return void
  * @access protected
  */
-	function _build($data) {
+	public function _build($data) {
 		$file = null;
 		foreach ($data as $key => $val) {
 			if (!empty($val)) {
@@ -132,7 +127,7 @@ class CakeSchema extends Object {
  * @return boolean Should process continue
  * @access public
  */
-	function before($event = array()) {
+	private function before($event = array()) {
 		return true;
 	}
 
@@ -142,7 +137,7 @@ class CakeSchema extends Object {
  * @param array $events schema object properties
  * @access public
  */
-	function after($event = array()) {
+	private function after($event = array()) {
 	}
 
 /**
@@ -152,7 +147,7 @@ class CakeSchema extends Object {
  * @return array Set of name and tables
  * @access public
  */
-	function load($options = array()) {
+	private function load($options = array()) {
 		if (is_string($options)) {
 			$options = array('path' => $options);
 		}
@@ -170,7 +165,7 @@ class CakeSchema extends Object {
 		}
 
 		if (class_exists($class)) {
-			$Schema =& new $class($options);
+			$Schema = new $class($options);
 			return $Schema;
 		}
 
@@ -189,7 +184,7 @@ class CakeSchema extends Object {
  * @return array Array indexed by name and tables
  * @access public
  */
-	function read($options = array()) {
+	private function read($options = array()) {
 		extract(array_merge(
 			array(
 				'connection' => $this->connection,
@@ -198,7 +193,7 @@ class CakeSchema extends Object {
 			),
 			$options
 		));
-		$db =& ConnectionManager::getDataSource($connection);
+		$db = ConnectionManager::getDataSource($connection);
 
 		App::import('Model', 'AppModel');
 
@@ -216,11 +211,7 @@ class CakeSchema extends Object {
 
 		if (is_array($models)) {
 			foreach ($models as $model) {
-				if (PHP5) {
-					$Object = ClassRegistry::init(array('class' => $model, 'ds' => $connection));
-				} else {
-					$Object =& ClassRegistry::init(array('class' => $model, 'ds' => $connection));
-				}
+				$Object = ClassRegistry::init(array('class' => $model, 'ds' => $connection));
 
 				if (is_object($Object) && $Object->useTable !== false) {
 					$Object->setDataSource($connection);
@@ -297,7 +288,7 @@ class CakeSchema extends Object {
  * @return mixed false or string written to file
  * @access public
  */
-	function write($object, $options = array()) {
+	private function write($object, $options = array()) {
 		if (is_object($object)) {
 			$object = get_object_vars($object);
 			$this->_build($object);
@@ -367,9 +358,9 @@ class CakeSchema extends Object {
 		$out .="}\n";
 
 
-		$File =& new File($path . DS . $file, true);
+		$File = new File($path . DS . $file, true);
 		$header = '$Id';
-		$content = "<?php \n/* SVN FILE: {$header}$ */\n/* {$name} schema generated on: " . date('Y-m-d H:m:s') . " : ". time() . "*/\n{$out}?>";
+		$content = "<?php \n/* {$name} schema generated on: " . date('Y-m-d H:m:s') . " : ". time() . "*/\n{$out}?>";
 		$content = $File->prepare($content);
 		if ($File->write($content)) {
 			return $content;
@@ -385,7 +376,7 @@ class CakeSchema extends Object {
  * @return array Tables (that are added, dropped, or changed)
  * @access public
  */
-	function compare($old, $new = null) {
+	private function compare($old, $new = null) {
 		if (empty($new)) {
 			$new = $this;
 		}
@@ -457,7 +448,7 @@ class CakeSchema extends Object {
  * @return array Formatted values
  * @access public
  */
-	function __values($values) {
+	private function __values($values) {
 		$vals = array();
 		if (is_array($values)) {
 			foreach ($values as $key => $val) {
@@ -479,8 +470,8 @@ class CakeSchema extends Object {
  * @return array Formatted columns
  * @access public
  */
-	function __columns(&$Obj) {
-		$db =& ConnectionManager::getDataSource($Obj->useDbConfig);
+	private function __columns(&$Obj) {
+		$db = ConnectionManager::getDataSource($Obj->useDbConfig);
 		$fields = $Obj->schema(true);
 		$columns = $props = array();
 		foreach ($fields as $name => $value) {
@@ -522,7 +513,7 @@ class CakeSchema extends Object {
  * @param array $old Old indexes
  * @return mixed false on failure or array of indexes to add and drop
  */
-	function _compareIndexes($new, $old) {
+	protected function _compareIndexes($new, $old) {
 		if (!is_array($new) || !is_array($old)) {
 			return false;
 		}

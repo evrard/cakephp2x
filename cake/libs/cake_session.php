@@ -1,6 +1,4 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Session class for Cake.
  *
@@ -9,26 +7,22 @@
  * This class is the implementation of those methods.
  * They are mostly used by the Session Component.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v .0.10.0.1222
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
 /**
  * Session class for Cake.
  *
@@ -46,7 +40,7 @@ class CakeSession extends Object {
  * @var boolean
  * @access public
  */
-	var $valid = false;
+	private $valid = false;
 
 /**
  * Error messages for this session
@@ -54,7 +48,7 @@ class CakeSession extends Object {
  * @var array
  * @access public
  */
-	var $error = false;
+	private $error = false;
 
 /**
  * User agent string
@@ -62,7 +56,7 @@ class CakeSession extends Object {
  * @var string
  * @access protected
  */
-	var $_userAgent = '';
+	protected $_userAgent = '';
 
 /**
  * Path to where the session is active.
@@ -70,7 +64,7 @@ class CakeSession extends Object {
  * @var string
  * @access public
  */
-	var $path = '/';
+	public $path = '/';
 
 /**
  * Error number of last occurred error
@@ -78,7 +72,7 @@ class CakeSession extends Object {
  * @var integer
  * @access public
  */
-	var $lastError = null;
+	private $lastError = null;
 
 /**
  * 'Security.level' setting, "high", "medium", or "low".
@@ -86,7 +80,7 @@ class CakeSession extends Object {
  * @var string
  * @access public
  */
-	var $security = null;
+	private $security = null;
 
 /**
  * Start time for this session.
@@ -94,7 +88,7 @@ class CakeSession extends Object {
  * @var integer
  * @access public
  */
-	var $time = false;
+	private $time = false;
 
 /**
  * Time when this session becomes invalid.
@@ -102,7 +96,7 @@ class CakeSession extends Object {
  * @var integer
  * @access public
  */
-	var $sessionTime = false;
+	private $sessionTime = false;
 
 /**
  * Keeps track of keys to watch for writes on
@@ -110,7 +104,7 @@ class CakeSession extends Object {
  * @var array
  * @access public
  */
-	var $watchKeys = array();
+	private $watchKeys = array();
 
 /**
  * Current Session id
@@ -118,7 +112,7 @@ class CakeSession extends Object {
  * @var string
  * @access public
  */
-	var $id = null;
+	private $id = null;
 
 /**
  * Constructor.
@@ -127,8 +121,8 @@ class CakeSession extends Object {
  * @param boolean $start Should session be started right now
  * @access public
  */
-	function __construct($base = null, $start = true) {
-		App::import('Core', 'Set', 'Security');
+	public function __construct($base = null, $start = true) {
+		App::import('Core', 'Security');
 		$this->time = time();
 
 		if (Configure::read('Session.checkAgent') === true || Configure::read('Session.checkAgent') === null) {
@@ -187,7 +181,7 @@ class CakeSession extends Object {
  * @return boolean True if variable is there
  * @access public
  */
-	function start() {
+	public function start() {
 		if (function_exists('session_write_close')) {
 			session_write_close();
 		}
@@ -201,7 +195,7 @@ class CakeSession extends Object {
  * @access public
  * @return boolean True if session has been started.
  */
-	function started() {
+	public function started() {
 		if (isset($_SESSION)) {
 			return true;
 		}
@@ -215,7 +209,7 @@ class CakeSession extends Object {
  * @return boolean True if variable is there
  * @access public
  */
-	function check($name) {
+	public function check($name) {
 		$var = $this->__validateKeys($name);
 		if (empty($var)) {
 			return false;
@@ -231,7 +225,7 @@ class CakeSession extends Object {
  * @return string Session id
  * @access public
  */
-	function id($id = null) {
+	public function id($id = null) {
 		if ($id) {
 			$this->id = $id;
 			session_id($this->id);
@@ -250,7 +244,7 @@ class CakeSession extends Object {
  * @return boolean Success
  * @access public
  */
-	function del($name) {
+	public function del($name) {
 		if ($this->check($name)) {
 			if ($var = $this->__validateKeys($name)) {
 				if (in_array($var, $this->watchKeys)) {
@@ -271,7 +265,7 @@ class CakeSession extends Object {
  * @param array $new New set of variable => value
  * @access private
  */
-	function __overwrite(&$old, $new) {
+	private function __overwrite(&$old, $new) {
 		if (!empty($old)) {
 			foreach ($old as $key => $var) {
 				if (!isset($new[$key])) {
@@ -291,7 +285,7 @@ class CakeSession extends Object {
  * @return string Error as string
  * @access private
  */
-	function __error($errorNumber) {
+	private function __error($errorNumber) {
 		if (!is_array($this->error) || !array_key_exists($errorNumber, $this->error)) {
 			return false;
 		} else {
@@ -305,7 +299,7 @@ class CakeSession extends Object {
  * @return mixed Error description as a string, or false.
  * @access public
  */
-	function error() {
+	public function error() {
 		if ($this->lastError) {
 			return $this->__error($this->lastError);
 		} else {
@@ -319,7 +313,7 @@ class CakeSession extends Object {
  * @return boolean Success
  * @access public
  */
-	function valid() {
+	public function valid() {
 		if ($this->read('Config')) {
 			if ((Configure::read('Session.checkAgent') === false || $this->_userAgent == $this->read('Config.userAgent')) && $this->time <= $this->read('Config.time')) {
 				if ($this->error === false) {
@@ -340,7 +334,7 @@ class CakeSession extends Object {
  * @return mixed The value of the session variable
  * @access public
  */
-	function read($name = null) {
+	public function read($name = null) {
 		if (is_null($name)) {
 			return $this->__returnSessionVars();
 		}
@@ -362,7 +356,7 @@ class CakeSession extends Object {
  * @return mixed Full $_SESSION array, or false on error.
  * @access private
  */
-	function __returnSessionVars() {
+	private function __returnSessionVars() {
 		if (!empty($_SESSION)) {
 			return $_SESSION;
 		}
@@ -377,7 +371,7 @@ class CakeSession extends Object {
  * @return void
  * @access public
  */
-	function watch($var) {
+	public function watch($var) {
 		$var = $this->__validateKeys($var);
 		if (empty($var)) {
 			return false;
@@ -394,7 +388,7 @@ class CakeSession extends Object {
  * @return void
  * @access public
  */
-	function ignore($var) {
+	public function ignore($var) {
 		$var = $this->__validateKeys($var);
 		if (!in_array($var, $this->watchKeys)) {
 			return;
@@ -416,7 +410,7 @@ class CakeSession extends Object {
  * @return boolean True if the write was successful, false if the write failed
  * @access public
  */
-	function write($name, $value) {
+	public function write($name, $value) {
 		$var = $this->__validateKeys($name);
 
 		if (empty($var)) {
@@ -435,7 +429,7 @@ class CakeSession extends Object {
  * @return void
  * @access public
  */
-	function destroy() {
+	public function destroy() {
 		$_SESSION = array();
 		$this->__construct($this->path);
 		$this->start();
@@ -448,7 +442,7 @@ class CakeSession extends Object {
  *
  * @access private
  */
-	function __initSession() {
+	private function __initSession() {
 		$iniSet = function_exists('ini_set');
 
 		if ($iniSet && env('HTTPS')) {
@@ -566,7 +560,7 @@ class CakeSession extends Object {
  *
  * @access private
  */
-	function __startSession() {
+	private function __startSession() {
 		if (headers_sent()) {
 			if (empty($_SESSION)) {
 				$_SESSION = array();
@@ -589,7 +583,7 @@ class CakeSession extends Object {
  * @return void
  * @access protected
  */
-	function _checkValid() {
+	protected function _checkValid() {
 		if ($this->read('Config')) {
 			if ((Configure::read('Session.checkAgent') === false || $this->_userAgent == $this->read('Config.userAgent')) && $this->time <= $this->read('Config.time')) {
 				$time = $this->read('Config.time');
@@ -626,7 +620,7 @@ class CakeSession extends Object {
  * @return void
  * @access private
  */
-	function __regenerateId() {
+	private function __regenerateId() {
 		$oldSessionId = session_id();
 		if ($oldSessionId) {
 			$sessionpath = session_save_path();
@@ -661,7 +655,7 @@ class CakeSession extends Object {
  *
  * @access public
  */
-	function renew() {
+	private function renew() {
 		$this->__regenerateId();
 	}
 
@@ -673,7 +667,7 @@ class CakeSession extends Object {
  * @return mixed false is $name is not correct format, or $name if it is correct
  * @access private
  */
-	function __validateKeys($name) {
+	private function __validateKeys($name) {
 		if (is_string($name) && preg_match("/^[ 0-9a-zA-Z._-]*$/", $name)) {
 			return $name;
 		}
@@ -689,7 +683,7 @@ class CakeSession extends Object {
  * @return void
  * @access private
  */
-	function __setError($errorNumber, $errorMessage) {
+	private function __setError($errorNumber, $errorMessage) {
 		if ($this->error === false) {
 			$this->error = array();
 		}
@@ -703,7 +697,7 @@ class CakeSession extends Object {
  * @return boolean Success
  * @access private
  */
-	function __open() {
+	private function __open() {
 		return true;
 	}
 
@@ -713,7 +707,7 @@ class CakeSession extends Object {
  * @return boolean Success
  * @access private
  */
-	function __close() {
+	private function __close() {
 		$probability = mt_rand(1, 150);
 		if ($probability <= 3) {
 			switch (Configure::read('Session.save')) {
@@ -735,8 +729,8 @@ class CakeSession extends Object {
  * @return mixed The value of the key or false if it does not exist
  * @access private
  */
-	function __read($id) {
-		$model =& ClassRegistry::getObject('Session');
+	private function __read($id) {
+		$model = ClassRegistry::getObject('Session');
 
 		$row = $model->find('first', array(
 			'conditions' => array($model->primaryKey => $id)
@@ -757,7 +751,7 @@ class CakeSession extends Object {
  * @return boolean True for successful write, false otherwise.
  * @access private
  */
-	function __write($id, $data) {
+	public function __write($id, $data) {
 		switch (Configure::read('Security.level')) {
 			case 'medium':
 				$factor = 100;
@@ -773,7 +767,7 @@ class CakeSession extends Object {
 
 		$expires = time() + Configure::read('Session.timeout') * $factor;
 
-		$model =& ClassRegistry::getObject('Session');
+		$model = ClassRegistry::getObject('Session');
 		$return = $model->save(compact('id', 'data', 'expires'));
 
 		return $return;
@@ -786,8 +780,8 @@ class CakeSession extends Object {
  * @return boolean True for successful delete, false otherwise.
  * @access private
  */
-	function __destroy($id) {
-		$model =& ClassRegistry::getObject('Session');
+	private function __destroy($id) {
+		$model = ClassRegistry::getObject('Session');
 		$return = $model->delete($id);
 
 		return $return;
@@ -800,8 +794,8 @@ class CakeSession extends Object {
  * @return boolean Success
  * @access private
  */
-	function __gc($expires = null) {
-		$model =& ClassRegistry::getObject('Session');
+	private function __gc($expires = null) {
+		$model = ClassRegistry::getObject('Session');
 
 		if (!$expires) {
 			$expires = time();

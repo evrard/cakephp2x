@@ -1,26 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Time Helper class file.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.view.helpers
  * @since         CakePHP(tm) v 0.10.0.1076
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -41,7 +36,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return string UNIX timestamp
  */
-	function convert($serverTime, $userOffset) {
+	private function convert($serverTime, $userOffset) {
 		$serverOffset = $this->serverOffset();
 		$gmtTime = $serverTime - $serverOffset;
 		$userTime = $gmtTime + $userOffset * (60*60);
@@ -53,7 +48,7 @@ class TimeHelper extends AppHelper {
  *
  * @return int Offset
  */
-	function serverOffset() {
+	private function serverOffset() {
 		return date('Z', time());
 	}
 
@@ -64,7 +59,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return string Parsed timestamp
  */
-	function fromString($dateString, $userOffset = null) {
+	private function fromString($dateString, $userOffset = null) {
 		if (empty($dateString)) {
 			return false;
 		}
@@ -86,7 +81,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return string Formatted date string
  */
-	function nice($dateString = null, $userOffset = null) {
+	private function nice($dateString = null, $userOffset = null) {
 		if ($dateString != null) {
 			$date = $this->fromString($dateString, $userOffset);
 		} else {
@@ -109,7 +104,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return string Described, relative date string
  */
-	function niceShort($dateString = null, $userOffset = null) {
+	private function niceShort($dateString = null, $userOffset = null) {
 		$date = $dateString ? $this->fromString($dateString, $userOffset) : time();
 
 		$y = $this->isThisYear($date) ? '' : ' Y';
@@ -134,7 +129,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return string Partial SQL string.
  */
-	function daysAsSql($begin, $end, $fieldName, $userOffset = null) {
+	private function daysAsSql($begin, $end, $fieldName, $userOffset = null) {
 		$begin = $this->fromString($begin, $userOffset);
 		$end = $this->fromString($end, $userOffset);
 		$begin = date('Y-m-d', $begin) . ' 00:00:00';
@@ -153,7 +148,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return string Partial SQL string.
  */
-	function dayAsSql($dateString, $fieldName, $userOffset = null) {
+	private function dayAsSql($dateString, $fieldName, $userOffset = null) {
 		$date = $this->fromString($dateString, $userOffset);
 		$ret = $this->daysAsSql($dateString, $dateString, $fieldName);
 		return $this->output($ret);
@@ -166,7 +161,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return boolean True if datetime string is today
  */
-	function isToday($dateString, $userOffset = null) {
+	private function isToday($dateString, $userOffset = null) {
 		$date = $this->fromString($dateString, $userOffset);
 		return date('Y-m-d', $date) == date('Y-m-d', time());
 	}
@@ -177,7 +172,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return boolean True if datetime string is within current week
  */
-	function isThisWeek($dateString, $userOffset = null) {
+	private function isThisWeek($dateString, $userOffset = null) {
 		$date = $this->fromString($dateString, $userOffset);
 		return date('W Y', $date) == date('W Y', time());
 	}
@@ -188,7 +183,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return boolean True if datetime string is within current month
  */
-	function isThisMonth($dateString, $userOffset = null) {
+	private function isThisMonth($dateString, $userOffset = null) {
 		$date = $this->fromString($dateString);
 		return date('m Y',$date) == date('m Y', time());
 	}
@@ -199,7 +194,7 @@ class TimeHelper extends AppHelper {
  * @param string $dateString Datetime string or Unix timestamp
  * @return boolean True if datetime string is within current year
  */
-	function isThisYear($dateString, $userOffset = null) {
+	private function isThisYear($dateString, $userOffset = null) {
 		$date = $this->fromString($dateString, $userOffset);
 		return  date('Y', $date) == date('Y', time());
 	}
@@ -211,7 +206,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return boolean True if datetime string was yesterday
  */
-	function wasYesterday($dateString, $userOffset = null) {
+	private function wasYesterday($dateString, $userOffset = null) {
 		$date = $this->fromString($dateString, $userOffset);
 		return date('Y-m-d', $date) == date('Y-m-d', strtotime('yesterday'));
 	}
@@ -223,7 +218,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return boolean True if datetime string was yesterday
  */
-	function isTomorrow($dateString, $userOffset = null) {
+	private function isTomorrow($dateString, $userOffset = null) {
 		$date = $this->fromString($dateString, $userOffset);
 		return date('Y-m-d', $date) == date('Y-m-d', strtotime('tomorrow'));
 	}
@@ -234,7 +229,7 @@ class TimeHelper extends AppHelper {
  * @param boolean $range if true returns a range in Y-m-d format
  * @return boolean True if datetime string is within current week
  */
-	function toQuarter($dateString, $range = false) {
+	private function toQuarter($dateString, $range = false) {
 		$time = $this->fromString($dateString);
 		$date = ceil(date('m', $time) / 3);
 
@@ -270,7 +265,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return integer Unix timestamp
  */
-	function toUnix($dateString, $userOffset = null) {
+	private function toUnix($dateString, $userOffset = null) {
 		$ret = $this->fromString($dateString, $userOffset);
 		return $this->output($ret);
 	}
@@ -282,7 +277,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return string Formatted date string
  */
-	function toAtom($dateString, $userOffset = null) {
+	private function toAtom($dateString, $userOffset = null) {
 		$date = $this->fromString($dateString, $userOffset);
 		$ret = date('Y-m-d\TH:i:s\Z', $date);
 		return $this->output($ret);
@@ -295,7 +290,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return string Formatted date string
  */
-	function toRSS($dateString, $userOffset = null) {
+	private function toRSS($dateString, $userOffset = null) {
 		$date = $this->fromString($dateString, $userOffset);
 		$ret = date("r", $date);
 		return $this->output($ret);
@@ -325,7 +320,7 @@ class TimeHelper extends AppHelper {
  * @param array $options Default format if timestamp is used in $dateString
  * @return string Relative time string.
  */
-	function timeAgoInWords($dateTime, $options = array()) {
+	private function timeAgoInWords($dateTime, $options = array()) {
 		$userOffset = null;
 		if (is_array($options) && isset($options['userOffset'])) {
 			$userOffset = $options['userOffset'];
@@ -490,7 +485,7 @@ class TimeHelper extends AppHelper {
  * @return string Relative time string.
  * @see		TimeHelper::timeAgoInWords
  */
-	function relativeTime($dateTime, $options = array()) {
+	private function relativeTime($dateTime, $options = array()) {
 		return $this->timeAgoInWords($dateTime, $options);
 	}
 
@@ -502,7 +497,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return bool
  */
-	function wasWithinLast($timeInterval, $dateString, $userOffset = null) {
+	private function wasWithinLast($timeInterval, $dateString, $userOffset = null) {
 		$tmp = str_replace(' ', '', $timeInterval);
 		if (is_numeric($tmp)) {
 			$timeInterval = $tmp . ' ' . __('days', true);
@@ -524,7 +519,7 @@ class TimeHelper extends AppHelper {
  * @param string $dateString Datetime string
  * @return string Formatted date string
  */
-	function gmt($string = null) {
+	private function gmt($string = null) {
 		if ($string != null) {
 			$string = $this->fromString($string);
 		} else {
@@ -551,7 +546,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return string Formatted date string
  */
-	function format($format = 'd-m-Y', $date, $invalid = false, $userOffset = null) {
+	private function format($format = 'd-m-Y', $date, $invalid = false, $userOffset = null) {
 		$date = $this->fromString($date, $userOffset);
 		if ($date === false && $invalid !== false) {
 			return $invalid;

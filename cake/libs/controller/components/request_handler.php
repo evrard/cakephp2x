@@ -1,6 +1,4 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Request object for handling alternative HTTP requests
  *
@@ -8,26 +6,26 @@
  * and the like.  These units have no use for Ajax requests, and this Component can tell how Cake
  * should respond to the different needs of a handheld computer and a desktop machine.
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
  * @since         CakePHP(tm) v 0.10.4.1076
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
 if (!defined('REQUEST_MOBILE_UA')) {
-	define('REQUEST_MOBILE_UA', '(iPhone|MIDP|AvantGo|BlackBerry|J2ME|Opera Mini|DoCoMo|NetFront|Nokia|PalmOS|PalmSource|portalmmm|Plucker|ReqwirelessWeb|SonyEricsson|Symbian|UP\.Browser|Windows CE|Xiino)');
+	define(
+		'REQUEST_MOBILE_UA',
+		'(iPhone|MIDP|AvantGo|BlackBerry|J2ME|Opera Mini|DoCoMo|NetFront|Nokia|PalmOS|PalmSource|portalmmm|Plucker|ReqwirelessWeb|SonyEricsson|Symbian|UP\.Browser|Windows CE|Xiino)'
+	);
 }
 
 /**
@@ -46,7 +44,7 @@ class RequestHandlerComponent extends Object {
  * @access public
  * @see RequestHandler::setAjax()
  */
-	var $ajaxLayout = 'ajax';
+	private $ajaxLayout = 'ajax';
 
 /**
  * Determines whether or not callbacks will be fired on this component
@@ -54,7 +52,7 @@ class RequestHandlerComponent extends Object {
  * @var boolean
  * @access public
  */
-	var $enabled = true;
+	private $enabled = true;
 
 /**
  * Holds the content-type of the response that is set when using
@@ -63,7 +61,7 @@ class RequestHandlerComponent extends Object {
  * @var string
  * @access private
  */
-	var $__responseTypeSet = null;
+	private $__responseTypeSet = null;
 
 /**
  * Holds the copy of Controller::$params
@@ -71,7 +69,7 @@ class RequestHandlerComponent extends Object {
  * @var array
  * @access public
  */
-	var $params = array();
+	private $params = array();
 
 /**
  * Friendly content-type mappings used to set response types and determine
@@ -81,7 +79,7 @@ class RequestHandlerComponent extends Object {
  * @access private
  * @see RequestHandlerComponent::setContent
  */
-	var $__requestContent = array(
+	private $__requestContent = array(
 		'javascript'	=> 'text/javascript',
 		'js'			=> 'text/javascript',
 		'json'			=> 'application/json',
@@ -120,7 +118,7 @@ class RequestHandlerComponent extends Object {
  * @access private
  * @see Router::parseExtensions()
  */
-	var $__acceptTypes = array();
+	private $__acceptTypes = array();
 
 /**
  * The template to use when rendering the given content type.
@@ -128,7 +126,7 @@ class RequestHandlerComponent extends Object {
  * @var string
  * @access private
  */
-	var $__renderType = null;
+	private $__renderType = null;
 
 /**
  * Contains the file extension parsed out by the Router
@@ -137,7 +135,7 @@ class RequestHandlerComponent extends Object {
  * @access public
  * @see Router::parseExtensions()
  */
-	var $ext = null;
+	private $ext = null;
 
 /**
  * Flag set when MIME types have been initialized
@@ -146,13 +144,13 @@ class RequestHandlerComponent extends Object {
  * @access private
  * @see RequestHandler::__initializeTypes()
  */
-	var $__typesInitialized = false;
+	private $__typesInitialized = false;
 
 /**
  * Constructor. Parses the accepted content types accepted by the client using HTTP_ACCEPT
  *
  */
-	function __construct() {
+	public function __construct() {
 		$this->__acceptTypes = explode(',', env('HTTP_ACCEPT'));
 
 		foreach ($this->__acceptTypes as $i => $type) {
@@ -175,7 +173,7 @@ class RequestHandlerComponent extends Object {
  * @see Router::parseExtensions()
  * @access public
  */
-	function initialize(&$controller) {
+	private function initialize(&$controller) {
 		if (isset($controller->params['url']['ext'])) {
 			$this->ext = $controller->params['url']['ext'];
 		}
@@ -199,7 +197,7 @@ class RequestHandlerComponent extends Object {
  * @return void
  * @access public
  */
-	function startup(&$controller) {
+	private function startup(&$controller) {
 		if (!$this->enabled) {
 			return;
 		}
@@ -238,7 +236,7 @@ class RequestHandlerComponent extends Object {
  * @param mixed $url A string or array containing the redirect location
  * @access public
  */
-	function beforeRedirect(&$controller, $url) {
+	private function beforeRedirect(&$controller, $url) {
 		if (!$this->isAjax()) {
 			return;
 		}
@@ -255,7 +253,7 @@ class RequestHandlerComponent extends Object {
  * @return boolean True if call is Ajax
  * @access public
  */
-	function isAjax() {
+	private function isAjax() {
 		return env('HTTP_X_REQUESTED_WITH') === "XMLHttpRequest";
 	}
 
@@ -265,7 +263,7 @@ class RequestHandlerComponent extends Object {
  * @return boolean True if call is from Flash
  * @access public
  */
-	function isFlash() {
+	private function isFlash() {
 		return (preg_match('/^(Shockwave|Adobe) Flash/', env('HTTP_USER_AGENT')) == 1);
 	}
 
@@ -275,7 +273,7 @@ class RequestHandlerComponent extends Object {
  * @return bool True if call is over HTTPS
  * @access public
  */
-	function isSSL() {
+	private function isSSL() {
 		return env('HTTPS');
 	}
 
@@ -285,7 +283,7 @@ class RequestHandlerComponent extends Object {
  * @return boolean True if client accepts an XML response
  * @access public
  */
-	function isXml() {
+	private function isXml() {
 		return $this->prefers('xml');
 	}
 
@@ -295,7 +293,7 @@ class RequestHandlerComponent extends Object {
  * @return boolean True if client accepts an RSS response
  * @access public
  */
-	function isRss() {
+	private function isRss() {
 		return $this->prefers('rss');
 	}
 
@@ -305,7 +303,7 @@ class RequestHandlerComponent extends Object {
  * @return boolean True if client accepts an RSS response
  * @access public
  */
-	function isAtom() {
+	private function isAtom() {
 		return $this->prefers('atom');
 	}
 
@@ -316,7 +314,7 @@ class RequestHandlerComponent extends Object {
  * @return boolean True if user agent is a mobile web browser
  * @access public
  */
-	function isMobile() {
+	private function isMobile() {
 		preg_match('/' . REQUEST_MOBILE_UA . '/i', env('HTTP_USER_AGENT'), $match);
 		if (!empty($match) || $this->accepts('wap')) {
 			return true;
@@ -330,7 +328,7 @@ class RequestHandlerComponent extends Object {
  * @return bool
  * @access public
  */
-	function isWap() {
+	private function isWap() {
 		return $this->prefers('wap');
 	}
 
@@ -340,7 +338,7 @@ class RequestHandlerComponent extends Object {
  * @return boolean True if call is a POST
  * @access public
  */
-	function isPost() {
+	private function isPost() {
 		return (strtolower(env('REQUEST_METHOD')) == 'post');
 	}
 
@@ -350,7 +348,7 @@ class RequestHandlerComponent extends Object {
  * @return boolean True if call is a PUT
  * @access public
  */
-	function isPut() {
+	private function isPut() {
 		return (strtolower(env('REQUEST_METHOD')) == 'put');
 	}
 
@@ -360,7 +358,7 @@ class RequestHandlerComponent extends Object {
  * @return boolean True if call is a GET
  * @access public
  */
-	function isGet() {
+	private function isGet() {
 		return (strtolower(env('REQUEST_METHOD')) == 'get');
 	}
 
@@ -370,7 +368,7 @@ class RequestHandlerComponent extends Object {
  * @return boolean True if call is a DELETE
  * @access public
  */
-	function isDelete() {
+	private function isDelete() {
 		return (strtolower(env('REQUEST_METHOD')) == 'delete');
 	}
 
@@ -381,7 +379,7 @@ class RequestHandlerComponent extends Object {
  * @return string Prototype version of component making Ajax call
  * @access public
  */
-	function getAjaxVersion() {
+	private function getAjaxVersion() {
 		if (env('HTTP_X_PROTOTYPE_VERSION') != null) {
 			return env('HTTP_X_PROTOTYPE_VERSION');
 		}
@@ -400,7 +398,7 @@ class RequestHandlerComponent extends Object {
  * @return void
  * @access public
  */
-	function setContent($name, $type = null) {
+	private function setContent($name, $type = null) {
 		if (is_array($name)) {
 			$this->__requestContent = array_merge($this->__requestContent, $name);
 			return;
@@ -414,7 +412,7 @@ class RequestHandlerComponent extends Object {
  * @return string Server address
  * @access public
  */
-	function getReferrer() {
+	private function getReferrer() {
 		if (env('HTTP_HOST') != null) {
 			$sessHost = env('HTTP_HOST');
 		}
@@ -431,7 +429,7 @@ class RequestHandlerComponent extends Object {
  * @return string Client IP address
  * @access public
  */
-	function getClientIP($safe = true) {
+	private function getClientIP($safe = true) {
 		if (!$safe && env('HTTP_X_FORWARDED_FOR') != null) {
 			$ipaddr = preg_replace('/(?:,.*)/', '', env('HTTP_X_FORWARDED_FOR'));
 		} else {
@@ -466,7 +464,7 @@ class RequestHandlerComponent extends Object {
  * @access public
  * @see RequestHandlerComponent::setContent()
  */
-	function accepts($type = null) {
+	private function accepts($type = null) {
 		$this->__initializeTypes();
 
 		if ($type == null) {
@@ -508,7 +506,7 @@ class RequestHandlerComponent extends Object {
  * @return mixed
  * @access public
  */
-	function requestedWith($type = null) {
+	private function requestedWith($type = null) {
 		if (!$this->isPost() && !$this->isPut()) {
 			return null;
 		}
@@ -543,7 +541,7 @@ class RequestHandlerComponent extends Object {
  * @access public
  * @see RequestHandlerComponent::setContent()
  */
-	function prefers($type = null) {
+	private function prefers($type = null) {
 		$this->__initializeTypes();
 		$accept = $this->accepts();
 
@@ -602,7 +600,7 @@ class RequestHandlerComponent extends Object {
  * @see RequestHandlerComponent::setContent()
  * @see RequestHandlerComponent::respondAs()
  */
-	function renderAs(&$controller, $type) {
+	private function renderAs(&$controller, $type) {
 		$this->__initializeTypes();
 		$options = array('charset' => 'UTF-8');
 
@@ -657,7 +655,7 @@ class RequestHandlerComponent extends Object {
  * @access public
  * @see RequestHandlerComponent::setContent()
  */
-	function respondAs($type, $options = array()) {
+	private function respondAs($type, $options = array()) {
 		$this->__initializeTypes();
 		if ($this->__responseTypeSet != null) {
 			return false;
@@ -716,7 +714,7 @@ class RequestHandlerComponent extends Object {
  *    otherwise null
  * @access public
  */
-	function responseType() {
+	private function responseType() {
 		if ($this->__responseTypeSet == null) {
 			return null;
 		}
@@ -730,7 +728,7 @@ class RequestHandlerComponent extends Object {
  * @return mixed Alias
  * @access public
  */
-	function mapType($ctype) {
+	private function mapType($ctype) {
 		if (is_array($ctype)) {
 			$out = array();
 			foreach ($ctype as $t) {
@@ -761,7 +759,7 @@ class RequestHandlerComponent extends Object {
  * @return void
  * @access private
  */
-	function __initializeTypes() {
+	private function __initializeTypes() {
 		if ($this->__typesInitialized) {
 			return;
 		}

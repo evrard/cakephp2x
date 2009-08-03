@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * XmlTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.5432
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'Xml');
@@ -42,7 +37,7 @@ class XmlTest extends CakeTestCase {
  * @return void
  */
 	function setUp() {
-		$manager =& new XmlManager();
+		$manager = new XmlManager();
 		$manager->namespaces = array();
 	}
 
@@ -109,27 +104,27 @@ class XmlTest extends CakeTestCase {
  * @return void
  **/
 	function testSerializationOfBooleanAndBooleanishValues() {
-		$xml =& new Xml(array('data' => array('example' => false)));
+		$xml = new Xml(array('data' => array('example' => false)));
 		$result = $xml->toString(false);
 		$expected = '<data example="0" />';
 		$this->assertEqual($result, $expected, 'Boolean values incorrectly handled. %s');
 
-		$xml =& new Xml(array('data' => array('example' => true)));
+		$xml = new Xml(array('data' => array('example' => true)));
 		$result = $xml->toString(false);
 		$expected = '<data example="1" />';
 		$this->assertEqual($result, $expected, 'Boolean values incorrectly handled. %s');
 
-		$xml =& new Xml(array('data' => array('example' => null)));
+		$xml = new Xml(array('data' => array('example' => null)));
 		$result = $xml->toString(false);
 		$expected = '<data example="" />';
 		$this->assertEqual($result, $expected, 'Boolean values incorrectly handled. %s');
 
-		$xml =& new Xml(array('data' => array('example' => 0)));
+		$xml = new Xml(array('data' => array('example' => 0)));
 		$result = $xml->toString(false);
 		$expected = '<data example="0" />';
 		$this->assertEqual($result, $expected, 'Boolean-ish values incorrectly handled. %s');
 
-		$xml =& new Xml(array('data' => array('example' => 1)));
+		$xml = new Xml(array('data' => array('example' => 1)));
 		$result = $xml->toString(false);
 		$expected = '<data example="1" />';
 		$this->assertEqual($result, $expected, 'Boolean-ish values incorrectly handled. %s');
@@ -189,12 +184,12 @@ class XmlTest extends CakeTestCase {
  */
 	function testOwnerAssignment() {
 		$xml = new Xml();
-		$node =& $xml->createElement('hello', 'world');
-		$owner =& $node->document();
+		$node = $xml->createElement('hello', 'world');
+		$owner = $node->document();
 		$this->assertTrue($xml === $owner);
 
-		$children =& $node->children;
-		$childOwner =& $children[0]->document();
+		$children = $node->children;
+		$childOwner = $children[0]->document();
 		$this->assertTrue($xml === $childOwner);
 	}
 
@@ -329,8 +324,8 @@ class XmlTest extends CakeTestCase {
  * @return void
  */
 	function testCloneNode() {
-		$node =& new XmlNode('element', 'myValue');
-		$twin =& $node->cloneNode();
+		$node = new XmlNode('element', 'myValue');
+		$twin = $node->cloneNode();
 		$this->assertEqual($node, $twin);
 	}
 
@@ -355,16 +350,16 @@ class XmlTest extends CakeTestCase {
 				'Industry' => array('id' => 2, 'name' => 'Education'),
 			)
 		);
-		$xml =& new Xml($input, array('format' => 'tags'));
-		$node =& $xml->children[0]->children[0];
+		$xml = new Xml($input, array('format' => 'tags'));
+		$node = $xml->children[0]->children[0];
 
-		$nextSibling =& $node->nextSibling();
+		$nextSibling = $node->nextSibling();
 		$this->assertEqual($nextSibling, $xml->children[0]->children[1]);
 
-		$nextSibling2 =& $nextSibling->nextSibling();
+		$nextSibling2 = $nextSibling->nextSibling();
 		$this->assertEqual($nextSibling2, $xml->children[0]->children[2]);
 
-		$noFriends =& $xml->children[0]->children[12];
+		$noFriends = $xml->children[0]->children[12];
 		$this->assertNull($noFriends->nextSibling());
 	}
 
@@ -389,10 +384,10 @@ class XmlTest extends CakeTestCase {
 				'Industry' => array('id' => 2, 'name' => 'Education'),
 			)
 		);
-		$xml =& new Xml($input, array('format' => 'tags'));
-		$node =& $xml->children[0]->children[1];
+		$xml = new Xml($input, array('format' => 'tags'));
+		$node = $xml->children[0]->children[1];
 
-		$prevSibling =& $node->previousSibling();
+		$prevSibling = $node->previousSibling();
 		$this->assertEqual($prevSibling, $xml->children[0]->children[0]);
 
 		$this->assertNull($prevSibling->previousSibling());
@@ -405,7 +400,7 @@ class XmlTest extends CakeTestCase {
  * @return void
  */
 	function testAddAndRemoveAttributes() {
-		$node =& new XmlElement('myElement', 'superValue');
+		$node = new XmlElement('myElement', 'superValue');
 		$this->assertTrue(empty($node->attributes));
 
 		$attrs = array(
@@ -416,12 +411,12 @@ class XmlTest extends CakeTestCase {
 		$node->addAttribute($attrs);
 		$this->assertEqual($node->attributes, $attrs);
 
-		$node =& new XmlElement('myElement', 'superValue');
+		$node = new XmlElement('myElement', 'superValue');
 		$node->addAttribute('test', 'value');
 		$this->assertTrue(isset($node->attributes['test']));
 
-		$node =& new XmlElement('myElement', 'superValue');
-		$obj =& new StdClass();
+		$node = new XmlElement('myElement', 'superValue');
+		$obj = new StdClass();
 		$obj->class = 'info';
 		$obj->id = 'primaryInfoBox';
 		$node->addAttribute($obj);
@@ -1144,13 +1139,13 @@ class XmlTest extends CakeTestCase {
 	function testAppend() {
 		$parentNode = new XmlNode('ourParentNode');
 		$parentNode->append( new XmlNode('ourChildNode'));
-		$first =& $parentNode->first();
+		$first = $parentNode->first();
 		$this->assertEqual($first->name, 'ourChildNode');
 
 		$string = 'ourChildNode';
 		$parentNode = new XmlNode('ourParentNode');
 		$parentNode->append($string);
-		$last =& $parentNode->last();
+		$last = $parentNode->last();
 		$this->assertEqual($last->name, 'ourChildNode');
 
 		$this->expectError();

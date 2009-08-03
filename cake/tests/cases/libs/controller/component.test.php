@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * ComponentTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.controller
  * @since         CakePHP(tm) v 1.2.0.5436
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Controller', 'Controller', false);
@@ -337,19 +332,19 @@ class ComponentTest extends CakeTestCase {
  * @return void
  */
 	function testLoadComponents() {
-		$Controller =& new ComponentTestController();
+		$Controller = new ComponentTestController();
 		$Controller->components = array('RequestHandler');
 
-		$Component =& new Component();
+		$Component = new Component();
 		$Component->init($Controller);
 
 		$this->assertTrue(is_a($Controller->RequestHandler, 'RequestHandlerComponent'));
 
-		$Controller =& new ComponentTestController();
+		$Controller = new ComponentTestController();
 		$Controller->plugin = 'test_plugin';
 		$Controller->components = array('RequestHandler', 'TestPluginComponent');
 
-		$Component =& new Component();
+		$Component = new Component();
 		$Component->init($Controller);
 
 		$this->assertTrue(is_a($Controller->RequestHandler, 'RequestHandlerComponent'));
@@ -360,19 +355,19 @@ class ComponentTest extends CakeTestCase {
 		));
 		$this->assertFalse(isset($Controller->TestPluginOtherComponent));
 
-		$Controller =& new ComponentTestController();
+		$Controller = new ComponentTestController();
 		$Controller->components = array('Security');
 
-		$Component =& new Component();
+		$Component = new Component();
 		$Component->init($Controller);
 
 		$this->assertTrue(is_a($Controller->Security, 'SecurityComponent'));
 		$this->assertTrue(is_a($Controller->Security->Session, 'SessionComponent'));
 
-		$Controller =& new ComponentTestController();
+		$Controller = new ComponentTestController();
 		$Controller->components = array('Security', 'Cookie', 'RequestHandler');
 
-		$Component =& new Component();
+		$Component = new Component();
 		$Component->init($Controller);
 
 		$this->assertTrue(is_a($Controller->Security, 'SecurityComponent'));
@@ -387,7 +382,7 @@ class ComponentTest extends CakeTestCase {
  * @return void
  */
 	function testNestedComponentLoading() {
-		$Controller =& new ComponentTestController();
+		$Controller = new ComponentTestController();
 		$Controller->components = array('Apple');
 		$Controller->constructClasses();
 		$Controller->Component->initialize($Controller);
@@ -407,7 +402,7 @@ class ComponentTest extends CakeTestCase {
  * @return void
  */
 	function testComponentStartup() {
-		$Controller =& new ComponentTestController();
+		$Controller = new ComponentTestController();
 		$Controller->components = array('Apple');
 		$Controller->constructClasses();
 		$Controller->Component->initialize($Controller);
@@ -428,7 +423,7 @@ class ComponentTest extends CakeTestCase {
  * @return void
  */
 	function testMultipleComponentInitialize() {
-		$Controller =& new ComponentTestController();
+		$Controller = new ComponentTestController();
 		$Controller->components = array('Orange', 'Banana');
 		$Controller->constructClasses();
 		$Controller->Component->initialize($Controller);
@@ -448,7 +443,7 @@ class ComponentTest extends CakeTestCase {
 			return;
 		}
 
-		$Controller =& new ComponentTestController();
+		$Controller = new ComponentTestController();
 		$Controller->components = array('ParamTest' => array('test' => 'value', 'flag'), 'Apple');
 
 		$Controller->constructClasses();
@@ -463,7 +458,7 @@ class ComponentTest extends CakeTestCase {
 		$this->assertEqual($Controller->ParamTest->flag, true);
 
 		//Settings are merged from app controller and current controller.
-		$Controller =& new ComponentTestController();
+		$Controller = new ComponentTestController();
 		$Controller->components = array(
 			'ParamTest' => array('test' => 'value'),
 			'Orange' => array('ripeness' => 'perfect')
@@ -497,7 +492,7 @@ class ComponentTest extends CakeTestCase {
  * @return void
  */
 	function testMutuallyReferencingComponents() {
-		$Controller =& new ComponentTestController();
+		$Controller = new ComponentTestController();
 		$Controller->components = array('MutuallyReferencingOne');
 		$Controller->constructClasses();
 		$Controller->Component->initialize($Controller);
@@ -522,7 +517,7 @@ class ComponentTest extends CakeTestCase {
  * @return void
  */
 	function testSomethingReferencingEmailComponent() {
-		$Controller =& new ComponentTestController();
+		$Controller = new ComponentTestController();
 		$Controller->components = array('SomethingWithEmail');
 		$Controller->constructClasses();
 		$Controller->Component->initialize($Controller);
@@ -552,7 +547,7 @@ class ComponentTest extends CakeTestCase {
 	function testDoubleLoadingOfSessionComponent() {
 		$this->skipIf(defined('APP_CONTROLLER_EXISTS'), '%s Need a non-existent AppController');
 
-		$Controller =& new ComponentTestController();
+		$Controller = new ComponentTestController();
 		$Controller->uses = array();
 		$Controller->components = array('Session');
 		$Controller->constructClasses();

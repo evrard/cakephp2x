@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * CacheHelperTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.view.helpers
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
@@ -146,7 +141,7 @@ class CacheHelperTest extends CakeTestCase {
 
 		$contents = file_get_contents($filename);
 		$this->assertPattern('/php echo \$variable/', $contents);
-		$this->assertPattern('/php echo microtime()/', $contents);
+		$this->assertPattern('/php echo microtime(true)/', $contents);
 		$this->assertPattern('/clark kent/', $result);
 
 		@unlink($filename);
@@ -175,7 +170,7 @@ class CacheHelperTest extends CakeTestCase {
 		$contents = file_get_contents($filename);
 		$this->assertPattern('/if \(is_writable\(TMP\)\)\:/', $contents);
 		$this->assertPattern('/php echo \$variable/', $contents);
-		$this->assertPattern('/php echo microtime()/', $contents);
+		$this->assertPattern('/php echo microtime(true)/', $contents);
 
 		@unlink($filename);
 	}

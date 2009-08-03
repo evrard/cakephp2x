@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
  * @since         CakePHP(tm) v 0.10.8.2156
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -42,7 +37,7 @@ class SecurityComponent extends Object {
  * @var string
  * @access public
  */
-	var $blackHoleCallback = null;
+	private $blackHoleCallback = null;
 
 /**
  * List of controller actions for which a POST request is required
@@ -51,7 +46,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::requirePost()
  */
-	var $requirePost = array();
+	private $requirePost = array();
 
 /**
  * List of controller actions for which a GET request is required
@@ -60,7 +55,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::requireGet()
  */
-	var $requireGet = array();
+	private $requireGet = array();
 
 /**
  * List of controller actions for which a PUT request is required
@@ -69,7 +64,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::requirePut()
  */
-	var $requirePut = array();
+	private $requirePut = array();
 
 /**
  * List of controller actions for which a DELETE request is required
@@ -78,7 +73,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::requireDelete()
  */
-	var $requireDelete = array();
+	private $requireDelete = array();
 
 /**
  * List of actions that require an SSL-secured connection
@@ -87,7 +82,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::requireSecure()
  */
-	var $requireSecure = array();
+	private $requireSecure = array();
 
 /**
  * List of actions that require a valid authentication key
@@ -96,7 +91,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::requireAuth()
  */
-	var $requireAuth = array();
+	private $requireAuth = array();
 
 /**
  * List of actions that require an HTTP-authenticated login (basic or digest)
@@ -105,7 +100,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::requireLogin()
  */
-	var $requireLogin = array();
+	private $requireLogin = array();
 
 /**
  * Login options for SecurityComponent::requireLogin()
@@ -114,7 +109,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::requireLogin()
  */
-	var $loginOptions = array('type' => '', 'prompt' => null);
+	private $loginOptions = array('type' => '', 'prompt' => null);
 
 /**
  * An associative array of usernames/passwords used for HTTP-authenticated logins.
@@ -124,7 +119,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::requireLogin()
  */
-	var $loginUsers = array();
+	private $loginUsers = array();
 
 /**
  * Controllers from which actions of the current controller are allowed to receive
@@ -134,7 +129,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::requireAuth()
  */
-	var $allowedControllers = array();
+	private $allowedControllers = array();
 
 /**
  * Actions from which actions of the current controller are allowed to receive
@@ -144,7 +139,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::requireAuth()
  */
-	var $allowedActions = array();
+	private $allowedActions = array();
 
 /**
  * Form fields to disable
@@ -152,7 +147,7 @@ class SecurityComponent extends Object {
  * @var array
  * @access public
  */
-	var $disabledFields = array();
+	private $disabledFields = array();
 
 /**
  * Whether to validate POST data.  Set to false to disable for data coming from 3rd party
@@ -161,7 +156,7 @@ class SecurityComponent extends Object {
  * @var boolean
  * @access public
  */
-	var $validatePost = true;
+	private $validatePost = true;
 
 /**
  * Other components used by the Security component
@@ -169,14 +164,14 @@ class SecurityComponent extends Object {
  * @var array
  * @access public
  */
-	var $components = array('RequestHandler', 'Session');
+	private $components = array('RequestHandler', 'Session');
 
 /**
  * Holds the current action of the controller
  *
  * @var string
  */
-	var $_action = null;
+	private $_action = null;
 
 /**
  * Component startup. All security checking happens here.
@@ -184,7 +179,7 @@ class SecurityComponent extends Object {
  * @param object $controller Instantiating controller
  * @access public
  */
-	function startup(&$controller) {
+	private function startup(&$controller) {
 		$this->_action = strtolower($controller->action);
 		$this->_methodsRequired($controller);
 		$this->_secureRequired($controller);
@@ -213,7 +208,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access public
  */
-	function requirePost() {
+	private function requirePost() {
 		$args = func_get_args();
 		$this->_requireMethod('Post', $args);
 	}
@@ -224,7 +219,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access public
  */
-	function requireGet() {
+	private function requireGet() {
 		$args = func_get_args();
 		$this->_requireMethod('Get', $args);
 	}
@@ -235,7 +230,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access public
  */
-	function requirePut() {
+	private function requirePut() {
 		$args = func_get_args();
 		$this->_requireMethod('Put', $args);
 	}
@@ -246,7 +241,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access public
  */
-	function requireDelete() {
+	private function requireDelete() {
 		$args = func_get_args();
 		$this->_requireMethod('Delete', $args);
 	}
@@ -257,7 +252,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access public
  */
-	function requireSecure() {
+	private function requireSecure() {
 		$args = func_get_args();
 		$this->_requireMethod('Secure', $args);
 	}
@@ -268,7 +263,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access public
  */
-	function requireAuth() {
+	private function requireAuth() {
 		$args = func_get_args();
 		$this->_requireMethod('Auth', $args);
 	}
@@ -279,7 +274,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access public
  */
-	function requireLogin() {
+	private function requireLogin() {
 		$args = func_get_args();
 		$base = $this->loginOptions;
 
@@ -293,7 +288,7 @@ class SecurityComponent extends Object {
 		$this->_requireMethod('Login', $args);
 
 		if (isset($this->loginOptions['users'])) {
-			$this->loginUsers =& $this->loginOptions['users'];
+			$this->loginUsers = $this->loginOptions['users'];
 		}
 	}
 
@@ -304,7 +299,7 @@ class SecurityComponent extends Object {
  * @return mixed If successful, returns an array with login name and password, otherwise null.
  * @access public
  */
-	function loginCredentials($type = null) {
+	private function loginCredentials($type = null) {
 		switch (strtolower($type)) {
 			case 'basic':
 				$login = array('username' => env('PHP_AUTH_USER'), 'password' => env('PHP_AUTH_PW'));
@@ -343,7 +338,7 @@ class SecurityComponent extends Object {
  * @return string HTTP-authentication request header
  * @access public
  */
-	function loginRequest($options = array()) {
+	private function loginRequest($options = array()) {
 		$options = array_merge($this->loginOptions, $options);
 		$this->_setLoginDefaults($options);
 		$auth = 'WWW-Authenticate: ' . ucfirst($options['type']);
@@ -365,7 +360,7 @@ class SecurityComponent extends Object {
  * @return array Digest authentication parameters
  * @access public
  */
-	function parseDigestAuthData($digest) {
+	private function parseDigestAuthData($digest) {
 		if (substr($digest, 0, 7) == 'Digest ') {
 			$digest = substr($digest, 7);
 		}
@@ -393,7 +388,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::parseDigestAuthData()
  */
-	function generateDigestResponseHash($data) {
+	private function generateDigestResponseHash($data) {
 		return md5(
 			md5($data['username'] . ':' . $this->loginOptions['realm'] . ':' . $this->loginUsers[$data['username']]) .
 			':' . $data['nonce'] . ':' . $data['nc'] . ':' . $data['cnonce'] . ':' . $data['qop'] . ':' .
@@ -411,7 +406,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::$blackHoleCallback
  */
-	function blackHole(&$controller, $error = '') {
+	private function blackHole(&$controller, $error = '') {
 		$this->Session->del('_Token');
 
 		if ($this->blackHoleCallback == null) {
@@ -434,7 +429,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access protected
  */
-	function _requireMethod($method, $actions = array()) {
+	private function _requireMethod($method, $actions = array()) {
 		$this->{'require' . $method} = (empty($actions)) ? array('*'): $actions;
 	}
 
@@ -445,7 +440,7 @@ class SecurityComponent extends Object {
  * @return bool true if $method is required
  * @access protected
  */
-	function _methodsRequired(&$controller) {
+	private function _methodsRequired(&$controller) {
 		foreach (array('Post', 'Get', 'Put', 'Delete') as $method) {
 			$property = 'require' . $method;
 			if (is_array($this->$property) && !empty($this->$property)) {
@@ -470,7 +465,7 @@ class SecurityComponent extends Object {
  * @return bool true if secure connection required
  * @access protected
  */
-	function _secureRequired(&$controller) {
+	private function _secureRequired(&$controller) {
 		if (is_array($this->requireSecure) && !empty($this->requireSecure)) {
 			$requireSecure = array_map('strtolower', $this->requireSecure);
 
@@ -492,7 +487,7 @@ class SecurityComponent extends Object {
  * @return bool true if authentication required
  * @access protected
  */
-	function _authRequired(&$controller) {
+	private function _authRequired(&$controller) {
 		if (is_array($this->requireAuth) && !empty($this->requireAuth) && !empty($controller->data)) {
 			$requireAuth = array_map('strtolower', $this->requireAuth);
 
@@ -528,7 +523,7 @@ class SecurityComponent extends Object {
  * @return bool true if login is required
  * @access protected
  */
-	function _loginRequired(&$controller) {
+	private function _loginRequired(&$controller) {
 		if (is_array($this->requireLogin) && !empty($this->requireLogin)) {
 			$requireLogin = array_map('strtolower', $this->requireLogin);
 
@@ -576,7 +571,7 @@ class SecurityComponent extends Object {
  * @return bool true if submitted form is valid
  * @access protected
  */
-	function _validatePost(&$controller) {
+	private function _validatePost(&$controller) {
 		if (empty($controller->data)) {
 			return true;
 		}
@@ -657,7 +652,7 @@ class SecurityComponent extends Object {
  * @return bool Success
  * @access protected
  */
-	function _generateToken(&$controller) {
+	private function _generateToken(&$controller) {
 		if (isset($controller->params['requested']) && $controller->params['requested'] === 1) {
 			return false;
 		}
@@ -700,7 +695,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access protected
  */
-	function _setLoginDefaults(&$options) {
+	private function _setLoginDefaults(&$options) {
 		$options = array_merge(array(
 			'type' => 'basic',
 			'realm' => env('SERVER_NAME'),
@@ -719,7 +714,7 @@ class SecurityComponent extends Object {
  * @return mixed Controller callback method's response
  * @access protected
  */
-	function _callback(&$controller, $method, $params = array()) {
+	private function _callback(&$controller, $method, $params = array()) {
 		if (is_callable(array($controller, $method))) {
 			return call_user_func_array(array(&$controller, $method), empty($params) ? null : $params);
 		} else {

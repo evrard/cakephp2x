@@ -1,25 +1,24 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * StringTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- * Licensed under The MIT License
+ * Licensed under The Open Group Test Suite License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org
+ * @filesource
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.5432
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'String');
 
@@ -30,7 +29,6 @@ App::import('Core', 'String');
  * @subpackage    cake.tests.cases.libs
  */
 class StringTest extends CakeTestCase {
-
 /**
  * testUuidGeneration method
  *
@@ -43,7 +41,6 @@ class StringTest extends CakeTestCase {
 		$match = preg_match($pattern, $result);
 		$this->assertTrue($match);
 	}
-
 /**
  * testMultipleUuidGeneration method
  *
@@ -63,7 +60,6 @@ class StringTest extends CakeTestCase {
 			$check[] = $result;
 		}
 	}
-
 /**
  * testInsert method
  *
@@ -200,7 +196,6 @@ class StringTest extends CakeTestCase {
 		$expected = "Pre-pended result";
 		$this->assertEqual($result, $expected);
 	}
-
 /**
  * test Clean Insert
  *
@@ -239,7 +234,6 @@ class StringTest extends CakeTestCase {
 		);
 		$this->assertEqual($result, '<p>Text here</p>');
 	}
-
 /**
  * Tests that non-insertable variables (i.e. arrays) are skipped when used as values in
  * String::insert().
@@ -280,5 +274,4 @@ class StringTest extends CakeTestCase {
 		$this->assertEqual($expected, $result);
 	}
 }
-
 ?>

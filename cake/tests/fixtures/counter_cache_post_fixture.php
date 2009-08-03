@@ -1,12 +1,11 @@
 <?php
 /* SVN FILE: $Id: counter_cache_fixture.php 7848 2008-11-08 02:58:37Z nate $ */
-
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
  * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)

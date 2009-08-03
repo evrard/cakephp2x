@@ -4,7 +4,7 @@
  *
  * Long description for behavior.test.php
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -12,12 +12,13 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org
+ * @filesource
+ * @copyright     CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * @link          http://www.cakephp.org
  * @package       cake
  * @subpackage    cake.tests.cases.libs.model
  * @since         1.2
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Model', 'AppModel');
 require_once dirname(__FILE__) . DS . 'models.php';
@@ -211,7 +212,7 @@ class TestBehavior extends ModelBehavior {
  * @return void
  */
 	function beforeDelete(&$model, $cascade = true) {
-		$settings =& $this->settings[$model->alias];
+		$settings = $this->settings[$model->alias];
 		if (!isset($settings['beforeDelete']) || $settings['beforeDelete'] == 'off') {
 			return parent::beforeDelete($model, $cascade);
 		}
@@ -239,7 +240,7 @@ class TestBehavior extends ModelBehavior {
  * @return void
  */
 	function afterDelete(&$model) {
-		$settings =& $this->settings[$model->alias];
+		$settings = $this->settings[$model->alias];
 		if (!isset($settings['afterDelete']) || $settings['afterDelete'] == 'off') {
 			return parent::afterDelete($model);
 		}
@@ -1089,7 +1090,7 @@ class BehaviorTest extends CakeTestCase {
  * @return void
  **/
 	function testBehaviorAttachAndDetach() {
-		$Sample =& new Sample();
+		$Sample = new Sample();
 		$Sample->actsAs = array('Test3' => array('bar'), 'Test2' => array('foo', 'bar'));
 		$Sample->Behaviors->init($Sample->alias, $Sample->actsAs);
 		$Sample->Behaviors->attach('Test2');

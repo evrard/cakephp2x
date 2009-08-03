@@ -4,9 +4,9 @@
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
@@ -14,7 +14,7 @@
  *
  * @filesource
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.console.libs.tasks
  * @since         CakePHP(tm) v 1.2
@@ -93,7 +93,6 @@ class ViewTask extends Shell {
  */
 	function initialize() {
 	}
-
 /**
  * Execution method always used for tasks
  *
@@ -163,7 +162,6 @@ class ViewTask extends Shell {
 			}
 		}
 	}
-
 /**
  * Get a list of actions that can / should have views baked for them.
  *
@@ -263,7 +261,6 @@ class ViewTask extends Shell {
 			$this->customAction();
 		}
 	}
-
 /**
  * Loads Controller and sets variables for the template
  * Available template variables
@@ -290,10 +287,10 @@ class ViewTask extends Shell {
 			$this->_stop();
 		}
 		$controllerClassName = $this->controllerName . 'Controller';
-		$controllerObj =& new $controllerClassName();
+		$controllerObj = new $controllerClassName();
 		$controllerObj->constructClasses();
 		$modelClass = $controllerObj->modelClass;
-		$modelObj =& ClassRegistry::getObject($controllerObj->modelKey);
+		$modelObj = ClassRegistry::getObject($controllerObj->modelKey);
 
 		if ($modelObj) {
 			$primaryKey = $modelObj->primaryKey;
@@ -320,7 +317,6 @@ class ViewTask extends Shell {
 		return compact('modelClass', 'schema', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 				'singularHumanName', 'pluralHumanName', 'fields','associations');
 	}
-
 /**
  * Bake a view file for each of the supplied actions
  *
@@ -383,7 +379,6 @@ class ViewTask extends Shell {
 		$filename = $path . $this->controllerPath . DS . Inflector::underscore($action) . '.ctp';
 		return $this->createFile($filename, $content);
 	}
-
 /**
  * Builds content from template and variables
  *
@@ -422,7 +417,6 @@ class ViewTask extends Shell {
 		$this->err(sprintf(__('Template for %s could not be found', true), $template));
 		return false;
 	}
-
 /**
  * Displays help contents
  *
@@ -454,7 +448,6 @@ class ViewTask extends Shell {
 		$this->out("\tRequires that models and controllers exist.");
 		$this->_stop();
 	}
-
 /**
  * Returns associations for controllers models.
  *

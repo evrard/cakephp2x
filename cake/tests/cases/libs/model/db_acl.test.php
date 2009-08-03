@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * DbAclTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.controller.components.dbacl.models
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
@@ -250,10 +245,10 @@ class DbAclTest extends DbAcl {
  * @return void
  */
 	function __construct() {
-		$this->Aro =& new DbAroTest();
-		$this->Aro->Permission =& new DbPermissionTest();
-		$this->Aco =& new DbAcoTest();
-		$this->Aro->Permission =& new DbPermissionTest();
+		$this->Aro = new DbAroTest();
+		$this->Aro->Permission = new DbPermissionTest();
+		$this->Aco = new DbAcoTest();
+		$this->Aro->Permission = new DbPermissionTest();
 	}
 }
 
@@ -372,7 +367,7 @@ class AclNodeTest extends CakeTestCase {
  */
 	function testNodeAliasParenting() {
 		$Aco = new DbAcoTest();
-		$db =& ConnectionManager::getDataSource('test_suite');
+		$db = ConnectionManager::getDataSource('test_suite');
 		$db->truncate($Aco);
 		$db->_queriesLog = array();
 

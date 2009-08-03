@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * MySQLi layer for DBO
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model.datasources.dbo
  * @since         CakePHP(tm) v 1.1.4.2974
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Datasource', 'DboMysql');
@@ -42,14 +37,14 @@ class DboMysqli extends DboMysqlBase {
  *
  * @var unknown_type
  */
-	var $description = "Mysqli DBO Driver";
+	private $description = "Mysqli DBO Driver";
 
 /**
  * Base configuration settings for Mysqli driver
  *
  * @var array
  */
-	var $_baseConfig = array(
+	private $_baseConfig = array(
 		'persistent' => true,
 		'host' => 'localhost',
 		'login' => 'root',
@@ -64,7 +59,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return boolean True if the database could be connected, else false
  */
-	function connect() {
+	private function connect() {
 		$config = $this->config;
 		$this->connected = false;
 
@@ -94,7 +89,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	function disconnect() {
+	private function disconnect() {
 		if (isset($this->results) && is_resource($this->results)) {
 			mysqli_free_result($this->results);
 		}
@@ -109,7 +104,7 @@ class DboMysqli extends DboMysqlBase {
  * @return resource Result resource identifier
  * @access protected
  */
-	function _execute($sql) {
+	private function _execute($sql) {
 		if (preg_match('/^\s*call/i', $sql)) {
 			return $this->_executeProcedure($sql);
 		} else {
@@ -124,7 +119,7 @@ class DboMysqli extends DboMysqlBase {
  * @return resource Result resource identifier for first recordset
  * @access protected
  */
-	function _executeProcedure($sql) {
+	private function _executeProcedure($sql) {
 		$answer = mysqli_multi_query($this->connection, $sql);
 
 		$firstResult = mysqli_store_result($this->connection);
@@ -140,7 +135,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return array Array of tablenames in the database
  */
-	function listSources() {
+	private function listSources() {
 		$cache = parent::listSources();
 		if ($cache != null) {
 			return $cache;
@@ -166,7 +161,7 @@ class DboMysqli extends DboMysqlBase {
  * @param string $tableName Name of database table to inspect
  * @return array Fields in table. Keys are name and type
  */
-	function describe(&$model) {
+	private function describe(&$model) {
 
 		$cache = parent::describe($model);
 		if ($cache != null) {
@@ -206,7 +201,7 @@ class DboMysqli extends DboMysqlBase {
  * @param boolean $safe Whether or not numeric data should be handled automagically if no column data is provided
  * @return string Quoted and escaped data
  */
-	function value($data, $column = null, $safe = false) {
+	private function value($data, $column = null, $safe = false) {
 		$parent = parent::value($data, $column, $safe);
 
 		if ($parent != null) {
@@ -245,11 +240,25 @@ class DboMysqli extends DboMysqlBase {
 	}
 
 /**
+ * Begin a transaction
+ *
+ * @param unknown_type $model
+ * @return boolean True on success, false on fail
+ * (i.e. if the database/model does not support transactions).
+ */
+	private function begin(&$model) {
+		if (parent::begin($model) && $this->execute('START TRANSACTION')) {
+			$this->_transactionStarted = true;
+			return true;
+		}
+		return false;
+	}
+/**
  * Returns a formatted error message from previous database operation.
  *
  * @return string Error message with error number
  */
-	function lastError() {
+	private function lastError() {
 		if (mysqli_errno($this->connection)) {
 			return mysqli_errno($this->connection).': '.mysqli_error($this->connection);
 		}
@@ -262,7 +271,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return integer Number of affected rows
  */
-	function lastAffected() {
+	private function lastAffected() {
 		if ($this->_result) {
 			return mysqli_affected_rows($this->connection);
 		}
@@ -275,7 +284,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return integer Number of rows in resultset
  */
-	function lastNumRows() {
+	private function lastNumRows() {
 		if ($this->hasResult()) {
 			return mysqli_num_rows($this->_result);
 		}
@@ -288,7 +297,7 @@ class DboMysqli extends DboMysqlBase {
  * @param unknown_type $source
  * @return in
  */
-	function lastInsertId($source = null) {
+	private function lastInsertId($source = null) {
 		$id = $this->fetchRow('SELECT LAST_INSERT_ID() AS insertID', false);
 		if ($id !== false && !empty($id) && !empty($id[0]) && isset($id[0]['insertID'])) {
 			return $id[0]['insertID'];
@@ -303,7 +312,7 @@ class DboMysqli extends DboMysqlBase {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return string Abstract column type (i.e. "string")
  */
-	function column($real) {
+	private function column($real) {
 		if (is_array($real)) {
 			$col = $real['name'];
 			if (isset($real['limit'])) {
@@ -351,7 +360,7 @@ class DboMysqli extends DboMysqlBase {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return integer An integer representing the length of the column
  */
-	function length($real) {
+	private function length($real) {
 		$col = str_replace(array(')', 'unsigned'), '', $real);
 		$limit = null;
 
@@ -370,7 +379,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @param unknown_type $results
  */
-	function resultSet(&$results) {
+	private function resultSet(&$results) {
 		if (isset($this->results) && is_resource($this->results) && $this->results != $results) {
 			mysqli_free_result($this->results);
 		}
@@ -395,7 +404,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return unknown
  */
-	function fetchResult() {
+	private function fetchResult() {
 		if ($row = mysqli_fetch_row($this->results)) {
 			$resultRow = array();
 			$i = 0;
@@ -418,7 +427,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return string The database encoding
  */
-	function getEncoding() {
+	private function getEncoding() {
 		return mysqli_client_encoding($this->connection);
 	}
 
@@ -427,7 +436,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return boolean True if the result is valid, else false
  */
-	function hasResult() {
+	private function hasResult() {
 		return is_object($this->_result);
 	}
 }

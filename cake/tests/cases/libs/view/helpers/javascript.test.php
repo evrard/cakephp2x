@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * JavascriptHelperTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2006-2008, Cake Software Foundation, Inc.
+ * Copyright 2006-2009, Cake Software Foundation, Inc.
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2006-2008, Cake Software Foundation, Inc.
+ * @copyright     Copyright 2006-2009, Cake Software Foundation, Inc.
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.view.helpers
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', array('Controller', 'View', 'ClassRegistry', 'View'));
@@ -127,10 +122,10 @@ class JavascriptTest extends CakeTestCase {
  * @return void
  */
 	function startTest() {
-		$this->Javascript =& new JavascriptHelper();
-		$this->Javascript->Html =& new HtmlHelper();
-		$this->Javascript->Form =& new FormHelper();
-		$this->View =& new TheView(new TheJsTestController());
+		$this->Javascript = new JavascriptHelper();
+		$this->Javascript->Html = new HtmlHelper();
+		$this->Javascript->Form = new FormHelper();
+		$this->View = new TheView(new TheJsTestController());
 		ClassRegistry::addObject('view', $this->View);
 	}
 
@@ -155,10 +150,10 @@ class JavascriptTest extends CakeTestCase {
  * @return void
  */
 	function testConstruct() {
-		$Javascript =& new JavascriptHelper(array('safe'));
+		$Javascript = new JavascriptHelper(array('safe'));
 		$this->assertTrue($Javascript->safe);
 
-		$Javascript =& new JavascriptHelper(array('safe' => false));
+		$Javascript = new JavascriptHelper(array('safe' => false));
 		$this->assertFalse($Javascript->safe);
 	}
 

@@ -4,20 +4,21 @@
  *
  * Used by Cake's naming conventions throughout the framework.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org
+ * @filesource
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 0.2.9
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
 /**
@@ -25,7 +26,7 @@
  *
  */
 if (!class_exists('Object')) {
-	require_once(LIBS . 'object.php');
+	require LIBS . 'object.php';
 }
 
 /**
@@ -38,15 +39,14 @@ if (!class_exists('Object')) {
  * @subpackage    cake.cake.libs
  * @link          http://book.cakephp.org/view/491/Inflector
  */
-class Inflector extends Object {
-
+final class Inflector extends Object {
 /**
  * Plural inflector rules
  *
  * @var array
  * @access protected
  **/
-	var $_plural = array(
+	protected $_plural = array(
 		'rules' => array(
 			'/(s)tatus$/i' => '\1\2tatuses',
 			'/(quiz)$/i' => '\1zes',
@@ -107,14 +107,13 @@ class Inflector extends Object {
 			'turf' => 'turfs'
 		)
 	);
-
 /**
  * Singular inflector rules
  *
  * @var array
  * @access protected
  **/
-	var $_singular = array(
+	protected $_singular = array(
 		'rules' => array(
 			'/(s)tatuses$/i' => '\1\2tatus',
 			'/^(.*)(menu)s$/i' => '\1\2',
@@ -155,7 +154,6 @@ class Inflector extends Object {
 	),
 		'irregular' => array()
 	);
-
 /**
  * Words that should not be inflected
  *
@@ -176,23 +174,20 @@ class Inflector extends Object {
 		'trousers', 'trout','tuna', 'Vermontese', 'Wenchowese', 'whiting', 'wildebeest',
 		'Yengeese'
 	);
-
 /**
  * Cached array identity map of pluralized words.
  *
  * @var array
  * @access protected
  **/
-	var $_pluralized = array();
-
+	protected $_pluralized = array();
 /**
  * Cached array identity map of singularized words.
  *
  * @var array
  * @access protected
  **/
-	var $_singularized = array();
-
+	protected $__singularized = array();
 /**
  * Gets a reference to the Inflector object instance
  *
@@ -203,11 +198,10 @@ class Inflector extends Object {
 		static $instance = array();
 
 		if (!$instance) {
-			$instance[0] =& new Inflector();
+			$instance[0] = new Inflector();
 		}
 		return $instance[0];
 	}
-
 /**
  * Adds custom inflection $rules, of either 'plural' or 'singular' $type.
  *
@@ -224,7 +218,7 @@ class Inflector extends Object {
  * @static
  */
 	function rules($type, $rules = array()) {
-		$_this =& Inflector::getInstance();
+		$_this = Inflector::getInstance();
 		$type = '_'.$type;
 
 		foreach ($rules as $rule => $pattern) {
@@ -247,7 +241,7 @@ class Inflector extends Object {
  * @link http://book.cakephp.org/view/572/Class-methods
  */
 	function pluralize($word) {
-		$_this =& Inflector::getInstance();
+		$_this = Inflector::getInstance();
 
 		if (isset($_this->_pluralized[$word])) {
 			return $_this->_pluralized[$word];
@@ -294,7 +288,7 @@ class Inflector extends Object {
  * @link http://book.cakephp.org/view/572/Class-methods
  */
 	function singularize($word) {
-		$_this =& Inflector::getInstance();
+		$_this = Inflector::getInstance();
 
 		if (isset($_this->_singularized[$word])) {
 			return $_this->_singularized[$word];

@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Access Control List factory class.
  *
  * Permissions system.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
  * @since         CakePHP(tm) v 0.10.0.1076
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -42,13 +37,13 @@ class AclComponent extends Object {
  * @var object
  * @access protected
  */
-	var $_Instance = null;
+	private $_Instance = null;
 
 /**
  * Constructor. Will return an instance of the correct ACL class.
  *
  */
-	function __construct() {
+	public function __construct() {
 		$name = Inflector::camelize(strtolower(Configure::read('Acl.classname')));
 		if (!class_exists($name)) {
 			if (App::import('Component', $name)) {
@@ -60,7 +55,7 @@ class AclComponent extends Object {
 				trigger_error(sprintf(__('Could not find %s.', true), $name), E_USER_WARNING);
 			}
 		}
-		$this->_Instance =& new $name();
+		$this->_Instance = new $name();
 		$this->_Instance->initialize($this);
 	}
 
@@ -71,7 +66,7 @@ class AclComponent extends Object {
  * @return boolean Proceed with component usage (true), or fail (false)
  * @access public
  */
-	function startup(&$controller) {
+	private function startup(&$controller) {
 		return true;
 	}
 
@@ -80,7 +75,7 @@ class AclComponent extends Object {
  *
  * @access protected
  */
-	function _initACL() {
+	private function _initACL() {
 	}
 
 /**
@@ -92,7 +87,7 @@ class AclComponent extends Object {
  * @return boolean Success
  * @access public
  */
-	function check($aro, $aco, $action = "*") {
+	private function check($aro, $aco, $action = "*") {
 		return $this->_Instance->check($aro, $aco, $action);
 	}
 
@@ -105,7 +100,7 @@ class AclComponent extends Object {
  * @return boolean Success
  * @access public
  */
-	function allow($aro, $aco, $action = "*") {
+	private function allow($aro, $aco, $action = "*") {
 		return $this->_Instance->allow($aro, $aco, $action);
 	}
 
@@ -118,7 +113,7 @@ class AclComponent extends Object {
  * @return boolean Success
  * @access public
  */
-	function deny($aro, $aco, $action = "*") {
+	private function deny($aro, $aco, $action = "*") {
 		return $this->_Instance->deny($aro, $aco, $action);
 	}
 
@@ -131,7 +126,7 @@ class AclComponent extends Object {
  * @return boolean Success
  * @access public
  */
-	function inherit($aro, $aco, $action = "*") {
+	private function inherit($aro, $aco, $action = "*") {
 		return $this->_Instance->inherit($aro, $aco, $action);
 	}
 
@@ -144,7 +139,7 @@ class AclComponent extends Object {
  * @return boolean Success
  * @access public
  */
-	function grant($aro, $aco, $action = "*") {
+	private function grant($aro, $aco, $action = "*") {
 		return $this->_Instance->grant($aro, $aco, $action);
 	}
 
@@ -157,7 +152,7 @@ class AclComponent extends Object {
  * @return boolean Success
  * @access public
  */
-	function revoke($aro, $aco, $action = "*") {
+	private function revoke($aro, $aco, $action = "*") {
 		return $this->_Instance->revoke($aro, $aco, $action);
 	}
 }
@@ -176,7 +171,7 @@ class AclBase extends Object {
  * This class should never be instantiated, just subclassed.
  *
  */
-	function __construct() {
+	private function __construct() {
 		if (strcasecmp(get_class($this), "AclBase") == 0 || !is_subclass_of($this, "AclBase")) {
 			trigger_error(__("[acl_base] The AclBase class constructor has been called, or the class was instantiated. This class must remain abstract. Please refer to the Cake docs for ACL configuration.", true), E_USER_ERROR);
 			return NULL;
@@ -191,7 +186,7 @@ class AclBase extends Object {
  * @param string $action Action (defaults to *)
  * @access public
  */
-	function check($aro, $aco, $action = "*") {
+	private function check($aro, $aco, $action = "*") {
 	}
 
 /**
@@ -200,7 +195,7 @@ class AclBase extends Object {
  * @param object $component Component
  * @access public
  */
-	function initialize(&$component) {
+	private function initialize(&$component) {
 	}
 }
 
@@ -216,13 +211,13 @@ class DbAcl extends AclBase {
  * Constructor
  *
  */
-	function __construct() {
+	private function __construct() {
 		parent::__construct();
 		if (!class_exists('AclNode')) {
 			uses('model' . DS . 'db_acl');
 		}
-		$this->Aro =& ClassRegistry::init(array('class' => 'Aro', 'alias' => 'Aro'));
-		$this->Aco =& ClassRegistry::init(array('class' => 'Aco', 'alias' => 'Aco'));
+		$this->Aro = ClassRegistry::init(array('class' => 'Aro', 'alias' => 'Aro'));
+		$this->Aco = ClassRegistry::init(array('class' => 'Aco', 'alias' => 'Aco'));
 	}
 
 /**
@@ -232,7 +227,7 @@ class DbAcl extends AclBase {
  * @return void
  * @access public
  */
-	function initialize(&$component) {
+	private function initialize(&$component) {
 		$component->Aro = $this->Aro;
 		$component->Aco = $this->Aco;
 	}
@@ -246,7 +241,7 @@ class DbAcl extends AclBase {
  * @return boolean Success (true if ARO has access to action in ACO, false otherwise)
  * @access public
  */
-	function check($aro, $aco, $action = "*") {
+	private function check($aro, $aco, $action = "*") {
 		if ($aro == null || $aco == null) {
 			return false;
 		}
@@ -337,7 +332,7 @@ class DbAcl extends AclBase {
  * @return boolean Success
  * @access public
  */
-	function allow($aro, $aco, $actions = "*", $value = 1) {
+	private function allow($aro, $aco, $actions = "*", $value = 1) {
 		$perms = $this->getAclLink($aro, $aco);
 		$permKeys = $this->_getAcoKeys($this->Aro->Permission->schema());
 		$save = array();
@@ -388,7 +383,7 @@ class DbAcl extends AclBase {
  * @return boolean Success
  * @access public
  */
-	function deny($aro, $aco, $action = "*") {
+	private function deny($aro, $aco, $action = "*") {
 		return $this->allow($aro, $aco, $action, -1);
 	}
 
@@ -401,7 +396,7 @@ class DbAcl extends AclBase {
  * @return boolean Success
  * @access public
  */
-	function inherit($aro, $aco, $action = "*") {
+	private function inherit($aro, $aco, $action = "*") {
 		return $this->allow($aro, $aco, $action, 0);
 	}
 
@@ -415,7 +410,7 @@ class DbAcl extends AclBase {
  * @see allow()
  * @access public
  */
-	function grant($aro, $aco, $action = "*") {
+	private function grant($aro, $aco, $action = "*") {
 		return $this->allow($aro, $aco, $action);
 	}
 
@@ -429,7 +424,7 @@ class DbAcl extends AclBase {
  * @see deny()
  * @access public
  */
-	function revoke($aro, $aco, $action = "*") {
+	private function revoke($aro, $aco, $action = "*") {
 		return $this->deny($aro, $aco, $action);
 	}
 
@@ -441,7 +436,7 @@ class DbAcl extends AclBase {
  * @return array Indexed array with: 'aro', 'aco' and 'link'
  * @access public
  */
-	function getAclLink($aro, $aco) {
+	private function getAclLink($aro, $aco) {
 		$obj = array();
 		$obj['Aro'] = $this->Aro->node($aro);
 		$obj['Aco'] = $this->Aco->node($aco);
@@ -467,7 +462,7 @@ class DbAcl extends AclBase {
  * @return array ACO keys
  * @access protected
  */
-	function _getAcoKeys($keys) {
+	private function _getAcoKeys($keys) {
 		$newKeys = array();
 		$keys = array_keys($keys);
 		foreach ($keys as $key) {
@@ -493,13 +488,13 @@ class IniAcl extends AclBase {
  * @var array
  * @access public
  */
-	var $config = null;
+	private $config = null;
 
 /**
  * The constructor must be overridden, as AclBase is abstract.
  *
  */
-	function __construct() {
+	private function __construct() {
 	}
 
 /**
@@ -512,7 +507,7 @@ class IniAcl extends AclBase {
  * @return boolean Success
  * @access public
  */
-	function check($aro, $aco, $aco_action = null) {
+	private function check($aro, $aco, $aco_action = null) {
 		if ($this->config == null) {
 			$this->config = $this->readConfigFile(CONFIGS . 'acl.ini.php');
 		}
@@ -567,7 +562,7 @@ class IniAcl extends AclBase {
  * @return array INI section structure
  * @access public
  */
-	function readConfigFile($fileName) {
+	private function readConfigFile($fileName) {
 		$fileLineArray = file($fileName);
 
 		foreach ($fileLineArray as $fileLine) {
@@ -610,7 +605,7 @@ class IniAcl extends AclBase {
  * @return array Trimmed array
  * @access public
  */
-	function arrayTrim($array) {
+	private function arrayTrim($array) {
 		foreach ($array as $key => $value) {
 			$array[$key] = trim($value);
 		}

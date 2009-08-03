@@ -1,27 +1,22 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Memcache storage engine for cache
  *
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.cache
  * @since         CakePHP(tm) v 1.2.0.4933
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -39,7 +34,7 @@ class MemcacheEngine extends CacheEngine {
  * @var Memcache
  * @access private
  */
-	var $__Memcache = null;
+	private $__Memcache = null;
 
 /**
  * settings
@@ -49,7 +44,7 @@ class MemcacheEngine extends CacheEngine {
  * @var array
  * @access public
  */
-	var $settings = array();
+	protected $settings = array();
 
 /**
  * Initialize the Cache Engine
@@ -61,7 +56,7 @@ class MemcacheEngine extends CacheEngine {
  * @return boolean True if the engine has been successfully initialized, false if not
  * @access public
  */
-	function init($settings = array()) {
+	public function init($settings = array()) {
 		if (!class_exists('Memcache')) {
 			return false;
 		}
@@ -78,7 +73,7 @@ class MemcacheEngine extends CacheEngine {
 		}
 		if (!isset($this->__Memcache)) {
 			$return = false;
-			$this->__Memcache =& new Memcache();
+			$this->__Memcache = new Memcache();
 			foreach ($this->settings['servers'] as $server) {
 				$parts = explode(':', $server);
 				$host = $parts[0];
@@ -104,7 +99,7 @@ class MemcacheEngine extends CacheEngine {
  * @return boolean True if the data was succesfully cached, false on failure
  * @access public
  */
-	function write($key, &$value, $duration) {
+	public function write($key, &$value, $duration) {
 		$expires = time() + $duration;
 		$this->__Memcache->set($key.'_expires', $expires, $this->settings['compress'], $expires);
 		return $this->__Memcache->set($key, $value, $this->settings['compress'], $expires);
@@ -117,7 +112,7 @@ class MemcacheEngine extends CacheEngine {
  * @return mixed The cached data, or false if the data doesn't exist, has expired, or if there was an error fetching it
  * @access public
  */
-	function read($key) {
+	public function read($key) {
 		$time = time();
 		$cachetime = intval($this->__Memcache->get($key.'_expires'));
 		if ($cachetime < $time || ($time + $this->settings['duration']) < $cachetime) {
@@ -133,7 +128,7 @@ class MemcacheEngine extends CacheEngine {
  * @return boolean True if the value was succesfully deleted, false if it didn't exist or couldn't be removed
  * @access public
  */
-	function delete($key) {
+	public function delete($key) {
 		return $this->__Memcache->delete($key);
 	}
 
@@ -143,7 +138,7 @@ class MemcacheEngine extends CacheEngine {
  * @return boolean True if the cache was succesfully cleared, false otherwise
  * @access public
  */
-	function clear() {
+	public function clear() {
 		return $this->__Memcache->flush();
 	}
 
@@ -155,7 +150,7 @@ class MemcacheEngine extends CacheEngine {
  * @return boolean True if memcache server was connected
  * @access public
  */
-	function connect($host, $port = 11211) {
+	private function connect($host, $port = 11211) {
 		if ($this->__Memcache->getServerStatus($host, $port) === 0) {
 			if ($this->__Memcache->connect($host, $port)) {
 				return true;

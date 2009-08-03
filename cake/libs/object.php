@@ -1,29 +1,24 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Object class, allowing __construct and __destruct in PHP4.
  *
  * Also includes methods for logging and the special method RequestAction,
  * to call other Controllers' Actions from anywhere.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 0.2.9
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -44,28 +39,12 @@ class Object {
  * @var CakeLog
  * @access protected
  */
-	var $_log = null;
-
-/**
- * A hack to support __construct() on PHP 4
- * Hint: descendant classes have no PHP4 class_name() constructors,
- * so this constructor gets called first and calls the top-layer __construct()
- * which (if present) should call parent::__construct()
- *
- * @return Object
- */
-	function Object() {
-		$args = func_get_args();
-		if (method_exists($this, '__destruct')) {
-			register_shutdown_function (array(&$this, '__destruct'));
-		}
-		call_user_func_array(array(&$this, '__construct'), $args);
-	}
+	private $_log = null;
 
 /**
  * Class constructor, overridden in descendant classes.
  */
-	function __construct() {
+	public function __construct() {
 	}
 
 /**
@@ -75,7 +54,7 @@ class Object {
  * @return string The name of this class
  * @access public
  */
-	function toString() {
+	private function toString() {
 		$class = get_class($this);
 		return $class;
 	}
@@ -88,7 +67,7 @@ class Object {
  * @return mixed Success (true/false) or contents if 'return' is set in $extra
  * @access public
  */
-	function requestAction($url, $extra = array()) {
+	 public function requestAction($url, $extra = array()) {
 		if (empty($url)) {
 			return false;
 		}
@@ -116,7 +95,7 @@ class Object {
  * @return mixed  Returns the result of the method call
  * @access public
  */
-	function dispatchMethod($method, $params = array()) {
+	protected function dispatchMethod($method, $params = array()) {
 		switch (count($params)) {
 			case 0:
 				return $this->{$method}();
@@ -143,7 +122,7 @@ class Object {
  * @return void
  * @access public
  */
-	function _stop($status = 0) {
+	protected function _stop($status = 0) {
 		exit($status);
 	}
 
@@ -155,7 +134,7 @@ class Object {
  * @return boolean Success of log write
  * @access public
  */
-	function log($msg, $type = LOG_ERROR) {
+	public function log($msg, $type = LOG_ERROR) {
 		if (!class_exists('CakeLog')) {
 			uses('cake_log');
 		}
@@ -175,7 +154,7 @@ class Object {
  * @return void
  * @access protected
  */
-	function _set($properties = array()) {
+	protected function _set($properties = array()) {
 		if (is_array($properties) && !empty($properties)) {
 			$vars = get_object_vars($this);
 			foreach ($properties as $key => $val) {
@@ -196,7 +175,7 @@ class Object {
  * @return error message
  * @access public
  */
-	function cakeError($method, $messages = array()) {
+	public function cakeError($method, $messages = array()) {
 		if (!class_exists('ErrorHandler')) {
 			App::import('Core', 'Error');
 
@@ -227,7 +206,7 @@ class Object {
  * @access protected
  * @todo add examples to manual
  */
-	function _persist($name, $return = null, &$object, $type = null) {
+	protected function _persist($name, $return = null, &$object, $type = null) {
 		$file = CACHE . 'persistent' . DS . strtolower($name) . '.php';
 		if ($return === null) {
 			if (!file_exists($file)) {
@@ -256,7 +235,7 @@ class Object {
  * @return boolean true on save, throws error if file can not be created
  * @access protected
  */
-	function _savePersistent($name, &$object) {
+	private function _savePersistent($name, &$object) {
 		$file = 'persistent' . DS . strtolower($name) . '.php';
 		$objectArray = array(&$object);
 		$data = str_replace('\\', '\\\\', serialize($objectArray));
@@ -277,7 +256,7 @@ class Object {
  * @return void
  * @access private
  */
-	function __openPersistent($name, $type = null) {
+	private function __openPersistent($name, $type = null) {
 		$file = CACHE . 'persistent' . DS . strtolower($name) . '.php';
 		include($file);
 

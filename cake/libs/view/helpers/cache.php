@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.view.helpers
  * @since         CakePHP(tm) v 1.0.0.2277
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -43,7 +38,7 @@ class CacheHelper extends AppHelper {
  * @var array
  * @access private
  */
-	var $__replace = array();
+	private $__replace = array();
 
 /**
  * Array of string that are replace with there var replace above.
@@ -52,7 +47,7 @@ class CacheHelper extends AppHelper {
  * @var array
  * @access private
  */
-	var $__match = array();
+	private $__match = array();
 
 /**
  * holds the View object passed in final call to CacheHelper::cache()
@@ -60,7 +55,7 @@ class CacheHelper extends AppHelper {
  * @var View
  * @access public
  */
-	var $view;
+	private $view;
 
 /**
  * cache action time
@@ -68,7 +63,7 @@ class CacheHelper extends AppHelper {
  * @var object
  * @access public
  */
-	var $cacheAction;
+	private $cacheAction;
 
 /**
  * Main method used to cache a view
@@ -78,7 +73,7 @@ class CacheHelper extends AppHelper {
  * @param boolean $cache
  * @return view ouput
  */
-	function cache($file, $out, $cache = false) {
+	private function cache($file, $out, $cache = false) {
 		$cacheTime = 0;
 		$useCallbacks = false;
 		if (is_array($this->cacheAction)) {
@@ -159,7 +154,7 @@ class CacheHelper extends AppHelper {
  * @param boolean $cache
  * @access private
  */
-	function __parseFile($file, $cache) {
+	private function __parseFile($file, $cache) {
 		if (is_file($file)) {
 			$file = file_get_contents($file);
 		} elseif ($file = fileExistsInPath($file)) {
@@ -197,7 +192,7 @@ class CacheHelper extends AppHelper {
  * @return string with all replacements made to <cake:nocache><cake:nocache>
  * @access private
  */
-	function __parseOutput($cache) {
+	private function __parseOutput($cache) {
 		$count = 0;
 		if (!empty($this->__match)) {
 
@@ -232,7 +227,7 @@ class CacheHelper extends AppHelper {
  * @return cached view
  * @access private
  */
-	function __writeFile($content, $timestamp, $useCallbacks = false) {
+	private function __writeFile($content, $timestamp, $useCallbacks = false) {
 		$now = time();
 
 		if (is_numeric($timestamp)) {
@@ -262,7 +257,7 @@ class CacheHelper extends AppHelper {
 			';
 		}
 
-		$file .= '$controller =& new ' . $this->controllerName . 'Controller();
+		$file .= '$controller = new ' . $this->controllerName . 'Controller();
 				$controller->plugin = $this->plugin = \''.$this->plugin.'\';
 				$controller->helpers = $this->helpers = unserialize(\'' . serialize($this->helpers) . '\');
 				$controller->base = $this->base = \'' . $this->base . '\';
@@ -290,8 +285,8 @@ class CacheHelper extends AppHelper {
 				$loadedHelpers = $this->_loadHelpers($loadedHelpers, $this->helpers);
 				foreach (array_keys($loadedHelpers) as $helper) {
 					$camelBackedHelper = Inflector::variable($helper);
-					${$camelBackedHelper} =& $loadedHelpers[$helper];
-					$this->loaded[$camelBackedHelper] =& ${$camelBackedHelper};
+					${$camelBackedHelper} = $loadedHelpers[$helper];
+					$this->loaded[$camelBackedHelper] = ${$camelBackedHelper};
 				}
 		?>';
 		$content = preg_replace("/(<\\?xml)/", "<?php echo '$1';?>",$content);

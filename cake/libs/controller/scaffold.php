@@ -4,20 +4,21 @@
  *
  * Automatic forms and actions generation for rapid web application development.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org
+ * @filesource
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.controller
  * @since         Cake v 0.10.0.1076
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
 /**
@@ -39,7 +40,7 @@ class Scaffold extends Object {
  * @var Controller
  * @access public
  */
-	var $controller = null;
+	private $controller = null;
 
 /**
  * Name of the controller to scaffold
@@ -47,7 +48,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	var $name = null;
+	private $name = null;
 
 /**
  * Action to be performed.
@@ -55,7 +56,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	var $action = null;
+	private $action = null;
 
 /**
  * Name of current model this view context is attached to
@@ -63,7 +64,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	var $model = null;
+	private $model = null;
 
 /**
  * Path to View.
@@ -71,7 +72,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	var $viewPath;
+	private $viewPath;
 
 /**
  * Path parts for creating links in views.
@@ -79,7 +80,7 @@ class Scaffold extends Object {
  * @var string Base URL
  * @access public
  */
-	var $base = null;
+	private $base = null;
 
 /**
  * Name of layout to use with this View.
@@ -87,7 +88,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	var $layout = 'default';
+	private $layout = 'default';
 
 /**
  * Array of parameter data
@@ -95,7 +96,7 @@ class Scaffold extends Object {
  * @var array
  * @access public
  */
-	var $params;
+	private $params;
 
 /**
  * File extension. Defaults to Cake's template ".ctp".
@@ -103,7 +104,7 @@ class Scaffold extends Object {
  * @var array
  * @access public
  */
-	var $ext = '.ctp';
+	private $ext = '.ctp';
 
 /**
  * Sub-directory for this view file.
@@ -111,7 +112,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	var $subDir = null;
+	private $subDir = null;
 
 /**
  * Plugin name.
@@ -119,7 +120,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	var $plugin = null;
+	private $plugin = null;
 
 /**
  * valid session.
@@ -135,10 +136,7 @@ class Scaffold extends Object {
  * @var array
  * @access private
  */
-	var $__passedVars = array(
-		'action', 'base', 'webroot', 'layout', 'name',
-		'viewPath', 'ext', 'params', 'data', 'plugin', 'cacheAction'
-	);
+	private $__passedVars = array('action', 'base', 'webroot', 'layout', 'name', 'viewPath', 'ext', 'params', 'data', 'plugin', 'cacheAction');
 
 /**
  * Title HTML element for current scaffolded view
@@ -146,7 +144,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	var $scaffoldTitle = null;
+	private $scaffoldTitle = null;
 
 /**
  * Construct and set up given controller with given parameters.
@@ -154,8 +152,8 @@ class Scaffold extends Object {
  * @param string $controller_class Name of controller
  * @param array $params Parameters for scaffolding
  */
-	function __construct(&$controller, $params) {
-		$this->controller =& $controller;
+	private function __construct(&$controller, $params) {
+		$this->controller = $controller;
 
 		$count = count($this->__passedVars);
 		for ($j = 0; $j < $count; $j++) {
@@ -174,11 +172,11 @@ class Scaffold extends Object {
 			)));
 		}
 
-		$this->ScaffoldModel =& $this->controller->{$this->modelClass};
+		$this->ScaffoldModel = $this->controller->{$this->modelClass};
 		$this->scaffoldTitle = Inflector::humanize($this->viewPath);
 		$this->scaffoldActions = $controller->scaffold;
-		$this->controller->pageTitle = __('Scaffold :: ', true)
-			. Inflector::humanize($this->action) . ' :: ' . $this->scaffoldTitle;
+		$this->controller->pageTitle = __('Scaffold :: ', true) . Inflector::humanize($this->action) . ' :: ' . $this->scaffoldTitle;
+
 		$modelClass = $this->controller->modelClass;
 		$primaryKey = $this->ScaffoldModel->primaryKey;
 		$displayField = $this->ScaffoldModel->displayField;
@@ -209,7 +207,7 @@ class Scaffold extends Object {
  * @return void
  * @access protected
  */
-	function _output() {
+	private function _output() {
 		$this->controller->afterFilter();
 		echo($this->controller->output);
 	}
@@ -221,7 +219,7 @@ class Scaffold extends Object {
  * @return mixed A rendered view of a row from Models database table
  * @access private
  */
-	function __scaffoldView($params) {
+	private function __scaffoldView($params) {
 		if ($this->controller->_beforeScaffold('view')) {
 
 			if (isset($params['pass'][0])) {
@@ -257,7 +255,7 @@ class Scaffold extends Object {
  * @return mixed A rendered view listing rows from Models database table
  * @access private
  */
-	function __scaffoldIndex($params) {
+	private function __scaffoldIndex($params) {
 		if ($this->controller->_beforeScaffold('index')) {
 			$this->ScaffoldModel->recursive = 0;
 			$this->controller->set(
@@ -277,7 +275,7 @@ class Scaffold extends Object {
  * @return mixed A rendered view with a form to edit or add a record in the Models database table
  * @access private
  */
-	function __scaffoldForm($action = 'edit') {
+	private function __scaffoldForm($action = 'edit') {
 		$this->controller->render($action, $this->layout);
 		$this->_output();
 	}
@@ -290,7 +288,7 @@ class Scaffold extends Object {
  * @return mixed Success on save/update, add/edit form if data is empty or error if save or update fails
  * @access private
  */
-	function __scaffoldSave($params = array(), $action = 'edit') {
+	private function __scaffoldSave($params = array(), $action = 'edit') {
 		$formAction = 'edit';
 		$success = __('updated', true);
 		if ($action === 'add') {
@@ -383,7 +381,7 @@ class Scaffold extends Object {
  * @return mixed Success on delete, error if delete fails
  * @access private
  */
-	function __scaffoldDelete($params = array()) {
+	private function __scaffoldDelete($params = array()) {
 		if ($this->controller->_beforeScaffold('delete')) {
 			if (isset($params['pass'][0])) {
 				$id = $params['pass'][0];
@@ -436,7 +434,7 @@ class Scaffold extends Object {
  * @return mixed A rendered view showing the error
  * @access private
  */
-	function __scaffoldError() {
+	private function __scaffoldError() {
 		return $this->controller->render('error', $this->layout);
 		$this->_output();
 	}
@@ -453,7 +451,7 @@ class Scaffold extends Object {
  * @return mixed A rendered view of scaffold action, or showing the error
  * @access private
  */
-	function __scaffold($params) {
+	private function __scaffold($params) {
 		$db = &ConnectionManager::getDataSource($this->ScaffoldModel->useDbConfig);
 		$admin = Configure::read('Routing.admin');
 
@@ -520,23 +518,16 @@ class Scaffold extends Object {
  * @return array Associations for model
  * @access private
  */
-	function __associations() {
+	private function __associations() {
 		$keys = array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany');
 		$associations = array();
 
 		foreach ($keys as $key => $type) {
 			foreach ($this->ScaffoldModel->{$type} as $assocKey => $assocData) {
-				$associations[$type][$assocKey]['primaryKey'] =
-					$this->ScaffoldModel->{$assocKey}->primaryKey;
-
-				$associations[$type][$assocKey]['displayField'] =
-					$this->ScaffoldModel->{$assocKey}->displayField;
-
-				$associations[$type][$assocKey]['foreignKey'] =
-					$assocData['foreignKey'];
-
-				$associations[$type][$assocKey]['controller'] =
-					Inflector::pluralize(Inflector::underscore($assocData['className']));
+				$associations[$type][$assocKey]['primaryKey'] = $this->ScaffoldModel->{$assocKey}->primaryKey;
+				$associations[$type][$assocKey]['displayField'] = $this->ScaffoldModel->{$assocKey}->displayField;
+				$associations[$type][$assocKey]['foreignKey'] = $assocData['foreignKey'];
+				$associations[$type][$assocKey]['controller'] = Inflector::pluralize(Inflector::underscore($assocData['className']));
 			}
 		}
 		return $associations;
@@ -561,7 +552,7 @@ class ScaffoldView extends ThemeView {
  * @return string action
  * @access protected
  */
-	function _getViewFileName($name = null) {
+	private function _getViewFileName($name = null) {
 		if ($name === null) {
 			$name = $this->action;
 		}

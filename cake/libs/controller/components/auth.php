@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Authentication component
  *
  * Manages user logins and permissions.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
  * @since         CakePHP(tm) v 0.10.0.1076
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -44,7 +39,7 @@ class AuthComponent extends Object {
  * @var boolean
  * @access private
  */
-	var $_loggedIn = false;
+	private $_loggedIn = false;
 
 /**
  * Other components utilized by AuthComponent
@@ -52,7 +47,7 @@ class AuthComponent extends Object {
  * @var array
  * @access public
  */
-	var $components = array('Session', 'RequestHandler');
+	private $components = array('Session', 'RequestHandler');
 
 /**
  * A reference to the object used for authentication
@@ -60,7 +55,7 @@ class AuthComponent extends Object {
  * @var object
  * @access public
  */
-	var $authenticate = null;
+	private $authenticate = null;
 
 /**
  * The name of the component to use for Authorization or set this to
@@ -73,7 +68,7 @@ class AuthComponent extends Object {
  * @var mixed
  * @access public
  */
-	var $authorize = false;
+	private $authorize = false;
 
 /**
  * The name of an optional view element to render when an Ajax request is made
@@ -82,7 +77,7 @@ class AuthComponent extends Object {
  * @var string
  * @access public
  */
-	var $ajaxLogin = null;
+	private $ajaxLogin = null;
 
 /**
  * The name of the model that represents users which will be authenticated.  Defaults to 'User'.
@@ -90,7 +85,7 @@ class AuthComponent extends Object {
  * @var string
  * @access public
  */
-	var $userModel = 'User';
+	private $userModel = 'User';
 
 /**
  * Additional query conditions to use when looking up and authenticating users,
@@ -99,7 +94,7 @@ class AuthComponent extends Object {
  * @var array
  * @access public
  */
-	var $userScope = array();
+	private $userScope = array();
 
 /**
  * Allows you to specify non-default login name and password fields used in
@@ -108,7 +103,7 @@ class AuthComponent extends Object {
  * @var array
  * @access public
  */
-	var $fields = array('username' => 'username', 'password' => 'password');
+	private $fields = array('username' => 'username', 'password' => 'password');
 
 /**
  * The session key name where the record of the current user is stored.  If
@@ -117,7 +112,7 @@ class AuthComponent extends Object {
  * @var string
  * @access public
  */
-	var $sessionKey = null;
+	private $sessionKey = null;
 
 /**
  * If using action-based access control, this defines how the paths to action
@@ -128,7 +123,7 @@ class AuthComponent extends Object {
  * @var string
  * @access public
  */
-	var $actionPath = null;
+	private $actionPath = null;
 
 /**
  * A URL (defined as a string or array) to the controller action that handles
@@ -137,7 +132,7 @@ class AuthComponent extends Object {
  * @var mixed
  * @access public
  */
-	var $loginAction = null;
+	private $loginAction = null;
 
 /**
  * Normally, if a user is redirected to the $loginAction page, the location they
@@ -148,7 +143,7 @@ class AuthComponent extends Object {
  * @var mixed
  * @access public
  */
-	var $loginRedirect = null;
+	private $loginRedirect = null;
 
 /**
  * The the default action to redirect to after the user is logged out.  While AuthComponent does
@@ -160,7 +155,7 @@ class AuthComponent extends Object {
  * @see AuthComponent::$loginAction
  * @see AuthComponent::logout()
  */
-	var $logoutRedirect = null;
+	private $logoutRedirect = null;
 
 /**
  * The name of model or model object, or any other object has an isAuthorized method.
@@ -168,7 +163,7 @@ class AuthComponent extends Object {
  * @var string
  * @access public
  */
-	var $object = null;
+	private $object = null;
 
 /**
  * Error to display when user login fails.  For security purposes, only one error is used for all
@@ -177,7 +172,7 @@ class AuthComponent extends Object {
  * @var string
  * @access public
  */
-	var $loginError = null;
+	private $loginError = null;
 
 /**
  * Error to display when user attempts to access an object or action to which they do not have
@@ -186,7 +181,7 @@ class AuthComponent extends Object {
  * @var string
  * @access public
  */
-	var $authError = null;
+	private $authError = null;
 
 /**
  * Determines whether AuthComponent will automatically redirect and exit if login is successful.
@@ -194,7 +189,7 @@ class AuthComponent extends Object {
  * @var boolean
  * @access public
  */
-	var $autoRedirect = true;
+	private $autoRedirect = true;
 
 /**
  * Controller actions for which user validation is not required.
@@ -203,7 +198,7 @@ class AuthComponent extends Object {
  * @access public
  * @see AuthComponent::allow()
  */
-	var $allowedActions = array();
+	private $allowedActions = array();
 
 /**
  * Maps actions to CRUD operations.  Used for controller-based validation ($validate = 'controller').
@@ -212,7 +207,7 @@ class AuthComponent extends Object {
  * @access public
  * @see AuthComponent::mapActions()
  */
-	var $actionMap = array(
+	private $actionMap = array(
 		'index'		=> 'read',
 		'add'		=> 'create',
 		'edit'		=> 'update',
@@ -226,7 +221,7 @@ class AuthComponent extends Object {
  * @var array
  * @access public
  */
-	var $data = array();
+	private $data = array();
 
 /**
  * Parameter data from Controller::$params
@@ -234,7 +229,7 @@ class AuthComponent extends Object {
  * @var array
  * @access public
  */
-	var $params = array();
+	private $params = array();
 
 /**
  * Method list for bound controller
@@ -242,7 +237,7 @@ class AuthComponent extends Object {
  * @var array
  * @access protected
  */
-	var $_methods = array();
+	private $_methods = array();
 
 /**
  * Initializes AuthComponent for use in the controller
@@ -251,7 +246,7 @@ class AuthComponent extends Object {
  * @return void
  * @access public
  */
-	function initialize(&$controller) {
+	public function initialize(&$controller) {
 		$this->params = $controller->params;
 		$crud = array('create', 'read', 'update', 'delete');
 		$this->actionMap = array_merge($this->actionMap, array_combine($crud, $crud));
@@ -285,7 +280,7 @@ class AuthComponent extends Object {
  * @return boolean
  * @access public
  */
-	function startup(&$controller) {
+	public function startup(&$controller) {
 		$methods = array_flip($controller->methods);
 		$action = strtolower($controller->params['action']);
 		$allowedActions = array_map('strtolower', $this->allowedActions);
@@ -390,12 +385,12 @@ class AuthComponent extends Object {
 		extract($this->__authType());
 		switch ($type) {
 			case 'controller':
-				$this->object =& $controller;
+				$this->object = $controller;
 			break;
 			case 'crud':
 			case 'actions':
 				if (isset($controller->Acl)) {
-					$this->Acl =& $controller->Acl;
+					$this->Acl = $controller->Acl;
 				} else {
 					$err = 'Could not find AclComponent. Please include Acl in ';
 					$err .= 'Controller::$components.';
@@ -440,7 +435,7 @@ class AuthComponent extends Object {
  * @return boolean
  * @access private
  */
-	function __setDefaults() {
+	private function __setDefaults() {
 		if (empty($this->userModel)) {
 			trigger_error(__("Could not find \$userModel. Please set AuthComponent::\$userModel in beforeFilter().", true), E_USER_WARNING);
 			return false;
@@ -484,7 +479,7 @@ class AuthComponent extends Object {
  * @return boolean True if $user is authorized, otherwise false
  * @access public
  */
-	function isAuthorized($type = null, $object = null, $user = null) {
+	private function isAuthorized($type = null, $object = null, $user = null) {
 		if (empty($user) && !$this->user()) {
 			return false;
 		} elseif (empty($user)) {
@@ -563,7 +558,7 @@ class AuthComponent extends Object {
  * @return array Associative array with: type, object
  * @access private
  */
-	function __authType($auth = null) {
+	private function __authType($auth = null) {
 		if ($auth == null) {
 			$auth = $this->authorize;
 		}
@@ -588,7 +583,7 @@ class AuthComponent extends Object {
  * @return void
  * @access public
  */
-	function allow() {
+	private function allow() {
 		$args = func_get_args();
 		if (empty($args) || $args == array('*')) {
 			$this->allowedActions = $this->_methods;
@@ -610,7 +605,7 @@ class AuthComponent extends Object {
  * @see AuthComponent::allow()
  * @access public
  */
-	function deny() {
+	private function deny() {
 		$args = func_get_args();
 		foreach ($args as $arg) {
 			$i = array_search($arg, $this->allowedActions);
@@ -628,7 +623,7 @@ class AuthComponent extends Object {
  * @return void
  * @access public
  */
-	function mapActions($map = array()) {
+	private function mapActions($map = array()) {
 		$crud = array('create', 'read', 'update', 'delete');
 		foreach ($map as $action => $type) {
 			if (in_array($action, $crud) && is_array($type)) {
@@ -653,7 +648,7 @@ class AuthComponent extends Object {
  * @return boolean True on login success, false on failure
  * @access public
  */
-	function login($data = null) {
+	private function login($data = null) {
 		$this->__setDefaults();
 		$this->_loggedIn = false;
 
@@ -676,7 +671,7 @@ class AuthComponent extends Object {
  * @see AuthComponent::$loginAction
  * @access public
  */
-	function logout() {
+	private function logout() {
 		$this->__setDefaults();
 		$this->Session->del($this->sessionKey);
 		$this->Session->del('Auth.redirect');
@@ -691,7 +686,7 @@ class AuthComponent extends Object {
  * @return mixed User record. or null if no user is logged in.
  * @access public
  */
-	function user($key = null) {
+	private function user($key = null) {
 		$this->__setDefaults();
 		if (!$this->Session->check($this->sessionKey)) {
 			return null;
@@ -715,7 +710,7 @@ class AuthComponent extends Object {
  * @return string Redirect URL
  * @access public
  */
-	function redirect($url = null) {
+	private function redirect($url = null) {
 		if (!is_null($url)) {
 			$redir = $url;
 			$this->Session->write('Auth.redirect', $redir);
@@ -745,7 +740,7 @@ class AuthComponent extends Object {
  * @return boolean True if the user validates, false otherwise.
  * @access public
  */
-	function validate($object, $user = null, $action = null) {
+	private function validate($object, $user = null, $action = null) {
 		if (empty($user)) {
 			$user = $this->user();
 		}
@@ -764,7 +759,7 @@ class AuthComponent extends Object {
  * @return boolean ACO node path
  * @access public
  */
-	function action($action = ':controller/:action') {
+	private function action($action = ':controller/:action') {
 		return str_replace(
 			array(':controller', ':action'),
 			array(Inflector::camelize($this->params['controller']), $this->params['action']),
@@ -780,17 +775,13 @@ class AuthComponent extends Object {
  * @return object A reference to a model object
  * @access public
  */
-	function &getModel($name = null) {
+	private function &getModel($name = null) {
 		$model = null;
 		if (!$name) {
 			$name = $this->userModel;
 		}
 
-		if (PHP5) {
-			$model = ClassRegistry::init($name);
-		} else {
-			$model =& ClassRegistry::init($name);
-		}
+		$model = ClassRegistry::init($name);
 
 		if (empty($model)) {
 			trigger_error(__('Auth::getModel() - Model is not set or could not be found', true), E_USER_WARNING);
@@ -809,7 +800,7 @@ class AuthComponent extends Object {
  * @return array User record data, or null, if the user could not be identified.
  * @access public
  */
-	function identify($user = null, $conditions = null) {
+	private function identify($user = null, $conditions = null) {
 		if ($conditions === false) {
 			$conditions = null;
 		} elseif (is_array($conditions)) {
@@ -853,13 +844,13 @@ class AuthComponent extends Object {
 			} else {
 				return false;
 			}
-			$model =& $this->getModel();
+			$model = $this->getModel();
 			$data = $model->find(array_merge($find, $conditions), null, null, 0);
 			if (empty($data) || empty($data[$this->userModel])) {
 				return null;
 			}
 		} elseif (!empty($user) && is_string($user)) {
-			$model =& $this->getModel();
+			$model = $this->getModel();
 			$data = $model->find(array_merge(array($model->escapeField() => $user), $conditions));
 
 			if (empty($data) || empty($data[$this->userModel])) {
@@ -883,7 +874,7 @@ class AuthComponent extends Object {
  * @return array Data with passwords hashed
  * @access public
  */
-	function hashPasswords($data) {
+	private function hashPasswords($data) {
 		if (is_object($this->authenticate) && method_exists($this->authenticate, 'hashPasswords')) {
 			return $this->authenticate->hashPasswords($data);
 		}
@@ -903,7 +894,7 @@ class AuthComponent extends Object {
  * @return string Hashed password
  * @access public
  */
-	function password($password) {
+	private function password($password) {
 		return Security::hash($password, null, true);
 	}
 
@@ -913,7 +904,7 @@ class AuthComponent extends Object {
  * @param object $controller Instantiating controller
  * @access public
  */
-	function shutdown(&$controller) {
+	private function shutdown(&$controller) {
 		if ($this->_loggedIn) {
 			$this->Session->del('Auth.redirect');
 		}

@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * SetTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'Set');
@@ -1335,18 +1330,32 @@ class SetTest extends CakeTestCase {
 	}
 
 /**
- * testWritingWithFunkyKeys method
+ * testFunkyKeyInserts method
  *
  * @access public
  * @return void
  */
-	function testWritingWithFunkyKeys() {
+	function testFunkyKeyInserts() {
 		$set = Set::insert(array(), 'Session Test', "test");
 		$this->assertEqual(Set::extract($set, 'Session Test'), 'test');
-
-		$set = Set::remove($set, 'Session Test');
+	}
+/**
+ * testFunkyKeyRemoval method
+ *
+ * @access public
+ * @return void
+ */
+	function testFunkyKeyRemoval() {
+		$set = Set::remove(array('Session Test' => 'test'), 'Session Test');
 		$this->assertFalse(Set::check($set, 'Session Test'));
-
+	}
+/**
+ * testFunkyKeys method
+ *
+ * @access public
+ * @return void
+ */
+	function testFunkyKeys() {
 		$this->assertTrue($set = Set::insert(array(), 'Session Test.Test Case', "test"));
 		$this->assertTrue(Set::check($set, 'Session Test.Test Case'));
 	}

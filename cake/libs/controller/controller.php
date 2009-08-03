@@ -2,20 +2,21 @@
 /**
  * Base controller class.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org
+ * @filesource
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.controller
  * @since         CakePHP(tm) v 0.2.9
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
 /**
@@ -35,7 +36,7 @@ App::import('View', 'View', false);
  * @link          http://book.cakephp.org/view/49/Controllers
  *
  */
-class Controller extends Object {
+abstract class Controller extends Object {
 
 /**
  * The name of this controller. Controller names are plural, named after the model they manipulate.
@@ -44,7 +45,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/52/name
  */
-	var $name = null;
+	public $name = null;
 
 /**
  * Stores the current URL, relative to the webroot of the application.
@@ -52,15 +53,14 @@ class Controller extends Object {
  * @var string
  * @access public
  */
-	var $here = null;
+	public $here = null;
 
 /**
  * The webroot of the application.
  *
  * @var string
  * @access public
- */
-	var $webroot = null;
+	public $webroot = null;
 
 /**
  * The name of the currently requested controller action.
@@ -68,7 +68,7 @@ class Controller extends Object {
  * @var string
  * @access public
  */
-	var $action = null;
+	public $action = null;
 
 /**
  * An array containing the class names of models this controller uses.
@@ -79,7 +79,7 @@ class Controller extends Object {
  * @access protected
  * @link http://book.cakephp.org/view/53/components-helpers-and-uses
  */
-	var $uses = false;
+	public $uses = false;
 
 /**
  * An array containing the names of helpers this controller uses. The array elements should
@@ -91,7 +91,7 @@ class Controller extends Object {
  * @access protected
  * @link http://book.cakephp.org/view/53/components-helpers-and-uses
  */
-	var $helpers = array('Html', 'Form');
+	public $helpers = array('Html', 'Form');
 
 /**
  * Parameters received in the current request: GET and POST data, information
@@ -101,7 +101,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/55/The-Parameters-Attribute-params
  */
-	var $params = array();
+	public $params = array();
 
 /**
  * Data POSTed to the controller using the HtmlHelper. Data here is accessible
@@ -110,7 +110,7 @@ class Controller extends Object {
  * @var array
  * @access public
  */
-	var $data = array();
+	public $data = array();
 
 /**
  * Holds pagination defaults for controller actions. The keys that can be included
@@ -129,7 +129,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/164/Pagination
  */
-	var $paginate = array('limit' => 20, 'page' => 1);
+	public $paginate = array('limit' => 20, 'page' => 1);
 
 /**
  * The name of the views subfolder containing views for this controller.
@@ -137,7 +137,7 @@ class Controller extends Object {
  * @var string
  * @access public
  */
-	var $viewPath = null;
+	public $viewPath = null;
 
 /**
  * The name of the layouts subfolder containing layouts for this controller.
@@ -145,7 +145,7 @@ class Controller extends Object {
  * @var string
  * @access public
  */
-	var $layoutPath = null;
+	public $layoutPath = null;
 
 /**
  * Contains variables to be handed to the view.
@@ -153,7 +153,7 @@ class Controller extends Object {
  * @var array
  * @access public
  */
-	var $viewVars = array();
+	public $viewVars = array();
 
 /**
  * Text to be used for the $title_for_layout layout variable (usually
@@ -163,7 +163,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/54/Page-related-Attributes-layout-and-pageTitle
  */
-	var $pageTitle = false;
+	public $pageTitle = false;
 
 /**
  * An array containing the class names of the models this controller uses.
@@ -171,7 +171,7 @@ class Controller extends Object {
  * @var array Array of model objects.
  * @access public
  */
-	var $modelNames = array();
+	public $modelNames = array();
 
 /**
  * Base URL path.
@@ -179,7 +179,7 @@ class Controller extends Object {
  * @var string
  * @access public
  */
-	var $base = null;
+	public $base = null;
 
 /**
  * The name of the layout file to render the view inside of. The name specified
@@ -190,7 +190,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/54/Page-related-Attributes-layout-and-pageTitle
  */
-	var $layout = 'default';
+	public $layout = 'default';
 
 /**
  * Set to true to automatically render the view
@@ -199,7 +199,7 @@ class Controller extends Object {
  * @var boolean
  * @access public
  */
-	var $autoRender = true;
+	public $autoRender = true;
 
 /**
  * Set to true to automatically render the layout around views.
@@ -207,7 +207,7 @@ class Controller extends Object {
  * @var boolean
  * @access public
  */
-	var $autoLayout = true;
+	public $autoLayout = true;
 
 /**
  * Instance of Component used to handle callbacks.
@@ -215,7 +215,7 @@ class Controller extends Object {
  * @var string
  * @access public
  */
-	var $Component = null;
+	public $Component = null;
 
 /**
  * Array containing the names of components this controller uses. Component names
@@ -227,7 +227,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/53/components-helpers-and-uses
  */
-	var $components = array();
+	public $components = array();
 
 /**
  * The name of the View class this controller sends output to.
@@ -235,7 +235,7 @@ class Controller extends Object {
  * @var string
  * @access public
  */
-	var $view = 'View';
+	public $view = 'View';
 
 /**
  * File extension for view templates. Defaults to Cake's conventional ".ctp".
@@ -243,7 +243,7 @@ class Controller extends Object {
  * @var string
  * @access public
  */
-	var $ext = '.ctp';
+	public $ext = '.ctp';
 
 /**
  * The output of the requested action.  Contains either a variable
@@ -253,7 +253,7 @@ class Controller extends Object {
  * @var string
  * @access public
  */
-	var $output = null;
+	public $output = null;
 
 /**
  * Automatically set to the name of a plugin.
@@ -261,7 +261,7 @@ class Controller extends Object {
  * @var string
  * @access public
  */
-	var $plugin = null;
+	public $plugin = null;
 
 /**
  * Used to define methods a controller that will be cached. To cache a
@@ -280,7 +280,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/346/Caching-in-the-Controller
  */
-	var $cacheAction = false;
+	public $cacheAction = false;
 
 /**
  * Used to create cached instances of models a controller uses.
@@ -290,7 +290,7 @@ class Controller extends Object {
  * @var boolean
  * @access public
  */
-	var $persistModel = false;
+	public $persistModel = false;
 
 /**
  * Holds all params passed and named.
@@ -298,7 +298,7 @@ class Controller extends Object {
  * @var mixed
  * @access public
  */
-	var $passedArgs = array();
+	public $passedArgs = array();
 
 /**
  * Triggers Scaffolding
@@ -307,7 +307,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/105/Scaffolding
  */
-	var $scaffold = false;
+	public $scaffold = false;
 
 /**
  * Holds current methods of the controller
@@ -316,7 +316,7 @@ class Controller extends Object {
  * @access public
  * @link
  */
-	var $methods = array();
+	public $methods = array();
 
 /**
  * This controller's primary model class name, the Inflector::classify()'ed version of
@@ -327,7 +327,7 @@ class Controller extends Object {
  * @var string
  * @access public
  */
-	var $modelClass = null;
+	public $modelClass = null;
 
 /**
  * This controller's model key name, an underscored version of the controller's $modelClass property.
@@ -337,7 +337,7 @@ class Controller extends Object {
  * @var string
  * @access public
  */
-	var $modelKey = null;
+	public $modelKey = null;
 
 /**
  * Holds any validation errors produced by the last call of the validateErrors() method/
@@ -345,13 +345,13 @@ class Controller extends Object {
  * @var array Validation errors, or false if none
  * @access public
  */
-	var $validationErrors = null;
+	public $validationErrors = null;
 
 /**
  * Constructor.
  *
  */
-	function __construct() {
+	public function __construct() {
 		if ($this->name === null) {
 			$r = null;
 			if (!preg_match('/(.*)Controller/i', get_class($this), $r)) {
@@ -366,7 +366,7 @@ class Controller extends Object {
 		}
 		$this->modelClass = Inflector::classify($this->name);
 		$this->modelKey = Inflector::underscore($this->modelClass);
-		$this->Component =& new Component();
+		$this->Component = new Component();
 
 		$childMethods = get_class_methods($this);
 		$parentMethods = get_class_methods('Controller');
@@ -388,7 +388,7 @@ class Controller extends Object {
  * @return void
  * @access protected
  */
-	function __mergeVars() {
+	private function __mergeVars() {
 		$pluginName = Inflector::camelize($this->plugin);
 		$pluginController = $pluginName . 'AppController';
 
@@ -429,9 +429,7 @@ class Controller extends Object {
 							$this->{$var} = Set::merge($app, $normal);
 						}
 					} else {
-						$this->{$var} = Set::merge(
-							$this->{$var}, array_diff($appVars[$var], $this->{$var})
-						);
+						$this->{$var} = Set::merge($this->{$var}, array_diff($appVars[$var], $this->{$var}));
 					}
 				}
 			}
@@ -455,9 +453,7 @@ class Controller extends Object {
 							$this->{$var} = Set::merge($app, $normal);
 						}
 					} else {
-						$this->{$var} = Set::merge(
-							$this->{$var}, array_diff($appVars[$var], $this->{$var})
-						);
+						$this->{$var} = Set::merge($this->{$var}, array_diff($appVars[$var], $this->{$var}));
 					}
 				}
 			}
@@ -474,7 +470,7 @@ class Controller extends Object {
  * @see Controller::loadModel()
  * @link http://book.cakephp.org/view/429/constructClasses
  */
-	function constructClasses() {
+	public function constructClasses() {
 		$this->__mergeVars();
 		$this->Component->init($this);
 
@@ -514,7 +510,7 @@ class Controller extends Object {
  * @return mixed true when single model found and instance created error returned if models not found.
  * @access public
  */
-	function loadModel($modelClass = null, $id = null) {
+	private function loadModel($modelClass = null, $id = null) {
 		if ($modelClass === null) {
 			$modelClass = $this->modelClass;
 		}
@@ -538,21 +534,10 @@ class Controller extends Object {
 
 		if (($cached === false)) {
 			$this->modelNames[] = $modelClass;
-
-			if (!PHP5) {
-				$this->{$modelClass} =& ClassRegistry::init(array(
-					'class' => $plugin . $modelClass, 'alias' => $modelClass, 'id' => $id
-				));
-			} else {
-				$this->{$modelClass} = ClassRegistry::init(array(
-					'class' => $plugin . $modelClass, 'alias' => $modelClass, 'id' => $id
-				));
-			}
+			$this->{$modelClass} = ClassRegistry::init(array('class' => $plugin . $modelClass, 'alias' => $modelClass, 'id' => $id));
 
 			if (!$this->{$modelClass}) {
-				return $this->cakeError('missingModel', array(array(
-					'className' => $modelClass, 'webroot' => '', 'base' => $this->base
-				)));
+				return $this->cakeError('missingModel', array(array('className' => $modelClass, 'webroot' => '', 'base' => $this->base)));
 			}
 
 			if ($this->persistModel === true) {
@@ -579,7 +564,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/425/redirect
  */
-	function redirect($url, $status = null, $exit = true) {
+	private function redirect($url, $status = null, $exit = true) {
 		$this->autoRender = false;
 
 		if (is_array($status)) {
@@ -687,7 +672,7 @@ class Controller extends Object {
  * @return void
  * @access public
  */
-	function header($status) {
+	private function header($status) {
 		header($status);
 	}
 
@@ -701,7 +686,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/427/set
  */
-	function set($one, $two = null) {
+	public function set($one, $two = null) {
 		$data = array();
 
 		if (is_array($one)) {
@@ -735,7 +720,7 @@ class Controller extends Object {
  * @return mixed Returns the return value of the called action
  * @access public
  */
-	function setAction($action) {
+	private function setAction($action) {
 		$this->action = $action;
 		$args = func_get_args();
 		unset($args[0]);
@@ -750,10 +735,8 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/396/authorize
  */
-	function isAuthorized() {
-		trigger_error(sprintf(
-			__('%s::isAuthorized() is not defined.', true), $this->name
-		), E_USER_WARNING);
+	private function isAuthorized() {
+		trigger_error(sprintf(__('%s::isAuthorized() is not defined.', true), $this->name), E_USER_WARNING);
 		return false;
 	}
 
@@ -763,7 +746,7 @@ class Controller extends Object {
  * @return integer Number of errors
  * @access public
  */
-	function validate() {
+	private function validate() {
 		$args = func_get_args();
 		$errors = call_user_func_array(array(&$this, 'validateErrors'), $args);
 
@@ -782,7 +765,7 @@ class Controller extends Object {
  * @return array Validation errors, or false if none
  * @access public
  */
-	function validateErrors() {
+	private function validateErrors() {
 		$objects = func_get_args();
 
 		if (!count($objects)) {
@@ -808,7 +791,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/428/render
  */
-	function render($action = null, $layout = null, $file = null) {
+	public function render($action = null, $layout = null, $file = null) {
 		$this->beforeRender();
 
 		$viewClass = $this->view;
@@ -828,7 +811,7 @@ class Controller extends Object {
 			$this->set('cakeDebug', $this);
 		}
 
-		$View =& new $viewClass($this);
+		$View = new $viewClass($this);
 
 		if (!empty($this->modelNames)) {
 			$models = array();
@@ -841,17 +824,15 @@ class Controller extends Object {
 					!empty($this->$currentModel->validationErrors)
 				);
 				if ($isValidModel) {
-					$View->validationErrors[Inflector::camelize($currentModel)] =&
-						$this->$currentModel->validationErrors;
+					$View->validationErrors[Inflector::camelize($currentModel)] = $this->$currentModel->validationErrors;
 				}
 			}
 			$models = array_diff(ClassRegistry::keys(), $models);
 			foreach ($models as $currentModel) {
 				if (ClassRegistry::isKeySet($currentModel)) {
-					$currentObject =& ClassRegistry::getObject($currentModel);
+					$currentObject = ClassRegistry::getObject($currentModel);
 					if (is_a($currentObject, 'Model') && !empty($currentObject->validationErrors)) {
-						$View->validationErrors[Inflector::camelize($currentModel)] =&
-							$currentObject->validationErrors;
+						$View->validationErrors[Inflector::camelize($currentModel)] = $currentObject->validationErrors;
 					}
 				}
 			}
@@ -872,7 +853,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/430/referer
  */
-	function referer($default = null, $local = false) {
+	private function referer($default = null, $local = false) {
 		$ref = env('HTTP_REFERER');
 		if (!empty($ref) && defined('FULL_BASE_URL')) {
 			$base = FULL_BASE_URL . $this->webroot;
@@ -901,7 +882,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/431/disableCache
  */
-	function disableCache() {
+	private function disableCache() {
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 		header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -921,7 +902,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/426/flash
  */
-	function flash($message, $url, $pause = 1) {
+	private function flash($message, $url, $pause = 1) {
 		$this->autoRender = false;
 		$this->set('url', Router::url($url));
 		$this->set('message', $message);
@@ -943,7 +924,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/432/postConditions
  */
-	function postConditions($data = array(), $op = null, $bool = 'AND', $exclusive = false) {
+	private function postConditions($data = array(), $op = null, $bool = 'AND', $exclusive = false) {
 		if (!is_array($data) || empty($data)) {
 			if (!empty($this->data)) {
 				$data = $this->data;
@@ -997,7 +978,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/165/Controller-Setup
  */
-	function paginate($object = null, $scope = array(), $whitelist = array()) {
+	private function paginate($object = null, $scope = array(), $whitelist = array()) {
 		if (is_array($object)) {
 			$whitelist = $scope;
 			$scope = $object;
@@ -1014,16 +995,11 @@ class Controller extends Object {
 
 			if ($assoc && isset($this->{$object}->{$assoc})) {
 				$object = $this->{$object}->{$assoc};
-			} elseif (
-				$assoc && isset($this->{$this->modelClass}) &&
-				isset($this->{$this->modelClass}->{$assoc}
-			)) {
+			} elseif ($assoc && isset($this->{$this->modelClass}) && isset($this->{$this->modelClass}->{$assoc})) {
 				$object = $this->{$this->modelClass}->{$assoc};
 			} elseif (isset($this->{$object})) {
 				$object = $this->{$object};
-			} elseif (
-				isset($this->{$this->modelClass}) && isset($this->{$this->modelClass}->{$object}
-			)) {
+			} elseif (isset($this->{$this->modelClass}) && isset($this->{$this->modelClass}->{$object})) {
 				$object = $this->{$this->modelClass}->{$object};
 			}
 		} elseif (empty($object) || $object === null) {
@@ -1188,7 +1164,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/60/Callbacks
  */
-	function beforeFilter() {
+	public function beforeFilter() {
 	}
 
 /**
@@ -1197,7 +1173,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/60/Callbacks
  */
-	function beforeRender() {
+	protected function beforeRender() {
 	}
 
 /**
@@ -1206,7 +1182,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/60/Callbacks
  */
-	function afterFilter() {
+	public function afterFilter() {
 	}
 
 /**
@@ -1217,7 +1193,7 @@ class Controller extends Object {
  * @access protected
  * @link http://book.cakephp.org/view/60/Callbacks
  */
-	function _beforeScaffold($method) {
+	private function _beforeScaffold($method) {
 		return true;
 	}
 
@@ -1229,7 +1205,7 @@ class Controller extends Object {
  * @access protected
  * @link http://book.cakephp.org/view/60/Callbacks
  */
-	function _afterScaffoldSave($method) {
+	private function _afterScaffoldSave($method) {
 		return true;
 	}
 
@@ -1241,7 +1217,7 @@ class Controller extends Object {
  * @access protected
  * @link http://book.cakephp.org/view/60/Callbacks
  */
-	function _afterScaffoldSaveError($method) {
+	private function _afterScaffoldSaveError($method) {
 		return true;
 	}
 
@@ -1255,7 +1231,7 @@ class Controller extends Object {
  * @access protected
  * @link http://book.cakephp.org/view/60/Callbacks
  */
-	function _scaffoldError($method) {
+	private function _scaffoldError($method) {
 		return false;
 	}
 }

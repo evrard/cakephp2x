@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * ACL behavior class.
  *
  * Enables objects to easily tie into an ACL system
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2006-2008, Cake Software Foundation, Inc.
+ * CakePHP : Rapid  Development Framework (http://www.cakephp.org)
+ * Copyright 2006-2009, Cake Software Foundation, Inc.
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2006-2008, Cake Software Foundation, Inc.
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP Project
+ * @copyright     Copyright 2006-2009, Cake Software Foundation, Inc.
+ * @link          http://cakephp.org CakePHP Project
  * @package       cake
  * @subpackage    cake.cake.libs.model.behaviors
  * @since         CakePHP v 1.2.0.4487
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -42,7 +37,7 @@ class AclBehavior extends ModelBehavior {
  * @var array
  * @access protected
  */
-	var $__typeMaps = array('requester' => 'Aro', 'controlled' => 'Aco');
+	private $__typeMaps = array('requester' => 'Aro', 'controlled' => 'Aco');
 
 /**
  * Sets up the configuation for the model, and loads ACL models if they haven't been already
@@ -51,7 +46,7 @@ class AclBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	function setup(&$model, $config = array()) {
+	private function setup(&$model, $config = array()) {
 		if (is_string($config)) {
 			$config = array('type' => $config);
 		}
@@ -61,7 +56,7 @@ class AclBehavior extends ModelBehavior {
 		if (!class_exists('AclNode')) {
 			uses('model' . DS . 'db_acl');
 		}
-		$model->{$type} =& ClassRegistry::init($type);
+		$model->{$type} = ClassRegistry::init($type);
 		if (!method_exists($model, 'parentNode')) {
 			trigger_error("Callback parentNode() not defined in {$model->alias}", E_USER_WARNING);
 		}
@@ -74,7 +69,7 @@ class AclBehavior extends ModelBehavior {
  * @return array
  * @access public
  */
-	function node(&$model, $ref = null) {
+	private function node(&$model, $ref = null) {
 		$type = $this->__typeMaps[strtolower($this->settings[$model->name]['type'])];
 		if (empty($ref)) {
 			$ref = array('model' => $model->name, 'foreign_key' => $model->id);
@@ -89,7 +84,7 @@ class AclBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	function afterSave(&$model, $created) {
+	private function afterSave(&$model, $created) {
 		if ($created) {
 			$type = $this->__typeMaps[strtolower($this->settings[$model->name]['type'])];
 			$parent = $model->parentNode();
@@ -114,7 +109,7 @@ class AclBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	function afterDelete(&$model) {
+	private function afterDelete(&$model) {
 		$type = $this->__typeMaps[strtolower($this->settings[$model->name]['type'])];
 		$node = Set::extract($this->node($model), "0.{$type}.id");
 		if (!empty($node)) {

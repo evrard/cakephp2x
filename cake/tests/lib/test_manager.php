@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.cake.tests.lib
  * @since         CakePHP(tm) v 1.2.0.4433
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 define('CORE_TEST_CASES', TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'cases');
@@ -82,15 +77,15 @@ class TestManager {
  * @access public
  */
 	function runAllTests(&$reporter, $testing = false) {
-		$manager =& new TestManager();
+		$manager = new TestManager();
 
-		$testCases =& $manager->_getTestFileList($manager->_getTestsPath());
+		$testCases = $manager->_getTestFileList($manager->_getTestsPath());
 		if ($manager->appTest) {
-			$test =& new GroupTest('All App Tests');
+			$test = new GroupTest('All App Tests');
 		} else if ($manager->pluginTest) {
-			$test =& new GroupTest('All ' . Inflector::humanize($manager->pluginTest) . ' Plugin Tests');
+			$test = new GroupTest('All ' . Inflector::humanize($manager->pluginTest) . ' Plugin Tests');
 		} else {
-			$test =& new GroupTest('All Core Tests');
+			$test = new GroupTest('All Core Tests');
 		}
 
 		if ($testing) {
@@ -113,7 +108,7 @@ class TestManager {
  * @access public
  */
 	function runTestCase($testCaseFile, &$reporter, $testing = false) {
-		$manager =& new TestManager();
+		$manager = new TestManager();
 
 		$testCaseFileWithPath = $manager->_getTestsPath() . DS . $testCaseFile;
 
@@ -126,7 +121,7 @@ class TestManager {
 			return true;
 		}
 
-		$test =& new GroupTest("Individual test case: " . $testCaseFile);
+		$test = new GroupTest("Individual test case: " . $testCaseFile);
 		$test->addTestFile($testCaseFileWithPath);
 		return $test->run($reporter);
 	}
@@ -140,7 +135,7 @@ class TestManager {
  * @access public
  */
 	function runGroupTest($groupTestName, &$reporter) {
-		$manager =& new TestManager();
+		$manager = new TestManager();
 		$filePath = $manager->_getTestsPath('groups') . DS . strtolower($groupTestName) . $manager->_groupExtension;
 
 		if (!file_exists($filePath)) {
@@ -148,7 +143,7 @@ class TestManager {
 		}
 
 		require_once $filePath;
-		$test =& new GroupTest($groupTestName . ' group test');
+		$test = new GroupTest($groupTestName . ' group test');
 		foreach ($manager->_getGroupTestClassNames($filePath) as $groupTest) {
 			$testCase = new $groupTest();
 			$test->addTestCase($testCase);
@@ -168,8 +163,8 @@ class TestManager {
  * @access public
  */
 	function addTestCasesFromDirectory(&$groupTest, $directory = '.') {
-		$manager =& new TestManager();
-		$testCases =& $manager->_getTestFileList($directory);
+		$manager = new TestManager();
+		$testCases = $manager->_getTestFileList($directory);
 		foreach ($testCases as $testCase) {
 			$groupTest->addTestFile($testCase);
 		}
@@ -184,7 +179,7 @@ class TestManager {
  * @access public
  */
 	function addTestFile(&$groupTest, $file) {
-		$manager =& new TestManager();
+		$manager = new TestManager();
 
 		if (file_exists($file.'.test.php')) {
 			$file .= '.test.php';
@@ -200,7 +195,7 @@ class TestManager {
  * @access public
  */
 	function &getTestCaseList() {
-		$manager =& new TestManager();
+		$manager = new TestManager();
 		$return = $manager->_getTestCaseList($manager->_getTestsPath());
 		return $return;
 	}
@@ -211,7 +206,7 @@ class TestManager {
  * @access public
  */
 	function &_getTestCaseList($directory = '.') {
-		$fileList =& $this->_getTestFileList($directory);
+		$fileList = $this->_getTestFileList($directory);
 		$testCases = array();
 		foreach ($fileList as $testCaseFile) {
 			$testCases[$testCaseFile] = str_replace($directory . DS, '', $testCaseFile);
@@ -235,7 +230,7 @@ class TestManager {
  * @access public
  */
 	function &getGroupTestList() {
-		$manager =& new TestManager();
+		$manager = new TestManager();
 		$return = $manager->_getTestGroupList($manager->_getTestsPath('groups'));
 		return $return;
 	}
@@ -256,7 +251,7 @@ class TestManager {
  * @access public
  */
 	function &_getTestGroupList($directory = '.') {
-		$fileList =& $this->_getTestGroupFileList($directory);
+		$fileList = $this->_getTestGroupFileList($directory);
 		$groupTests = array();
 
 		foreach ($fileList as $groupTestFile) {
@@ -382,7 +377,7 @@ class TestManager {
  * @access public
  */
 	function getExtension($type = 'test') {
-		$manager =& new TestManager();
+		$manager = new TestManager();
 		if ($type == 'test') {
 			return $manager->_testExtension;
 		}
@@ -404,8 +399,8 @@ class CliTestManager extends TestManager {
  * @access public
  */
 	function &getGroupTestList() {
-		$manager =& new CliTestManager();
-		$groupTests =& $manager->_getTestGroupList($manager->_getTestsPath('groups'));
+		$manager = new CliTestManager();
+		$groupTests = $manager->_getTestGroupList($manager->_getTestsPath('groups'));
 		$buffer = "Available Group Test:\n";
 
 		foreach ($groupTests as $groupTest) {
@@ -420,8 +415,8 @@ class CliTestManager extends TestManager {
  * @access public
  */
 	function &getTestCaseList() {
-		$manager =& new CliTestManager();
-		$testCases =& $manager->_getTestCaseList($manager->_getTestsPath());
+		$manager = new CliTestManager();
+		$testCases = $manager->_getTestCaseList($manager->_getTestsPath());
 		$buffer = "Available Test Cases:\n";
 
 		foreach ($testCases as $testCaseFile => $testCase) {
@@ -467,8 +462,8 @@ class TextTestManager extends TestManager {
  * @access public
  */
 	function &getGroupTestList() {
-		$manager =& new TextTestManager();
-		$groupTests =& $manager->_getTestGroupList($manager->_getTestsPath('groups'));
+		$manager = new TextTestManager();
+		$groupTests = $manager->_getTestGroupList($manager->_getTestsPath('groups'));
 
 		$buffer = "Core Test Groups:\n";
 		$urlExtra = '';
@@ -495,8 +490,8 @@ class TextTestManager extends TestManager {
  * @access public
  */
 	function &getTestCaseList() {
-		$manager =& new TextTestManager();
-		$testCases =& $manager->_getTestCaseList($manager->_getTestsPath());
+		$manager = new TextTestManager();
+		$testCases = $manager->_getTestCaseList($manager->_getTestsPath());
 
 		$buffer = "Core Test Cases:\n";
 		$urlExtra = '';
@@ -560,8 +555,8 @@ class HtmlTestManager extends TestManager {
  */
 	function &getGroupTestList() {
 		$urlExtra = '';
-		$manager =& new HtmlTestManager();
-		$groupTests =& $manager->_getTestGroupList($manager->_getTestsPath('groups'));
+		$manager = new HtmlTestManager();
+		$groupTests = $manager->_getTestGroupList($manager->_getTestsPath('groups'));
 
 		$buffer = "<h3>Core Test Groups:</h3>\n<ul>";
 		$urlExtra = null;
@@ -589,8 +584,8 @@ class HtmlTestManager extends TestManager {
  */
 	function &getTestCaseList() {
 		$urlExtra = '';
-		$manager =& new HtmlTestManager();
-		$testCases =& $manager->_getTestCaseList($manager->_getTestsPath());
+		$manager = new HtmlTestManager();
+		$testCases = $manager->_getTestCaseList($manager->_getTestsPath());
 
 		$buffer = "<h3>Core Test Cases:</h3>\n<ul>";
 		$urlExtra = null;
@@ -635,10 +630,10 @@ if (function_exists('caketestsgetreporter')) {
 			switch (CAKE_TEST_OUTPUT) {
 				case CAKE_TEST_OUTPUT_HTML:
 					require_once CAKE_TESTS_LIB . 'cake_reporter.php';
-					$Reporter =& new CakeHtmlReporter();
+					$Reporter = new CakeHtmlReporter();
 					break;
 				default:
-					$Reporter =& new TextReporter();
+					$Reporter = new TextReporter();
 					break;
 			}
 		}
@@ -773,7 +768,7 @@ if (function_exists('caketestsgetreporter')) {
 				if (!class_exists('dispatcher')) {
 					require CAKE . 'dispatcher.php';
 				}
-				$dispatch =& new Dispatcher();
+				$dispatch = new Dispatcher();
 				$dispatch->baseUrl();
 				define('BASE', $dispatch->webroot);
 				$baseUrl = BASE;

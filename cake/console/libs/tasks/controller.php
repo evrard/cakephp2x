@@ -4,17 +4,17 @@
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2009, Cake Software Foundation, Inc.
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009,	Cake Software Foundation, Inc.
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.console.libs.tasks
  * @since         CakePHP(tm) v 1.2
@@ -60,7 +60,6 @@ class ControllerTask extends Shell {
  */
 	function initialize() {
 	}
-
 /**
  * Execution method always used for tasks
  *
@@ -103,7 +102,6 @@ class ControllerTask extends Shell {
 			}
 		}
 	}
-
 /**
  * Bake All the controllers at once.  Will only bake controllers for models that exist.
  *
@@ -210,7 +208,6 @@ class ControllerTask extends Shell {
 			}
 		}
 	}
-
 /**
  * Confirm a to be baked controller with the user
  *
@@ -285,7 +282,7 @@ class ControllerTask extends Shell {
 			$this->_stop();
 		}
 
-		$modelObj =& ClassRegistry::init($currentModelName);
+		$modelObj = ClassRegistry::init($currentModelName);
 		$controllerPath = $this->_controllerPath($controllerName);
 		$pluralName = $this->_pluralName($currentModelName);
 		$singularName = Inflector::variable($currentModelName);
@@ -326,7 +323,6 @@ class ControllerTask extends Shell {
 		}
 		return false;
 	}
-
 /**
  * Assembles and writes a unit test file
  *
@@ -381,7 +377,6 @@ class ControllerTask extends Shell {
 		}
 		return array_filter($property);
 	}
-
 /**
  * Outputs and gets the list of possible controllers from database
  *
@@ -441,7 +436,6 @@ class ControllerTask extends Shell {
 		}
 		return $controllerName;
 	}
-
 /**
  * Displays help contents
  *

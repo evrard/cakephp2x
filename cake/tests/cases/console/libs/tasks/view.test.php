@@ -4,7 +4,7 @@
  *
  * Test Case for view generation shell task
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP :  Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2006-2008, Cake Software Foundation, Inc.
@@ -32,7 +32,6 @@ if (!class_exists('ShellDispatcher')) {
 	require CAKE . 'console' .  DS . 'cake.php';
 	ob_end_clean();
 }
-
 
 require_once CAKE . 'console' .  DS . 'libs' . DS . 'tasks' . DS . 'view.php';
 require_once CAKE . 'console' .  DS . 'libs' . DS . 'tasks' . DS . 'controller.php';

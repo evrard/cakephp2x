@@ -4,9 +4,9 @@
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
  * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
@@ -14,7 +14,7 @@
  *
  * @filesource
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.console.libs.tasks
  * @since         CakePHP(tm) v 1.2
@@ -37,7 +37,6 @@ class ModelTask extends Shell {
  * @access public
  */
 	var $plugin = null;
-
 /**
  * Name of the db connection used.
  *
@@ -53,7 +52,6 @@ class ModelTask extends Shell {
  * @access public
  */
 	var $path = MODELS;
-
 /**
  * tasks
  *
@@ -114,7 +112,6 @@ class ModelTask extends Shell {
 			}
 		}
 	}
-
 /**
  * Bake all models at once.
  *
@@ -246,7 +243,6 @@ class ModelTask extends Shell {
 				$this->_printAssociation($currentModelName, $assocKey, $associations);
 			}
 		}
-
 		$this->hr();
 		$looksGood = $this->in(__('Look okay?', true), array('y','n'), 'y');
 
@@ -263,7 +259,6 @@ class ModelTask extends Shell {
 			return false;
 		}
 	}
-
 /**
  * Print out all the associations of a particular type
  *
@@ -332,6 +327,7 @@ class ModelTask extends Shell {
 		if (empty($fields)) {
 			return false;
 		}
+
 		$validate = array();
 		$this->initValidations();
 		foreach ($fields as $fieldName => $field) {
@@ -553,7 +549,6 @@ class ModelTask extends Shell {
 					$associations['hasOne'][] = $assoc;
 					$associations['hasMany'][] = $assoc;
 				}
-
 			}
 		}
 		return $associations;
@@ -693,7 +688,6 @@ class ModelTask extends Shell {
 		}
 		return $associations;
 	}
-
 /**
  * Finds all possible keys to use on custom associations.
  *
@@ -811,7 +805,6 @@ class ModelTask extends Shell {
 		}
 		return $useTable;
 	}
-
 /**
  * Get an Array of all the tables in the supplied connection
  * will halt the script if no tables are found.
@@ -824,7 +817,7 @@ class ModelTask extends Shell {
 			$useDbConfig = $this->connection;
 		}
 		$tables = array();
-		$db =& ConnectionManager::getDataSource($useDbConfig);
+		$db = ConnectionManager::getDataSource($useDbConfig);
 		$usePrefix = empty($db->config['prefix']) ? '' : $db->config['prefix'];
 		if ($usePrefix) {
 			foreach ($db->listSources() as $table) {
@@ -841,7 +834,6 @@ class ModelTask extends Shell {
 		}
 		return $tables;
 	}
-
 /**
  * Forces the user to specify the model he wants to bake, and returns the selected model name.
  *
@@ -873,7 +865,6 @@ class ModelTask extends Shell {
 		}
 		return $currentModelName;
 	}
-
 /**
  * Displays help contents
  *
@@ -896,7 +887,6 @@ class ModelTask extends Shell {
 		$this->out("");
 		$this->_stop();
 	}
-
 /**
  * Interact with FixtureTask to automatically bake fixtures when baking models.
  *

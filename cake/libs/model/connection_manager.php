@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Datasource connection manager
  *
  * Provides an interface for loading and enumerating connections defined in app/config/database.php
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model
  * @since         CakePHP(tm) v 0.10.x.1402
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 uses ('model' . DS . 'datasources' . DS . 'datasource');
@@ -44,7 +39,7 @@ class ConnectionManager extends Object {
  * @var DATABASE_CONFIG
  * @access public
  */
-	var $config = null;
+	private $config = null;
 
 /**
  * Holds instances DataSource objects
@@ -52,7 +47,7 @@ class ConnectionManager extends Object {
  * @var array
  * @access protected
  */
-	var $_dataSources = array();
+	private $_dataSources = array();
 
 /**
  * Contains a list of all file and class names used in Connection settings
@@ -60,15 +55,15 @@ class ConnectionManager extends Object {
  * @var array
  * @access protected
  */
-	var $_connectionsEnum = array();
+	private $_connectionsEnum = array();
 
 /**
  * Constructor.
  *
  */
-	function __construct() {
+	public function __construct() {
 		if (class_exists('DATABASE_CONFIG')) {
-			$this->config =& new DATABASE_CONFIG();
+			$this->config = new DATABASE_CONFIG();
 		}
 	}
 
@@ -79,11 +74,11 @@ class ConnectionManager extends Object {
  * @access public
  * @static
  */
-	function &getInstance() {
+	public function &getInstance() {
 		static $instance = array();
 
 		if (!$instance) {
-			$instance[0] =& new ConnectionManager();
+			$instance[0] = new ConnectionManager();
 		}
 
 		return $instance[0];
@@ -97,11 +92,11 @@ class ConnectionManager extends Object {
  * @access public
  * @static
  */
-	function &getDataSource($name) {
-		$_this =& ConnectionManager::getInstance();
+	public function &getDataSource($name) {
+		$_this = ConnectionManager::getInstance();
 
 		if (!empty($_this->_dataSources[$name])) {
-			$return =& $_this->_dataSources[$name];
+			$return = $_this->_dataSources[$name];
 			return $return;
 		}
 
@@ -110,14 +105,14 @@ class ConnectionManager extends Object {
 			$conn = $connections[$name];
 			$class = $conn['classname'];
 			$_this->loadDataSource($name);
-			$_this->_dataSources[$name] =& new $class($_this->config->{$name});
+			$_this->_dataSources[$name] = new $class($_this->config->{$name});
 			$_this->_dataSources[$name]->configKeyName = $name;
 		} else {
 			trigger_error(sprintf(__("ConnectionManager::getDataSource - Non-existent data source %s", true), $name), E_USER_ERROR);
 			return null;
 		}
 
-		$return =& $_this->_dataSources[$name];
+		$return = $_this->_dataSources[$name];
 		return $return;
 	}
 
@@ -128,8 +123,8 @@ class ConnectionManager extends Object {
  * @access public
  * @static
  */
-	function sourceList() {
-		$_this =& ConnectionManager::getInstance();
+	private function sourceList() {
+		$_this = ConnectionManager::getInstance();
 		return array_keys($_this->_dataSources);
 	}
 
@@ -141,8 +136,8 @@ class ConnectionManager extends Object {
  * @access public
  * @static
  */
-	function getSourceName(&$source) {
-		$_this =& ConnectionManager::getInstance();
+	public function getSourceName(&$source) {
+		$_this = ConnectionManager::getInstance();
 		$names = array_keys($_this->_dataSources);
 		for ($i = 0; $i < count($names); $i++) {
 			if ($_this->_dataSources[$names[$i]] === $source) {
@@ -162,8 +157,8 @@ class ConnectionManager extends Object {
  * @access public
  * @static
  */
-	function loadDataSource($connName) {
-		$_this =& ConnectionManager::getInstance();
+	private function loadDataSource($connName) {
+		$_this = ConnectionManager::getInstance();
 
 		if (is_array($connName)) {
 			$conn = $connName;
@@ -199,8 +194,8 @@ class ConnectionManager extends Object {
  * @access public
  * @static
  */
-	function enumConnectionObjects() {
-		$_this =& ConnectionManager::getInstance();
+	public function enumConnectionObjects() {
+		$_this = ConnectionManager::getInstance();
 
 		if (!empty($_this->_connectionsEnum)) {
 			return $_this->_connectionsEnum;
@@ -226,8 +221,8 @@ class ConnectionManager extends Object {
  * @access public
  * @static
  */
-	function &create($name = '', $config = array()) {
-		$_this =& ConnectionManager::getInstance();
+	public function &create($name = '', $config = array()) {
+		$_this = ConnectionManager::getInstance();
 
 		if (empty($name) || empty($config) || array_key_exists($name, $_this->_connectionsEnum)) {
 			$null = null;
@@ -236,7 +231,7 @@ class ConnectionManager extends Object {
 
 		$_this->config->{$name} = $config;
 		$_this->_connectionsEnum[$name] = $_this->__getDriver($config);
-		$return =& $_this->getDataSource($name);
+		$return = $_this->getDataSource($name);
 		return $return;
 	}
 
@@ -246,7 +241,7 @@ class ConnectionManager extends Object {
  * @return array An indexed array with: filename, classname, and parent
  * @access private
  */
-	function __getDriver($config) {
+	private function __getDriver($config) {
 		if (!isset($config['datasource'])) {
 			$config['datasource'] = 'dbo';
 		}
@@ -268,7 +263,7 @@ class ConnectionManager extends Object {
  *
  * @access private
  */
-	function __destruct() {
+	private function __destruct() {
 		if (Configure::read('Session.save') == 'database' && function_exists('session_write_close')) {
 			session_write_close();
 		}

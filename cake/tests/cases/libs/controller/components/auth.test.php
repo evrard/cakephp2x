@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * AutComponentTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.cake.tests.cases.libs.controller.components
  * @since         CakePHP(tm) v 1.2.0.5347
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import(array('controller' . DS . 'components' . DS .'auth', 'controller' . DS . 'components' . DS .'acl'));
@@ -493,7 +488,7 @@ class AuthTest extends CakeTestCase {
 		Configure::write('Acl.database', 'test_suite');
 		Configure::write('Acl.classname', 'DbAcl');
 
-		$this->Controller =& new AuthTestController();
+		$this->Controller = new AuthTestController();
 		$this->Controller->Component->init($this->Controller);
 
 		ClassRegistry::addObject('view', new View($this->Controller));
@@ -561,7 +556,7 @@ class AuthTest extends CakeTestCase {
  * @return void
  */
 	function testLogin() {
-		$this->AuthUser =& new AuthUser();
+		$this->AuthUser = new AuthUser();
 		$user['id'] = 1;
 		$user['username'] = 'mariano';
 		$user['password'] = Security::hash(Configure::read('Security.salt') . 'cake');
@@ -633,7 +628,7 @@ class AuthTest extends CakeTestCase {
  * @return void
  */
 	function testAuthorizeFalse() {
-		$this->AuthUser =& new AuthUser();
+		$this->AuthUser = new AuthUser();
 		$user = $this->AuthUser->find();
 		$this->Controller->Session->write('Auth', $user);
 		$this->Controller->Auth->userModel = 'AuthUser';
@@ -659,7 +654,7 @@ class AuthTest extends CakeTestCase {
  * @return void
  */
 	function testAuthorizeController() {
-		$this->AuthUser =& new AuthUser();
+		$this->AuthUser = new AuthUser();
 		$user = $this->AuthUser->find();
 		$this->Controller->Session->write('Auth', $user);
 		$this->Controller->Auth->userModel = 'AuthUser';
@@ -683,7 +678,7 @@ class AuthTest extends CakeTestCase {
  * @return void
  */
 	function testAuthorizeModel() {
-		$this->AuthUser =& new AuthUser();
+		$this->AuthUser = new AuthUser();
 		$user = $this->AuthUser->find();
 		$this->Controller->Session->write('Auth', $user);
 
@@ -709,7 +704,7 @@ class AuthTest extends CakeTestCase {
  * @return void
  */
 	function testAuthorizeCrud() {
-		$this->AuthUser =& new AuthUser();
+		$this->AuthUser = new AuthUser();
 		$user = $this->AuthUser->find();
 		$this->Controller->Session->write('Auth', $user);
 
@@ -785,7 +780,6 @@ class AuthTest extends CakeTestCase {
 		$this->Controller->params['action'] = 'Add';
 		$this->assertFalse($this->Controller->Auth->startup($this->Controller));
 	}
-
 /**
  * test that allow() and allowedActions work with camelCase method names.
  *
@@ -1012,7 +1006,7 @@ class AuthTest extends CakeTestCase {
  * @return void
  */
 	function testEmptyUsernameOrPassword() {
-		$this->AuthUser =& new AuthUser();
+		$this->AuthUser = new AuthUser();
 		$user['id'] = 1;
 		$user['username'] = 'mariano';
 		$user['password'] = Security::hash(Configure::read('Security.salt') . 'cake');
@@ -1043,7 +1037,7 @@ class AuthTest extends CakeTestCase {
  * @return void
  */
 	function testInjection() {
-		$this->AuthUser =& new AuthUser();
+		$this->AuthUser = new AuthUser();
 		$this->AuthUser->id = 2;
 		$this->AuthUser->saveField('password', Security::hash(Configure::read('Security.salt') . 'cake'));
 
@@ -1150,7 +1144,7 @@ class AuthTest extends CakeTestCase {
 			'argSeparator' => ':', 'namedArgs' => array()
 		)));
 
-		$this->AuthUser =& new AuthUser();
+		$this->AuthUser = new AuthUser();
 		$user = array(
 			'id' => 1, 'username' => 'felix',
 			'password' => Security::hash(Configure::read('Security.salt') . 'cake'
@@ -1196,7 +1190,7 @@ class AuthTest extends CakeTestCase {
 	function testCustomField() {
 		Router::reload();
 
-		$this->AuthUserCustomField =& new AuthUserCustomField();
+		$this->AuthUserCustomField = new AuthUserCustomField();
 		$user = array(
 			'id' => 1, 'email' => 'harking@example.com',
 			'password' => Security::hash(Configure::read('Security.salt') . 'cake'
@@ -1275,7 +1269,7 @@ class AuthTest extends CakeTestCase {
 		}
 
 		ob_start();
-		$Dispatcher =& new Dispatcher();
+		$Dispatcher = new Dispatcher();
 		$Dispatcher->dispatch('/ajax_auth/add', array('return' => 1));
 		$result = ob_get_clean();
 		$this->assertEqual("Ajax!\nthis is the test element", $result);

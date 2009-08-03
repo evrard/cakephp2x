@@ -1,26 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Javascript Generator class file.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2006-2008, Cake Software Foundation, Inc.
+ * CakePHP : Rapid  Development Framework (http://www.cakephp.org)
+ * Copyright 2006-2009, Cake Software Foundation, Inc.
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2006-2008, Cake Software Foundation, Inc.
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP Project
+ * @copyright     Copyright 2006-2009, Cake Software Foundation, Inc.
+ * @link          http://cakephp.org CakePHP Project
  * @package       cake
  * @subpackage    cake.cake.libs.view.helpers
  * @since         CakePHP v 1.2
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -34,29 +29,29 @@
  * @subpackage    cake.cake.libs.view.helpers
  */
 class JsHelper extends Overloadable2 {
-	var $base = null;
-	var $webroot = null;
-	var $here = null;
-	var $params = null;
-	var $action = null;
-	var $data = null;
-	var $themeWeb = null;
-	var $plugin = null;
+	private $base = null;
+	private $webroot = null;
+	private $here = null;
+	private $params = null;
+	private $action = null;
+	private $data = null;
+	private $themeWeb = null;
+	private $plugin = null;
 
-	var $helpers = array();
+	private $helpers = array();
 
-	var $hook = null;
+	private $hook = null;
 
-	var $__objects = array();
+	private $__objects = array();
 
-	var $effectMap = array(
+	private $effectMap = array(
 		'Appear', 'Fade', 'Puff', 'BlindDown', 'BlindUp', 'SwitchOff', 'SlideDown', 'SlideUp',
 		'DropOut', 'Shake', 'Pulsate', 'Squish', 'Fold', 'Grow', 'Shrink', 'Highlight', 'toggle'
 	);
 
-	var $output = false;
+	private $output = false;
 
-	function __construct() {
+	private function __construct() {
 		$this->effectMap = array_combine(
 			array_map('strtolower', $this->effectMap),
 			$this->effectMap
@@ -64,7 +59,7 @@ class JsHelper extends Overloadable2 {
 		parent::__construct();
 	}
 
-	function call__($method, $params) {
+	private function call__($method, $params) {
 		if (is_object($this->hook) && method_exists($this->hook, $method)) {
 			$this->hook->dispatchMethod($method . '_', $params);
 		}
@@ -73,11 +68,11 @@ class JsHelper extends Overloadable2 {
 		}
 	}
 
-	function alert_($message) {
+	private function alert_($message) {
 		return 'alert("' . $this->escape($message) . '");';
 	}
 
-	function if_($if, $then, $else = null, $elseIf = array()) {
+	private function if_($if, $then, $else = null, $elseIf = array()) {
 		$len = strlen($if) - 1;
 		if ($if{$len} == ';') {
 			$if{$len} = null;
@@ -96,11 +91,11 @@ class JsHelper extends Overloadable2 {
 		return $out;
 	}
 
-	function confirm_($message) {
+	private function confirm_($message) {
 		return 'confirm("' . $this->escape($message) . '");';
 	}
 
-	function prompt_($message, $default = '') {
+	private function prompt_($message, $default = '') {
 		return 'prompt("' . $this->escape($message) . '", "' . $this->escape($default) . '");';
 	}
 
@@ -110,7 +105,7 @@ class JsHelper extends Overloadable2 {
  *
  * @return string
  */
-	function tryThese_($expr1, $expr2, $expr3) {
+	private function tryThese_($expr1, $expr2, $expr3) {
 	}
 
 /**
@@ -120,7 +115,7 @@ class JsHelper extends Overloadable2 {
  * @param  array  $options
  * @return string
  */
-	function load_($url = null, $options = array()) {
+	private function load_($url = null, $options = array()) {
 
 		if (isset($options['update'])) {
 			if (!is_array($options['update'])) {
@@ -140,7 +135,7 @@ class JsHelper extends Overloadable2 {
 		}
 
 		$func .= "'" . Router::url($url) . "'";
-		$ajax =& new AjaxHelper();
+		$ajax = new AjaxHelper();
 		$func .= ", " . $ajax->__optionsForAjax($options) . ")";
 
 		if (isset($options['before'])) {
@@ -166,7 +161,7 @@ class JsHelper extends Overloadable2 {
  * @param  array  $options
  * @return string
  */
-	function redirect_($url = null) {
+	private function redirect_($url = null) {
 		return 'window.location = "' . Router::url($url) . '";';
 	}
 
@@ -183,24 +178,24 @@ class JsHelper extends Overloadable2 {
  * @param  string $script String that needs to get escaped.
  * @return string Escaped string.
  */
-	function escape($string) {
+	private function escape($string) {
 		$escape = array("\r\n" => '\n', "\r" => '\n', "\n" => '\n', '"' => '\"', "'" => "\\'");
 		return str_replace(array_keys($escape), array_values($escape), $string);
 	}
 
-	function get__($name) {
+	private function get__($name) {
 		return $this->__object($name, 'id');
 	}
 
-	function select($pattern) {
+	private function select($pattern) {
 		return $this->__object($pattern, 'pattern');
 	}
 
-	function real($var) {
+	private function real($var) {
 		return $this->__object($var, 'real');
 	}
 
-	function __object($name, $var) {
+	private function __object($name, $var) {
 		if (!isset($this->__objects[$name])) {
 			$this->__objects[$name] = new JsHelperObject($this);
 			$this->__objects[$name]->{$var} = $name;
@@ -221,7 +216,7 @@ class JsHelper extends Overloadable2 {
  * @param string $q The type of quote to use
  * @return string A JSON code block
  */
-	function object($data = array(), $block = false, $prefix = '', $postfix = '', $stringKeys = array(), $quoteKeys = true, $q = "\"") {
+	private function object($data = array(), $block = false, $prefix = '', $postfix = '', $stringKeys = array(), $quoteKeys = true, $q = "\"") {
 		if (is_object($data)) {
 			$data = get_object_vars($data);
 		}
@@ -279,29 +274,29 @@ class JsHelper extends Overloadable2 {
 }
 
 class JsHelperObject {
-	var $__parent = null;
+	private $__parent = null;
 
-	var $id = null;
+	private $id = null;
 
-	var $pattern = null;
+	private $pattern = null;
 
-	var $real = null;
+	private $real = null;
 
-	function __construct(&$parent) {
+	private function __construct(&$parent) {
 		if (is_object($parent)) {
 			$this->setParent($parent);
 		}
 	}
 
-	function toString() {
+	private function toString() {
 		return $this->__toString();
 	}
 
-	function __toString() {
+	private function __toString() {
 		return $this->literal;
 	}
 
-	function ref($ref = null) {
+	private function ref($ref = null) {
 		if ($ref == null) {
 			foreach (array('id', 'pattern', 'real') as $ref) {
 				if ($this->{$ref} !== null) {
@@ -314,7 +309,7 @@ class JsHelperObject {
 		return null;
 	}
 
-	function literal($append = null) {
+	private function literal($append = null) {
 		if (!empty($this->id)) {
 			$data = '$("' . $this->id . '")';
 		}
@@ -330,7 +325,7 @@ class JsHelperObject {
 		return $data;
 	}
 
-	function __call($name, $args) {
+	private function __call($name, $args) {
 		$data = '';
 
 		if (isset($this->__parent->effectMap[strtolower($name)])) {
@@ -436,15 +431,15 @@ class JsHelperObject {
 		}
 	}
 
-	function __iterate($method, $data) {
+	private function __iterate($method, $data) {
 		return '$$("' . $this->pattern . '").' . $method . '(function(item) {' . $data . '});';
 	}
 
-	function setParent(&$parent) {
-		$this->__parent =& $parent;
+	private function setParent(&$parent) {
+		$this->__parent = $parent;
 	}
 
-	function __options($opts) {
+	private function __options($opts) {
 		$options = array();
 		foreach ($opts as $key => $val) {
 			if (!is_int($val)) {

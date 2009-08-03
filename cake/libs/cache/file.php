@@ -1,27 +1,22 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * File Storage engine for cache
  *
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.cache
  * @since         CakePHP(tm) v 1.2.0.4933
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -35,14 +30,6 @@
 class FileEngine extends CacheEngine {
 
 /**
- * Instance of File class
- *
- * @var File
- * @access private
- */
-	var $__File = null;
-
-/**
  * settings
  * 		path = absolute path to cache directory, default => CACHE
  * 		prefix = string prefix for filename, default => cake_
@@ -53,7 +40,14 @@ class FileEngine extends CacheEngine {
  * @see CacheEngine::__defaults
  * @access public
  */
-	var $settings = array();
+	public $settings = array();
+/**
+ * Instance of File class
+ *
+ * @var File
+ * @access private
+ */
+	private $__File = null;
 
 /**
  * Set to true if FileEngine::init(); and FileEngine::__active(); do not fail.
@@ -61,7 +55,7 @@ class FileEngine extends CacheEngine {
  * @var boolean
  * @access private
  */
-	var $__active = false;
+	private $__active = false;
 
 /**
  * True unless FileEngine::__active(); fails
@@ -69,7 +63,7 @@ class FileEngine extends CacheEngine {
  * @var boolean
  * @access private
  */
-	var $__init = true;
+	private $__init = true;
 
 /**
  * Initialize the Cache Engine
@@ -81,7 +75,7 @@ class FileEngine extends CacheEngine {
  * @return boolean True if the engine has been successfully initialized, false if not
  * @access public
  */
-	function init($settings = array()) {
+	public function init($settings = array()) {
 		parent::init(array_merge(
 			array(
 				'engine' => 'File', 'path' => CACHE, 'prefix'=> 'cake_', 'lock'=> false,
@@ -93,7 +87,7 @@ class FileEngine extends CacheEngine {
 			if (!class_exists('File')) {
 				require LIBS . 'file.php';
 			}
-			$this->__File =& new File($this->settings['path'] . DS . 'cake');
+			$this->__File = new File($this->settings['path'] . DS . 'cake');
 		}
 
 		if (DIRECTORY_SEPARATOR === '\\') {
@@ -113,7 +107,7 @@ class FileEngine extends CacheEngine {
  * @return boolean True if garbage collection was succesful, false on failure
  * @access public
  */
-	function gc() {
+	public function gc() {
 		return $this->clear(true);
 	}
 
@@ -126,7 +120,7 @@ class FileEngine extends CacheEngine {
  * @return boolean True if the data was succesfully cached, false on failure
  * @access public
  */
-	function write($key, &$data, $duration) {
+	public function write($key, &$data, $duration) {
 		if ($data === '' || !$this->__init) {
 			return false;
 		}
@@ -166,7 +160,7 @@ class FileEngine extends CacheEngine {
  * @return mixed The cached data, or false if the data doesn't exist, has expired, or if there was an error fetching it
  * @access public
  */
-	function read($key) {
+	public function read($key) {
 		if ($this->__setKey($key) === false || !$this->__init || !$this->__File->exists()) {
 			return false;
 		}
@@ -178,9 +172,10 @@ class FileEngine extends CacheEngine {
 
 		if ($cachetime !== false && ($cachetime < $time || ($time + $this->settings['duration']) < $cachetime)) {
 			$this->__File->close();
+			$this->__File->delete();
 			return false;
 		}
-		$data = $this->__File->read(true);
+		$data = trim($this->__File->read(true));
 
 		if ($data !== '' && !empty($this->settings['serialize'])) {
 			if ($this->settings['isWindows']) {
@@ -199,7 +194,7 @@ class FileEngine extends CacheEngine {
  * @return boolean True if the value was successfully deleted, false if it didn't exist or couldn't be removed
  * @access public
  */
-	function delete($key) {
+	public function delete($key) {
 		if ($this->__setKey($key) === false || !$this->__init) {
 			return false;
 		}
@@ -213,7 +208,7 @@ class FileEngine extends CacheEngine {
  * @return boolean True if the cache was succesfully cleared, false otherwise
  * @access public
  */
-	function clear($check) {
+	public function clear($check) {
 		if (!$this->__init) {
 			return false;
 		}
@@ -253,7 +248,7 @@ class FileEngine extends CacheEngine {
  * @return mixed Absolute cache file for the given key or false if erroneous
  * @access private
  */
-	function __setKey($key) {
+	private function __setKey($key) {
 		$this->__File->Folder->cd($this->settings['path']);
 		if ($key !== $this->__File->name) {
 			$this->__File->name = $key;
@@ -270,7 +265,7 @@ class FileEngine extends CacheEngine {
  * @return boolean
  * @access private
  */
-	function __active() {
+	private function __active() {
 		if (!$this->__active && $this->__init && !is_writable($this->settings['path'])) {
 			$this->__init = false;
 			trigger_error(sprintf(__('%s is not writable', true), $this->settings['path']), E_USER_WARNING);

@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * FileEngineTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.cache
  * @since         CakePHP(tm) v 1.2.0.5434
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 if (!class_exists('Cache')) {
@@ -177,16 +172,14 @@ class FileEngineTest extends CakeTestCase {
 	function testSerialize() {
 		Cache::engine('File', array('serialize' => true));
 		$data = 'this is a test of the emergency broadcasting system';
+
 		$write = Cache::write('serialize_test', $data, 1);
 		$this->assertTrue($write);
 
 		Cache::engine('File', array('serialize' => false));
 		$read = Cache::read('serialize_test');
-
 		$newread = Cache::read('serialize_test');
-
 		$delete = Cache::delete('serialize_test');
-
 		$this->assertIdentical($read, serialize($data));
 
 		$this->assertIdentical(unserialize($newread), $data);
@@ -315,33 +308,52 @@ class FileEngineTest extends CakeTestCase {
 		Cache::engine('File', array('isWindows' => true, 'prefix' => null, 'path' => TMP));
 
 		$expected = array (
-				'C:\dev\prj2\sites\cake\libs' => array(
-					0 => 'C:\dev\prj2\sites\cake\libs', 1 => 'C:\dev\prj2\sites\cake\libs\view',
-					2 => 'C:\dev\prj2\sites\cake\libs\view\scaffolds', 3 => 'C:\dev\prj2\sites\cake\libs\view\pages',
-					4 => 'C:\dev\prj2\sites\cake\libs\view\layouts', 5 => 'C:\dev\prj2\sites\cake\libs\view\layouts\xml',
-					6 => 'C:\dev\prj2\sites\cake\libs\view\layouts\rss', 7 => 'C:\dev\prj2\sites\cake\libs\view\layouts\js',
-					8 => 'C:\dev\prj2\sites\cake\libs\view\layouts\email', 9 => 'C:\dev\prj2\sites\cake\libs\view\layouts\email\text',
-					10 => 'C:\dev\prj2\sites\cake\libs\view\layouts\email\html', 11 => 'C:\dev\prj2\sites\cake\libs\view\helpers',
-					12 => 'C:\dev\prj2\sites\cake\libs\view\errors', 13 => 'C:\dev\prj2\sites\cake\libs\view\elements',
-					14 => 'C:\dev\prj2\sites\cake\libs\view\elements\email', 15 => 'C:\dev\prj2\sites\cake\libs\view\elements\email\text',
-					16 => 'C:\dev\prj2\sites\cake\libs\view\elements\email\html', 17 => 'C:\dev\prj2\sites\cake\libs\model',
-					18 => 'C:\dev\prj2\sites\cake\libs\model\datasources', 19 => 'C:\dev\prj2\sites\cake\libs\model\datasources\dbo',
-					20 => 'C:\dev\prj2\sites\cake\libs\model\behaviors', 21 => 'C:\dev\prj2\sites\cake\libs\controller',
-					22 => 'C:\dev\prj2\sites\cake\libs\controller\components', 23 => 'C:\dev\prj2\sites\cake\libs\cache'),
-				'C:\dev\prj2\sites\main_site\vendors' => array(
-					0 => 'C:\dev\prj2\sites\main_site\vendors', 1 => 'C:\dev\prj2\sites\main_site\vendors\shells',
-					2 => 'C:\dev\prj2\sites\main_site\vendors\shells\templates', 3 => 'C:\dev\prj2\sites\main_site\vendors\shells\templates\cdc_project',
-					4 => 'C:\dev\prj2\sites\main_site\vendors\shells\tasks', 5 => 'C:\dev\prj2\sites\main_site\vendors\js',
-					6 => 'C:\dev\prj2\sites\main_site\vendors\css'),
-				'C:\dev\prj2\sites\vendors' => array(
-					0 => 'C:\dev\prj2\sites\vendors', 1 => 'C:\dev\prj2\sites\vendors\simpletest',
-					2 => 'C:\dev\prj2\sites\vendors\simpletest\test', 3 => 'C:\dev\prj2\sites\vendors\simpletest\test\support',
-					4 => 'C:\dev\prj2\sites\vendors\simpletest\test\support\collector', 5 => 'C:\dev\prj2\sites\vendors\simpletest\extensions',
-					6 => 'C:\dev\prj2\sites\vendors\simpletest\extensions\testdox', 7 => 'C:\dev\prj2\sites\vendors\simpletest\docs',
-					8 => 'C:\dev\prj2\sites\vendors\simpletest\docs\fr', 9 => 'C:\dev\prj2\sites\vendors\simpletest\docs\en'),
-				'C:\dev\prj2\sites\main_site\views\helpers' => array(
-					0 => 'C:\dev\prj2\sites\main_site\views\helpers'));
-
+			'C:\dev\prj2\sites\cake\libs' => array(
+				0  => 'C:\dev\prj2\sites\cake\libs',
+				1  => 'C:\dev\prj2\sites\cake\libs\view',
+				2  => 'C:\dev\prj2\sites\cake\libs\view\scaffolds',
+				3  => 'C:\dev\prj2\sites\cake\libs\view\pages',
+				4  => 'C:\dev\prj2\sites\cake\libs\view\layouts',
+				5  => 'C:\dev\prj2\sites\cake\libs\view\layouts\xml',
+				6  => 'C:\dev\prj2\sites\cake\libs\view\layouts\rss',
+				7  => 'C:\dev\prj2\sites\cake\libs\view\layouts\js',
+				8  => 'C:\dev\prj2\sites\cake\libs\view\layouts\email',
+				9  => 'C:\dev\prj2\sites\cake\libs\view\layouts\email\text',
+				10 => 'C:\dev\prj2\sites\cake\libs\view\layouts\email\html',
+				11 => 'C:\dev\prj2\sites\cake\libs\view\helpers',
+				12 => 'C:\dev\prj2\sites\cake\libs\view\errors',
+				13 => 'C:\dev\prj2\sites\cake\libs\view\elements',
+				14 => 'C:\dev\prj2\sites\cake\libs\view\elements\email',
+				15 => 'C:\dev\prj2\sites\cake\libs\view\elements\email\text',
+				16 => 'C:\dev\prj2\sites\cake\libs\view\elements\email\html',
+				17 => 'C:\dev\prj2\sites\cake\libs\model',
+				18 => 'C:\dev\prj2\sites\cake\libs\model\datasources',
+				19 => 'C:\dev\prj2\sites\cake\libs\model\datasources\dbo',
+				20 => 'C:\dev\prj2\sites\cake\libs\model\behaviors',
+				21 => 'C:\dev\prj2\sites\cake\libs\controller',
+				22 => 'C:\dev\prj2\sites\cake\libs\controller\components',
+				23 => 'C:\dev\prj2\sites\cake\libs\cache'),
+			'C:\dev\prj2\sites\main_site\vendors' => array(
+				0 => 'C:\dev\prj2\sites\main_site\vendors',
+				1 => 'C:\dev\prj2\sites\main_site\vendors\shells',
+				2 => 'C:\dev\prj2\sites\main_site\vendors\shells\templates',
+				3 => 'C:\dev\prj2\sites\main_site\vendors\shells\templates\cdc_project',
+				4 => 'C:\dev\prj2\sites\main_site\vendors\shells\tasks',
+				5 => 'C:\dev\prj2\sites\main_site\vendors\js',
+				6 => 'C:\dev\prj2\sites\main_site\vendors\css'),
+			'C:\dev\prj2\sites\vendors' => array(
+				0 => 'C:\dev\prj2\sites\vendors',
+				1 => 'C:\dev\prj2\sites\vendors\simpletest',
+				2 => 'C:\dev\prj2\sites\vendors\simpletest\test',
+				3 => 'C:\dev\prj2\sites\vendors\simpletest\test\support',
+				4 => 'C:\dev\prj2\sites\vendors\simpletest\test\support\collector',
+				5 => 'C:\dev\prj2\sites\vendors\simpletest\extensions',
+				6 => 'C:\dev\prj2\sites\vendors\simpletest\extensions\testdox',
+				7 => 'C:\dev\prj2\sites\vendors\simpletest\docs',
+				8 => 'C:\dev\prj2\sites\vendors\simpletest\docs\fr',
+				9 => 'C:\dev\prj2\sites\vendors\simpletest\docs\en'),
+			'C:\dev\prj2\sites\main_site\views\helpers' => array(
+				0 => 'C:\dev\prj2\sites\main_site\views\helpers'));
 		$data = Cache::write('test_dir_map', $expected);
 		$data = Cache::read('test_dir_map');
 		Cache::delete('test_dir_map');

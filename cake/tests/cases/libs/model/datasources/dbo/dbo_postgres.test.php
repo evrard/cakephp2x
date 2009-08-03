@@ -1,26 +1,21 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * DboPostgresTest file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 1.2.0
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 App::import('Core', array('Model', 'DataSource', 'DboSource', 'DboPostgres'));
@@ -217,7 +212,7 @@ class DboPostgresTest extends CakeTestCase {
 	function setUp() {
 		Configure::write('Cache.disable', true);
 		$this->startTest();
-		$this->db =& ConnectionManager::getDataSource('test_suite');
+		$this->db = ConnectionManager::getDataSource('test_suite');
 		$this->db2 = new DboPostgresTestDb($this->db->config, false);
 		$this->model = new PostgresTestModel();
 	}
@@ -361,11 +356,7 @@ class DboPostgresTest extends CakeTestCase {
 	function testLastInsertIdMultipleInsert() {
 		$db1 = ConnectionManager::getDataSource('test_suite');
 
-		if (PHP5) {
-			$db2 = clone $db1;
-		} else {
-			$db2 = $db1;
-		}
+		$db2 = clone $db1;
 
 		$db2->connect();
 		$this->assertNotEqual($db1->connection, $db2->connection);
@@ -387,12 +378,12 @@ class DboPostgresTest extends CakeTestCase {
  * @return void
  */
 	function testSchemaScoping() {
-		$db1 =& ConnectionManager::getDataSource('test_suite');
+		$db1 = ConnectionManager::getDataSource('test_suite');
 		$db1->cacheSources = false;
 		$db1->reconnect(array('persistent' => false));
 		$db1->query('CREATE SCHEMA _scope_test');
 
-		$db2 =& ConnectionManager::create(
+		$db2 = ConnectionManager::create(
 			'test_suite_2',
 			array_merge($db1->config, array('driver' => 'postgres', 'schema' => '_scope_test'))
 		);
@@ -444,7 +435,7 @@ class DboPostgresTest extends CakeTestCase {
 		ªºnh˚ºO^∏…®[Ó“‚ÅfıÌ≥∫F!Eœ(π∑T6`¬tΩÆ0ì»rTÎ`»Ñ«
 		]≈åp˝)=¿Ô0∆öVÂmˇˆ„ø~¯ÁÔ∏b*fc»‡Îı„Ú}∆tœs∂Y∫ÜaÆ˙X∏~<ÿ·Ùvé1‹p¿TD∆ÔîÄ“úhˆ*Ú€îe)K–p¨ÚJ3Ÿ∞ã>ÊuNê°“√Ü ‹Ê9iÙ0˙AAEÍ ˙`∂£\'ûce•åƒX›ŸÁ´1SK{qdá"tÏ[wQ#SµBe∞∑µó…ÌV`B"Ñ≥„!è_ÓÏ†-º*ºú¿Ë0ˆeê∂´ë+HFj…‡zvHÓN|ÔL÷ûñ3õÜ$z%sá…pÎóV38âs	Çoµ•ß3†<9B·¨û~¢3)ÂxóÿÁCÕòÆ∫Í=»ÿSπS;∆~±êÆTEp∑óÈ÷ÀuìDHÈ$ÉõæÜjÃ»§"≤ÃONM®RËíRr{õS	∏Ê™op±W;ÂUÔ P∫kÔˇﬂTæ∑óﬂË”ÆC©Ô[≥◊HÁ˚¨hê"ÆbF?ú%h˙ˇ4xèÕ(ó2ÙáíM])Ñd|=fë-cI0ñL¢kÖêk‰Rƒ«ıÄWñ8mO3∏&√æËX¯Hó—ì]yF2»–˜ádàà‡‹ÇÎ¿„≥7mªHAS∑¶.;Œx(1} _kd©.ﬁdç48M\'àáªCp^Krí<É‰XÓıïl!Ì$N<ı∞B»G]…∂Ó¯>˛ÔbõÒπÀ•:ôO<j∂™œ%âÏ—>@È$pÖu‹Ê´-QqV ?V≥JÆÍqÛX8(lπï@zgÖ}Fe<ˇ‡Sñ“ÿ˜ê?6‡L∫Oß~µ –?ËeäÚ®YîÕ=Ü=¢DÁu*GvBk;)L¬N«î:flö∂≠ÇΩq„Ñmí•˜Ë∂‚"û≥§:±≤i^ΩÑ!)WıyÅ§ô á„RÄ÷Òôc’≠—s™rı‚Pdêãh˘ßHVç5ﬁﬁÈF€çÌÛuçÖ/M=gëµ±ÿGû1coÔuñæ‘z®. õ∑7ÉÏÜÆ,°’H†ÍÉÌ∂7e	º® íˆ⁄◊øNWK”ÂYµ‚ñé;µ¶gV-ﬂ>µtË¥áßN2 ¯¶BaP-)eW.àôt^∏1›C∑Ö?L„&”5’4jvã–ªZ	÷+4% ´0l…»ú^°´© ûiπ∑é®óÜ±Òÿ‰ïˆÌ–dˆ◊Æ19rQ=Í|ı•rMæ¬;ò‰Y‰é9.”‹˝V«ã¯∏,+ë®j*¡·/';
 
-		$model =& new AppModel(array('name' => 'BinaryTest', 'ds' => 'test_suite'));
+		$model = new AppModel(array('name' => 'BinaryTest', 'ds' => 'test_suite'));
 		$model->save(compact('data'));
 
 		$result = $model->find('first');
@@ -494,7 +485,7 @@ class DboPostgresTest extends CakeTestCase {
  * @access public
  */
 	function testCakeSchema() {
-		$db1 =& ConnectionManager::getDataSource('test_suite');
+		$db1 = ConnectionManager::getDataSource('test_suite');
 		$db1->cacheSources = false;
 		$db1->reconnect(array('persistent' => false));
 		$db1->query('CREATE TABLE ' .  $db1->fullTableName('datatypes') . ' (
@@ -504,7 +495,7 @@ class DboPostgresTest extends CakeTestCase {
 			date date,
 			CONSTRAINT test_suite_data_types_pkey PRIMARY KEY (id)
 		)');
-		$model =& ClassRegistry::init('datatypes');
+		$model = ClassRegistry::init('datatypes');
 		$schema = new CakeSchema(array('connection' => 'test_suite'));
 		$result = $schema->read(array('connection' => 'test_suite'));
 		$schema->tables = $result['tables']['missing'];
@@ -561,7 +552,7 @@ class DboPostgresTest extends CakeTestCase {
  * @return void
  */
 	function testAlterSchema() {
-		$Old =& new CakeSchema(array(
+		$Old = new CakeSchema(array(
 			'connection' => 'test_suite',
 			'name' => 'AlterPosts',
 			'alter_posts' => array(
@@ -576,7 +567,7 @@ class DboPostgresTest extends CakeTestCase {
 		));
 		$this->db->query($this->db->createSchema($Old));
 
-		$New =& new CakeSchema(array(
+		$New = new CakeSchema(array(
 			'connection' => 'test_suite',
 			'name' => 'AlterPosts',
 			'alter_posts' => array(
@@ -609,7 +600,7 @@ class DboPostgresTest extends CakeTestCase {
 	function testAlterIndexes() {
 		$this->db->cacheSources = false;
 
-		$schema1 =& new CakeSchema(array(
+		$schema1 = new CakeSchema(array(
 			'name' => 'AlterTest1',
 			'connection' => 'test_suite',
 			'altertest' => array(
@@ -621,7 +612,7 @@ class DboPostgresTest extends CakeTestCase {
 		));
 		$this->db->query($this->db->createSchema($schema1));
 
-		$schema2 =& new CakeSchema(array(
+		$schema2 = new CakeSchema(array(
 			'name' => 'AlterTest2',
 			'connection' => 'test_suite',
 			'altertest' => array(
@@ -643,7 +634,7 @@ class DboPostgresTest extends CakeTestCase {
 		$this->assertEqual($schema2->tables['altertest']['indexes'], $indexes);
 
 		// Change three indexes, delete one and add another one
-		$schema3 =& new CakeSchema(array(
+		$schema3 = new CakeSchema(array(
 			'name' => 'AlterTest3',
 			'connection' => 'test_suite',
 			'altertest' => array(

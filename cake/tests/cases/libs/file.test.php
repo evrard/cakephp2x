@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * FileTest file
  *
  * Long description for file
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
- *  Licensed under The Open Group Test Suite License
- *  Redistributions of files must retain the above copyright notice.
+ * Licensed under The Open Group Test Suite License
+ * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs
  * @since         CakePHP(tm) v 1.2.0.4206
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', 'File');
@@ -51,7 +46,7 @@ class FileTest extends CakeTestCase {
  */
 	function testBasic() {
 		$file = __FILE__;
-		$this->File =& new File($file);
+		$this->File = new File($file);
 
 		$result = $this->File->pwd();
 		$expecting = $file;
@@ -218,7 +213,7 @@ class FileTest extends CakeTestCase {
  */
 	function testCreate() {
 		$tmpFile = TMP.'tests'.DS.'cakephp.file.test.tmp';
-		$File =& new File($tmpFile, true, 0777);
+		$File = new File($tmpFile, true, 0777);
 		$this->assertTrue($File->exists());
 	}
 
@@ -229,7 +224,7 @@ class FileTest extends CakeTestCase {
  * @return void
  */
 	function testOpeningNonExistantFileCreatesIt() {
-		$someFile =& new File(TMP . 'some_file.txt', false);
+		$someFile = new File(TMP . 'some_file.txt', false);
 		$this->assertTrue($someFile->open());
 		$this->assertEqual($someFile->read(), '');
 		$someFile->close();
@@ -264,7 +259,7 @@ class FileTest extends CakeTestCase {
  * @return void
  */
 	function testReadable() {
-		$someFile =& new File(TMP . 'some_file.txt', false);
+		$someFile = new File(TMP . 'some_file.txt', false);
 		$this->assertTrue($someFile->open());
 		$this->assertTrue($someFile->readable());
 		$someFile->close();
@@ -278,7 +273,7 @@ class FileTest extends CakeTestCase {
  * @return void
  */
 	function testWritable() {
-		$someFile =& new File(TMP . 'some_file.txt', false);
+		$someFile = new File(TMP . 'some_file.txt', false);
 		$this->assertTrue($someFile->open());
 		$this->assertTrue($someFile->writable());
 		$someFile->close();
@@ -292,7 +287,7 @@ class FileTest extends CakeTestCase {
  * @return void
  */
 	function testExecutable() {
-		$someFile =& new File(TMP . 'some_file.txt', false);
+		$someFile = new File(TMP . 'some_file.txt', false);
 		$this->assertTrue($someFile->open());
 		$this->assertFalse($someFile->executable());
 		$someFile->close();
@@ -306,7 +301,7 @@ class FileTest extends CakeTestCase {
  * @return void
  */
 	function testLastAccess() {
-		$someFile =& new File(TMP . 'some_file.txt', false);
+		$someFile = new File(TMP . 'some_file.txt', false);
 		$this->assertFalse($someFile->lastAccess());
 		$this->assertTrue($someFile->open());
 		$this->assertEqual($someFile->lastAccess(), time());
@@ -321,7 +316,7 @@ class FileTest extends CakeTestCase {
  * @return void
  */
 	function testLastChange() {
-		$someFile =& new File(TMP . 'some_file.txt', false);
+		$someFile = new File(TMP . 'some_file.txt', false);
 		$this->assertFalse($someFile->lastChange());
 		$this->assertTrue($someFile->open('r+'));
 		$this->assertEqual($someFile->lastChange(), time());
@@ -345,7 +340,7 @@ class FileTest extends CakeTestCase {
 			unlink($tmpFile);
 		}
 
-		$TmpFile =& new File($tmpFile);
+		$TmpFile = new File($tmpFile);
 		$this->assertFalse(file_exists($tmpFile));
 		$this->assertFalse(is_resource($TmpFile->handle));
 
@@ -376,7 +371,7 @@ class FileTest extends CakeTestCase {
 			unlink($tmpFile);
 		}
 
-		$TmpFile =& new File($tmpFile);
+		$TmpFile = new File($tmpFile);
 		$this->assertFalse(file_exists($tmpFile));
 
 		$fragments = array('CakePHP\'s', ' test suite', ' was here ...', '');
@@ -405,13 +400,13 @@ class FileTest extends CakeTestCase {
 		if (!file_exists($tmpFile)) {
 			touch($tmpFile);
 		}
-		$TmpFile =& new File($tmpFile);
+		$TmpFile = new File($tmpFile);
 		$this->assertTrue(file_exists($tmpFile));
 		$result = $TmpFile->delete();
 		$this->assertTrue($result);
 		$this->assertFalse(file_exists($tmpFile));
 
-		$TmpFile =& new File('/this/does/not/exist');
+		$TmpFile = new File('/this/does/not/exist');
 		$result = $TmpFile->delete();
 		$this->assertFalse($result);
 	}

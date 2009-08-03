@@ -1,10 +1,10 @@
-# $Id$
+# $Id: i18n.sql 15 2009-01-14 06:52:30Z phpnut $
 #
-# Copyright 2005-2008,	Cake Software Foundation, Inc.
+# Copyright 2005-2009,	Cake Software Foundation, Inc.
 #
 # Licensed under The MIT License
 # Redistributions of files must retain the above copyright notice.
-# http://www.opensource.org/licenses/mit-license.php The MIT License
+# MIT License (http://www.opensource.org/licenses/mit-license.php)
 
 CREATE TABLE i18n (
 	id int(10) NOT NULL auto_increment,

@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Washes strings from unwanted noise.
  *
  * Helpful methods to make unsafe strings usable.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 0.10.0.1076
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -45,7 +40,7 @@ class Sanitize {
  * @access public
  * @static
  */
-	function paranoid($string, $allowed = array()) {
+	public static function paranoid($string, $allowed = array()) {
 		$allow = null;
 		if (!empty($allowed)) {
 			foreach ($allowed as $value) {
@@ -73,8 +68,8 @@ class Sanitize {
  * @access public
  * @static
  */
-	function escape($string, $connection = 'default') {
-		$db =& ConnectionManager::getDataSource($connection);
+	public static function escape($string, $connection = 'default') {
+		$db = ConnectionManager::getDataSource($connection);
 		if (is_numeric($string) || $string === null || is_bool($string)) {
 			return $string;
 		}
@@ -92,7 +87,7 @@ class Sanitize {
  * @access public
  * @static
  */
-	function html($string, $remove = false) {
+	public static function html($string, $remove = false) {
 		if ($remove) {
 			$string = strip_tags($string);
 		} else {
@@ -111,7 +106,7 @@ class Sanitize {
  * @access public
  * @static
  */
-	function stripWhitespace($str) {
+	public static function stripWhitespace($str) {
 		$r = preg_replace('/[\n\r\t]+/', '', $str);
 		return preg_replace('/\s{2,}/', ' ', $r);
 	}
@@ -124,7 +119,7 @@ class Sanitize {
  * @access public
  * @static
  */
-	function stripImages($str) {
+	public static function stripImages($str) {
 		$str = preg_replace('/(<a[^>]*>)(<img[^>]+alt=")([^"]*)("[^>]*>)(<\/a>)/i', '$1$3$5<br />', $str);
 		$str = preg_replace('/(<img[^>]+alt=")([^"]*)("[^>]*>)/i', '$2<br />', $str);
 		$str = preg_replace('/<img[^>]*>/i', '', $str);
@@ -139,7 +134,7 @@ class Sanitize {
  * @access public
  * @static
  */
-	function stripScripts($str) {
+	public static function stripScripts($str) {
 		return preg_replace('/(<link[^>]+rel="[^"]*stylesheet"[^>]*>|<img[^>]*>|style="[^"]*")|<script[^>]*>.*?<\/script>|<style[^>]*>.*?<\/style>|<!--.*?-->/i', '', $str);
 	}
 
@@ -150,10 +145,10 @@ class Sanitize {
  * @return string sanitized string
  * @access public
  */
-	function stripAll($str) {
-		$str = Sanitize::stripWhitespace($str);
-		$str = Sanitize::stripImages($str);
-		$str = Sanitize::stripScripts($str);
+	public static function stripAll($str) {
+		$str = self::stripWhitespace($str);
+		$str = self::stripImages($str);
+		$str = self::stripScripts($str);
 		return $str;
 	}
 
@@ -167,7 +162,7 @@ class Sanitize {
  * @access public
  * @static
  */
-	function stripTags() {
+	public static function stripTags() {
 		$params = params(func_get_args());
 		$str = $params[0];
 
@@ -190,7 +185,7 @@ class Sanitize {
  * @access public
  * @static
  */
-	function clean($data, $options = array()) {
+	public static function clean($data, $options = array()) {
 		if (empty($data)) {
 			return $data;
 		}
@@ -214,7 +209,7 @@ class Sanitize {
 
 		if (is_array($data)) {
 			foreach ($data as $key => $val) {
-				$data[$key] = Sanitize::clean($val, $options);
+				$data[$key] = self::clean($val, $options);
 			}
 			return $data;
 		} else {
@@ -222,7 +217,7 @@ class Sanitize {
 				$data = str_replace(chr(0xCA), '', str_replace(' ', ' ', $data));
 			}
 			if ($options['encode']) {
-				$data = Sanitize::html($data);
+				$data = self::html($data);
 			}
 			if ($options['dollar']) {
 				$data = str_replace("\\\$", "$", $data);
@@ -237,7 +232,7 @@ class Sanitize {
 				$data = preg_replace("/&amp;#([0-9]+);/s", "&#\\1;", $data);
 			}
 			if ($options['escape']) {
-				$data = Sanitize::escape($data, $options['connection']);
+				$data = self::escape($data, $options['connection']);
 			}
 			if ($options['backslash']) {
 				$data = preg_replace("/\\\(?!&amp;#|\?#)/", "\\", $data);
@@ -253,12 +248,12 @@ class Sanitize {
  * @access public
  * @static
  */
-	function formatColumns(&$model) {
+	public static function formatColumns(&$model) {
 		foreach ($model->data as $name => $values) {
 			if ($name == $model->alias) {
-				$curModel =& $model;
+				$curModel = $model;
 			} elseif (isset($model->{$name}) && is_object($model->{$name}) && is_subclass_of($model->{$name}, 'Model')) {
-				$curModel =& $model->{$name};
+				$curModel = $model->{$name};
 			} else {
 				$curModel = null;
 			}
@@ -268,7 +263,7 @@ class Sanitize {
 					$colType = $curModel->getColumnType($column);
 
 					if ($colType != null) {
-						$db =& ConnectionManager::getDataSource($curModel->useDbConfig);
+						$db = ConnectionManager::getDataSource($curModel->useDbConfig);
 						$colData = $db->columns[$colType];
 
 						if (isset($colData['limit']) && strlen(strval($data)) > $colData['limit']) {

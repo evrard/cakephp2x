@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Basic Cake functionality.
  *
  * Core functions for including other source files, loading models and so forth.
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake
  * @since         CakePHP(tm) v 0.2.9
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -36,19 +31,6 @@
 	define('WEEK', 7 * DAY);
 	define('MONTH', 30 * DAY);
 	define('YEAR', 365 * DAY);
-
-/**
- * Patch for PHP < 5.0
- */
-if (!function_exists('clone')) {
-	if (version_compare(PHP_VERSION, '5.0') < 0) {
-		eval ('
-		function clone($object)
-		{
-			return $object;
-		}');
-	}
-}
 
 /**
  * Loads configuration files. Receives a set of configuration files
@@ -123,20 +105,6 @@ if (!function_exists('clone')) {
 			echo $var . "\n</pre>\n";
 		}
 	}
-if (!function_exists('getMicrotime')) {
-
-/**
- * Returns microtime for execution time checking
- *
- * @return float Microtime
- */
-	function getMicrotime() {
-		list($usec, $sec) = explode(' ', microtime());
-		return ((float)$usec + (float)$sec);
-	}
-}
-if (!function_exists('sortByKey')) {
-
 /**
  * Sorts given $array by key $sortby.
  *
@@ -166,38 +134,6 @@ if (!function_exists('sortByKey')) {
 		}
 		return $out;
 	}
-}
-if (!function_exists('array_combine')) {
-
-/**
- * Combines given identical arrays by using the first array's values as keys,
- * and the second one's values as values. (Implemented for backwards compatibility with PHP4)
- *
- * @param array $a1 Array to use for keys
- * @param array $a2 Array to use for values
- * @return mixed Outputs either combined array or false.
- */
-	function array_combine($a1, $a2) {
-		$a1 = array_values($a1);
-		$a2 = array_values($a2);
-		$c1 = count($a1);
-		$c2 = count($a2);
-
-		if ($c1 != $c2) {
-			return false;
-		}
-		if ($c1 <= 0) {
-			return false;
-		}
-		$output = array();
-
-		for ($i = 0; $i < $c1; $i++) {
-			$output[$a1[$i]] = $a2[$i];
-		}
-		return $output;
-	}
-}
-
 /**
  * Convenience method for htmlspecialchars.
  *
@@ -445,36 +381,6 @@ if (!function_exists('array_combine')) {
 		}
 		return null;
 	}
-if (!function_exists('file_put_contents')) {
-
-/**
- * Writes data into file.
- *
- * If file exists, it will be overwritten. If data is an array, it will be join()ed with an empty string.
- *
- * @param string $fileName File name.
- * @param mixed  $data String or array.
- * @return boolean Success
- */
-	function file_put_contents($fileName, $data) {
-		if (is_array($data)) {
-			$data = join('', $data);
-		}
-		$res = @fopen($fileName, 'w+b');
-
-		if ($res) {
-			$write = @fwrite($res, $data);
-			if ($write === false) {
-				return false;
-			} else {
-				@fclose($res);
-				return $write;
-			}
-		}
-		return false;
-	}
-}
-
 /**
  * Reads/writes temporary data to cache files or session.
  *
@@ -814,60 +720,6 @@ if (!function_exists('file_put_contents')) {
 			echo I18n::translate($msg, null, null, $category);
 		} else {
 			return I18n::translate($msg, null, null, $category);
-		}
-	}
-
-/**
- * Computes the difference of arrays using keys for comparison.
- *
- * @param array First array
- * @param array Second array
- * @return array Array with different keys
- */
-	if (!function_exists('array_diff_key')) {
-		function array_diff_key() {
-			$valuesDiff = array();
-
-			$argc = func_num_args();
-			if ($argc < 2) {
-				return false;
-			}
-
-			$args = func_get_args();
-			foreach ($args as $param) {
-				if (!is_array($param)) {
-					return false;
-				}
-			}
-
-			foreach ($args[0] as $valueKey => $valueData) {
-				for ($i = 1; $i < $argc; $i++) {
-					if (isset($args[$i][$valueKey])) {
-						continue 2;
-					}
-				}
-				$valuesDiff[$valueKey] = $valueData;
-			}
-			return $valuesDiff;
-		}
-	}
-
-/**
- * Computes the intersection of arrays using keys for comparison
- *
- * @param array First array
- * @param array Second array
- * @return array Array with interesected keys
- */
-	if (!function_exists('array_intersect_key')) {
-		function array_intersect_key($arr1, $arr2) {
-			$res = array();
-			foreach ($arr1 as $key => $value) {
-				if (array_key_exists($key, $arr2)) {
-					$res[$key] = $arr1[$key];
-				}
-			}
-			return $res;
 		}
 	}
 

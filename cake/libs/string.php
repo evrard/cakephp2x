@@ -3,20 +3,21 @@
  * String handling methods.
  *
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org
+ * @filesource
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs
  * @since         CakePHP(tm) v 1.2.0.5551
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
 /**
@@ -26,24 +27,7 @@
  * @package       cake
  * @subpackage    cake.cake.libs
  */
-class String extends Object {
-
-/**
- * Gets a reference to the String object instance
- *
- * @return object String instance
- * @access public
- * @static
- */
-	function &getInstance() {
-		static $instance = array();
-
-		if (!$instance) {
-			$instance[0] =& new String();
-		}
-		return $instance[0];
-	}
-
+final class String extends Object {
 /**
  * Generate a random UUID
  *
@@ -51,7 +35,7 @@ class String extends Object {
  * @return RFC 4122 UUID
  * @static
  */
-	function uuid() {
+	public static function uuid() {
 		$node = env('SERVER_ADDR');
 		$pid = null;
 
@@ -67,7 +51,7 @@ class String extends Object {
 			foreach ($node as $id) {
 				$ipv6 .= str_pad(base_convert($id, 16, 2), 16, 0, STR_PAD_LEFT);
 			}
-			$node =  base_convert($ipv6, 2, 10);
+			$node = base_convert($ipv6, 2, 10);
 
 			if (strlen($node) < 38) {
 				$node = null;
@@ -129,7 +113,7 @@ class String extends Object {
  * @access public
  * @static
  */
-	function tokenize($data, $separator = ',', $leftBound = '(', $rightBound = ')') {
+	public static function tokenize($data, $separator = ',', $leftBound = '(', $rightBound = ')') {
 		if (empty($data) || is_array($data)) {
 			return $data;
 		}
@@ -219,7 +203,7 @@ class String extends Object {
  * @access public
  * @static
  */
-	function insert($str, $data, $options = array()) {
+	public static function insert($str, $data, $options = array()) {
 		$defaults = array(
 			'before' => ':', 'after' => null, 'escape' => '\\', 'format' => null, 'clean' => false
 		);
@@ -269,7 +253,7 @@ class String extends Object {
 		if (!$options['clean']) {
 			return $str;
 		}
-		return String::cleanInsert($str, $options);
+		return self::cleanInsert($str, $options);
 	}
 
 /**
@@ -285,7 +269,7 @@ class String extends Object {
  * @static
  * @see Set::insert()
  */
-	function cleanInsert($str, $options) {
+	public static function cleanInsert($str, $options) {
 		$clean = $options['clean'];
 		if (!$clean) {
 			return $str;
@@ -312,7 +296,7 @@ class String extends Object {
 				$str = preg_replace($kleenex, $clean['replacement'], $str);
 				if ($clean['andText']) {
 					$options['clean'] = array('method' => 'text');
-					$str = String::cleanInsert($str, $options);
+					$str = self::cleanInsert($str, $options);
 				}
 				break;
 			case 'text':

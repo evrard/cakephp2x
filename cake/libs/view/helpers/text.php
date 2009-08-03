@@ -1,28 +1,23 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * Text Helper
  *
  * Text manipulations: Highlight, excerpt, truncate, strip of links, convert email addresses to mailto: links...
  *
- * PHP versions 4 and 5
+ * PHP Version 5.x
  *
- * CakePHP(tm) :  Rapid Development Framework (http://www.cakephp.org)
- * Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @filesource
- * @copyright     Copyright 2005-2008, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP(tm) Project
+ * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.view.helpers
  * @since         CakePHP(tm) v 0.10.0.1076
- * @version       $Revision$
- * @modifiedby    $LastChangedBy$
- * @lastmodified  $Date$
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 
@@ -58,7 +53,7 @@ class TextHelper extends AppHelper {
  * @return string The highlighted text
  * @access public
  */
-	function highlight($text, $phrase, $highlighter = '<span class="highlight">\1</span>', $considerHtml = false) {
+	private function highlight($text, $phrase, $highlighter = '<span class="highlight">\1</span>', $considerHtml = false) {
 		if (empty($phrase)) {
 			return $text;
 		}
@@ -96,7 +91,7 @@ class TextHelper extends AppHelper {
  * @return string The text without links
  * @access public
  */
-	function stripLinks($text) {
+	private function stripLinks($text) {
 		return preg_replace('|<a\s+[^>]+>|im', '', preg_replace('|<\/a>|im', '', $text));
 	}
 
@@ -109,7 +104,7 @@ class TextHelper extends AppHelper {
  * @return string The text with links
  * @access public
  */
-	function autoLinkUrls($text, $htmlOptions = array()) {
+	private function autoLinkUrls($text, $htmlOptions = array()) {
 		$options = 'array(';
 		foreach ($htmlOptions as $option => $value) {
 				$value = var_export($value, true);
@@ -132,7 +127,7 @@ class TextHelper extends AppHelper {
  * @return string The text with links
  * @access public
  */
-	function autoLinkEmails($text, $htmlOptions = array()) {
+	private function autoLinkEmails($text, $htmlOptions = array()) {
 		$options = 'array(';
 
 		foreach ($htmlOptions as $option => $value) {
@@ -152,7 +147,7 @@ class TextHelper extends AppHelper {
  * @return string The text with links
  * @access public
  */
-	function autoLink($text, $htmlOptions = array()) {
+	private function autoLink($text, $htmlOptions = array()) {
 		return $this->autoLinkEmails($this->autoLinkUrls($text, $htmlOptions), $htmlOptions);
 	}
 
@@ -169,7 +164,7 @@ class TextHelper extends AppHelper {
  * @param boolean $considerHtml If true, HTML tags would be handled correctly
  * @return string Trimmed string.
  */
-	function truncate($text, $length = 100, $ending = '...', $exact = true, $considerHtml = false) {
+	private function truncate($text, $length = 100, $ending = '...', $exact = true, $considerHtml = false) {
 		if (is_array($ending)) {
 			extract($ending);
 		}
@@ -262,7 +257,7 @@ class TextHelper extends AppHelper {
  * @see TextHelper::truncate()
  * @access public
  */
-	function trim() {
+	private function trim() {
 		$args = func_get_args();
 		return call_user_func_array(array(&$this, 'truncate'), $args);
 	}
@@ -277,7 +272,7 @@ class TextHelper extends AppHelper {
  * @return string Modified string
  * @access public
  */
-	function excerpt($text, $phrase, $radius = 100, $ending = "...") {
+	private function excerpt($text, $phrase, $radius = 100, $ending = "...") {
 		if (empty($text) or empty($phrase)) {
 			return $this->truncate($text, $radius * 2, $ending);
 		}
@@ -320,7 +315,7 @@ class TextHelper extends AppHelper {
  * @return string
  * @access public
  */
-	function toList($list, $and = 'and') {
+	private function toList($list, $and = 'and') {
 		$r = '';
 		$c = count($list) - 1;
 		foreach ($list as $i => $item) {
