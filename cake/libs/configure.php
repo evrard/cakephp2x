@@ -31,13 +31,12 @@
 final class Configure extends Object {
 
 /**
- * Current debug level.
+ * Array of values written and read
  *
- * @link          http://book.cakephp.org/view/44/CakePHP-Core-Configuration-Variables
- * @var integer
- * @access public
+ * @var array
+ * @access private
  */
-	public $debug = null;
+	public static $__values = array('debug' => null);
 
 /**
  * Returns a singleton instance of the Configure class.
@@ -79,21 +78,21 @@ final class Configure extends Object {
 		if (!is_array($config)) {
 			$config = array($config => $value);
 		}
-
+		
 		foreach ($config as $name => $value) {
 			if (strpos($name, '.') === false) {
-				self::${$name} = $value;
+				self::$__values[$name] = $value;
 			} else {
 				$names = explode('.', $name, 2);
-				if (!isset(self::${$names[0]})) {
-					self::${$names[0]} = array();
+				if (!isset(self::$__values[$names[0]])) {
+					self::$__values[$names[0]] = array();
 				}
-				self::${$names[0]} = Set::insert(self::${$names[0]}, $names[1], $value);
+				self::$__values[$names[0]] = Set::insert(self::$__values[$names[0]], $names[1], $value);
 			}
 		}
 
 		if (isset($config['debug'])) {
-			if (self::$debug) {
+			if (self::$__values['debug']) {
 				error_reporting(E_ALL);
 
 				if (function_exists('ini_set')) {
@@ -128,29 +127,29 @@ final class Configure extends Object {
  */
 	public static function read($var = 'debug') {
 		if ($var === 'debug') {
-			if (!isset(self::$debug)) {
+			if (!isset(self::$__values['debug'])) {
 				if (defined('DEBUG')) {
-					self::$debug = DEBUG;
+					self::$__values['debug'] = DEBUG;
 				} else {
-					self::$debug = 0;
+					self::$__values['debug'] = 0;
 				}
 			}
-			return self::$debug;
+			return self::$__values['debug'];
 		}
 
 		if (strpos($var, '.') !== false) {
 			$names = explode('.', $var, 2);
 			$var = $names[0];
 		}
-		if (!isset(self::${$var})) {
+		if (!isset(self::$__values[$var])) {
 			return null;
 		}
 
 		if (!empty($names[1])) {
-			return Set::extract(self::${$var}, $names[1]);
+			return Set::extract(self::$__values[$var], $names[1]);
 		}
 
-		return self::${$var};
+		return self::$__values[$var];
 	}
 
 /**
@@ -168,12 +167,12 @@ final class Configure extends Object {
 	public static function delete($var = null) {
 
 		if (strpos($var, '.') === false) {
-			unset(self::${$var});
+			unset(self::$__values[$var]);
 			return;
 		}
 
 		$names = explode('.', $var, 2);
-		self::${$names[0]} = Set::remove(self::${$names[0]}, $names[1]);
+		self::$__values[$names[0]] = Set::remove(self::$__values[$names[0]], $names[1]);
 	}
 
 /**
@@ -231,11 +230,11 @@ final class Configure extends Object {
  * @access public
  */
 	public static function version() {
-		if (!isset(self::$Cake['version'])) {
+		if (!isset(self::$__values['Cake']['version'])) {
 			require(CORE_PATH . 'cake' . DS . 'config' . DS . 'config.php');
 			self::write($config);
 		}
-		return self::$Cake['version'];
+		return self::$__values['Cake']['version'];
 	}
 
 /**
