@@ -28,6 +28,30 @@
 class ThemeView extends View {
 
 /**
+<<<<<<< HEAD
+ * System path to themed element: themed . DS . theme . DS . elements . DS
+ *
+ * @var string
+ */
+	private $themeElement = null;
+
+/**
+ * System path to themed layout: themed . DS . theme . DS . layouts . DS
+ *
+ * @var string
+ */
+	private $themeLayout = null;
+
+/**
+ * System path to themed: themed . DS . theme . DS
+ *
+ * @var string
+ */
+	private $themePath = null;
+
+/**
+=======
+>>>>>>> 290b740... Working on the visibility and tests
  * Enter description here...
  *
  * @param unknown_type $controller
@@ -44,7 +68,6 @@ class ThemeView extends View {
 			}
 		}
 	}
-
 /**
  * Return all possible paths to find view files in order
  *

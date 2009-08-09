@@ -36,24 +36,36 @@ class AjaxHelper extends AppHelper {
  *
  * @var array
  */
-	public $helpers = array('Html', 'Javascript', 'Form');
+<<<<<<< HEAD
+	private $helpers = array('Html', 'Javascript', 'Form');
 
+=======
+	public $helpers = array('Html', 'Javascript', 'Form');
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * HtmlHelper instance
  *
  * @var HtmlHelper
  * @access public
  */
-	public $Html = null;
+<<<<<<< HEAD
+	private $Html = null;
 
+=======
+	public $Html = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * JavaScriptHelper instance
  *
  * @var JavaScriptHelper
  * @access public
  */
-	public $Javascript = null;
+<<<<<<< HEAD
+	private $Javascript = null;
 
+=======
+	public $Javascript = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Names of Javascript callback functions.
  *

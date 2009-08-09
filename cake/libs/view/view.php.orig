@@ -41,143 +41,219 @@ class View extends Object {
  * @var string Base URL
  * @access public
  */
-	public $base = null;
+<<<<<<< HEAD
+	private $base = null;
 
+=======
+	public $base = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Stores the current URL (for links etc.)
  *
  * @var string Current URL
  */
-	public $here = null;
+<<<<<<< HEAD
+	private $here = null;
 
+=======
+	public $here = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Name of the plugin.
  *
  * @link          http://manual.cakephp.org/chapter/plugins
  * @var string
  */
-	public $plugin = null;
+<<<<<<< HEAD
+	private $plugin = null;
 
+=======
+	public $plugin = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Name of the controller.
  *
  * @var string Name of controller
  * @access public
  */
-	public $name = null;
+<<<<<<< HEAD
+	private $name = null;
 
+=======
+	public $name = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Action to be performed.
  *
  * @var string Name of action
  * @access public
  */
-	public $action = null;
+<<<<<<< HEAD
+	private $action = null;
 
+=======
+	public $action = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Array of parameter data
  *
  * @var array Parameter data
  */
-	public $params = array();
+<<<<<<< HEAD
+	private $params = array();
 
+=======
+	public $params = array();
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Current passed params
  *
  * @var mixed
  */
-	public $passedArgs = array();
+<<<<<<< HEAD
+	private $passedArgs = array();
 
+=======
+	public $passedArgs = array();
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Array of data
  *
  * @var array Parameter data
  */
-	public $data = array();
+<<<<<<< HEAD
+	private $data = array();
 
+=======
+	public $data = array();
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * An array of names of built-in helpers to include.
  *
  * @var mixed A single name as a string or a list of names as an array.
  * @access public
  */
-	public $helpers = array('Html');
+<<<<<<< HEAD
+	private $helpers = array('Html');
 
+=======
+	public $helpers = array('Html');
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Path to View.
  *
  * @var string Path to View
  */
-	public $viewPath = null;
+<<<<<<< HEAD
+	private $viewPath = null;
 
+=======
+	public $viewPath = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Variables for the view
  *
  * @var array
  * @access public
  */
-	public $viewVars = array();
+<<<<<<< HEAD
+	private $viewVars = array();
 
+=======
+	public $viewVars = array();
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Name of layout to use with this View.
  *
  * @var string
  * @access public
  */
-	public $layout = 'default';
+<<<<<<< HEAD
+	private $layout = 'default';
 
+=======
+	public $layout = 'default';
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Path to Layout.
  *
  * @var string Path to Layout
  */
-	public $layoutPath = null;
+<<<<<<< HEAD
+	private $layoutPath = null;
 
+=======
+	public $layoutPath = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Title HTML element of this View.
  *
  * @var string
  * @access public
  */
-	public $pageTitle = false;
+<<<<<<< HEAD
+	private $pageTitle = false;
 
+=======
+	public $pageTitle = false;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Turns on or off Cake's conventional mode of rendering views. On by default.
  *
  * @var boolean
  * @access public
  */
-	public $autoRender = true;
+<<<<<<< HEAD
+	private $autoRender = true;
 
+=======
+	public $autoRender = true;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Turns on or off Cake's conventional mode of finding layout files. On by default.
  *
  * @var boolean
  * @access public
  */
-	public $autoLayout = true;
+<<<<<<< HEAD
+	private $autoLayout = true;
 
+=======
+	public $autoLayout = true;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * File extension. Defaults to Cake's template ".ctp".
  *
  * @var string
  */
-	public $ext = '.ctp';
+<<<<<<< HEAD
+	private $ext = '.ctp';
 
+=======
+	public $ext = '.ctp';
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Sub-directory for this view file.
  *
  * @var string
  */
-	public $subDir = null;
+<<<<<<< HEAD
+	private $subDir = null;
 
+=======
+	public $subDir = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Theme name.
  *
  * @var string
  */
-	public $themeWeb = null;
+<<<<<<< HEAD
+	private $themeWeb = null;
 
+=======
+	public $themeWeb = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Used to define methods a controller that will be cached.
  *
@@ -185,36 +261,56 @@ class View extends Object {
  * @var mixed
  * @access public
  */
-	public $cacheAction = false;
+<<<<<<< HEAD
+	private $cacheAction = false;
 
+=======
+	public $cacheAction = false;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * holds current errors for the model validation
  *
  * @var array
  */
-	public $validationErrors = array();
+<<<<<<< HEAD
+	private $validationErrors = array();
 
+=======
+	public $validationErrors = array();
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * True when the view has been rendered.
  *
  * @var boolean
  */
-	public $hasRendered = false;
+<<<<<<< HEAD
+	private $hasRendered = false;
 
+=======
+	public $hasRendered = false;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Array of loaded view helpers.
  *
  * @var array
  */
-	public $loaded = array();
+<<<<<<< HEAD
+	private $loaded = array();
 
+=======
+	public $loaded = array();
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * True if in scope of model-specific region
  *
  * @var boolean
  */
-	public $modelScope = false;
+<<<<<<< HEAD
+	private $modelScope = false;
 
+=======
+	public $modelScope = false;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Name of current model this view context is attached to
  *
@@ -227,43 +323,67 @@ class View extends Object {
  *
  * @var string
  */
-	public $association = null;
+<<<<<<< HEAD
+	private $association = null;
 
+=======
+	public $association = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Name of current model field this view context is attached to
  *
  * @var string
  */
-	public $field = null;
+<<<<<<< HEAD
+	private $field = null;
 
+=======
+	public $field = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Suffix of current field this view context is attached to
  *
  * @var string
  */
-	public $fieldSuffix = null;
+<<<<<<< HEAD
+	private $fieldSuffix = null;
 
+=======
+	public $fieldSuffix = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * The current model ID this view context is attached to
  *
  * @var mixed
  */
-	public $modelId = null;
+<<<<<<< HEAD
+	private $modelId = null;
 
+=======
+	public $modelId = null;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * List of generated DOM UUIDs
  *
  * @var array
  */
-	public $uuids = array();
+<<<<<<< HEAD
+	private $uuids = array();
 
+=======
+	public $uuids = array();
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Holds View output.
  *
  * @var string
  **/
-	public $output = false;
+<<<<<<< HEAD
+	private $output = false;
 
+=======
+	public $output = false;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * List of variables to collect from the associated controller
  *
@@ -452,7 +572,6 @@ class View extends Object {
  *
  * @param string $content_for_layout Content to render in a view, wrapped by the surrounding layout.
  * @return mixed Rendered output, or false on error
- * @access public
  */
 	public function renderLayout($content_for_layout, $layout = null) {
 		$layoutFileName = $this->_getLayoutFileName($layout);
@@ -534,8 +653,6 @@ class View extends Object {
  *
  * @param string $filename the cache file to include
  * @param string $timeStart the page render start time
- * @return void
- * @access public
  */
 	public function renderCache($filename, $timeStart) {
 		ob_start();
@@ -972,5 +1089,16 @@ class View extends Object {
 		}
 		return $paths;
 	}
+<<<<<<< HEAD
+
+/**
+ * @deprecated
+ * @see View::element
+ */
+	private function renderElement($name, $params = array(), $loadHelpers = false) {
+		return $this->element($name, $params, $loadHelpers);
+	}
+=======
+>>>>>>> 290b740... Working on the visibility and tests
 }
 ?>

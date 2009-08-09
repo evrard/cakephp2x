@@ -43,8 +43,12 @@ class ThemePostsController extends Controller {
  * @var string 'ThemePosts'
  * @access public
  */
-	public $name = 'ThemePosts';
+<<<<<<< HEAD
+	var $name = 'ThemePosts';
 
+=======
+	public $name = 'ThemePosts';
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * index method
  *

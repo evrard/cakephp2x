@@ -36,7 +36,12 @@ App::import('View', 'View', false);
  * @link          http://book.cakephp.org/view/49/Controllers
  *
  */
+<<<<<<< HEAD
+abstract class Controller extends Object {
+
+=======
 class Controller extends Object {
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * The name of this controller. Controller names are plural, named after the model they manipulate.
  *

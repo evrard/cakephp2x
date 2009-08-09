@@ -89,8 +89,9 @@ class MediaView extends View {
  * Constructor
  *
  * @param object $controller
+ * @access public
  */
-	private function __construct(&$controller) {
+	public function __construct(&$controller) {
 		parent::__construct($controller);
 	}
 
@@ -98,8 +99,9 @@ class MediaView extends View {
  * Display or download the given file
  *
  * @return unknown
+ * @access public
  */
-	private function render() {
+	public function render() {
 		$name = $download = $extension = $id = $modified = $path = $size = $cache = $mimeType = null;
 		extract($this->viewVars, EXTR_OVERWRITE);
 

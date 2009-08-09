@@ -55,16 +55,24 @@ class CacheHelper extends AppHelper {
  * @var View
  * @access public
  */
-	public $view;
+<<<<<<< HEAD
+	private $view;
 
+=======
+	public $view;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * cache action time
  *
  * @var object
  * @access public
  */
-	public $cacheAction;
+<<<<<<< HEAD
+	private $cacheAction;
 
+=======
+	public $cacheAction;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Main method used to cache a view
  *

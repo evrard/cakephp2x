@@ -44,8 +44,12 @@ class JavascriptHelper extends AppHelper {
  * @var boolean
  * @access public
  */
-	public $enabled = true;
+<<<<<<< HEAD
+	private $enabled = true;
 
+=======
+	public $enabled = true;
+>>>>>>> 290b740... Working on the visibility and tests
 /**
  * Indicates whether <script /> blocks should be written 'safely,' i.e. wrapped in CDATA blocks
  *
