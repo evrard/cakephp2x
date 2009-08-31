@@ -549,7 +549,7 @@ class TimeHelper extends AppHelper {
  * @param int $userOffset User's offset from GMT (in hours)
  * @return string Formatted date string
  */
-	private function format($format = 'd-m-Y', $date, $invalid = false, $userOffset = null) {
+	public function format($format = 'd-m-Y', $date, $invalid = false, $userOffset = null) {
 		$date = $this->fromString($date, $userOffset);
 		if ($date === false && $invalid !== false) {
 			return $invalid;
