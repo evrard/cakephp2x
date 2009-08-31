@@ -39,7 +39,7 @@ class NumberHelper extends AppHelper {
  * @return float Enter description here...
  * @static
  */
-	private function precision($number, $precision = 3) {
+	public function precision($number, $precision = 3) {
 		return sprintf("%01.{$precision}f", $number);
 	}
 
@@ -50,7 +50,7 @@ class NumberHelper extends AppHelper {
  * @return string Human readable size
  * @static
  */
-	private function toReadableSize($size) {
+	public function toReadableSize($size) {
 		switch (true) {
 			case $size < 1024:
 				return sprintf(__n('%d Byte', '%d Bytes', $size, true), $size);
@@ -73,7 +73,7 @@ class NumberHelper extends AppHelper {
  * @return string Percentage string
  * @static
  */
-	private function toPercentage($number, $precision = 2) {
+	public function toPercentage($number, $precision = 2) {
 		return $this->precision($number, $precision) . '%';
 	}
 
@@ -86,7 +86,7 @@ class NumberHelper extends AppHelper {
  * @return string formatted number
  * @static
  */
-	private function format($number, $options = false) {
+	public function format($number, $options = false) {
 		$places = 0;
 		if (is_int($options)) {
 			$places = $options;
@@ -130,7 +130,7 @@ class NumberHelper extends AppHelper {
  * @param array $options
  * @return string Number formatted as a currency.
  */
-	private function currency($number, $currency = 'USD', $options = array()) {
+	public function currency($number, $currency = 'USD', $options = array()) {
 		$default = array(
 			'before'=>'', 'after' => '', 'zero' => '0', 'places' => 2, 'thousands' => ',',
 			'decimals' => '.','negative' => '()', 'escape' => true
