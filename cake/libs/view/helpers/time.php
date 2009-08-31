@@ -47,8 +47,9 @@ class TimeHelper extends AppHelper {
  * Returns server's offset from GMT in seconds.
  *
  * @return int Offset
+ * @access public
  */
-	private function serverOffset() {
+	public function serverOffset() {
 		return date('Z', time());
 	}
 
@@ -58,8 +59,9 @@ class TimeHelper extends AppHelper {
  * @param string $dateString Datetime string
  * @param int $userOffset User's offset from GMT (in hours)
  * @return string Parsed timestamp
+ * @access public
  */
-	private function fromString($dateString, $userOffset = null) {
+	public function fromString($dateString, $userOffset = null) {
 		if (empty($dateString)) {
 			return false;
 		}
@@ -80,8 +82,9 @@ class TimeHelper extends AppHelper {
  * @param string $dateString Datetime string or Unix timestamp
  * @param int $userOffset User's offset from GMT (in hours)
  * @return string Formatted date string
+ * @access public
  */
-	private function nice($dateString = null, $userOffset = null) {
+	public function nice($dateString = null, $userOffset = null) {
 		if ($dateString != null) {
 			$date = $this->fromString($dateString, $userOffset);
 		} else {

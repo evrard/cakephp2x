@@ -28,7 +28,7 @@
  * @package       cake
  * @subpackage    cake.cake.libs.view.helpers
  */
-class JsHelper extends Overloadable2 {
+class JsHelper extends Object {
 	private $base = null;
 	private $webroot = null;
 	private $here = null;
@@ -50,8 +50,10 @@ class JsHelper extends Overloadable2 {
 	);
 
 	private $output = false;
-
-	private function __construct() {
+/**
+ * 
+ */
+	public function __construct() {
 		$this->effectMap = array_combine(
 			array_map('strtolower', $this->effectMap),
 			$this->effectMap

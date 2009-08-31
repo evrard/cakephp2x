@@ -227,7 +227,7 @@ final class ClassRegistry {
  * @access public
  * @static
  */
-	public static function &getObject($key) {
+	public static function getObject($key) {
 		$key = Inflector::underscore($key);
 		if (isset(self::$__objects[$key])) {
 			return self::$__objects[$key];

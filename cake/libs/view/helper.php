@@ -22,11 +22,6 @@
  */
 
 /**
- * Included libs
- */
-App::import('Core', 'Overloadable');
-
-/**
  * Backend for helpers.
  *
  * Long description for class
@@ -34,7 +29,7 @@ App::import('Core', 'Overloadable');
  * @package       cake
  * @subpackage    cake.cake.libs.view
  */
-class Helper extends Overloadable {
+class Helper extends Object {
 
 /**
  * List of helpers used by this helper
@@ -157,17 +152,6 @@ class Helper extends Overloadable {
 	private $__cleaned = null;
 
 /**
- * Default overload methods
- *
- * @access protected
- */
-	protected function get__($name) {}
-	protected function set__($name, $value) {}
-	protected function call__($method, $params) {
-		trigger_error(sprintf(__('Method %1$s::%2$s does not exist', true), get_class($this), $method), E_USER_WARNING);
-	}
-
-/**
  * Parses tag templates into $this->tags.
  *
  * @param $name file name
@@ -206,10 +190,11 @@ class Helper extends Overloadable {
 /**
  * Checks if a file exists when theme is used, if no file is found default location is returned
  *
- * @param  string  $file
- * @return string  $webPath web path to file.
+ * @param string $file
+ * @return string $webPath web path to file
+ * @access public
  */
-	protected function webroot($file) {
+	public function webroot($file) {
 		$webPath = "{$this->webroot}" . $file;
 		if (!empty($this->themeWeb)) {
 			$os = env('OS');
