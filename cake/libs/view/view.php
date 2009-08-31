@@ -92,8 +92,9 @@ class View extends Object {
  * Array of data
  *
  * @var array Parameter data
+ * @todo: Check for deprecation
  */
-	public $data = array();
+	//protected $data = array();
 
 /**
  * An array of names of built-in helpers to include.
@@ -114,9 +115,9 @@ class View extends Object {
  * Variables for the view
  *
  * @var array
- * @access public
+ * @access protected
  */
-	public $viewVars = array();
+	protected $_viewVars = array();
 
 /**
  * Name of layout to use with this View.
@@ -220,7 +221,7 @@ class View extends Object {
  *
  * @var string
  */
-	private $model = null;
+	public $model = null;
 
 /**
  * Name of association model this view context is attached to

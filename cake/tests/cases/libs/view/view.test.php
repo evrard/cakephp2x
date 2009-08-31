@@ -43,7 +43,7 @@ class ViewPostsController extends Controller {
  * @var string 'Posts'
  * @access public
  */
-	var $name = 'Posts';
+	public $name = 'Posts';
 
 /**
  * uses property
@@ -51,7 +51,7 @@ class ViewPostsController extends Controller {
  * @var mixed null
  * @access public
  */
-	var $uses = null;
+	public $uses = null;
 
 /**
  * index method
@@ -59,7 +59,7 @@ class ViewPostsController extends Controller {
  * @access public
  * @return void
  */
-	function index() {
+	public function index() {
 		$this->set('testData', 'Some test data');
 		$test2 = 'more data';
 		$test3 = 'even more data';
@@ -72,7 +72,7 @@ class ViewPostsController extends Controller {
  * @access public
  * @return void
  */
-	function nocache_multiple_element() {
+	public function nocache_multiple_element() {
 		$this->set('foo', 'this is foo var');
 		$this->set('bar', 'this is bar var');
 	}
@@ -394,16 +394,6 @@ class ViewTest extends CakeTestCase {
 
 		$this->assertPattern("/Missing Layout/", $expected);
 		$this->assertPattern("/layouts(\/|\\\)whatever.ctp/", $expected);
-	}
-
-/**
- * testViewVars method
- *
- * @access public
- * @return void
- */
-	function testViewVars() {
-		$this->assertEqual($this->View->viewVars, array('testData' => 'Some test data', 'test2' => 'more data', 'test3' => 'even more data'));
 	}
 
 /**
@@ -764,23 +754,24 @@ class ViewTest extends CakeTestCase {
  */
 	function testSet() {
 		$View = new TestView($this->PostsController);
-		$View->viewVars = array();
 		$View->set('somekey', 'someValue');
-		$this->assertIdentical($View->viewVars, array('somekey' => 'someValue'));
-		$this->assertIdentical($View->getVars(), array('somekey'));
+		$result = $View->getVars();
+		$this->assertEqual(count($result), 4);
+		$this->assertTrue(in_array('somekey', $result));
 
 		$View->set('title', 'my_title');
 		$this->assertIdentical($View->pageTitle, 'my_title');
 
-		$View->viewVars = array();
 		$keys = array('key1', 'key2');
 		$values = array('value1', 'value2');
 		$View->set($keys, $values);
-		$this->assertIdentical($View->viewVars, array('key1' => 'value1', 'key2' => 'value2'));
-		$this->assertIdentical($View->getVars(), array('key1', 'key2'));
+		$result = $View->getVars();
+		$this->assertEqual(count($result), 6);
+		$this->assertTrue(in_array('key1', $result));
+		$this->assertTrue(in_array('key2', $result));
 		$this->assertIdentical($View->getVar('key1'), 'value1');
+		$this->assertIdentical($View->getVar('key2'), 'value2');
 		$this->assertNull($View->getVar('key3'));
-
 		$View->set(array('key3' => 'value3'));
 		$this->assertIdentical($View->getVar('key3'), 'value3');
 	}

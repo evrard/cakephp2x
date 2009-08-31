@@ -53,7 +53,7 @@ class TextHelper extends AppHelper {
  * @return string The highlighted text
  * @access public
  */
-	private function highlight($text, $phrase, $highlighter = '<span class="highlight">\1</span>', $considerHtml = false) {
+	public function highlight($text, $phrase, $highlighter = '<span class="highlight">\1</span>', $considerHtml = false) {
 		if (empty($phrase)) {
 			return $text;
 		}
@@ -91,7 +91,7 @@ class TextHelper extends AppHelper {
  * @return string The text without links
  * @access public
  */
-	private function stripLinks($text) {
+	public function stripLinks($text) {
 		return preg_replace('|<a\s+[^>]+>|im', '', preg_replace('|<\/a>|im', '', $text));
 	}
 
@@ -104,7 +104,7 @@ class TextHelper extends AppHelper {
  * @return string The text with links
  * @access public
  */
-	private function autoLinkUrls($text, $htmlOptions = array()) {
+	public function autoLinkUrls($text, $htmlOptions = array()) {
 		$options = 'array(';
 		foreach ($htmlOptions as $option => $value) {
 				$value = var_export($value, true);
@@ -127,7 +127,7 @@ class TextHelper extends AppHelper {
  * @return string The text with links
  * @access public
  */
-	private function autoLinkEmails($text, $htmlOptions = array()) {
+	public function autoLinkEmails($text, $htmlOptions = array()) {
 		$options = 'array(';
 
 		foreach ($htmlOptions as $option => $value) {
@@ -147,7 +147,7 @@ class TextHelper extends AppHelper {
  * @return string The text with links
  * @access public
  */
-	private function autoLink($text, $htmlOptions = array()) {
+	public function autoLink($text, $htmlOptions = array()) {
 		return $this->autoLinkEmails($this->autoLinkUrls($text, $htmlOptions), $htmlOptions);
 	}
 
@@ -164,7 +164,7 @@ class TextHelper extends AppHelper {
  * @param boolean $considerHtml If true, HTML tags would be handled correctly
  * @return string Trimmed string.
  */
-	private function truncate($text, $length = 100, $ending = '...', $exact = true, $considerHtml = false) {
+	public function truncate($text, $length = 100, $ending = '...', $exact = true, $considerHtml = false) {
 		if (is_array($ending)) {
 			extract($ending);
 		}
@@ -257,7 +257,7 @@ class TextHelper extends AppHelper {
  * @see TextHelper::truncate()
  * @access public
  */
-	private function trim() {
+	public function trim() {
 		$args = func_get_args();
 		return call_user_func_array(array(&$this, 'truncate'), $args);
 	}
@@ -272,7 +272,7 @@ class TextHelper extends AppHelper {
  * @return string Modified string
  * @access public
  */
-	private function excerpt($text, $phrase, $radius = 100, $ending = "...") {
+	public function excerpt($text, $phrase, $radius = 100, $ending = "...") {
 		if (empty($text) or empty($phrase)) {
 			return $this->truncate($text, $radius * 2, $ending);
 		}
@@ -315,7 +315,7 @@ class TextHelper extends AppHelper {
  * @return string
  * @access public
  */
-	private function toList($list, $and = 'and') {
+	public function toList($list, $and = 'and') {
 		$r = '';
 		$c = count($list) - 1;
 		foreach ($list as $i => $item) {

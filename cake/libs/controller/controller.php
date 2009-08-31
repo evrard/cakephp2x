@@ -541,8 +541,7 @@ class Controller extends Object {
 
 			if ($this->persistModel === true) {
 				$this->_persist($modelClass, true, $this->{$modelClass});
-				$registry = ClassRegistry::getInstance();
-				$this->_persist($modelClass . 'registry', true, $registry->__objects, 'registry');
+				$this->_persist($modelClass . 'registry', true, ClassRegistry::objects(), 'registry');
 			}
 		} else {
 			$this->_persist($modelClass . 'registry', true, $object, 'registry');
@@ -901,7 +900,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/426/flash
  */
-	private function flash($message, $url, $pause = 1) {
+	public function flash($message, $url, $pause = 1) {
 		$this->autoRender = false;
 		$this->set('url', Router::url($url));
 		$this->set('message', $message);
@@ -970,6 +969,7 @@ class Controller extends Object {
 /**
  * Handles automatic pagination of model records.
  *
+ * @todo Some of this code, maybe the whole method, should be refactored in the model
  * @param mixed $object Model to paginate (e.g: model instance, or 'Model', or 'Model.InnerModel')
  * @param mixed $scope Conditions to use while paginating
  * @param array $whitelist List of allowed options for paging
@@ -977,7 +977,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/165/Controller-Setup
  */
-	private function paginate($object = null, $scope = array(), $whitelist = array()) {
+	public function paginate($object = null, $scope = array(), $whitelist = array()) {
 		if (is_array($object)) {
 			$whitelist = $scope;
 			$scope = $object;

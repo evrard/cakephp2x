@@ -241,6 +241,16 @@ final class ClassRegistry {
 	}
 
 /**
+ * Return array of objects
+ *
+ * @deprecated Remove it later when we've got the visibility fixed
+ * @return array
+ * @access public
+ */
+	public static function objects() {
+		return self::$__objects;
+	}
+/**
  * Sets the default constructor parameter for an object type
  *
  * @param string $type Type of object.  If this parameter is omitted, defaults to "Model"
