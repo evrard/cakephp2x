@@ -150,7 +150,7 @@ class MemcacheEngine extends CacheEngine {
  * @return boolean True if memcache server was connected
  * @access public
  */
-	private function connect($host, $port = 11211) {
+	public function connect($host, $port = 11211) {
 		if ($this->__Memcache->getServerStatus($host, $port) === 0) {
 			if ($this->__Memcache->connect($host, $port)) {
 				return true;

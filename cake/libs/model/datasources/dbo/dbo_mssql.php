@@ -127,7 +127,7 @@ class DboMssql extends DboSource {
  *
  * @return boolean True if the database could be connected, else false
  */
-	private function connect() {
+	public function connect() {
 		$config = $this->config;
 
 		$os = env('OS');
@@ -164,7 +164,7 @@ class DboMssql extends DboSource {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	private function disconnect() {
+	public function disconnect() {
 		@mssql_free_result($this->results);
 		$this->connected = !@mssql_close($this->connection);
 		return !$this->connected;
@@ -177,7 +177,7 @@ class DboMssql extends DboSource {
  * @return resource Result resource identifier
  * @access protected
  */
-	private function _execute($sql) {
+	protected function _execute($sql) {
 		return mssql_query($sql, $this->connection);
 	}
 
@@ -186,7 +186,7 @@ class DboMssql extends DboSource {
  *
  * @return array Array of tablenames in the database
  */
-	private function listSources() {
+	public function listSources() {
 		$cache = parent::listSources();
 
 		if ($cache != null) {
@@ -214,7 +214,7 @@ class DboMssql extends DboSource {
  * @param Model $model Model object to describe
  * @return array Fields in table. Keys are name and type
  */
-	private function describe(&$model) {
+	public function describe(&$model) {
 		$cache = parent::describe($model);
 
 		if ($cache != null) {
@@ -260,7 +260,7 @@ class DboMssql extends DboSource {
  * @param boolean $safe Whether or not numeric data should be handled automagically if no column data is provided
  * @return string Quoted and escaped data
  */
-	private function value($data, $column = null, $safe = false) {
+	public function value($data, $column = null, $safe = false) {
 		$parent = parent::value($data, $column, $safe);
 
 		if ($parent != null) {
@@ -300,7 +300,7 @@ class DboMssql extends DboSource {
  * @param mixed $fields
  * @return array
  */
-	private function fields(&$model, $alias = null, $fields = array(), $quote = true) {
+	public function fields(&$model, $alias = null, $fields = array(), $quote = true) {
 		if (empty($alias)) {
 			$alias = $model->alias;
 		}
@@ -350,7 +350,7 @@ class DboMssql extends DboSource {
  * @param mixed $conditions
  * @return array
  */
-	private function create(&$model, $fields = null, $values = null) {
+	public function create(&$model, $fields = null, $values = null) {
 		if (!empty($values)) {
 			$fields = array_combine($fields, $values);
 		}
@@ -380,7 +380,7 @@ class DboMssql extends DboSource {
  * @param mixed $conditions
  * @return array
  */
-	private function update(&$model, $fields = array(), $values = null, $conditions = null) {
+	public function update(&$model, $fields = array(), $values = null, $conditions = null) {
 		if (!empty($values)) {
 			$fields = array_combine($fields, $values);
 		}
@@ -395,7 +395,7 @@ class DboMssql extends DboSource {
  *
  * @return string Error message with error number
  */
-	private function lastError() {
+	public function lastError() {
 		$error = mssql_get_last_message($this->connection);
 
 		if ($error) {
@@ -412,7 +412,7 @@ class DboMssql extends DboSource {
  *
  * @return integer Number of affected rows
  */
-	private function lastAffected() {
+	public function lastAffected() {
 		if ($this->_result) {
 			return mssql_rows_affected($this->connection);
 		}
@@ -425,7 +425,7 @@ class DboMssql extends DboSource {
  *
  * @return integer Number of rows in resultset
  */
-	private function lastNumRows() {
+	public function lastNumRows() {
 		if ($this->_result) {
 			return @mssql_num_rows($this->_result);
 		}
@@ -438,7 +438,7 @@ class DboMssql extends DboSource {
  * @param unknown_type $source
  * @return in
  */
-	private function lastInsertId($source = null) {
+	public function lastInsertId($source = null) {
 		$id = $this->fetchRow('SELECT SCOPE_IDENTITY() AS insertID', false);
 		return $id[0]['insertID'];
 	}
@@ -450,7 +450,7 @@ class DboMssql extends DboSource {
  * @param integer $offset Offset from which to start results
  * @return string SQL limit/offset statement
  */
-	private function limit($limit, $offset = null) {
+	public function limit($limit, $offset = null) {
 		if ($limit) {
 			$rt = '';
 			if (!strpos(strtolower($limit), 'top') || strpos(strtolower($limit), 'top') === 0) {
@@ -471,7 +471,7 @@ class DboMssql extends DboSource {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return string Abstract column type (i.e. "string")
  */
-	private function column($real) {
+	public function column($real) {
 		if (is_array($real)) {
 			$col = $real['name'];
 
@@ -515,7 +515,7 @@ class DboMssql extends DboSource {
  *
  * @param unknown_type $results
  */
-	private function resultSet(&$results) {
+	public function resultSet(&$results) {
 		$this->results =& $results;
 		$this->map = array();
 		$numFields = mssql_num_fields($results);
@@ -548,7 +548,7 @@ class DboMssql extends DboSource {
  * @param array $data Query data
  * @return string
  */
-	private function renderStatement($type, $data) {
+	public function renderStatement($type, $data) {
 		switch (strtolower($type)) {
 			case 'select':
 				extract($data);
@@ -632,7 +632,7 @@ class DboMssql extends DboSource {
  * @param boolean $cache Enables returning/storing cached query results
  * @return array Array of resultset rows, or false if no rows matched
  */
-	private function read(&$model, $queryData = array(), $recursive = null) {
+	public function read(&$model, $queryData = array(), $recursive = null) {
 		$results = parent::read($model, $queryData, $recursive);
 		$this->__fieldMappings = array();
 		return $results;
@@ -643,7 +643,7 @@ class DboMssql extends DboSource {
  *
  * @return unknown
  */
-	private function fetchResult() {
+	public function fetchResult() {
 		if ($row = mssql_fetch_row($this->results)) {
 			$resultRow = array();
 			$i = 0;
@@ -690,7 +690,7 @@ class DboMssql extends DboSource {
  *                      where options can be 'default', 'length', or 'key'.
  * @return string
  */
-	private function buildColumn($column) {
+	public function buildColumn($column) {
 		$result = preg_replace('/(int|integer)\([0-9]+\)/i', '$1', parent::buildColumn($column));
 		$null = (
 			(isset($column['null']) && $column['null'] == true) ||
@@ -713,7 +713,7 @@ class DboMssql extends DboSource {
  * @param string $table
  * @return string
  */
-	private function buildIndex($indexes, $table = null) {
+	public function buildIndex($indexes, $table = null) {
 		$join = array();
 
 		foreach ($indexes as $name => $value) {

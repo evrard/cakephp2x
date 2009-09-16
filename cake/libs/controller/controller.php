@@ -509,7 +509,7 @@ class Controller extends Object {
  * @return mixed true when single model found and instance created error returned if models not found.
  * @access public
  */
-	private function loadModel($modelClass = null, $id = null) {
+	public function loadModel($modelClass = null, $id = null) {
 		if ($modelClass === null) {
 			$modelClass = $this->modelClass;
 		}
@@ -562,7 +562,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/425/redirect
  */
-	private function redirect($url, $status = null, $exit = true) {
+	public function redirect($url, $status = null, $exit = true) {
 		$this->autoRender = false;
 
 		if (is_array($status)) {
@@ -670,7 +670,7 @@ class Controller extends Object {
  * @return void
  * @access public
  */
-	private function header($status) {
+	public function header($status) {
 		header($status);
 	}
 
@@ -718,7 +718,7 @@ class Controller extends Object {
  * @return mixed Returns the return value of the called action
  * @access public
  */
-	private function setAction($action) {
+	public function setAction($action) {
 		$this->action = $action;
 		$args = func_get_args();
 		unset($args[0]);
@@ -733,7 +733,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/396/authorize
  */
-	private function isAuthorized() {
+	public function isAuthorized() {
 		trigger_error(sprintf(__('%s::isAuthorized() is not defined.', true), $this->name), E_USER_WARNING);
 		return false;
 	}
@@ -744,7 +744,7 @@ class Controller extends Object {
  * @return integer Number of errors
  * @access public
  */
-	private function validate() {
+	public function validate() {
 		$args = func_get_args();
 		$errors = call_user_func_array(array(&$this, 'validateErrors'), $args);
 
@@ -763,7 +763,7 @@ class Controller extends Object {
  * @return array Validation errors, or false if none
  * @access public
  */
-	private function validateErrors() {
+	public function validateErrors() {
 		$objects = func_get_args();
 
 		if (!count($objects)) {
@@ -851,7 +851,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/430/referer
  */
-	private function referer($default = null, $local = false) {
+	public function referer($default = null, $local = false) {
 		$ref = env('HTTP_REFERER');
 		if (!empty($ref) && defined('FULL_BASE_URL')) {
 			$base = FULL_BASE_URL . $this->webroot;
@@ -880,7 +880,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/431/disableCache
  */
-	private function disableCache() {
+	public function disableCache() {
 		header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 		header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -922,7 +922,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/432/postConditions
  */
-	private function postConditions($data = array(), $op = null, $bool = 'AND', $exclusive = false) {
+	public function postConditions($data = array(), $op = null, $bool = 'AND', $exclusive = false) {
 		if (!is_array($data) || empty($data)) {
 			if (!empty($this->data)) {
 				$data = $this->data;
@@ -1192,7 +1192,7 @@ class Controller extends Object {
  * @access protected
  * @link http://book.cakephp.org/view/60/Callbacks
  */
-	private function _beforeScaffold($method) {
+	protected function _beforeScaffold($method) {
 		return true;
 	}
 
@@ -1204,7 +1204,7 @@ class Controller extends Object {
  * @access protected
  * @link http://book.cakephp.org/view/60/Callbacks
  */
-	private function _afterScaffoldSave($method) {
+	protected function _afterScaffoldSave($method) {
 		return true;
 	}
 
@@ -1216,7 +1216,7 @@ class Controller extends Object {
  * @access protected
  * @link http://book.cakephp.org/view/60/Callbacks
  */
-	private function _afterScaffoldSaveError($method) {
+	protected function _afterScaffoldSaveError($method) {
 		return true;
 	}
 
@@ -1230,7 +1230,7 @@ class Controller extends Object {
  * @access protected
  * @link http://book.cakephp.org/view/60/Callbacks
  */
-	private function _scaffoldError($method) {
+	protected function _scaffoldError($method) {
 		return false;
 	}
 }

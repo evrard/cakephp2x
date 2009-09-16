@@ -169,7 +169,7 @@ class DboMysqlBase extends DboSource {
  *
  * @param string $enc Database encoding
  */
-	private function setEncoding($enc) {
+	public function setEncoding($enc) {
 		return $this->_execute('SET NAMES ' . $enc) != false;
 	}
 
@@ -179,7 +179,7 @@ class DboMysqlBase extends DboSource {
  * @param string $model Name of model to inspect
  * @return array Fields in table. Keys are column and unique
  */
-	private function index($model) {
+	public function index($model) {
 		$index = array();
 		$table = $this->fullTableName($model);
 		if ($table) {
@@ -212,7 +212,7 @@ class DboMysqlBase extends DboSource {
  * @param array $compare Result of a CakeSchema::compare()
  * @return array Array of alter statements to make.
  */
-	private function alterSchema($compare, $table = null) {
+	public function alterSchema($compare, $table = null) {
 		if (!is_array($compare)) {
 			return false;
 		}

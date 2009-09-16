@@ -207,7 +207,7 @@ class Scaffold extends Object {
  * @return void
  * @access protected
  */
-	private function _output() {
+	protected function _output() {
 		$this->controller->afterFilter();
 		echo($this->controller->output);
 	}
@@ -552,7 +552,7 @@ class ScaffoldView extends ThemeView {
  * @return string action
  * @access protected
  */
-	private function _getViewFileName($name = null) {
+	protected function _getViewFileName($name = null) {
 		if ($name === null) {
 			$name = $this->action;
 		}

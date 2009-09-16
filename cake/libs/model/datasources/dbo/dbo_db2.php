@@ -109,7 +109,7 @@ class DboDb2 extends DboSource {
  *
  * @return boolean True if the database could be connected, else false
  */
-	private function connect() {
+	public function connect() {
 		$config = $this->config;
 		$connect = 'db2_connect';
 		if ($config['persistent']) {
@@ -146,7 +146,7 @@ class DboDb2 extends DboSource {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	private function disconnect() {
+	public function disconnect() {
 		// TODO: Remove Error Suppression
 		@db2_free_result($this->results);
 		$this->connected = !@db2_close($this->connection);
@@ -198,7 +198,7 @@ class DboDb2 extends DboSource {
  *
  * @return array Array of tablenames in the database
  */
-	private function listSources() {
+	public function listSources() {
 		$cache = parent::listSources();
 
 		if ($cache != null) {
@@ -220,7 +220,7 @@ class DboDb2 extends DboSource {
  * @param Model $model Model object to describe
  * @return array Fields in table. Keys are name and type
  */
-	private function &describe(&$model) {
+	public function &describe(&$model) {
 		$cache = parent::describe($model);
 
 		if ($cache != null) {
@@ -247,7 +247,7 @@ class DboDb2 extends DboSource {
  * @param string $data Name (table.field) to be prepared for use in an SQL statement
  * @return string Quoted for MySQL
  */
-	private function name($data) {
+	public function name($data) {
 		return $data;
 	}
 
@@ -259,7 +259,7 @@ class DboDb2 extends DboSource {
  * @return string Quoted and escaped
  * @todo Add logic that formats/escapes data based on column type
  */
-	private function value($data, $column = null, $safe = false) {
+	public function value($data, $column = null, $safe = false) {
 		$parent = parent::value($data, $column, $safe);
 
 		if ($parent != null) {
@@ -299,7 +299,7 @@ class DboDb2 extends DboSource {
  * @param mixed $data Value to be translated
  * @return mixed Converted boolean value
  */
-	private function boolean($data) {
+	public function boolean($data) {
 		if ($data === true || $data === false) {
 			if ($data === true) {
 				return 1;
@@ -321,7 +321,7 @@ class DboDb2 extends DboSource {
  * @return boolean True on success, false on fail
  * (i.e. if the database/model does not support transactions).
  */
-	private function begin(&$model) {
+	public function begin(&$model) {
 		if (parent::begin($model)) {
 			if (db2_autocommit($this->connection, DB2_AUTOCOMMIT_OFF)) {
 				$this->_transactionStarted = true;
@@ -339,7 +339,7 @@ class DboDb2 extends DboSource {
  * (i.e. if the database/model does not support transactions,
  * or a transaction has not started).
  */
-	private function commit(&$model) {
+	public function commit(&$model) {
 		if (parent::commit($model)) {
 			if (db2_commit($this->connection)) {
 				$this->_transactionStarted = false;
@@ -358,7 +358,7 @@ class DboDb2 extends DboSource {
  * (i.e. if the database/model does not support transactions,
  * or a transaction has not started).
  */
-	private function rollback(&$model) {
+	public function rollback(&$model) {
 		if (parent::rollback($model)) {
 			$this->_transactionStarted = false;
 			db2_autocommit($this->connection, DB2_AUTOCOMMIT_ON);
@@ -375,7 +375,7 @@ class DboDb2 extends DboSource {
  * @param array $values
  * @return array
  */
-	private function update(&$model, $fields = array(), $values = array()) {
+	public function update(&$model, $fields = array(), $values = array()) {
 		foreach ($fields as $i => $field) {
 			if ($field == $model->primaryKey) {
 				unset ($fields[$i]);
@@ -393,7 +393,7 @@ class DboDb2 extends DboSource {
  *
  * @return string Error message with error number
  */
-	private function lastError() {
+	public function lastError() {
 		if (db2_stmt_error()) {
 			return db2_stmt_error() . ': ' . db2_stmt_errormsg();
 		} elseif (db2_conn_error()) {
@@ -408,7 +408,7 @@ class DboDb2 extends DboSource {
  *
  * @return integer Number of affected rows
  */
-	private function lastAffected() {
+	public function lastAffected() {
 		if ($this->_result) {
 			return db2_num_rows($this->_result);
 		}
@@ -421,7 +421,7 @@ class DboDb2 extends DboSource {
  *
  * @return integer Number of rows in resultset
  */
-	private function lastNumRows() {
+	public function lastNumRows() {
 		if ($this->_result) {
 			return db2_num_rows($this->_result);
 		}
@@ -434,7 +434,7 @@ class DboDb2 extends DboSource {
  * @param unknown_type $source
  * @return in
  */
-	private function lastInsertId($source = null) {
+	public function lastInsertId($source = null) {
 		$data = $this->fetchRow(sprintf('SELECT SYSIBM.IDENTITY_VAL_LOCAL() AS ID FROM %s FETCH FIRST ROW ONLY', $source));
 
 		if ($data && isset($data[0]['id'])) {
@@ -450,7 +450,7 @@ class DboDb2 extends DboSource {
  * @param integer $offset Offset from which to start results
  * @return string SQL limit/offset statement
  */
-	private function limit($limit, $offset = null) {
+	public function limit($limit, $offset = null) {
 		if ($limit) {
 			$rt = '';
 
@@ -489,7 +489,7 @@ class DboDb2 extends DboSource {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return string Abstract column type (i.e. "string")
  */
-	private function column($real) {
+	public function column($real) {
 		if (is_array($real)) {
 			$col = $real['name'];
 
@@ -555,7 +555,7 @@ class DboDb2 extends DboSource {
  * }}}
  * @param unknown_type $results
  */
-	private function resultSet(&$results, $sql = null) {
+	public function resultSet(&$results, $sql = null) {
 		$this->results =& $results;
 		$this->map = $this->_resultMap[$this->results];
 	}
@@ -569,7 +569,7 @@ class DboDb2 extends DboSource {
  *
  * @return unknown
  */
-	private function fetchResult() {
+	public function fetchResult() {
 		if ($row = db2_fetch_array($this->results)) {
 			$resultRow = array();
 			$i = 0;

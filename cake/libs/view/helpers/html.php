@@ -160,7 +160,7 @@ class HtmlHelper extends AppHelper {
  * @param string $link URL for link (if empty it won't be a link)
  * @param mixed $options Link attributes e.g. array('id'=>'selected')
  */
-	private function addCrumb($name, $link = null, $options = null) {
+	public function addCrumb($name, $link = null, $options = null) {
 		$this->_crumbs[] = array($name, $link, $options);
 	}
 
@@ -179,7 +179,7 @@ class HtmlHelper extends AppHelper {
  * @param  string $type Doctype to use.
  * @return string Doctype.
  */
-	private function docType($type = 'xhtml-strict') {
+	public function docType($type = 'xhtml-strict') {
 		if (isset($this->__docTypes[$type])) {
 			return $this->output($this->__docTypes[$type]);
 		}
@@ -389,7 +389,7 @@ class HtmlHelper extends AppHelper {
  * @param boolean $inline Whether or not the style block should be displayed inline
  * @return string CSS styling data
  */
-	private function style($data, $inline = true) {
+	public function style($data, $inline = true) {
 		if (!is_array($data)) {
 			return $data;
 		}
@@ -410,7 +410,7 @@ class HtmlHelper extends AppHelper {
  * @param  string  $startText This will be the first crumb, if false it defaults to first crumb in array
  * @return string
  */
-	private function getCrumbs($separator = '&raquo;', $startText = false) {
+	public function getCrumbs($separator = '&raquo;', $startText = false) {
 		if (count($this->_crumbs)) {
 			$out = array();
 			if ($startText) {
@@ -477,7 +477,7 @@ class HtmlHelper extends AppHelper {
  * @param array $thOptions	HTML options for TH elements.
  * @return string
  */
-	private function tableHeaders($names, $trOptions = null, $thOptions = null) {
+	public function tableHeaders($names, $trOptions = null, $thOptions = null) {
 		$out = array();
 		foreach ($names as $arg) {
 			$out[] = sprintf($this->tags['tableheader'], $this->_parseAttributes($thOptions), $arg);
@@ -496,7 +496,7 @@ class HtmlHelper extends AppHelper {
  * @param bool $continueOddEven If false, will use a non-static $count variable, so that the odd/even count is reset to zero just for that call
  * @return string	Formatted HTML
  */
-	private function tableCells($data, $oddTrOptions = null, $evenTrOptions = null, $useCount = false, $continueOddEven = true) {
+	public function tableCells($data, $oddTrOptions = null, $evenTrOptions = null, $useCount = false, $continueOddEven = true) {
 		if (empty($data[0]) || !is_array($data[0])) {
 			$data = array($data);
 		}
@@ -548,7 +548,7 @@ class HtmlHelper extends AppHelper {
  * @param boolean $escape If true, $text will be HTML-escaped
  * @return string The formatted tag element
  */
-	private function tag($name, $text = null, $attributes = array(), $escape = false) {
+	public function tag($name, $text = null, $attributes = array(), $escape = false) {
 		if ($escape) {
 			$text = h($text);
 		}
@@ -573,7 +573,7 @@ class HtmlHelper extends AppHelper {
  * @param boolean $escape If true, $text will be HTML-escaped
  * @return string The formatted DIV element
  */
-	private function div($class = null, $text = null, $attributes = array(), $escape = false) {
+	public function div($class = null, $text = null, $attributes = array(), $escape = false) {
 		if ($class != null && !empty($class)) {
 			$attributes['class'] = $class;
 		}
@@ -589,7 +589,7 @@ class HtmlHelper extends AppHelper {
  * @param boolean $escape If true, $text will be HTML-escaped
  * @return string The formatted P element
  */
-	private function para($class, $text, $attributes = array(), $escape = false) {
+	public function para($class, $text, $attributes = array(), $escape = false) {
 		if ($escape) {
 			$text = h($text);
 		}
@@ -614,7 +614,7 @@ class HtmlHelper extends AppHelper {
  * @return string The nested list
  * @access public
  */
-	private function nestedList($list, $attributes = array(), $itemAttributes = array(), $tag = 'ul') {
+	public function nestedList($list, $attributes = array(), $itemAttributes = array(), $tag = 'ul') {
 		if (is_string($attributes)) {
 			$tag = $attributes;
 			$attributes = array();

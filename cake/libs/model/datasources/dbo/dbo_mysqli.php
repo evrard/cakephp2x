@@ -59,7 +59,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return boolean True if the database could be connected, else false
  */
-	private function connect() {
+	public function connect() {
 		$config = $this->config;
 		$this->connected = false;
 
@@ -89,7 +89,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	private function disconnect() {
+	public function disconnect() {
 		if (isset($this->results) && is_resource($this->results)) {
 			mysqli_free_result($this->results);
 		}
@@ -104,7 +104,7 @@ class DboMysqli extends DboMysqlBase {
  * @return resource Result resource identifier
  * @access protected
  */
-	private function _execute($sql) {
+	protected function _execute($sql) {
 		if (preg_match('/^\s*call/i', $sql)) {
 			return $this->_executeProcedure($sql);
 		} else {
@@ -119,7 +119,7 @@ class DboMysqli extends DboMysqlBase {
  * @return resource Result resource identifier for first recordset
  * @access protected
  */
-	private function _executeProcedure($sql) {
+	protected function _executeProcedure($sql) {
 		$answer = mysqli_multi_query($this->connection, $sql);
 
 		$firstResult = mysqli_store_result($this->connection);
@@ -135,7 +135,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return array Array of tablenames in the database
  */
-	private function listSources() {
+	public function listSources() {
 		$cache = parent::listSources();
 		if ($cache != null) {
 			return $cache;
@@ -161,7 +161,7 @@ class DboMysqli extends DboMysqlBase {
  * @param string $tableName Name of database table to inspect
  * @return array Fields in table. Keys are name and type
  */
-	private function describe(&$model) {
+	public function describe(&$model) {
 
 		$cache = parent::describe($model);
 		if ($cache != null) {
@@ -201,7 +201,7 @@ class DboMysqli extends DboMysqlBase {
  * @param boolean $safe Whether or not numeric data should be handled automagically if no column data is provided
  * @return string Quoted and escaped data
  */
-	private function value($data, $column = null, $safe = false) {
+	public function value($data, $column = null, $safe = false) {
 		$parent = parent::value($data, $column, $safe);
 
 		if ($parent != null) {
@@ -246,7 +246,7 @@ class DboMysqli extends DboMysqlBase {
  * @return boolean True on success, false on fail
  * (i.e. if the database/model does not support transactions).
  */
-	private function begin(&$model) {
+	public function begin(&$model) {
 		if (parent::begin($model) && $this->execute('START TRANSACTION')) {
 			$this->_transactionStarted = true;
 			return true;
@@ -258,7 +258,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return string Error message with error number
  */
-	private function lastError() {
+	public function lastError() {
 		if (mysqli_errno($this->connection)) {
 			return mysqli_errno($this->connection).': '.mysqli_error($this->connection);
 		}
@@ -271,7 +271,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return integer Number of affected rows
  */
-	private function lastAffected() {
+	public function lastAffected() {
 		if ($this->_result) {
 			return mysqli_affected_rows($this->connection);
 		}
@@ -284,7 +284,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return integer Number of rows in resultset
  */
-	private function lastNumRows() {
+	public function lastNumRows() {
 		if ($this->hasResult()) {
 			return mysqli_num_rows($this->_result);
 		}
@@ -297,7 +297,7 @@ class DboMysqli extends DboMysqlBase {
  * @param unknown_type $source
  * @return in
  */
-	private function lastInsertId($source = null) {
+	public function lastInsertId($source = null) {
 		$id = $this->fetchRow('SELECT LAST_INSERT_ID() AS insertID', false);
 		if ($id !== false && !empty($id) && !empty($id[0]) && isset($id[0]['insertID'])) {
 			return $id[0]['insertID'];
@@ -312,7 +312,7 @@ class DboMysqli extends DboMysqlBase {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return string Abstract column type (i.e. "string")
  */
-	private function column($real) {
+	public function column($real) {
 		if (is_array($real)) {
 			$col = $real['name'];
 			if (isset($real['limit'])) {
@@ -360,7 +360,7 @@ class DboMysqli extends DboMysqlBase {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return integer An integer representing the length of the column
  */
-	private function length($real) {
+	public function length($real) {
 		$col = str_replace(array(')', 'unsigned'), '', $real);
 		$limit = null;
 
@@ -379,7 +379,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @param unknown_type $results
  */
-	private function resultSet(&$results) {
+	public function resultSet(&$results) {
 		if (isset($this->results) && is_resource($this->results) && $this->results != $results) {
 			mysqli_free_result($this->results);
 		}
@@ -404,7 +404,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return unknown
  */
-	private function fetchResult() {
+	public function fetchResult() {
 		if ($row = mysqli_fetch_row($this->results)) {
 			$resultRow = array();
 			$i = 0;
@@ -427,7 +427,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return string The database encoding
  */
-	private function getEncoding() {
+	public function getEncoding() {
 		return mysqli_client_encoding($this->connection);
 	}
 
@@ -436,7 +436,7 @@ class DboMysqli extends DboMysqlBase {
  *
  * @return boolean True if the result is valid, else false
  */
-	private function hasResult() {
+	public function hasResult() {
 		return is_object($this->_result);
 	}
 }

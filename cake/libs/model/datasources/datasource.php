@@ -312,7 +312,7 @@ class DataSource extends Object {
  * @param string $real Real  column type (i.e. "varchar(255)")
  * @return string Abstract column type (i.e. "string")
  */
-	private function column($real) {
+	public function column($real) {
 		return false;
 	}
 
@@ -324,7 +324,7 @@ class DataSource extends Object {
  * @param unknown_type $values
  * @return unknown
  */
-	private function create(&$model, $fields = null, $values = null) {
+	public function create(&$model, $fields = null, $values = null) {
 		return false;
 	}
 
@@ -335,7 +335,7 @@ class DataSource extends Object {
  * @param unknown_type $queryData
  * @return unknown
  */
-	private function read(&$model, $queryData = array()) {
+	public function read(&$model, $queryData = array()) {
 		return false;
 	}
 
@@ -347,7 +347,7 @@ class DataSource extends Object {
  * @param unknown_type $values
  * @return unknown
  */
-	private function update(&$model, $fields = null, $values = null) {
+	public function update(&$model, $fields = null, $values = null) {
 		return false;
 	}
 
@@ -357,7 +357,7 @@ class DataSource extends Object {
  * @param unknown_type $model
  * @param unknown_type $id
  */
-	private function delete(&$model, $id = null) {
+	public function delete(&$model, $id = null) {
 		if ($id == null) {
 			$id = $model->id;
 		}
@@ -369,7 +369,7 @@ class DataSource extends Object {
  * @param unknown_type $source
  * @return in
  */
-	private function lastInsertId($source = null) {
+	public function lastInsertId($source = null) {
 		return false;
 	}
 
@@ -379,7 +379,7 @@ class DataSource extends Object {
  * @param unknown_type $source
  * @return in
  */
-	private function lastNumRows($source = null) {
+	public function lastNumRows($source = null) {
 		return false;
 	}
 
@@ -389,7 +389,7 @@ class DataSource extends Object {
  * @param unknown_type $source
  * @return in
  */
-	private function lastAffected($source = null) {
+	public function lastAffected($source = null) {
 		return false;
 	}
 
@@ -413,7 +413,7 @@ class DataSource extends Object {
  * @param array $config The configuration array
  * @return void
  */
-	private function setConfig($config = array()) {
+	public function setConfig($config = array()) {
 		$this->config = array_merge($this->_baseConfig, $this->config, $config);
 	}
 
@@ -531,7 +531,7 @@ class DataSource extends Object {
  * @param unknown_type $key
  * @return unknown
  */
-	private function resolveKey($model, $key) {
+	public function resolveKey($model, $key) {
 		return $model->alias . $key;
 	}
 

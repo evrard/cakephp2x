@@ -108,7 +108,7 @@ class RssHelper extends XmlHelper {
  * @param  array  $attrib <rss /> tag attributes
  * @return string An RSS document
  */
-	private function document($attrib = array(), $content = null) {
+	public function document($attrib = array(), $content = null) {
 		if ($content === null) {
 			$content = $attrib;
 			$attrib = array();
@@ -128,7 +128,7 @@ class RssHelper extends XmlHelper {
  * @param  mixed  $content  Content (<item />'s belonging to this channel
  * @return string An RSS <channel />
  */
-	private function channel($attrib = array(), $elements = array(), $content = null) {
+	public function channel($attrib = array(), $elements = array(), $content = null) {
 		$view = ClassRegistry::getObject('view');
 
 		if (!isset($elements['title']) && !empty($view->pageTitle)) {
@@ -174,7 +174,7 @@ class RssHelper extends XmlHelper {
  *                          and a string method name
  * @return string A set of RSS <item /> elements
  */
-	private function items($items, $callback = null) {
+	public function items($items, $callback = null) {
 		if ($callback != null) {
 			$items = array_map($callback, $items);
 		}
@@ -195,7 +195,7 @@ class RssHelper extends XmlHelper {
  * @param  array  $elements    The list of elements contained in this <item />
  * @return string An RSS <item /> element
  */
-	private function item($att = array(), $elements = array()) {
+	public function item($att = array(), $elements = array()) {
 		$content = null;
 
 		if (isset($elements['link']) && !isset($elements['guid'])) {
@@ -280,7 +280,7 @@ class RssHelper extends XmlHelper {
  * @return string An RSS-formatted timestamp
  * @see TimeHelper::toRSS
  */
-	private function time($time) {
+	public function time($time) {
 		return $this->Time->toRSS($time);
 	}
 }

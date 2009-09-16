@@ -287,7 +287,7 @@ class EmailComponent extends Object{
  * @param object $controller Instantiating controller
  * @access public
  */
-	private function initialize(&$controller, $settings = array()) {
+	public function initialize(&$controller, $settings = array()) {
 		$this->Controller = $controller;
 		if (Configure::read('App.encoding') !== null) {
 			$this->charset = Configure::read('App.encoding');
@@ -301,7 +301,7 @@ class EmailComponent extends Object{
  * @param object $controller Instantiating controller
  * @access public
  */
-	private function startup(&$controller) {}
+	public function startup(&$controller) {}
 
 /**
  * Send an email using the specified content, template and layout
@@ -312,7 +312,7 @@ class EmailComponent extends Object{
  * @return boolean Success
  * @access public
  */
-	private function send($content = null, $template = null, $layout = null) {
+	public function send($content = null, $template = null, $layout = null) {
 		$this->__createHeader();
 
 		if ($template) {
@@ -363,7 +363,7 @@ class EmailComponent extends Object{
  *
  * @access public
  */
-	private function reset() {
+	public function reset() {
 		$this->template = null;
 		$this->to = null;
 		$this->from = null;

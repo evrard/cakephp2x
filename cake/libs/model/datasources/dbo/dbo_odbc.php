@@ -89,7 +89,7 @@ class DboOdbc extends DboSource {
  *
  * @return boolean True if the database could be connected, else false
  */
-	private function connect() {
+	public function connect() {
 		$config = $this->config;
 		$connect = $config['connect'];
 		if (!$config['persistent']) {
@@ -112,7 +112,7 @@ class DboOdbc extends DboSource {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	private function disconnect() {
+	public function disconnect() {
 		return @odbc_close($this->connection);
 	}
 
@@ -123,7 +123,7 @@ class DboOdbc extends DboSource {
  * @return resource Result resource identifier
  * @access protected
  */
-	private function _execute($sql) {
+	protected function _execute($sql) {
 		switch ($sql) {
 			case 'BEGIN':
 				return odbc_autocommit($this->connection, false);
@@ -141,7 +141,7 @@ class DboOdbc extends DboSource {
  *
  * @return array Array of tablenames in the database
  */
-	private function listSources() {
+	public function listSources() {
 		$cache = parent::listSources();
 		if ($cache != null) {
 			return $cache;
@@ -164,7 +164,7 @@ class DboOdbc extends DboSource {
  * @param Model $model Model object to describe
  * @return array Fields in table. Keys are name and type
  */
-	private function &describe(&$model) {
+	public function &describe(&$model) {
 		$cache=parent::describe($model);
 
 		if ($cache != null) {
@@ -198,7 +198,7 @@ class DboOdbc extends DboSource {
  * @return string Quoted and escaped
  * @todo Add logic that formats/escapes data based on column type
  */
-	private function value($data, $column = null) {
+	public function value($data, $column = null) {
 		$parent=parent::value($data, $column);
 
 		if ($parent != null) {
@@ -221,7 +221,7 @@ class DboOdbc extends DboSource {
  *
  * @return string Error message with error number
  */
-	private function lastError() {
+	public function lastError() {
 		if ($error = odbc_errormsg($this->connection)) {
 			return odbc_error($this->connection) . ': ' . $error;
 		}
@@ -234,7 +234,7 @@ class DboOdbc extends DboSource {
  *
  * @return integer Number of affected rows
  */
-	private function lastAffected() {
+	public function lastAffected() {
 		if ($this->hasResult()) {
 			return odbc_num_rows($this->_result);
 		}
@@ -247,7 +247,7 @@ class DboOdbc extends DboSource {
  *
  * @return int Number of rows in resultset
  */
-	private function lastNumRows() {
+	public function lastNumRows() {
 		if ($this->hasResult()) {
 			return odbc_num_rows($this->_result);
 		}
@@ -260,7 +260,7 @@ class DboOdbc extends DboSource {
  * @param unknown_type $source
  * @return int
  */
-	private function lastInsertId($source = null) {
+	public function lastInsertId($source = null) {
 		$result = $this->fetchRow('SELECT @@IDENTITY');
 		return $result[0];
 	}
@@ -270,7 +270,7 @@ class DboOdbc extends DboSource {
  *
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  */
-	private function column($real) {
+	public function column($real) {
 		if (is_array($real)) {
 			$col=$real['name'];
 			if (isset($real['limit'])) {
@@ -286,7 +286,7 @@ class DboOdbc extends DboSource {
 *
 * @param unknown_type $results
 */
-	private function resultSet(&$results) {
+	public function resultSet(&$results) {
 		$this->results =& $results;
 		$num_fields = odbc_num_fields($results);
 		$this->map = array();
@@ -313,7 +313,7 @@ class DboOdbc extends DboSource {
 * @param mixed $fields
 * @return array
 */
-	private function fields(&$model, $alias = null, $fields = null, $quote = true) {
+	public function fields(&$model, $alias = null, $fields = null, $quote = true) {
 		if (empty($alias)) {
 			$alias = $model->name;
 		}
@@ -357,7 +357,7 @@ class DboOdbc extends DboSource {
  *
  * @return unknown
  */
-	private function fetchResult() {
+	public function fetchResult() {
 		if ($row = odbc_fetch_row($this->results)) {
 			$resultRow = array();
 			$numFields = odbc_num_fields($this->results);

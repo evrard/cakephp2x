@@ -179,7 +179,7 @@ class SecurityComponent extends Object {
  * @param object $controller Instantiating controller
  * @access public
  */
-	private function startup(&$controller) {
+	public function startup(&$controller) {
 		$this->_action = strtolower($controller->action);
 		$this->_methodsRequired($controller);
 		$this->_secureRequired($controller);
@@ -208,7 +208,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access public
  */
-	private function requirePost() {
+	public function requirePost() {
 		$args = func_get_args();
 		$this->_requireMethod('Post', $args);
 	}
@@ -219,7 +219,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access public
  */
-	private function requireGet() {
+	public function requireGet() {
 		$args = func_get_args();
 		$this->_requireMethod('Get', $args);
 	}
@@ -230,7 +230,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access public
  */
-	private function requirePut() {
+	public function requirePut() {
 		$args = func_get_args();
 		$this->_requireMethod('Put', $args);
 	}
@@ -241,7 +241,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access public
  */
-	private function requireDelete() {
+	public function requireDelete() {
 		$args = func_get_args();
 		$this->_requireMethod('Delete', $args);
 	}
@@ -252,7 +252,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access public
  */
-	private function requireSecure() {
+	public function requireSecure() {
 		$args = func_get_args();
 		$this->_requireMethod('Secure', $args);
 	}
@@ -263,7 +263,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access public
  */
-	private function requireAuth() {
+	public function requireAuth() {
 		$args = func_get_args();
 		$this->_requireMethod('Auth', $args);
 	}
@@ -274,7 +274,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access public
  */
-	private function requireLogin() {
+	public function requireLogin() {
 		$args = func_get_args();
 		$base = $this->loginOptions;
 
@@ -299,7 +299,7 @@ class SecurityComponent extends Object {
  * @return mixed If successful, returns an array with login name and password, otherwise null.
  * @access public
  */
-	private function loginCredentials($type = null) {
+	public function loginCredentials($type = null) {
 		switch (strtolower($type)) {
 			case 'basic':
 				$login = array('username' => env('PHP_AUTH_USER'), 'password' => env('PHP_AUTH_PW'));
@@ -338,7 +338,7 @@ class SecurityComponent extends Object {
  * @return string HTTP-authentication request header
  * @access public
  */
-	private function loginRequest($options = array()) {
+	public function loginRequest($options = array()) {
 		$options = array_merge($this->loginOptions, $options);
 		$this->_setLoginDefaults($options);
 		$auth = 'WWW-Authenticate: ' . ucfirst($options['type']);
@@ -360,7 +360,7 @@ class SecurityComponent extends Object {
  * @return array Digest authentication parameters
  * @access public
  */
-	private function parseDigestAuthData($digest) {
+	public function parseDigestAuthData($digest) {
 		if (substr($digest, 0, 7) == 'Digest ') {
 			$digest = substr($digest, 7);
 		}
@@ -388,7 +388,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::parseDigestAuthData()
  */
-	private function generateDigestResponseHash($data) {
+	public function generateDigestResponseHash($data) {
 		return md5(
 			md5($data['username'] . ':' . $this->loginOptions['realm'] . ':' . $this->loginUsers[$data['username']]) .
 			':' . $data['nonce'] . ':' . $data['nc'] . ':' . $data['cnonce'] . ':' . $data['qop'] . ':' .
@@ -406,7 +406,7 @@ class SecurityComponent extends Object {
  * @access public
  * @see SecurityComponent::$blackHoleCallback
  */
-	private function blackHole(&$controller, $error = '') {
+	public function blackHole(&$controller, $error = '') {
 		$this->Session->del('_Token');
 
 		if ($this->blackHoleCallback == null) {
@@ -429,7 +429,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access protected
  */
-	private function _requireMethod($method, $actions = array()) {
+	protected function _requireMethod($method, $actions = array()) {
 		$this->{'require' . $method} = (empty($actions)) ? array('*'): $actions;
 	}
 
@@ -440,7 +440,7 @@ class SecurityComponent extends Object {
  * @return bool true if $method is required
  * @access protected
  */
-	private function _methodsRequired(&$controller) {
+	protected function _methodsRequired(&$controller) {
 		foreach (array('Post', 'Get', 'Put', 'Delete') as $method) {
 			$property = 'require' . $method;
 			if (is_array($this->$property) && !empty($this->$property)) {
@@ -465,7 +465,7 @@ class SecurityComponent extends Object {
  * @return bool true if secure connection required
  * @access protected
  */
-	private function _secureRequired(&$controller) {
+	protected function _secureRequired(&$controller) {
 		if (is_array($this->requireSecure) && !empty($this->requireSecure)) {
 			$requireSecure = array_map('strtolower', $this->requireSecure);
 
@@ -487,7 +487,7 @@ class SecurityComponent extends Object {
  * @return bool true if authentication required
  * @access protected
  */
-	private function _authRequired(&$controller) {
+	protected function _authRequired(&$controller) {
 		if (is_array($this->requireAuth) && !empty($this->requireAuth) && !empty($controller->data)) {
 			$requireAuth = array_map('strtolower', $this->requireAuth);
 
@@ -523,7 +523,7 @@ class SecurityComponent extends Object {
  * @return bool true if login is required
  * @access protected
  */
-	private function _loginRequired(&$controller) {
+	protected function _loginRequired(&$controller) {
 		if (is_array($this->requireLogin) && !empty($this->requireLogin)) {
 			$requireLogin = array_map('strtolower', $this->requireLogin);
 
@@ -571,7 +571,7 @@ class SecurityComponent extends Object {
  * @return bool true if submitted form is valid
  * @access protected
  */
-	private function _validatePost(&$controller) {
+	protected function _validatePost(&$controller) {
 		if (empty($controller->data)) {
 			return true;
 		}
@@ -652,7 +652,7 @@ class SecurityComponent extends Object {
  * @return bool Success
  * @access protected
  */
-	private function _generateToken(&$controller) {
+	protected function _generateToken(&$controller) {
 		if (isset($controller->params['requested']) && $controller->params['requested'] === 1) {
 			return false;
 		}
@@ -695,7 +695,7 @@ class SecurityComponent extends Object {
  * @return void
  * @access protected
  */
-	private function _setLoginDefaults(&$options) {
+	protected function _setLoginDefaults(&$options) {
 		$options = array_merge(array(
 			'type' => 'basic',
 			'realm' => env('SERVER_NAME'),
@@ -714,7 +714,7 @@ class SecurityComponent extends Object {
  * @return mixed Controller callback method's response
  * @access protected
  */
-	private function _callback(&$controller, $method, $params = array()) {
+	protected function _callback(&$controller, $method, $params = array()) {
 		if (is_callable(array($controller, $method))) {
 			return call_user_func_array(array(&$controller, $method), empty($params) ? null : $params);
 		} else {

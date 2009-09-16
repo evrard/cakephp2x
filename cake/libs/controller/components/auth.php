@@ -435,7 +435,7 @@ class AuthComponent extends Object {
  * @return boolean
  * @access private
  */
-	private function __setDefaults() {
+	public function __setDefaults() {
 		if (empty($this->userModel)) {
 			trigger_error(__("Could not find \$userModel. Please set AuthComponent::\$userModel in beforeFilter().", true), E_USER_WARNING);
 			return false;
@@ -479,7 +479,7 @@ class AuthComponent extends Object {
  * @return boolean True if $user is authorized, otherwise false
  * @access public
  */
-	private function isAuthorized($type = null, $object = null, $user = null) {
+	public function isAuthorized($type = null, $object = null, $user = null) {
 		if (empty($user) && !$this->user()) {
 			return false;
 		} elseif (empty($user)) {
@@ -558,7 +558,7 @@ class AuthComponent extends Object {
  * @return array Associative array with: type, object
  * @access private
  */
-	private function __authType($auth = null) {
+	public function __authType($auth = null) {
 		if ($auth == null) {
 			$auth = $this->authorize;
 		}
@@ -583,7 +583,7 @@ class AuthComponent extends Object {
  * @return void
  * @access public
  */
-	private function allow() {
+	public function allow() {
 		$args = func_get_args();
 		if (empty($args) || $args == array('*')) {
 			$this->allowedActions = $this->_methods;
@@ -605,7 +605,7 @@ class AuthComponent extends Object {
  * @see AuthComponent::allow()
  * @access public
  */
-	private function deny() {
+	public function deny() {
 		$args = func_get_args();
 		foreach ($args as $arg) {
 			$i = array_search($arg, $this->allowedActions);
@@ -623,7 +623,7 @@ class AuthComponent extends Object {
  * @return void
  * @access public
  */
-	private function mapActions($map = array()) {
+	public function mapActions($map = array()) {
 		$crud = array('create', 'read', 'update', 'delete');
 		foreach ($map as $action => $type) {
 			if (in_array($action, $crud) && is_array($type)) {
@@ -648,7 +648,7 @@ class AuthComponent extends Object {
  * @return boolean True on login success, false on failure
  * @access public
  */
-	private function login($data = null) {
+	public function login($data = null) {
 		$this->__setDefaults();
 		$this->_loggedIn = false;
 
@@ -671,7 +671,7 @@ class AuthComponent extends Object {
  * @see AuthComponent::$loginAction
  * @access public
  */
-	private function logout() {
+	public function logout() {
 		$this->__setDefaults();
 		$this->Session->del($this->sessionKey);
 		$this->Session->del('Auth.redirect');
@@ -686,7 +686,7 @@ class AuthComponent extends Object {
  * @return mixed User record. or null if no user is logged in.
  * @access public
  */
-	private function user($key = null) {
+	public function user($key = null) {
 		$this->__setDefaults();
 		if (!$this->Session->check($this->sessionKey)) {
 			return null;
@@ -710,7 +710,7 @@ class AuthComponent extends Object {
  * @return string Redirect URL
  * @access public
  */
-	private function redirect($url = null) {
+	public function redirect($url = null) {
 		if (!is_null($url)) {
 			$redir = $url;
 			$this->Session->write('Auth.redirect', $redir);
@@ -740,7 +740,7 @@ class AuthComponent extends Object {
  * @return boolean True if the user validates, false otherwise.
  * @access public
  */
-	private function validate($object, $user = null, $action = null) {
+	public function validate($object, $user = null, $action = null) {
 		if (empty($user)) {
 			$user = $this->user();
 		}
@@ -759,7 +759,7 @@ class AuthComponent extends Object {
  * @return boolean ACO node path
  * @access public
  */
-	private function action($action = ':controller/:action') {
+	public function action($action = ':controller/:action') {
 		return str_replace(
 			array(':controller', ':action'),
 			array(Inflector::camelize($this->params['controller']), $this->params['action']),
@@ -775,7 +775,7 @@ class AuthComponent extends Object {
  * @return object A reference to a model object
  * @access public
  */
-	private function &getModel($name = null) {
+	public function &getModel($name = null) {
 		$model = null;
 		if (!$name) {
 			$name = $this->userModel;
@@ -800,7 +800,7 @@ class AuthComponent extends Object {
  * @return array User record data, or null, if the user could not be identified.
  * @access public
  */
-	private function identify($user = null, $conditions = null) {
+	public function identify($user = null, $conditions = null) {
 		if ($conditions === false) {
 			$conditions = null;
 		} elseif (is_array($conditions)) {
@@ -874,7 +874,7 @@ class AuthComponent extends Object {
  * @return array Data with passwords hashed
  * @access public
  */
-	private function hashPasswords($data) {
+	public function hashPasswords($data) {
 		if (is_object($this->authenticate) && method_exists($this->authenticate, 'hashPasswords')) {
 			return $this->authenticate->hashPasswords($data);
 		}
@@ -894,7 +894,7 @@ class AuthComponent extends Object {
  * @return string Hashed password
  * @access public
  */
-	private function password($password) {
+	public function password($password) {
 		return Security::hash($password, null, true);
 	}
 
@@ -904,7 +904,7 @@ class AuthComponent extends Object {
  * @param object $controller Instantiating controller
  * @access public
  */
-	private function shutdown(&$controller) {
+	public function shutdown(&$controller) {
 		if ($this->_loggedIn) {
 			$this->Session->del('Auth.redirect');
 		}

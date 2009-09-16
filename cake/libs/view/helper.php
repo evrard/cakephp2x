@@ -222,7 +222,7 @@ class Helper extends Object {
  * @return cleaned content for output
  * @access public
  */
-	private function clean($output) {
+	public function clean($output) {
 		$this->__reset();
 		if (empty($output)) {
 			return null;
@@ -322,7 +322,7 @@ class Helper extends Object {
  * @param boolean $setScope Sets the view scope to the model specified in $tagValue
  * @return void
  */
-	private function setEntity($entity, $setScope = false) {
+	public function setEntity($entity, $setScope = false) {
 		$view = ClassRegistry::getObject('view');
 
 		if ($setScope) {
@@ -435,7 +435,7 @@ class Helper extends Object {
  *
  * @return string
  */
-	private function model() {
+	public function model() {
 		$view = ClassRegistry::getObject('view');
 		if (!empty($view->association)) {
 			return $view->association;
@@ -449,7 +449,7 @@ class Helper extends Object {
  *
  * @return mixed
  */
-	private function modelID() {
+	public function modelID() {
 		$view = ClassRegistry::getObject('view');
 		return $view->modelId;
 	}
@@ -459,7 +459,7 @@ class Helper extends Object {
  *
  * @return string
  */
-	private function field() {
+	public function field() {
 		$view = ClassRegistry::getObject('view');
 		return $view->field;
 	}
@@ -472,7 +472,7 @@ class Helper extends Object {
  * @param integer $modelID	Unique index identifying this record within the form
  * @return boolean True on errors.
  */
-	private function tagIsInvalid($model = null, $field = null, $modelID = null) {
+	public function tagIsInvalid($model = null, $field = null, $modelID = null) {
 		foreach (array('model', 'field', 'modelID') as $key) {
 			if (empty(${$key})) {
 				${$key} = $this->{$key}();
@@ -499,7 +499,7 @@ class Helper extends Object {
  * @param string $id
  * @return mixed
  */
-	private function domId($options = null, $id = 'id') {
+	public function domId($options = null, $id = 'id') {
 		$view = ClassRegistry::getObject('view');
 
 		if (is_array($options) && array_key_exists($id, $options) && $options[$id] === null) {
@@ -570,7 +570,7 @@ class Helper extends Object {
  * @return array
  * @access public
  */
-	private function value($options = array(), $field = null, $key = 'value') {
+	public function value($options = array(), $field = null, $key = 'value') {
 		if ($options === null) {
 			$options = array();
 		} elseif (is_string($options)) {
@@ -640,7 +640,7 @@ class Helper extends Object {
  * @return array
  * @access protected
  */
-	private function _initInputField($field, $options = array()) {
+	protected function _initInputField($field, $options = array()) {
 		if ($field !== null) {
 			$this->setEntity($field);
 		}
@@ -662,7 +662,7 @@ class Helper extends Object {
  * @param string $key
  * @return array
  */
-	private function addClass($options = array(), $class = null, $key = 'class') {
+	public function addClass($options = array(), $class = null, $key = 'class') {
 		if (isset($options[$key]) && trim($options[$key]) != '') {
 			$options[$key] .= ' ' . $class;
 		} else {

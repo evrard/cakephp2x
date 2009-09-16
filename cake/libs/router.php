@@ -179,6 +179,7 @@ class Router extends Object {
  * @access public
  * @static
  */
+	/*
 	public function &getInstance() {
 		static $instance = array();
 
@@ -188,7 +189,7 @@ class Router extends Object {
 		}
 		return $instance[0];
 	}
-
+	*/
 /**
  * Gets the named route elements for use in app/config/routes.php
  *
@@ -334,7 +335,7 @@ class Router extends Object {
  * @access public
  * @static
  */
-	private function writeRoute($route, $default, $params) {
+	public function writeRoute($route, $default, $params) {
 		if (empty($route) || ($route === '/')) {
 			return array('/^[\/]*$/', array());
 		}
@@ -547,7 +548,7 @@ class Router extends Object {
  * @return array Returns an array containing the compiled route
  * @access public
  */
-	private static function compile($i) {
+	public static function compile($i) {
 		$route = self::$routes[$i];
 
 		if (!list($pattern, $names) = self::writeRoute($route[0], $route[1], $route[2])) {
@@ -687,7 +688,7 @@ class Router extends Object {
  * @access public
  * @static
  */
-	private static function getParam($name = 'controller', $current = false) {
+	public static function getParam($name = 'controller', $current = false) {
 		$params = self::getParams($current);
 		if (isset($params[$name])) {
 			return $params[$name];
@@ -962,7 +963,7 @@ class Router extends Object {
  * @access public
  * @static
  */
-	private static function mapRouteElements($route, $url) {
+	public static function mapRouteElements($route, $url) {
 		if (isset($route[3]['prefix'])) {
 			$prefix = $route[3]['prefix'];
 			unset($route[3]['prefix']);
@@ -1125,7 +1126,7 @@ class Router extends Object {
  * @access public
  * @static
  */
-	private function getNamedElements($params, $controller = null, $action = null) {
+	public function getNamedElements($params, $controller = null, $action = null) {
 		$named = array();
 
 		foreach ($params as $param => $val) {
@@ -1151,7 +1152,7 @@ class Router extends Object {
  * @return boolean
  * @access public
  */
-	private function matchNamed($param, $val, $rule, $context = array()) {
+	public function matchNamed($param, $val, $rule, $context = array()) {
 		if ($rule === true || $rule === false) {
 			return $rule;
 		}
@@ -1245,7 +1246,7 @@ class Router extends Object {
  * @access public
  * @static
  */
-	private static function requestRoute() {
+	public static function requestRoute() {
 		return self::$__currentRoute[0];
 	}
 
@@ -1256,7 +1257,7 @@ class Router extends Object {
  * @access public
  * @static
  */
-	private static function currentRoute() {
+	public static function currentRoute() {
 		return self::$__currentRoute[count(self::$__currentRoute) - 1];
 	}
 
@@ -1269,7 +1270,7 @@ class Router extends Object {
  * @access public
  * @static
  */
-	private function stripPlugin($base, $plugin = null) {
+	public function stripPlugin($base, $plugin = null) {
 		if ($plugin != null) {
 			$base = preg_replace('/(?:' . $plugin . ')/', '', $base);
 			$base = str_replace('//', '', $base);
@@ -1291,7 +1292,7 @@ class Router extends Object {
  * @access public
  * @static
  */
-	private static function stripEscape($param) {
+	public static function stripEscape($param) {
 		if (!is_array($param) || empty($param)) {
 			if (is_bool($param)) {
 				return $param;
@@ -1343,7 +1344,7 @@ class Router extends Object {
  * @access public
  * @static
  */
-	private static function getArgs($args, $options = array()) {
+	public static function getArgs($args, $options = array()) {
 		$pass = $named = array();
 		$args = explode('/', $args);
 

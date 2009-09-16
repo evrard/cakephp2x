@@ -170,7 +170,7 @@ class DboOracle extends DboSource {
  * @return boolean True if the database could be connected, else false
  * @access public
  */
-	private function connect() {
+	public function connect() {
 		$config = $this->config;
 		$this->connected = false;
 		$config['charset'] = !empty($config['charset']) ? $config['charset'] : null;
@@ -204,7 +204,7 @@ class DboOracle extends DboSource {
 	 * Keeps track of the most recent Oracle error
 	 *
 	 */
-	private function _setError($source = null, $clear = false) {
+	protected function _setError($source = null, $clear = false) {
 		if ($source) {
 			$e = ocierror($source);
 		} else {
@@ -222,7 +222,7 @@ class DboOracle extends DboSource {
  * @param string $lang language constant
  * @return bool
  */
-	private function setEncoding($lang) {
+	public function setEncoding($lang) {
 		if (!$this->execute('ALTER SESSION SET NLS_LANGUAGE='.$lang)) {
 			return false;
 		}
@@ -234,7 +234,7 @@ class DboOracle extends DboSource {
  *
  * @return string language constant
  */
-	private function getEncoding() {
+	public function getEncoding() {
 		$sql = 'SELECT VALUE FROM NLS_SESSION_PARAMETERS WHERE PARAMETER=\'NLS_LANGUAGE\'';
 		if (!$this->execute($sql)) {
 			return false;
@@ -252,7 +252,7 @@ class DboOracle extends DboSource {
  * @return boolean True if the database could be disconnected, else false
  * @access public
  */
-	private function disconnect() {
+	public function disconnect() {
 		if ($this->connection) {
 			$this->connected = !ocilogoff($this->connection);
 			return !$this->connected;
@@ -267,7 +267,7 @@ class DboOracle extends DboSource {
  * @return false if sql is nor a SELECT
  * @access protected
  */
-	private function _scrapeSQL($sql) {
+	protected function _scrapeSQL($sql) {
 		$sql = str_replace("\"", '', $sql);
 		$preFrom = preg_split('/\bFROM\b/', $sql);
 		$preFrom = $preFrom[0];
@@ -317,7 +317,7 @@ class DboOracle extends DboSource {
  * @return modified SQL Query
  * @access public
  */
-	private function limit($limit = -1, $offset = 0) {
+	public function limit($limit = -1, $offset = 0) {
 		$this->_limit = (int) $limit;
 		$this->_offset = (int) $offset;
 	}
@@ -329,7 +329,7 @@ class DboOracle extends DboSource {
  * @return integer Number of rows in resultset
  * @access public
  */
-	private function lastNumRows() {
+	public function lastNumRows() {
 		return $this->_numRows;
 	}
 
@@ -340,7 +340,7 @@ class DboOracle extends DboSource {
  * @return resource Result resource identifier or null
  * @access protected
  */
-	private function _execute($sql) {
+	protected function _execute($sql) {
 		$this->_statementId = @ociparse($this->connection, $sql);
 		if (!$this->_statementId) {
 			$this->_setError($this->connection);
@@ -387,7 +387,7 @@ class DboOracle extends DboSource {
  * @return unknown
  * @access public
  */
-	private function fetchRow() {
+	public function fetchRow() {
 		if ($this->_currentRow >= $this->_numRows) {
 			ocifreestatement($this->_statementId);
 			$this->_map = null;
@@ -416,7 +416,7 @@ class DboOracle extends DboSource {
  *
  * @return unknown
  */
-	private function fetchResult() {
+	public function fetchResult() {
 		return $this->fetchRow();
 	}
 
@@ -427,7 +427,7 @@ class DboOracle extends DboSource {
  * @return bool
  * @access public
  */
-	private function sequenceExists($sequence) {
+	public function sequenceExists($sequence) {
 		$sql = "SELECT SEQUENCE_NAME FROM USER_SEQUENCES WHERE SEQUENCE_NAME = '$sequence'";
 		if (!$this->execute($sql)) {
 			return false;
@@ -442,7 +442,7 @@ class DboOracle extends DboSource {
  * @return bool
  * @access public
  */
-	private function createSequence($sequence) {
+	public function createSequence($sequence) {
 		$sql = "CREATE SEQUENCE $sequence";
 		return $this->execute($sql);
 	}
@@ -454,7 +454,7 @@ class DboOracle extends DboSource {
  * @return unknown
  * @access public
  */
-	private function createTrigger($table) {
+	public function createTrigger($table) {
 		$sql = "CREATE OR REPLACE TRIGGER pk_$table" . "_trigger BEFORE INSERT ON $table FOR EACH ROW BEGIN SELECT pk_$table.NEXTVAL INTO :NEW.ID FROM DUAL; END;";
 		return $this->execute($sql);
 	}
@@ -466,7 +466,7 @@ class DboOracle extends DboSource {
  * @return array tablenames in the database
  * @access public
  */
-	private function listSources() {
+	public function listSources() {
 		$cache = parent::listSources();
 		if ($cache != null) {
 			return $cache;
@@ -492,7 +492,7 @@ class DboOracle extends DboSource {
  * @return array Fields in table. Keys are name and type
  * @access public
  */
-	private function describe(&$model) {
+	public function describe(&$model) {
 
 		if (!empty($model->sequence)) {
 			$this->_sequenceMap[$model->table] = $model->sequence;
@@ -535,7 +535,7 @@ class DboOracle extends DboSource {
  * @access public
  *
  */
-	private function truncate($table, $reset = 0) {
+	public function truncate($table, $reset = 0) {
 
 		if (empty($this->_sequences)) {
 			$sql = "SELECT sequence_name FROM all_sequences";
@@ -582,7 +582,7 @@ class DboOracle extends DboSource {
  * @param string $table
  * @return mixed boolean true or array of constraints
  */
-	private function constraint($action, $table) {
+	public function constraint($action, $table) {
 		if (empty($table)) {
 			trigger_error(__('Must specify table to operate on constraints'));
 		}
@@ -654,7 +654,7 @@ class DboOracle extends DboSource {
  * @param string $model Name of model to inspect
  * @return array Fields in table. Keys are column and unique
  */
-	private function index($model) {
+	public function index($model) {
 		$index = array();
 		$table = $this->fullTableName($model, false);
 		if ($table) {
@@ -696,7 +696,7 @@ class DboOracle extends DboSource {
  * @param unknown_type $schema
  * @return unknown
  */
-	private function alterSchema($compare, $table = null) {
+	public function alterSchema($compare, $table = null) {
 		if (!is_array($compare)) {
 			return false;
 		}
@@ -747,7 +747,7 @@ class DboOracle extends DboSource {
  * @return unknown
  * @access public
  */
-	private function name($name) {
+	public function name($name) {
 		if (strpos($name, '.') !== false && strpos($name, '"') === false) {
 			list($model, $field) = explode('.', $name);
 			if ($field[0] == "_") {
@@ -768,7 +768,7 @@ class DboOracle extends DboSource {
  * @return boolean True on success, false on fail
  * (i.e. if the database/model does not support transactions).
  */
-	private function begin() {
+	public function begin() {
 		$this->__transactionStarted = true;
 		return true;
 	}
@@ -781,7 +781,7 @@ class DboOracle extends DboSource {
  * (i.e. if the database/model does not support transactions,
  * or a transaction has not started).
  */
-	private function rollback() {
+	public function rollback() {
 		return ocirollback($this->connection);
 	}
 
@@ -793,7 +793,7 @@ class DboOracle extends DboSource {
  * (i.e. if the database/model does not support transactions,
  * or a transaction has not started).
  */
-	private function commit() {
+	public function commit() {
 		$this->__transactionStarted = false;
 		return ocicommit($this->connection);
 	}
@@ -805,7 +805,7 @@ class DboOracle extends DboSource {
  * @return string Abstract column type (i.e. "string")
  * @access public
  */
-	private function column($real) {
+	public function column($real) {
 		if (is_array($real)) {
 			$col = $real['name'];
 
@@ -856,7 +856,7 @@ class DboOracle extends DboSource {
  * @return string Quoted and escaped
  * @access public
  */
-	private function value($data, $column = null, $safe = false) {
+	public function value($data, $column = null, $safe = false) {
 		$parent = parent::value($data, $column, $safe);
 
 		if ($parent != null) {
@@ -898,7 +898,7 @@ class DboOracle extends DboSource {
  * @return integer
  * @access public
  */
-	private function lastInsertId($source) {
+	public function lastInsertId($source) {
 		$sequence = $this->_sequenceMap[$source];
 		$sql = "SELECT $sequence.currval FROM dual";
 
@@ -918,7 +918,7 @@ class DboOracle extends DboSource {
  * @return string Error message with error number
  * @access public
  */
-	private function lastError() {
+	public function lastError() {
 		return $this->_error;
 	}
 
@@ -928,7 +928,7 @@ class DboOracle extends DboSource {
  * @return int Number of affected rows
  * @access public
  */
-	private function lastAffected() {
+	public function lastAffected() {
 		return $this->_statementId ? ocirowcount($this->_statementId): false;
 	}
 
@@ -939,7 +939,7 @@ class DboOracle extends DboSource {
  * @param array $data
  * @return string
  */
-	private function renderStatement($type, $data) {
+	public function renderStatement($type, $data) {
 		extract($data);
 		$aliases = null;
 
@@ -992,7 +992,7 @@ class DboOracle extends DboSource {
  * @param integer $recursive Number of levels of association
  * @param array $stack
  */
-	private function queryAssociation(&$model, &$linkModel, $type, $association, $assocData, &$queryData, $external = false, &$resultSet, $recursive, $stack) {
+	public function queryAssociation(&$model, &$linkModel, $type, $association, $assocData, &$queryData, $external = false, &$resultSet, $recursive, $stack) {
 		if ($query = $this->generateAssociationQuery($model, $linkModel, $type, $association, $assocData, $queryData, $external, $resultSet)) {
 			if (!isset($resultSet) || !is_array($resultSet)) {
 				if (Configure::read() > 0) {
@@ -1144,7 +1144,7 @@ class DboOracle extends DboSource {
  *						Otherwise, all tables defined in the schema are generated.
  * @return string
  */
-		private function dropSchema($schema, $table = null) {
+		public function dropSchema($schema, $table = null) {
 			if (!is_a($schema, 'CakeSchema')) {
 				trigger_error(__('Invalid schema object', true), E_USER_WARNING);
 				return null;

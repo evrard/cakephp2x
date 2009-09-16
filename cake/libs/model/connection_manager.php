@@ -123,7 +123,7 @@ class ConnectionManager extends Object {
  * @access public
  * @static
  */
-	private function sourceList() {
+	public function sourceList() {
 		$_this = ConnectionManager::getInstance();
 		return array_keys($_this->_dataSources);
 	}
@@ -157,7 +157,7 @@ class ConnectionManager extends Object {
  * @access public
  * @static
  */
-	private function loadDataSource($connName) {
+	public function loadDataSource($connName) {
 		$_this = ConnectionManager::getInstance();
 
 		if (is_array($connName)) {

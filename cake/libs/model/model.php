@@ -611,7 +611,7 @@ class Model extends Overloadable {
  * @return void
  * @access public
  */
-	private function setSource($tableName) {
+	public function setSource($tableName) {
 		$this->setDataSource($this->useDbConfig);
 		$db = ConnectionManager::getDataSource($this->useDbConfig);
 		$db->cacheSources = ($this->cacheSources && $db->cacheSources);
@@ -694,7 +694,7 @@ class Model extends Overloadable {
  * @return mixed The resulting data that should be assigned to a field
  * @access public
  */
-	private function deconstruct($field, $data) {
+	public function deconstruct($field, $data) {
 		$copy = $data;
 		$type = $this->getColumnType($field);
 
@@ -791,7 +791,7 @@ class Model extends Overloadable {
  * @return array Field types indexed by field name
  * @access public
  */
-	private function getColumnTypes() {
+	public function getColumnTypes() {
 		$columns = $this->schema();
 		if (empty($columns)) {
 			trigger_error(__('(Model::getColumnTypes) Unable to build model field data. If you are using a model without a database table, try implementing schema()', true), E_USER_WARNING);
@@ -1566,7 +1566,7 @@ class Model extends Overloadable {
  * @deprecated
  * @link http://book.cakephp.org/view/691/remove
  */
-	private function remove($id = null, $cascade = true) {
+	public function remove($id = null, $cascade = true) {
 		return $this->delete($id, $cascade);
 	}
 
@@ -1617,13 +1617,6 @@ class Model extends Overloadable {
 	}
 
 /**
- * @deprecated
- */
-	public function del($id = null, $cascade = true) {
-		return $this->delete($id, $cascade);
-	}
-
-/**
  * Cascades model deletes through associated hasMany and hasOne child records.
  *
  * @param string $id ID of record that was deleted
@@ -1631,7 +1624,7 @@ class Model extends Overloadable {
  * @return void
  * @access protected
  */
-	private function _deleteDependent($id, $cascade) {
+	protected function _deleteDependent($id, $cascade) {
 		if (!empty($this->__backAssociation)) {
 			$savedAssociatons = $this->__backAssociation;
 			$this->__backAssociation = array();
@@ -1673,7 +1666,7 @@ class Model extends Overloadable {
  * @return void
  * @access protected
  */
-	private function _deleteLinks($id) {
+	protected function _deleteLinks($id) {
 		$db = ConnectionManager::getDataSource($this->useDbConfig);
 
 		foreach ($this->hasAndBelongsToMany as $assoc => $data) {
@@ -1796,7 +1789,7 @@ class Model extends Overloadable {
  * @return boolean True if such a record exists
  * @access public
  */
-	private function hasAny($conditions = null) {
+	public function hasAny($conditions = null) {
 		return ($this->find('count', array('conditions' => $conditions, 'recursive' => -1)) != false);
 	}
 
@@ -1913,7 +1906,7 @@ class Model extends Overloadable {
  * @access protected
  * @see Model::find()
  */
-	private function _findFirst($state, $query, $results = array()) {
+	protected function _findFirst($state, $query, $results = array()) {
 		if ($state == 'before') {
 			$query['limit'] = 1;
 			if (empty($query['conditions']) && !empty($this->id)) {
@@ -1938,7 +1931,7 @@ class Model extends Overloadable {
  * @access protected
  * @see Model::find()
  */
-	private function _findCount($state, $query, $results = array()) {
+	protected function _findCount($state, $query, $results = array()) {
 		if ($state == 'before') {
 			$db = ConnectionManager::getDataSource($this->useDbConfig);
 			if (empty($query['fields'])) {
@@ -1970,7 +1963,7 @@ class Model extends Overloadable {
  * @access protected
  * @see Model::find()
  */
-	private function _findList($state, $query, $results = array()) {
+	protected function _findList($state, $query, $results = array()) {
 		if ($state == 'before') {
 			if (empty($query['fields'])) {
 				$query['fields'] = array("{$this->alias}.{$this->primaryKey}", "{$this->alias}.{$this->displayField}");
@@ -2029,7 +2022,7 @@ class Model extends Overloadable {
  * @return array
  * @access protected
  */
-	private function _findNeighbors($state, $query, $results = array()) {
+	protected function _findNeighbors($state, $query, $results = array()) {
 		if ($state == 'before') {
 			$query = array_merge(array('recursive' => 0), $query);
 			extract($query);
@@ -2088,7 +2081,7 @@ class Model extends Overloadable {
  * @return array Threaded results
  * @access protected
  */
-	private function _findThreaded($state, $query, $results = array()) {
+	protected function _findThreaded($state, $query, $results = array()) {
 		if ($state == 'before') {
 			return $query;
 		} elseif ($state == 'after') {
@@ -2221,7 +2214,7 @@ class Model extends Overloadable {
  * @access public
  * @link http://book.cakephp.org/view/456/query
  */
-	private function query() {
+	public function query() {
 		$params = func_get_args();
 		$db = ConnectionManager::getDataSource($this->useDbConfig);
 		return call_user_func_array(array(&$db, 'query'), $params);
@@ -2403,7 +2396,7 @@ class Model extends Overloadable {
  * 						is provided, defaults to true.
  * @access public
  */
-	private function invalidate($field, $value = true) {
+	public function invalidate($field, $value = true) {
 		if (!is_array($this->validationErrors)) {
 			$this->validationErrors = array();
 		}
@@ -2417,7 +2410,7 @@ class Model extends Overloadable {
  * @return boolean True if the field is a foreign key listed in the belongsTo array.
  * @access public
  */
-	private function isForeignKey($field) {
+	public function isForeignKey($field) {
 		$foreignKeys = array();
 		if (!empty($this->belongsTo)) {
 			foreach ($this->belongsTo as $assoc => $data) {
@@ -2434,7 +2427,7 @@ class Model extends Overloadable {
  * @access public
  * @deprecated
  */
-	private function getDisplayField() {
+	public function getDisplayField() {
 		return $this->displayField;
 	}
 
@@ -2499,7 +2492,7 @@ class Model extends Overloadable {
  * @return mixed Last inserted ID
  * @access public
  */
-	private function getLastInsertID() {
+	public function getLastInsertID() {
 		return $this->getInsertID();
 	}
 
@@ -2529,7 +2522,7 @@ class Model extends Overloadable {
  * @return int Number of rows
  * @access public
  */
-	private function getNumRows() {
+	public function getNumRows() {
 		$db = ConnectionManager::getDataSource($this->useDbConfig);
 		return $db->lastNumRows();
 	}
@@ -2540,7 +2533,7 @@ class Model extends Overloadable {
  * @return int Number of rows
  * @access public
  */
-	private function getAffectedRows() {
+	public function getAffectedRows() {
 		$db = ConnectionManager::getDataSource($this->useDbConfig);
 		return $db->lastAffected();
 	}
@@ -2581,7 +2574,7 @@ class Model extends Overloadable {
  * @return object A DataSource object
  * @access public
  */
-	private function &getDataSource() {
+	public function &getDataSource() {
 		$db = ConnectionManager::getDataSource($this->useDbConfig);
 		return $db;
 	}
@@ -2663,7 +2656,7 @@ class Model extends Overloadable {
  * @access public
  * @link http://book.cakephp.org/view/680/beforeFind
  */
-	private function beforeFind($queryData) {
+	public function beforeFind($queryData) {
 		return true;
 	}
 
@@ -2689,7 +2682,7 @@ class Model extends Overloadable {
  * @access public
  * @link http://book.cakephp.org/view/683/beforeSave
  */
-	private function beforeSave($options = array()) {
+	public function beforeSave($options = array()) {
 		return true;
 	}
 
@@ -2700,7 +2693,7 @@ class Model extends Overloadable {
  * @access public
  * @link http://book.cakephp.org/view/684/afterSave
  */
-	private function afterSave($created) {
+	public function afterSave($created) {
 	}
 
 /**
@@ -2711,7 +2704,7 @@ class Model extends Overloadable {
  * @access public
  * @link http://book.cakephp.org/view/685/beforeDelete
  */
-	private function beforeDelete($cascade = true) {
+	public function beforeDelete($cascade = true) {
 		return true;
 	}
 
@@ -2721,7 +2714,7 @@ class Model extends Overloadable {
  * @access public
  * @link http://book.cakephp.org/view/686/afterDelete
  */
-	private function afterDelete() {
+	public function afterDelete() {
 	}
 
 /**
@@ -2733,7 +2726,7 @@ class Model extends Overloadable {
  * @access public
  * @link http://book.cakephp.org/view/682/beforeValidate
  */
-	private function beforeValidate($options = array()) {
+	public function beforeValidate($options = array()) {
 		return true;
 	}
 

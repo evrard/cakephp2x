@@ -94,7 +94,7 @@ class DboAdodb extends DboSource {
  *
  * @param array $config Configuration array for connecting
  */
-	private function connect() {
+	public function connect() {
 		$config = $this->config;
 		$persistent = strrpos($config['connect'], '|p');
 
@@ -123,7 +123,7 @@ class DboAdodb extends DboSource {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	private function disconnect() {
+	public function disconnect() {
 		return $this->_adodb->Close();
 	}
 
@@ -144,7 +144,7 @@ class DboAdodb extends DboSource {
  *
  * @return array The fetched row as an array
  */
-	private function fetchRow($sql = null) {
+	public function fetchRow($sql = null) {
 		if (!empty($sql) && is_string($sql) && strlen($sql) > 5) {
 			if (!$this->execute($sql)) {
 				return null;
@@ -167,7 +167,7 @@ class DboAdodb extends DboSource {
  * @return boolean True on success, false on fail
  * (i.e. if the database/model does not support transactions).
  */
-	private function begin(&$model) {
+	public function begin(&$model) {
 		if (parent::begin($model)) {
 			if ($this->_adodb->BeginTrans()) {
 				$this->_transactionStarted = true;
@@ -185,7 +185,7 @@ class DboAdodb extends DboSource {
  * (i.e. if the database/model does not support transactions,
  * or a transaction has not started).
  */
-	private function commit(&$model) {
+	public function commit(&$model) {
 		if (parent::commit($model)) {
 			$this->_transactionStarted = false;
 			return $this->_adodb->CommitTrans();
@@ -201,7 +201,7 @@ class DboAdodb extends DboSource {
  * (i.e. if the database/model does not support transactions,
  * or a transaction has not started).
  */
-	private function rollback(&$model) {
+	public function rollback(&$model) {
 		if (parent::rollback($model)) {
 			return $this->_adodb->RollbackTrans();
 		}
@@ -213,7 +213,7 @@ class DboAdodb extends DboSource {
  *
  * @return array Array of tablenames in the database
  */
-	private function listSources() {
+	public function listSources() {
 		$tables = $this->_adodb->MetaTables('TABLES');
 
 		if (!sizeof($tables) > 0) {
@@ -229,7 +229,7 @@ class DboAdodb extends DboSource {
  * @param AppModel $model Model object
  * @return array Fields in table. Keys are name and type
  */
-	private function describe(&$model) {
+	public function describe(&$model) {
 		$cache = parent::describe($model);
 		if ($cache != null) {
 			return $cache;
@@ -261,7 +261,7 @@ class DboAdodb extends DboSource {
  *
  * @return string Error message
  */
-	private function lastError() {
+	public function lastError() {
 		return $this->_adodb->ErrorMsg();
 	}
 
@@ -270,7 +270,7 @@ class DboAdodb extends DboSource {
  *
  * @return integer Number of affected rows
  */
-	private function lastAffected() {
+	public function lastAffected() {
 		return $this->_adodb->Affected_Rows();
 	}
 
@@ -279,7 +279,7 @@ class DboAdodb extends DboSource {
  *
  * @return integer Number of rows in resultset
  */
-	private function lastNumRows() {
+	public function lastNumRows() {
 		return $this->_result ? $this->_result->RecordCount() : false;
 	}
 
@@ -290,7 +290,7 @@ class DboAdodb extends DboSource {
  *
  * @Returns the last autonumbering ID inserted. Returns false if function not supported.
  */
-	private function lastInsertId() {
+	public function lastInsertId() {
 		return $this->_adodb->Insert_ID();
 	}
 
@@ -302,7 +302,7 @@ class DboAdodb extends DboSource {
  * @return string SQL limit/offset statement
  * @todo Please change output string to whatever select your database accepts. adodb doesn't allow us to get the correct limit string out of it.
  */
-	private function limit($limit, $offset = null) {
+	public function limit($limit, $offset = null) {
 		if ($limit) {
 			$rt = '';
 			if (!strpos(strtolower($limit), 'limit') || strpos(strtolower($limit), 'limit') === 0) {
@@ -327,7 +327,7 @@ class DboAdodb extends DboSource {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return string Abstract column type (i.e. "string")
  */
-	private function column($real) {
+	public function column($real) {
 		$metaTypes = array_flip($this->_adodbColumnTypes);
 
 		$interpreted_type = $this->_adodbMetatyper->MetaType($real);
@@ -346,7 +346,7 @@ class DboAdodb extends DboSource {
  * @param boolean $safe Whether or not numeric data should be handled automagically if no column data is provided
  * @return string Quoted and escaped data
  */
-	private function value($data, $column = null, $safe = false) {
+	public function value($data, $column = null, $safe = false) {
 		$parent = parent::value($data, $column, $safe);
 		if ($parent != null) {
 			return $parent;
@@ -370,7 +370,7 @@ class DboAdodb extends DboSource {
  * @param mixed $fields
  * @return array
  */
-	private function fields(&$model, $alias = null, $fields = array(), $quote = true) {
+	public function fields(&$model, $alias = null, $fields = array(), $quote = true) {
 		if (empty($alias)) {
 			$alias = $model->alias;
 		}
@@ -407,7 +407,7 @@ class DboAdodb extends DboSource {
  *
  * @param array $results
  */
-	private function resultSet(&$results) {
+	public function resultSet(&$results) {
 		$num_fields = count($results);
 		$fields = array_keys($results);
 		$this->results =& $results;
@@ -433,7 +433,7 @@ class DboAdodb extends DboSource {
  *
  * @return unknown
  */
-	private function fetchResult() {
+	public function fetchResult() {
 		if (!empty($this->results)) {
 			$row = $this->results;
 			$this->results = null;
@@ -463,7 +463,7 @@ class DboAdodb extends DboSource {
  *                      where options can be 'default', 'length', or 'key'.
  * @return string
  */
-	private function buildColumn($column) {
+	public function buildColumn($column) {
 		$name = $type = null;
 		extract(array_merge(array('null' => true), $column));
 
@@ -531,7 +531,7 @@ class DboAdodb extends DboSource {
  *
  * @return boolean True if the result is valid, else false
  */
-	private function hasResult() {
+	public function hasResult() {
 		return is_object($this->_result) && !$this->_result->EOF;
 	}
 }

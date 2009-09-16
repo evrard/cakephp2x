@@ -308,9 +308,9 @@ class File extends Object {
 	}
 
 /**
- * Returns the File extension.
+ * Returns File information.
  *
- * @return string The File extension
+ * @return string File information
  * @access public
  */
 	public function info() {
@@ -364,7 +364,7 @@ class File extends Object {
  * @return string $ext the extension of the file
  * @access public
  */
-	private function safe($name = null, $ext = null) {
+	public function safe($name = null, $ext = null) {
 		if (!$name) {
 			$name = $this->name;
 		}
@@ -531,7 +531,7 @@ class File extends Object {
  * @return Folder Current folder
  * @access public
  */
-	public function &Folder() {
+	public function Folder() {
 		return $this->Folder;
 	}
 }

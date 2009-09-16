@@ -73,7 +73,7 @@ class PaginatorHelper extends AppHelper {
  * @param  string $model Optional model name.  Uses the default if none is specified.
  * @return string The current page number of the paginated resultset.
  */
-	private function params($model = null) {
+	public function params($model = null) {
 		if (empty($model)) {
 			$model = $this->defaultModel();
 		}
@@ -89,7 +89,7 @@ class PaginatorHelper extends AppHelper {
  * @param  mixed $options Default options for pagination links. If a string is supplied - it
  * is used as the DOM id element to update. See #options for list of keys.
  */
-	private function options($options = array()) {
+	public function options($options = array()) {
 		if (is_string($options)) {
 			$options = array('update' => $options);
 		}
@@ -121,7 +121,7 @@ class PaginatorHelper extends AppHelper {
  * @param  string $model Optional model name.  Uses the default if none is specified.
  * @return string The current page number of the recordset.
  */
-	private function current($model = null) {
+	public function current($model = null) {
 		$params = $this->params($model);
 
 		if (isset($params['page'])) {
@@ -138,7 +138,7 @@ class PaginatorHelper extends AppHelper {
  * @return string The name of the key by which the recordset is being sorted, or
  *  null if the results are not currently sorted.
  */
-	private function sortKey($model = null, $options = array()) {
+	public function sortKey($model = null, $options = array()) {
 		if (empty($options)) {
 			$params = $this->params($model);
 			$options = array_merge($params['defaults'], $params['options']);
@@ -170,7 +170,7 @@ class PaginatorHelper extends AppHelper {
  * @return string The direction by which the recordset is being sorted, or
  *  null if the results are not currently sorted.
  */
-	private function sortDir($model = null, $options = array()) {
+	public function sortDir($model = null, $options = array()) {
 		$dir = null;
 
 		if (empty($options)) {
@@ -199,7 +199,7 @@ class PaginatorHelper extends AppHelper {
  * @param  mixed $disabledOptions Options for the disabled pagination link. See #options for list of keys.
  * @return string A "previous" link or $disabledTitle text if the link is disabled.
  */
-	private function prev($title = '<< Previous', $options = array(), $disabledTitle = null, $disabledOptions = array()) {
+	public function prev($title = '<< Previous', $options = array(), $disabledTitle = null, $disabledOptions = array()) {
 		return $this->__pagingLink('Prev', $title, $options, $disabledTitle, $disabledOptions);
 	}
 
@@ -212,7 +212,7 @@ class PaginatorHelper extends AppHelper {
  * @param  mixed $disabledOptions Options for the disabled pagination link. See #options for list of keys.
  * @return string A "next" link or or $disabledTitle text if the link is disabled.
  */
-	private function next($title = 'Next >>', $options = array(), $disabledTitle = null, $disabledOptions = array()) {
+	public function next($title = 'Next >>', $options = array(), $disabledTitle = null, $disabledOptions = array()) {
 		return $this->__pagingLink('Next', $title, $options, $disabledTitle, $disabledOptions);
 	}
 
@@ -225,7 +225,7 @@ class PaginatorHelper extends AppHelper {
  * @return string A link sorting default by 'asc'. If the resultset is sorted 'asc' by the specified
  *  key the returned link will sort by 'desc'.
  */
-	private function sort($title, $key = null, $options = array()) {
+	public function sort($title, $key = null, $options = array()) {
 		$options = array_merge(array('url' => array(), 'model' => null), $options);
 		$url = $options['url'];
 		unset($options['url']);
@@ -258,7 +258,7 @@ class PaginatorHelper extends AppHelper {
  * @param  array $options Options for the link. See #options for list of keys.
  * @return string A link with pagination parameters.
  */
-	private function link($title, $url = array(), $options = array()) {
+	public function link($title, $url = array(), $options = array()) {
 		$options = array_merge(array('model' => null, 'escape' => true), $options);
 		$model = $options['model'];
 		unset($options['model']);
@@ -286,7 +286,7 @@ class PaginatorHelper extends AppHelper {
  * @param  string $model Which model to paginate on
  * @return mixed By default, returns a full pagination URL string for use in non-standard contexts (i.e. JavaScript)
  */
-	private function url($options = array(), $asArray = false, $model = null) {
+	public function url($options = array(), $asArray = false, $model = null) {
 		$paging = $this->params($model);
 		$url = array_merge(array_filter(Set::diff(array_merge(
 			$paging['defaults'], $paging['options']), $paging['defaults'])), $options
@@ -345,7 +345,7 @@ class PaginatorHelper extends AppHelper {
  * @param string $model Optional model name.  Uses the default if none is specified.
  * @return boolean True if the result set is not at the first page.
  */
-	private function hasPrev($model = null) {
+	public function hasPrev($model = null) {
 		return $this->__hasPage($model, 'prev');
 	}
 
@@ -355,7 +355,7 @@ class PaginatorHelper extends AppHelper {
  * @param string $model Optional model name.  Uses the default if none is specified.
  * @return boolean True if the result set is not at the last page.
  */
-	private function hasNext($model = null) {
+	public function hasNext($model = null) {
 		return $this->__hasPage($model, 'next');
 	}
 
@@ -366,7 +366,7 @@ class PaginatorHelper extends AppHelper {
  * @param  int $page The page number - if not set defaults to 1.
  * @return boolean True if the given result set has the specified page number.
  */
-	private function hasPage($model = null, $page = 1) {
+	public function hasPage($model = null, $page = 1) {
 		if (is_numeric($model)) {
 			$page = $model;
 			$model = null;
@@ -394,7 +394,7 @@ class PaginatorHelper extends AppHelper {
  *
  * @return string Model name or null if the pagination isn't initialized.
  */
-	private function defaultModel() {
+	public function defaultModel() {
 		if ($this->__defaultModel != null) {
 			return $this->__defaultModel;
 		}
@@ -412,7 +412,7 @@ class PaginatorHelper extends AppHelper {
  * @todo See about deprecating the keys in $map for formatting
  * @return string Counter string.
  */
-	private function counter($options = array()) {
+	public function counter($options = array()) {
 		if (is_string($options)) {
 			$options = array('format' => $options);
 		}
@@ -476,7 +476,7 @@ class PaginatorHelper extends AppHelper {
  * @param  mixed $options Options for the numbers, (before, after, model, modulus, separator)
  * @return string numbers string.
  */
-	private function numbers($options = array()) {
+	public function numbers($options = array()) {
 		if ($options === true) {
 			$options = array(
 				'before' => ' | ', 'after' => ' | ', 'first' => 'first', 'last' => 'last'
@@ -590,7 +590,7 @@ class PaginatorHelper extends AppHelper {
  * @param  mixed $options
  * @return string numbers string.
  */
-	private function first($first = '<< first', $options = array()) {
+	public function first($first = '<< first', $options = array()) {
 		$options = array_merge(
 			array(
 				'tag' => 'span',
@@ -635,7 +635,7 @@ class PaginatorHelper extends AppHelper {
  * @param  mixed $options
  * @return string numbers string.
  */
-	private function last($last = 'last >>', $options = array()) {
+	public function last($last = 'last >>', $options = array()) {
 		$options = array_merge(
 			array(
 				'tag' => 'span',

@@ -206,7 +206,7 @@ class CakeSocket extends Object {
  * @param string $errStr Error string
  * @access public
  */
-	private function setLastError($errNum, $errStr) {
+	public function setLastError($errNum, $errStr) {
 		$this->__lastError = array('num' => $errNum, 'str' => $errStr);
 	}
 
@@ -260,7 +260,7 @@ class CakeSocket extends Object {
  * @return boolean Success
  * @access public
  */
-	private function abort() {
+	public function abort() {
 		return false;
 	}
 

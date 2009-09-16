@@ -655,7 +655,7 @@ class CakeSession extends Object {
  *
  * @access public
  */
-	private function renew() {
+	public function renew() {
 		$this->__regenerateId();
 	}
 

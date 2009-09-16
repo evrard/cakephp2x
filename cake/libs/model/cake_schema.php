@@ -127,7 +127,7 @@ class CakeSchema extends Object {
  * @return boolean Should process continue
  * @access public
  */
-	private function before($event = array()) {
+	public function before($event = array()) {
 		return true;
 	}
 
@@ -137,7 +137,7 @@ class CakeSchema extends Object {
  * @param array $events schema object properties
  * @access public
  */
-	private function after($event = array()) {
+	public function after($event = array()) {
 	}
 
 /**
@@ -147,7 +147,7 @@ class CakeSchema extends Object {
  * @return array Set of name and tables
  * @access public
  */
-	private function load($options = array()) {
+	public function load($options = array()) {
 		if (is_string($options)) {
 			$options = array('path' => $options);
 		}
@@ -184,7 +184,7 @@ class CakeSchema extends Object {
  * @return array Array indexed by name and tables
  * @access public
  */
-	private function read($options = array()) {
+	public function read($options = array()) {
 		extract(array_merge(
 			array(
 				'connection' => $this->connection,
@@ -288,7 +288,7 @@ class CakeSchema extends Object {
  * @return mixed false or string written to file
  * @access public
  */
-	private function write($object, $options = array()) {
+	public function write($object, $options = array()) {
 		if (is_object($object)) {
 			$object = get_object_vars($object);
 			$this->_build($object);
@@ -376,7 +376,7 @@ class CakeSchema extends Object {
  * @return array Tables (that are added, dropped, or changed)
  * @access public
  */
-	private function compare($old, $new = null) {
+	public function compare($old, $new = null) {
 		if (empty($new)) {
 			$new = $this;
 		}

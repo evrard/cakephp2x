@@ -53,7 +53,7 @@ class TranslateBehavior extends ModelBehavior {
  * @return mixed
  * @access public
  */
-	private function setup(&$model, $config = array()) {
+	public function setup(&$model, $config = array()) {
 		$db = ConnectionManager::getDataSource($model->useDbConfig);
 		if (!$db->connected) {
 			trigger_error(
@@ -75,7 +75,7 @@ class TranslateBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	private function cleanup(&$model) {
+	public function cleanup(&$model) {
 		$this->unbindTranslation($model);
 		unset($this->settings[$model->alias]);
 		unset($this->runtime[$model->alias]);
@@ -88,7 +88,7 @@ class TranslateBehavior extends ModelBehavior {
  * @return array Modified query
  * @access public
  */
-	private function beforeFind(&$model, $query) {
+	public function beforeFind(&$model, $query) {
 		$locale = $this->_getLocale($model);
 		if (empty($locale)) {
 			return $query;
@@ -210,7 +210,7 @@ class TranslateBehavior extends ModelBehavior {
  * @return array Modified results
  * @access public
  */
-	private function afterFind(&$model, $results, $primary) {
+	public function afterFind(&$model, $results, $primary) {
 		$this->runtime[$model->alias]['fields'] = array();
 		$locale = $this->_getLocale($model);
 
@@ -253,7 +253,7 @@ class TranslateBehavior extends ModelBehavior {
  * @return boolean
  * @access public
  */
-	private function beforeValidate(&$model) {
+	public function beforeValidate(&$model) {
 		$locale = $this->_getLocale($model);
 		if (empty($locale)) {
 			return true;
@@ -287,7 +287,7 @@ class TranslateBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	private function afterSave(&$model, $created) {
+	public function afterSave(&$model, $created) {
 		if (!isset($this->runtime[$model->alias]['beforeSave'])) {
 			return true;
 		}
@@ -330,7 +330,7 @@ class TranslateBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	private function afterDelete(&$model) {
+	public function afterDelete(&$model) {
 		$RuntimeModel = $this->translateModel($model);
 		$conditions = array('model' => $model->alias, 'foreign_key' => $model->id);
 		$RuntimeModel->deleteAll($conditions);
@@ -342,7 +342,7 @@ class TranslateBehavior extends ModelBehavior {
  * @return mixed string or false
  * @access protected
  */
-	private function _getLocale(&$model) {
+	protected function _getLocale(&$model) {
 		if (!isset($model->locale) || is_null($model->locale)) {
 			if (!class_exists('I18n')) {
 				App::import('Core', 'i18n');
@@ -361,7 +361,7 @@ class TranslateBehavior extends ModelBehavior {
  * @return object
  * @access public
  */
-	private function &translateModel(&$model) {
+	public function &translateModel(&$model) {
 		if (!isset($this->runtime[$model->alias]['model'])) {
 			if (!isset($model->translateModel) || empty($model->translateModel)) {
 				$className = 'I18nModel';
@@ -388,7 +388,7 @@ class TranslateBehavior extends ModelBehavior {
  * @param boolean $reset
  * @return bool
  */
-	private function bindTranslation(&$model, $fields, $reset = true) {
+	public function bindTranslation(&$model, $fields, $reset = true) {
 		if (is_string($fields)) {
 			$fields = array($fields);
 		}
@@ -460,7 +460,7 @@ class TranslateBehavior extends ModelBehavior {
  * @param mixed string with field, or array(field1, field2=>AssocName, field3), or null for unbind all original translations
  * @return bool
  */
-	private function unbindTranslation(&$model, $fields = null) {
+	public function unbindTranslation(&$model, $fields = null) {
 		if (empty($fields)) {
 			return $this->unbindTranslation($model, $this->settings[$model->alias]);
 		}

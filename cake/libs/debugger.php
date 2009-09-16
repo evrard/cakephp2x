@@ -321,7 +321,7 @@ class Debugger extends Object {
  * @static
  * @link http://book.cakephp.org/view/460/Using-the-Debugger-Class
  */
-	function trace($options = array()) {
+	public function trace($options = array()) {
 		$defaults = array(
 			'depth'   => 999,
 			'format'  => self::$_outputFormat,

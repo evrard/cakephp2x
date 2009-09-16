@@ -60,7 +60,7 @@ class Dispatcher extends Object {
  * @var string
  * @access public
  */
-	private $here = false;
+	public $here = false;
 
 /**
  * Admin route (if on it)
@@ -68,7 +68,7 @@ class Dispatcher extends Object {
  * @var string
  * @access public
  */
-	private $admin = false;
+	public $admin = false;
 
 /**
  * Plugin being served (if any)
@@ -76,7 +76,7 @@ class Dispatcher extends Object {
  * @var string
  * @access public
  */
-	private $plugin = null;
+	public $plugin = null;
 
 /**
  * the params for this request
@@ -84,7 +84,7 @@ class Dispatcher extends Object {
  * @var string
  * @access public
  */
-	private $params = null;
+	public $params = null;
 
 /**
  * Constructor.
@@ -402,7 +402,7 @@ class Dispatcher extends Object {
  * @return array Restructured array
  * @access protected
  */
-	private function _restructureParams($params, $reverse = false) {
+	protected function _restructureParams($params, $reverse = false) {
 		if ($reverse === true) {
 			extract(Router::getArgs($params['action']));
 			$params = array_merge($params, array(
@@ -503,7 +503,7 @@ class Dispatcher extends Object {
  * @return string URI
  * @access public
  */
-	private function uri() {
+	public function uri() {
 		foreach (array('HTTP_X_REWRITE_URL', 'REQUEST_URI', 'argv') as $var) {
 			if ($uri = env($var)) {
 				if ($var == 'argv') {
@@ -599,7 +599,7 @@ class Dispatcher extends Object {
  * @param string $url Requested URL
  * @access public
  */
-	private function cached($url) {
+	public function cached($url) {
 		if (strpos($url, 'css/') !== false || strpos($url, 'js/') !== false || strpos($url, 'img/') !== false) {
 			if (strpos($url, 'ccss/') === 0) {
 				include WWW_ROOT . DS . Configure::read('Asset.filter.css');

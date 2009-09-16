@@ -46,7 +46,7 @@ class AclBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	private function setup(&$model, $config = array()) {
+	public function setup(&$model, $config = array()) {
 		if (is_string($config)) {
 			$config = array('type' => $config);
 		}
@@ -69,7 +69,7 @@ class AclBehavior extends ModelBehavior {
  * @return array
  * @access public
  */
-	private function node(&$model, $ref = null) {
+	public function node(&$model, $ref = null) {
 		$type = $this->__typeMaps[strtolower($this->settings[$model->name]['type'])];
 		if (empty($ref)) {
 			$ref = array('model' => $model->name, 'foreign_key' => $model->id);
@@ -84,7 +84,7 @@ class AclBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	private function afterSave(&$model, $created) {
+	public function afterSave(&$model, $created) {
 		if ($created) {
 			$type = $this->__typeMaps[strtolower($this->settings[$model->name]['type'])];
 			$parent = $model->parentNode();
@@ -109,7 +109,7 @@ class AclBehavior extends ModelBehavior {
  * @return void
  * @access public
  */
-	private function afterDelete(&$model) {
+	public function afterDelete(&$model) {
 		$type = $this->__typeMaps[strtolower($this->settings[$model->name]['type'])];
 		$node = Set::extract($this->node($model), "0.{$type}.id");
 		if (!empty($node)) {

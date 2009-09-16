@@ -440,7 +440,7 @@ class Validation extends Object {
  * @access public
  * @todo finish implementation
  */
-	private static function file($check) {
+	public function file($check) {
 		// if (is_array($check)) {
 		// 	foreach ($check as $value) {
 		// 		if (!self::file($value)) {

@@ -90,7 +90,7 @@ class DboSybase extends DboSource {
  *
  * @return boolean True if the database could be connected, else false
  */
-	private function connect() {
+	public function connect() {
 		$config = $this->config;
 		$this->connected = false;
 
@@ -111,7 +111,7 @@ class DboSybase extends DboSource {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	private function disconnect() {
+	public function disconnect() {
 		$this->connected = !@sybase_close($this->connection);
 		return !$this->connected;
 	}
@@ -132,7 +132,7 @@ class DboSybase extends DboSource {
  *
  * @return array Array of tablenames in the database
  */
-	private function listSources() {
+	public function listSources() {
 		$cache = parent::listSources();
 		if ($cache != null) {
 			return $cache;
@@ -159,7 +159,7 @@ class DboSybase extends DboSource {
  * @param string $tableName Name of database table to inspect
  * @return array Fields in table. Keys are name and type
  */
-	private function describe(&$model) {
+	public function describe(&$model) {
 
 		$cache = parent::describe($model);
 		if ($cache != null) {
@@ -194,7 +194,7 @@ class DboSybase extends DboSource {
  * @param boolean $safe Whether or not numeric data should be handled automagically if no column data is provided
  * @return string Quoted and escaped data
  */
-	private function value($data, $column = null, $safe = false) {
+	public function value($data, $column = null, $safe = false) {
 		$parent = parent::value($data, $column, $safe);
 
 		if ($parent != null) {
@@ -228,7 +228,7 @@ class DboSybase extends DboSource {
  * @return boolean True on success, false on fail
  * (i.e. if the database/model does not support transactions).
  */
-	private function begin(&$model) {
+	public function begin(&$model) {
 		if (parent::begin($model)) {
 			if ($this->execute('BEGIN TRAN')) {
 				$this->_transactionStarted = true;
@@ -246,7 +246,7 @@ class DboSybase extends DboSource {
  * (i.e. if the database/model does not support transactions,
  * or a transaction has not started).
  */
-	private function commit(&$model) {
+	public function commit(&$model) {
 		if (parent::commit($model)) {
 			$this->_transactionStarted = false;
 			return $this->execute('COMMIT TRAN');
@@ -262,7 +262,7 @@ class DboSybase extends DboSource {
  * (i.e. if the database/model does not support transactions,
  * or a transaction has not started).
  */
-	private function rollback(&$model) {
+	public function rollback(&$model) {
 		if (parent::rollback($model)) {
 			return $this->execute('ROLLBACK TRAN');
 		}
@@ -275,7 +275,7 @@ class DboSybase extends DboSource {
  * @todo not implemented
  * @return string Error message with error number
  */
-	private function lastError() {
+	public function lastError() {
 		return null;
 	}
 
@@ -285,7 +285,7 @@ class DboSybase extends DboSource {
  *
  * @return integer Number of affected rows
  */
-	private function lastAffected() {
+	public function lastAffected() {
 		if ($this->_result) {
 			return sybase_affected_rows($this->connection);
 		}
@@ -298,7 +298,7 @@ class DboSybase extends DboSource {
  *
  * @return integer Number of rows in resultset
  */
-	private function lastNumRows() {
+	public function lastNumRows() {
 		if ($this->hasResult()) {
 			return @sybase_num_rows($this->_result);
 		}
@@ -311,7 +311,7 @@ class DboSybase extends DboSource {
  * @param unknown_type $source
  * @return in
  */
-	private function lastInsertId($source = null) {
+	public function lastInsertId($source = null) {
 		$result=$this->fetchRow('SELECT @@IDENTITY');
 		return $result[0];
 	}
@@ -322,7 +322,7 @@ class DboSybase extends DboSource {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return string Abstract column type (i.e. "string")
  */
-	private function column($real) {
+	public function column($real) {
 		if (is_array($real)) {
 			$col = $real['name'];
 			if (isset($real['limit']))
@@ -360,7 +360,7 @@ class DboSybase extends DboSource {
  *
  * @param unknown_type $results
  */
-	private function resultSet(&$results) {
+	public function resultSet(&$results) {
 		$this->results =& $results;
 		$this->map = array();
 		$num_fields = sybase_num_fields($results);
@@ -384,7 +384,7 @@ class DboSybase extends DboSource {
  *
  * @return unknown
  */
-	private function fetchResult() {
+	public function fetchResult() {
 		if ($row = sybase_fetch_row($this->results)) {
 			$resultRow = array();
 			$i = 0;

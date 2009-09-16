@@ -102,7 +102,7 @@ class DboPostgres extends DboSource {
  *
  * @return True if successfully connected.
  */
-	private function connect() {
+	protected function connect() {
 		$config = $this->config;
 		$conn  = "host='{$config['host']}' port='{$config['port']}' dbname='{$config['database']}' ";
 		$conn .= "user='{$config['login']}' password='{$config['password']}'";
@@ -129,7 +129,7 @@ class DboPostgres extends DboSource {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	private function disconnect() {
+	protected function disconnect() {
 		if ($this->hasResult()) {
 			pg_free_result($this->_result);
 		}
@@ -147,7 +147,7 @@ class DboPostgres extends DboSource {
  * @param string $sql SQL statement
  * @return resource Result resource identifier
  */
-	private function _execute($sql) {
+	protected function _execute($sql) {
 		return pg_query($this->connection, $sql);
 	}
 
@@ -156,7 +156,7 @@ class DboPostgres extends DboSource {
  *
  * @return array Array of tablenames in the database
  */
-	private function listSources() {
+	protected function listSources() {
 		$cache = parent::listSources();
 
 		if ($cache != null) {
@@ -187,7 +187,7 @@ class DboPostgres extends DboSource {
  * @param string $tableName Name of database table to inspect
  * @return array Fields in table. Keys are name and type
  */
-	private function &describe(&$model) {
+	protected function &describe(&$model) {
 		$fields = parent::describe($model);
 		$table = $this->fullTableName($model, false);
 		$this->_sequenceMap[$table] = array();
@@ -263,7 +263,7 @@ class DboPostgres extends DboSource {
  * @return string Quoted and escaped
  * @todo Add logic that formats/escapes data based on column type
  */
-	private function value($data, $column = null, $read = true) {
+	protected function value($data, $column = null, $read = true) {
 
 		$parent = parent::value($data, $column);
 		if ($parent != null) {
@@ -310,7 +310,7 @@ class DboPostgres extends DboSource {
  *
  * @return string Error message
  */
-	private function lastError() {
+	protected function lastError() {
 		$error = pg_last_error($this->connection);
 		return ($error) ? $error : null;
 	}
@@ -320,7 +320,7 @@ class DboPostgres extends DboSource {
  *
  * @return integer Number of affected rows
  */
-	private function lastAffected() {
+	protected function lastAffected() {
 		return ($this->_result) ? pg_affected_rows($this->_result) : false;
 	}
 
@@ -330,7 +330,7 @@ class DboPostgres extends DboSource {
  *
  * @return integer Number of rows in resultset
  */
-	private function lastNumRows() {
+	protected function lastNumRows() {
 		return ($this->_result) ? pg_num_rows($this->_result) : false;
 	}
 
@@ -341,7 +341,7 @@ class DboPostgres extends DboSource {
  * @param string $field Name of the ID database field. Defaults to "id"
  * @return integer
  */
-	private function lastInsertId($source, $field = 'id') {
+	protected function lastInsertId($source, $field = 'id') {
 		$seq = $this->getSequence($source, $field);
 		$data = $this->fetchRow("SELECT currval('{$seq}') as max");
 		return $data[0]['max'];
@@ -354,7 +354,7 @@ class DboPostgres extends DboSource {
  * @param string $field Name of the ID database field. Defaults to "id"
  * @return string The associated sequence name from the sequence map, defaults to "{$table}_{$field}_seq"
  */
-	private function getSequence($table, $field = 'id') {
+	protected function getSequence($table, $field = 'id') {
 		if (is_object($table)) {
 			$table = $this->fullTableName($table, false);
 		}
@@ -374,7 +374,7 @@ class DboPostgres extends DboSource {
  * @return boolean	SQL TRUNCATE TABLE statement, false if not applicable.
  * @access public
  */
-	private function truncate($table, $reset = 0) {
+	protected function truncate($table, $reset = 0) {
 		if (parent::truncate($table)) {
 			$table = $this->fullTableName($table, false);
 			if (isset($this->_sequenceMap[$table]) && $reset !== 1) {
@@ -397,7 +397,7 @@ class DboPostgres extends DboSource {
  * @param string $data
  * @return string SQL field
  */
-	private function name($data) {
+	protected function name($data) {
 		if (is_string($data)) {
 			$data = str_replace('"__"', '__', $data);
 		}
@@ -412,7 +412,7 @@ class DboPostgres extends DboSource {
  * @param mixed $fields
  * @return array
  */
-	private function fields(&$model, $alias = null, $fields = array(), $quote = true) {
+	protected function fields(&$model, $alias = null, $fields = array(), $quote = true) {
 		if (empty($alias)) {
 			$alias = $model->alias;
 		}
@@ -450,7 +450,7 @@ class DboPostgres extends DboSource {
  * @param string $model Name of model to inspect
  * @return array Fields in table. Keys are column and unique
  */
-	private function index($model) {
+	protected function index($model) {
 		$index = array();
 		$table = $this->fullTableName($model, false);
 		if ($table) {
@@ -491,7 +491,7 @@ class DboPostgres extends DboSource {
  * @access public
  * @return array
  */
-	private function alterSchema($compare, $table = null) {
+	protected function alterSchema($compare, $table = null) {
 		if (!is_array($compare)) {
 			return false;
 		}
@@ -563,7 +563,7 @@ class DboPostgres extends DboSource {
  * @param array $new Indexes to add and drop
  * @return array Index alteration statements
  */
-	private function _alterIndexes($table, $indexes) {
+	protected function _alterIndexes($table, $indexes) {
 		$alter = array();
 		if (isset($indexes['drop'])) {
 			foreach($indexes['drop'] as $name => $value) {
@@ -605,7 +605,7 @@ class DboPostgres extends DboSource {
  * @param integer $offset Offset from which to start results
  * @return string SQL limit/offset statement
  */
-	private function limit($limit, $offset = null) {
+	protected function limit($limit, $offset = null) {
 		if ($limit) {
 			$rt = '';
 			if (!strpos(strtolower($limit), 'limit') || strpos(strtolower($limit), 'limit') === 0) {
@@ -628,7 +628,7 @@ class DboPostgres extends DboSource {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return string Abstract column type (i.e. "string")
  */
-	private function column($real) {
+	protected function column($real) {
 		if (is_array($real)) {
 			$col = $real['name'];
 			if (isset($real['limit'])) {
@@ -677,7 +677,7 @@ class DboPostgres extends DboSource {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return int An integer representing the length of the column
  */
-	private function length($real) {
+	protected function length($real) {
 		$col = str_replace(array(')', 'unsigned'), '', $real);
 		$limit = null;
 
@@ -698,7 +698,7 @@ class DboPostgres extends DboSource {
  *
  * @param unknown_type $results
  */
-	private function resultSet(&$results) {
+	protected function resultSet(&$results) {
 		$this->results =& $results;
 		$this->map = array();
 		$num_fields = pg_num_fields($results);
@@ -723,7 +723,7 @@ class DboPostgres extends DboSource {
  *
  * @return unknown
  */
-	private function fetchResult() {
+	protected function fetchResult() {
 		if ($row = pg_fetch_row($this->results)) {
 			$resultRow = array();
 
@@ -757,7 +757,7 @@ class DboPostgres extends DboSource {
  * @param boolean $quote	True to quote value, false otherwise
  * @return mixed Converted boolean value
  */
-	private function boolean($data, $quote = true) {
+	protected function boolean($data, $quote = true) {
 		switch (true) {
 			case ($data === true || $data === false):
 				return $data;
@@ -779,7 +779,7 @@ class DboPostgres extends DboSource {
  * @param mixed $enc Database encoding
  * @return boolean True on success, false on failure
  */
-	private function setEncoding($enc) {
+	protected function setEncoding($enc) {
 		return pg_set_client_encoding($this->connection, $enc) == 0;
 	}
 
@@ -788,7 +788,7 @@ class DboPostgres extends DboSource {
  *
  * @return string The database encoding
  */
-	private function getEncoding() {
+	protected function getEncoding() {
 		return pg_client_encoding($this->connection);
 	}
 
@@ -800,7 +800,7 @@ class DboPostgres extends DboSource {
  *                      where options can be 'default', 'length', or 'key'.
  * @return string
  */
-	private function buildColumn($column) {
+	protected function buildColumn($column) {
 		$col = $this->columns[$column['type']];
 		if (!isset($col['length']) && !isset($col['limit'])) {
 			unset($column['length']);
@@ -833,7 +833,7 @@ class DboPostgres extends DboSource {
  * @param string $table
  * @return string
  */
-	private function buildIndex($indexes, $table = null) {
+	protected function buildIndex($indexes, $table = null) {
 		$join = array();
 		if (!is_array($indexes)) {
 			return array();
@@ -865,7 +865,7 @@ class DboPostgres extends DboSource {
  * @param array $data
  * @return string
  */
-	private function renderStatement($type, $data) {
+	protected function renderStatement($type, $data) {
 		switch (strtolower($type)) {
 			case 'schema':
 				extract($data);

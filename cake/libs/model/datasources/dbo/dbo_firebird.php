@@ -130,7 +130,7 @@ class DboFirebird extends DboSource {
  *
  * @return boolean True if the database could be connected, else false
  */
-	private function connect() {
+	public function connect() {
 		$config = $this->config;
 		$connect = $config['connect'];
 
@@ -144,7 +144,7 @@ class DboFirebird extends DboSource {
  *
  * @return boolean True if the database could be disconnected, else false
  */
-	private function disconnect() {
+	public function disconnect() {
 		$this->connected = false;
 		return @ibase_close($this->connection);
 	}
@@ -156,7 +156,7 @@ class DboFirebird extends DboSource {
  * @return resource Result resource identifier
  * @access protected
  */
-	private function _execute($sql) {
+	public function _execute($sql) {
 		return @ibase_query($this->connection,	$sql);
 	}
 
@@ -165,7 +165,7 @@ class DboFirebird extends DboSource {
  *
  * @return array The fetched row as an array
  */
-	private function fetchRow() {
+	public function fetchRow() {
 		if ($this->hasResult()) {
 			$this->resultSet($this->_result);
 			$resultRow = $this->fetchResult();
@@ -180,7 +180,7 @@ class DboFirebird extends DboSource {
  *
  * @return array Array of tablenames in the database
  */
-	private function listSources() {
+	public function listSources() {
 		$cache = parent::listSources();
 
 		if ($cache != null) {
@@ -205,7 +205,7 @@ class DboFirebird extends DboSource {
  * @param Model $model Model object to describe
  * @return array Fields in table. Keys are name and type
  */
-	private function describe(&$model) {
+	public function describe(&$model) {
 		$this->modeltmp[$model->table] = $model->alias;
 		$cache = parent::describe($model);
 
@@ -236,7 +236,7 @@ class DboFirebird extends DboSource {
  * @param string $data Name (table.field) to be prepared for use in an SQL statement
  * @return string Quoted for Firebird
  */
-	private function name($data) {
+	public function name($data) {
 		if ($data == '*') {
 				return '*';
 		}
@@ -261,7 +261,7 @@ class DboFirebird extends DboSource {
  * @param boolean $safe Whether or not numeric data should be handled automagically if no column data is provided
  * @return string Quoted and escaped data
  */
-	private function value($data, $column = null, $safe = false) {
+	public function value($data, $column = null, $safe = false) {
 		$parent = parent::value($data, $column, $safe);
 
 		if ($parent != null) {
@@ -297,7 +297,7 @@ class DboFirebird extends DboSource {
  * @param array $values
  * @return array
  */
-	private function update(&$model, $fields = array(), $values = array()) {
+	public function update(&$model, $fields = array(), $values = array()) {
 		foreach ($fields as $i => $field) {
 			if ($field == $model->primaryKey) {
 				unset ($fields[$i]);
@@ -313,7 +313,7 @@ class DboFirebird extends DboSource {
  *
  * @return string Error message with error number
  */
-	private function lastError() {
+	public function lastError() {
 		$error = ibase_errmsg();
 
 		if ($error !== false) {
@@ -328,7 +328,7 @@ class DboFirebird extends DboSource {
  *
  * @return integer Number of affected rows
  */
-	private function lastAffected() {
+	public function lastAffected() {
 		if ($this->_result) {
 			return ibase_affected_rows($this->connection);
 		}
@@ -341,7 +341,7 @@ class DboFirebird extends DboSource {
  *
  * @return integer Number of rows in resultset
  */
-	private function lastNumRows() {
+	public function lastNumRows() {
 		return $this->_result? /*ibase_affected_rows($this->_result)*/ 1: false;
 	}
 
@@ -351,7 +351,7 @@ class DboFirebird extends DboSource {
  * @param unknown_type $source
  * @return in
  */
-	private function lastInsertId($source = null, $field = 'id') {
+	public function lastInsertId($source = null, $field = 'id') {
 		$query = "SELECT RDB\$TRIGGER_SOURCE
 		FROM RDB\$TRIGGERS WHERE RDB\$RELATION_NAME = '".  strtoupper($source) .  "' AND
 		RDB\$SYSTEM_FLAG IS NULL AND  RDB\$TRIGGER_TYPE = 1 ";
@@ -391,7 +391,7 @@ class DboFirebird extends DboSource {
  * @param integer $offset Offset from which to start results
  * @return string SQL limit/offset statement
  */
-	private function limit($limit, $offset = null) {
+	public function limit($limit, $offset = null) {
 		if ($limit) {
 			$rt = '';
 
@@ -414,7 +414,7 @@ class DboFirebird extends DboSource {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return string Abstract column type (i.e. "string")
  */
-	private function column($real) {
+	public function column($real) {
 		if (is_array($real)) {
 			$col = $real['name'];
 
@@ -465,7 +465,7 @@ class DboFirebird extends DboSource {
  *
  * @param unknown_type $results
  */
-	private function resultSet(&$results) {
+	public function resultSet(&$results) {
 		$this->results =& $results;
 		$this->map = array();
 		$num_fields = ibase_num_fields($results);
@@ -490,7 +490,7 @@ class DboFirebird extends DboSource {
  * @param array $data Query data
  * @return string
  */
-	private function renderStatement($type, $data) {
+	public function renderStatement($type, $data) {
 		extract($data);
 
 		if (strtolower($type) == 'select') {
@@ -514,7 +514,7 @@ class DboFirebird extends DboSource {
  *
  * @return unknown
  */
-	private function fetchResult() {
+	public function fetchResult() {
 		if ($row = ibase_fetch_row($this->results, IBASE_TEXT)) {
 			$resultRow = array();
 			$i = 0;

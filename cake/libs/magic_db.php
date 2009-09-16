@@ -44,7 +44,7 @@ class MagicDb extends Object {
  * @return boolean Returns false if reading / validation failed or true on success.
  * @access private
  **/
-	private function read($magicDb = null) {
+	public function read($magicDb = null) {
 		if (!is_string($magicDb) && !is_array($magicDb)) {
 			return false;
 		}
@@ -78,7 +78,7 @@ class MagicDb extends Object {
  * @return array A parsed MagicDb array or an empty array if the $data param was invalid. Returns the db property if $data is not set.
  * @access public
  */
-	private function toArray($data = null) {
+	public function toArray($data = null) {
 		if (is_array($data)) {
 			return $data;
 		}
@@ -132,7 +132,7 @@ class MagicDb extends Object {
  * @return boolean True if the $magicDb / instance db validates, false if not
  * @access public
  */
-	private function validates($magicDb = null) {
+	public function validates($magicDb = null) {
 		if (is_null($magicDb)) {
 			$magicDb = $this->db;
 		} elseif (!is_array($magicDb)) {
@@ -150,7 +150,7 @@ class MagicDb extends Object {
  * @return mixed
  * @access public
  */
-	private function analyze($file, $options = array()) {
+	public function analyze($file, $options = array()) {
 		if (!is_string($file)) {
 			return false;
 		}
@@ -216,7 +216,7 @@ class MagicFileResource extends Object{
  * @return void
  * @access public
  */
-	private function test($magic) {
+	public function test($magic) {
 		$offset = null;
 		$type = null;
 		$expected = null;
@@ -245,7 +245,7 @@ class MagicFileResource extends Object{
  * @return void
  * @access public
  */
-	private function read($length = null) {
+	public function read($length = null) {
 		if (!is_object($this->resource)) {
 			return substr($this->resource, $this->offset, $length);
 		}
@@ -260,7 +260,7 @@ class MagicFileResource extends Object{
  * @return void
  * @access public
  */
-	private function extract($offset, $type, $expected) {
+	public function extract($offset, $type, $expected) {
 		switch ($type) {
 			case 'string':
 				$this->offset($offset);
@@ -280,7 +280,7 @@ class MagicFileResource extends Object{
  * @return void
  * @access public
  */
-	private function offset($offset = null) {
+	public function offset($offset = null) {
 		if (is_null($offset)) {
 			if (!is_object($this->resource)) {
 				return $this->offset;

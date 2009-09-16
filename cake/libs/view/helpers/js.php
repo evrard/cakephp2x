@@ -61,7 +61,7 @@ class JsHelper extends Object {
 		parent::__construct();
 	}
 
-	private function call__($method, $params) {
+	public function call__($method, $params) {
 		if (is_object($this->hook) && method_exists($this->hook, $method)) {
 			$this->hook->dispatchMethod($method . '_', $params);
 		}
@@ -70,11 +70,11 @@ class JsHelper extends Object {
 		}
 	}
 
-	private function alert_($message) {
+	public function alert_($message) {
 		return 'alert("' . $this->escape($message) . '");';
 	}
 
-	private function if_($if, $then, $else = null, $elseIf = array()) {
+	public function if_($if, $then, $else = null, $elseIf = array()) {
 		$len = strlen($if) - 1;
 		if ($if{$len} == ';') {
 			$if{$len} = null;
@@ -93,11 +93,11 @@ class JsHelper extends Object {
 		return $out;
 	}
 
-	private function confirm_($message) {
+	public function confirm_($message) {
 		return 'confirm("' . $this->escape($message) . '");';
 	}
 
-	private function prompt_($message, $default = '') {
+	public function prompt_($message, $default = '') {
 		return 'prompt("' . $this->escape($message) . '", "' . $this->escape($default) . '");';
 	}
 
@@ -107,7 +107,7 @@ class JsHelper extends Object {
  *
  * @return string
  */
-	private function tryThese_($expr1, $expr2, $expr3) {
+	public function tryThese_($expr1, $expr2, $expr3) {
 	}
 
 /**
@@ -117,7 +117,7 @@ class JsHelper extends Object {
  * @param  array  $options
  * @return string
  */
-	private function load_($url = null, $options = array()) {
+	public function load_($url = null, $options = array()) {
 
 		if (isset($options['update'])) {
 			if (!is_array($options['update'])) {
@@ -163,7 +163,7 @@ class JsHelper extends Object {
  * @param  array  $options
  * @return string
  */
-	private function redirect_($url = null) {
+	public function redirect_($url = null) {
 		return 'window.location = "' . Router::url($url) . '";';
 	}
 
@@ -180,20 +180,20 @@ class JsHelper extends Object {
  * @param  string $script String that needs to get escaped.
  * @return string Escaped string.
  */
-	private function escape($string) {
+	public function escape($string) {
 		$escape = array("\r\n" => '\n', "\r" => '\n', "\n" => '\n', '"' => '\"', "'" => "\\'");
 		return str_replace(array_keys($escape), array_values($escape), $string);
 	}
 
-	private function get__($name) {
+	public function get__($name) {
 		return $this->__object($name, 'id');
 	}
 
-	private function select($pattern) {
+	public function select($pattern) {
 		return $this->__object($pattern, 'pattern');
 	}
 
-	private function real($var) {
+	public function real($var) {
 		return $this->__object($var, 'real');
 	}
 
@@ -218,7 +218,7 @@ class JsHelper extends Object {
  * @param string $q The type of quote to use
  * @return string A JSON code block
  */
-	private function object($data = array(), $block = false, $prefix = '', $postfix = '', $stringKeys = array(), $quoteKeys = true, $q = "\"") {
+	public function object($data = array(), $block = false, $prefix = '', $postfix = '', $stringKeys = array(), $quoteKeys = true, $q = "\"") {
 		if (is_object($data)) {
 			$data = get_object_vars($data);
 		}
@@ -290,7 +290,7 @@ class JsHelperObject {
 		}
 	}
 
-	private function toString() {
+	public function toString() {
 		return $this->__toString();
 	}
 
@@ -298,7 +298,7 @@ class JsHelperObject {
 		return $this->literal;
 	}
 
-	private function ref($ref = null) {
+	public function ref($ref = null) {
 		if ($ref == null) {
 			foreach (array('id', 'pattern', 'real') as $ref) {
 				if ($this->{$ref} !== null) {
@@ -311,7 +311,7 @@ class JsHelperObject {
 		return null;
 	}
 
-	private function literal($append = null) {
+	public function literal($append = null) {
 		if (!empty($this->id)) {
 			$data = '$("' . $this->id . '")';
 		}
@@ -437,7 +437,7 @@ class JsHelperObject {
 		return '$$("' . $this->pattern . '").' . $method . '(function(item) {' . $data . '});';
 	}
 
-	private function setParent(&$parent) {
+	public function setParent(&$parent) {
 		$this->__parent = $parent;
 	}
 

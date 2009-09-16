@@ -165,7 +165,7 @@ class CookieComponent extends Object {
  * @param object $controller A reference to the instantiating controller object
  * @access public
  */
-	private function initialize(&$controller, $settings) {
+	public function initialize(&$controller, $settings) {
 		$this->key = Configure::read('Security.salt');
 		$this->_set($settings);
 	}
@@ -175,7 +175,7 @@ class CookieComponent extends Object {
  *
  * @access public
  */
-	private function startup() {
+	public function startup() {
 		$this->__expire($this->time);
 
 		if (isset($_COOKIE[$this->name])) {
@@ -201,7 +201,7 @@ class CookieComponent extends Object {
  * @param string $expires Can be either Unix timestamp, or date string
  * @access public
  */
-	private function write($key, $value = null, $encrypt = true, $expires = null) {
+	public function write($key, $value = null, $encrypt = true, $expires = null) {
 		if (is_null($encrypt)) {
 			$encrypt = true;
 		}
@@ -245,7 +245,7 @@ class CookieComponent extends Object {
  * @return string or null, value for specified key
  * @access public
  */
-	private function read($key = null) {
+	public function read($key = null) {
 		if (empty($this->__values) && isset($_COOKIE[$this->name])) {
 			$this->__values = $this->__decrypt($_COOKIE[$this->name]);
 		}
@@ -284,7 +284,7 @@ class CookieComponent extends Object {
  * @return void
  * @access public
  */
-	private function del($key) {
+	public function del($key) {
 		if (empty($this->__values)) {
 			$this->read();
 		}
@@ -316,7 +316,7 @@ class CookieComponent extends Object {
  * @return void
  * @access public
  */
-	private function destroy() {
+	public function destroy() {
 		if (isset($_COOKIE[$this->name])) {
 			$this->__values = $this->__decrypt($_COOKIE[$this->name]);
 		}
@@ -340,7 +340,7 @@ class CookieComponent extends Object {
  * @access public
  * @todo NOT IMPLEMENTED
  */
-	private function type($type = 'cipher') {
+	public function type($type = 'cipher') {
 		$this->__type = 'cipher';
 	}
 

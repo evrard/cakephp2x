@@ -54,7 +54,7 @@ class Object {
  * @return string The name of this class
  * @access public
  */
-	private function toString() {
+	public function toString() {
 		$class = get_class($this);
 		return $class;
 	}
@@ -67,7 +67,7 @@ class Object {
  * @return mixed Success (true/false) or contents if 'return' is set in $extra
  * @access public
  */
-	 public function requestAction($url, $extra = array()) {
+	public function requestAction($url, $extra = array()) {
 		if (empty($url)) {
 			return false;
 		}
@@ -235,7 +235,7 @@ class Object {
  * @return boolean true on save, throws error if file can not be created
  * @access protected
  */
-	private function _savePersistent($name, &$object) {
+	protected function _savePersistent($name, &$object) {
 		$file = 'persistent' . DS . strtolower($name) . '.php';
 		$objectArray = array(&$object);
 		$data = str_replace('\\', '\\\\', serialize($objectArray));

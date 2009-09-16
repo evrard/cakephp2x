@@ -61,7 +61,7 @@ class ModelBehavior extends Object {
  * @param array $config Configuration settings for $model
  * @access public
  */
-	private function setup(&$model, $config = array()) { }
+	public function setup(&$model, $config = array()) { }
 
 /**
  * Clean up any initialization this behavior has done on a model.  Called when a behavior is dynamically
@@ -71,7 +71,7 @@ class ModelBehavior extends Object {
  * @access public
  * @see BehaviorCollection::detach()
  */
-	private function cleanup(&$model) {
+	public function cleanup(&$model) {
 		if (isset($this->settings[$model->alias])) {
 			unset($this->settings[$model->alias]);
 		}
@@ -85,7 +85,7 @@ class ModelBehavior extends Object {
  * @return boolean True if the operation should continue, false if it should abort
  * @access public
  */
-	private function beforeFind(&$model, $query) { }
+	public function beforeFind(&$model, $query) { }
 
 /**
  * After find callback. Can be used to modify any results returned by find and findAll.
@@ -96,7 +96,7 @@ class ModelBehavior extends Object {
  * @return mixed Result of the find operation
  * @access public
  */
-	private function afterFind(&$model, $results, $primary) { }
+	public function afterFind(&$model, $results, $primary) { }
 
 /**
  * Before validate callback
@@ -105,7 +105,7 @@ class ModelBehavior extends Object {
  * @return boolean True if validate operation should continue, false to abort
  * @access public
  */
-	private function beforeValidate(&$model) { }
+	public function beforeValidate(&$model) { }
 
 /**
  * Before save callback
@@ -114,7 +114,7 @@ class ModelBehavior extends Object {
  * @return boolean True if the operation should continue, false if it should abort
  * @access public
  */
-	private function beforeSave(&$model) { }
+	public function beforeSave(&$model) { }
 
 /**
  * After save callback
@@ -123,7 +123,7 @@ class ModelBehavior extends Object {
  * @param boolean $created True if this save created a new record
  * @access public
  */
-	private function afterSave(&$model, $created) { }
+	public function afterSave(&$model, $created) { }
 
 /**
  * Before delete callback
@@ -133,7 +133,7 @@ class ModelBehavior extends Object {
  * @return boolean True if the operation should continue, false if it should abort
  * @access public
  */
-	private function beforeDelete(&$model, $cascade = true) { }
+	public function beforeDelete(&$model, $cascade = true) { }
 
 /**
  * After delete callback
@@ -141,7 +141,7 @@ class ModelBehavior extends Object {
  * @param object $model Model using this behavior
  * @access public
  */
-	private function afterDelete(&$model) { }
+	public function afterDelete(&$model) { }
 
 /**
  * DataSource error callback
@@ -150,7 +150,7 @@ class ModelBehavior extends Object {
  * @param string $error Error generated in DataSource
  * @access public
  */
-	private function onError(&$model, $error) { }
+	public function onError(&$model, $error) { }
 
 /**
  * Overrides Object::dispatchMethod to account for PHP4's broken reference support
@@ -194,7 +194,7 @@ class ModelBehavior extends Object {
  * @access protected
  * @return void
  */
-	private function _addToWhitelist(&$model, $field) {
+	protected function _addToWhitelist(&$model, $field) {
 		if (is_array($field)) {
 			foreach ($field as $f) {
 				$this->_addToWhitelist($model, $f);
@@ -349,7 +349,7 @@ class BehaviorCollection extends Object {
  * @return void
  * @access public
  */
-	private function detach($name) {
+	public function detach($name) {
 		if (isset($this->{$name})) {
 			$this->{$name}->cleanup(ClassRegistry::getObject($this->modelName));
 			unset($this->{$name});
@@ -369,7 +369,7 @@ class BehaviorCollection extends Object {
  * @return void
  * @access public
  */
-	private function enable($name) {
+	public function enable($name) {
 		$this->_disabled = array_diff($this->_disabled, (array)$name);
 	}
 
@@ -381,7 +381,7 @@ class BehaviorCollection extends Object {
  * @return void
  * @access public
  */
-	private function disable($name) {
+	public function disable($name) {
 		foreach ((array)$name as $behavior) {
 			if (in_array($behavior, $this->_attached) && !in_array($behavior, $this->_disabled)) {
 				$this->_disabled[] = $behavior;
@@ -398,7 +398,7 @@ class BehaviorCollection extends Object {
  *   Otherwise, returns an array of all enabled behaviors.
  * @access public
  */
-	private function enabled($name = null) {
+	public function enabled($name = null) {
 		if (!empty($name)) {
 			return (in_array($name, $this->_attached) && !in_array($name, $this->_disabled));
 		}

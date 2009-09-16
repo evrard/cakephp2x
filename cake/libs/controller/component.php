@@ -142,7 +142,7 @@ class Component extends Object {
  * @return void
  * @access public
  */
-	private function beforeRedirect(&$controller, $url, $status = null, $exit = true) {
+	public function beforeRedirect(&$controller, $url, $status = null, $exit = true) {
 		$response = array();
 
 		foreach ($this->_primary as $name) {
@@ -183,7 +183,7 @@ class Component extends Object {
  * @return void
  * @access protected
  */
-	private function _loadComponents(&$object, $parent = null) {
+	protected function _loadComponents(&$object, $parent = null) {
 		$base = $this->__controllerVars['base'];
 		$normal = Set::normalize($object->components);
 		if ($parent == null) {
