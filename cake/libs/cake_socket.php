@@ -36,7 +36,7 @@ class CakeSocket extends Object {
  * @var string
  * @access public
  */
-	private $description = 'Remote DataSource Network Socket Interface';
+	public $description = 'Remote DataSource Network Socket Interface';
 
 /**
  * Base configuration settings for the socket connection

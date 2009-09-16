@@ -68,7 +68,7 @@ class Model extends Overloadable {
  * @access public
  * @link http://book.cakephp.org/view/438/displayField
  */
-	private $displayField = null;
+	public $displayField = null;
 
 /**
  * Value of the primary key ID of the record that this model is currently pointing to.
@@ -174,7 +174,7 @@ class Model extends Overloadable {
  * @var boolean
  * @access public
  */
-	private $logTransactions = false;
+	public $logTransactions = false;
 
 /**
  * Whether or not to enable transactions for this model (i.e. BEGIN/COMMIT/ROLLBACK statements)
@@ -182,7 +182,7 @@ class Model extends Overloadable {
  * @var boolean
  * @access public
  */
-	private $transactional = false;
+	public $transactional = false;
 
 /**
  * Whether or not to cache queries for this model.  This enables in-memory
@@ -240,7 +240,7 @@ class Model extends Overloadable {
  * @access public
  * @link http://book.cakephp.org/view/90/Using-Behaviors
  */
-	private $actsAs = null;
+	public $actsAs = null;
 
 /**
  * Holds the Behavior objects currently bound to this model.
@@ -264,7 +264,7 @@ class Model extends Overloadable {
  * @var boolean
  * @access public
  */
-	private $cacheSources = true;
+	public $cacheSources = true;
 
 /**
  * Type of find query currently executing.
@@ -272,7 +272,7 @@ class Model extends Overloadable {
  * @var string
  * @access public
  */
-	private $findQueryType = null;
+	public $findQueryType = null;
 
 /**
  * Number of associations to recurse through during find calls. Fetches only
@@ -294,7 +294,7 @@ class Model extends Overloadable {
  * @access public
  * @link http://book.cakephp.org/view/440/order
  */
-	private $order = null;
+	public $order = null;
 
 /**
  * Whether or not the model record exists, set by Model::exists().
@@ -302,7 +302,7 @@ class Model extends Overloadable {
  * @var bool
  * @access private
  */
-	private $__exists = null;
+	public $__exists = null;
 
 /**
  * Default list of association keys.
@@ -310,7 +310,7 @@ class Model extends Overloadable {
  * @var array
  * @access private
  */
-	private $__associationKeys = array(
+	public $__associationKeys = array(
 		'belongsTo' => array('className', 'foreignKey', 'conditions', 'fields', 'order', 'counterCache'),
 		'hasOne' => array('className', 'foreignKey','conditions', 'fields','order', 'dependent'),
 		'hasMany' => array('className', 'foreignKey', 'conditions', 'fields', 'order', 'limit', 'offset', 'dependent', 'exclusive', 'finderQuery', 'counterQuery'),
@@ -331,7 +331,7 @@ class Model extends Overloadable {
  * @var array
  * @access private
  */
-	private $__backAssociation = array();
+	public $__backAssociation = array();
 
 /**
  * The ID of the model record that was last inserted.
@@ -339,7 +339,7 @@ class Model extends Overloadable {
  * @var integer
  * @access private
  */
-	private $__insertID = null;
+	public $__insertID = null;
 
 /**
  * The number of records returned by the last query.
@@ -347,7 +347,7 @@ class Model extends Overloadable {
  * @var integer
  * @access private
  */
-	private $__numRows = null;
+	public $__numRows = null;
 
 /**
  * The number of records affected by the last query.
@@ -355,7 +355,7 @@ class Model extends Overloadable {
  * @var integer
  * @access private
  */
-	private $__affectedRows = null;
+	public $__affectedRows = null;
 
 /**
  * List of valid finder method options, supplied as the first parameter to find().
@@ -363,7 +363,7 @@ class Model extends Overloadable {
  * @var array
  * @access protected
  */
-	private $_findMethods = array(
+	public $_findMethods = array(
 		'all' => true, 'first' => true, 'count' => true,
 		'neighbors' => true, 'list' => true, 'threaded' => true
 	);
@@ -838,7 +838,7 @@ class Model extends Overloadable {
  *               or false if none exist.
  * @access public
  */
-	protected function hasField($name) {
+	public function hasField($name) {
 		if (is_array($name)) {
 			foreach ($name as $n) {
 				if ($this->hasField($n)) {
@@ -2776,7 +2776,7 @@ class Model extends Overloadable {
  * @return array Set of object variable names this model has
  * @access protected
  */
-	protected function __sleep() {
+	private function __sleep() {
 		$return = array_keys(get_object_vars($this));
 		return $return;
 	}
@@ -2787,7 +2787,7 @@ class Model extends Overloadable {
  * @access protected
  * @todo
  */
-	protected function __wakeup() {
+	private function __wakeup() {
 	}
 }
 final class ModelAssociation {
@@ -2870,7 +2870,7 @@ final class ModelAssociation {
  * 	examples: var $hasMany = array('Assoc' => array('className' => 'ModelName'));
  * 					usage: $this->Assoc->modelMethods();
  *
- * 				private $hasMany = array('ModelName');
+ * 				public $hasMany = array('ModelName');
  * 					usage: $this->ModelName->modelMethods();
  * @return void
  * @access private

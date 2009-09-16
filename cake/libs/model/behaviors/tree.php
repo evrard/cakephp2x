@@ -37,7 +37,7 @@ class TreeBehavior extends ModelBehavior {
  *
  * @var array
  */
-	private $errors = array();
+	public $errors = array();
 
 /**
  * Defaults
@@ -45,7 +45,7 @@ class TreeBehavior extends ModelBehavior {
  * @var array
  * @access protected
  */
-	private $_defaults = array(
+	protected $_defaults = array(
 		'parent' => 'parent_id', 'left' => 'lft', 'right' => 'rght',
 		'scope' => '1 = 1', 'type' => 'nested', '__parentChange' => false, 'recursive' => -1
 	);

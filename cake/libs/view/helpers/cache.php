@@ -38,7 +38,7 @@ class CacheHelper extends AppHelper {
  * @var array
  * @access private
  */
-	private $__replace = array();
+	public $__replace = array();
 
 /**
  * Array of string that are replace with there var replace above.
@@ -47,7 +47,7 @@ class CacheHelper extends AppHelper {
  * @var array
  * @access private
  */
-	private $__match = array();
+	public $__match = array();
 
 /**
  * holds the View object passed in final call to CacheHelper::cache()

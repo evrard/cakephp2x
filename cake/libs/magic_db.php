@@ -35,7 +35,7 @@ class MagicDb extends Object {
  *
  * @var array
  **/
-	private $db = array();
+	public $db = array();
 
 /**
  * Reads a MagicDb from various formats
@@ -184,7 +184,7 @@ class MagicFileResource extends Object{
  * @var unknown
  * @access public
  */
-	private $resource = null;
+	public $resource = null;
 
 /**
  * undocumented variable
@@ -192,7 +192,7 @@ class MagicFileResource extends Object{
  * @var unknown
  * @access public
  */
-	private $offset = 0;
+	public $offset = 0;
 
 /**
  * undocumented function
@@ -201,7 +201,7 @@ class MagicFileResource extends Object{
  * @return void
  * @access public
  */
-	private function __construct($file) {
+	public function __construct($file) {
 		if (file_exists($file)) {
 			$this->resource = new File($file);
 		} else {

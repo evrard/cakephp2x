@@ -133,9 +133,10 @@ class HtmlHelper extends AppHelper {
  * Breadcrumbs.
  *
  * @var	array
- * @access private
+ * @access protected
+ * @todo: Check visibility
  */
-	private $_crumbs = array();
+	protected $_crumbs = array();
 
 /**
  * Document type definitions

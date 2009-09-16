@@ -39,7 +39,7 @@ class ConnectionManager extends Object {
  * @var DATABASE_CONFIG
  * @access public
  */
-	private $config = null;
+	public $config = null;
 
 /**
  * Holds instances DataSource objects
@@ -47,7 +47,7 @@ class ConnectionManager extends Object {
  * @var array
  * @access protected
  */
-	private $_dataSources = array();
+	protected $_dataSources = array();
 
 /**
  * Contains a list of all file and class names used in Connection settings
@@ -55,7 +55,7 @@ class ConnectionManager extends Object {
  * @var array
  * @access protected
  */
-	private $_connectionsEnum = array();
+	protected $_connectionsEnum = array();
 
 /**
  * Constructor.

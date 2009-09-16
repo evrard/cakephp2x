@@ -46,7 +46,7 @@ class CookieComponent extends Object {
  * @var string
  * @access public
  */
-	private $name = 'CakeCookie';
+	public $name = 'CakeCookie';
 
 /**
  * The time a cookie will remain valid.
@@ -59,7 +59,7 @@ class CookieComponent extends Object {
  * @var mixed
  * @access public
  */
-	private $time = null;
+	public $time = null;
 
 /**
  * Cookie path.
@@ -75,7 +75,7 @@ class CookieComponent extends Object {
  * @var string
  * @access public
  */
-	private $path = '/';
+	public $path = '/';
 
 /**
  * Domain path.
@@ -91,7 +91,7 @@ class CookieComponent extends Object {
  * @var string
  * @access public
  */
-	private $domain = '';
+	public $domain = '';
 
 /**
  * Secure HTTPS only cookie.
@@ -105,7 +105,7 @@ class CookieComponent extends Object {
  * @var boolean
  * @access public
  */
-	private $secure = false;
+	public $secure = false;
 
 /**
  * Encryption key.
@@ -116,7 +116,7 @@ class CookieComponent extends Object {
  * @var string
  * @access protected
  */
-	private $key = null;
+	public $key = null;
 
 /**
  * Values stored in the cookie.

@@ -34,7 +34,7 @@ class DboMysqlBase extends DboSource {
  *
  * @var string
  */
-	private $description = "MySQL DBO Base Driver";
+	public $description = "MySQL DBO Base Driver";
 
 /**
  * Start quote
@@ -357,7 +357,7 @@ class DboMysql extends DboMysqlBase {
  *
  * @var unknown_type
  */
-	private $description = "MySQL DBO Driver";
+	public $description = "MySQL DBO Driver";
 
 /**
  * Base configuration settings for MySQL driver

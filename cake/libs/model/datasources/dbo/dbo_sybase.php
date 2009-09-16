@@ -36,28 +36,28 @@ class DboSybase extends DboSource {
  *
  * @var string
  */
-	private $description = "Sybase DBO Driver";
+	public $description = "Sybase DBO Driver";
 
 /**
  * Start quote for quoted identifiers
  *
  * @var string
  */
-	private $startQuote = "";
+	public $startQuote = "";
 
 /**
  * End quote for quoted identifiers
  *
  * @var string
  */
-	private $endQuote = "";
+	public $endQuote = "";
 
 /**
  * Base configuration settings for Sybase driver
  *
  * @var array
  */
-	private $_baseConfig = array(
+	protected $_baseConfig = array(
 		'persistent' => true,
 		'host' => 'localhost',
 		'login' => 'sa',
@@ -71,7 +71,7 @@ class DboSybase extends DboSource {
  *
  * @var array
  */
-	private $columns = array(
+	public $columns = array(
 		'primary_key' => array('name' => 'numeric(9,0) IDENTITY PRIMARY KEY'),
 		'string' => array('name' => 'varchar', 'limit' => '255'),
 		'text' => array('name' => 'text'),

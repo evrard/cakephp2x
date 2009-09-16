@@ -40,7 +40,7 @@ class Scaffold extends Object {
  * @var Controller
  * @access public
  */
-	private $controller = null;
+	public $controller = null;
 
 /**
  * Name of the controller to scaffold
@@ -48,7 +48,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	private $name = null;
+	public $name = null;
 
 /**
  * Action to be performed.
@@ -56,7 +56,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	private $action = null;
+	public $action = null;
 
 /**
  * Name of current model this view context is attached to
@@ -64,7 +64,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	private $model = null;
+	public $model = null;
 
 /**
  * Path to View.
@@ -72,7 +72,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	private $viewPath;
+	public $viewPath;
 
 /**
  * Path parts for creating links in views.
@@ -80,7 +80,7 @@ class Scaffold extends Object {
  * @var string Base URL
  * @access public
  */
-	private $base = null;
+	public $base = null;
 
 /**
  * Name of layout to use with this View.
@@ -88,7 +88,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	private $layout = 'default';
+	public $layout = 'default';
 
 /**
  * Array of parameter data
@@ -96,7 +96,7 @@ class Scaffold extends Object {
  * @var array
  * @access public
  */
-	private $params;
+	public $params;
 
 /**
  * File extension. Defaults to Cake's template ".ctp".
@@ -104,7 +104,7 @@ class Scaffold extends Object {
  * @var array
  * @access public
  */
-	private $ext = '.ctp';
+	public $ext = '.ctp';
 
 /**
  * Sub-directory for this view file.
@@ -112,7 +112,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	private $subDir = null;
+	public $subDir = null;
 
 /**
  * Plugin name.
@@ -120,7 +120,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	private $plugin = null;
+	public $plugin = null;
 
 /**
  * valid session.
@@ -144,7 +144,7 @@ class Scaffold extends Object {
  * @var string
  * @access public
  */
-	private $scaffoldTitle = null;
+	public $scaffoldTitle = null;
 
 /**
  * Construct and set up given controller with given parameters.
@@ -152,7 +152,7 @@ class Scaffold extends Object {
  * @param string $controller_class Name of controller
  * @param array $params Parameters for scaffolding
  */
-	private function __construct(&$controller, $params) {
+	public function __construct(&$controller, $params) {
 		$this->controller = $controller;
 
 		$count = count($this->__passedVars);

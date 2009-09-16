@@ -44,7 +44,7 @@ class RequestHandlerComponent extends Object {
  * @access public
  * @see RequestHandler::setAjax()
  */
-	private $ajaxLayout = 'ajax';
+	public $ajaxLayout = 'ajax';
 
 /**
  * Determines whether or not callbacks will be fired on this component
@@ -52,7 +52,7 @@ class RequestHandlerComponent extends Object {
  * @var boolean
  * @access public
  */
-	private $enabled = true;
+	public $enabled = true;
 
 /**
  * Holds the content-type of the response that is set when using
@@ -69,7 +69,7 @@ class RequestHandlerComponent extends Object {
  * @var array
  * @access public
  */
-	private $params = array();
+	public $params = array();
 
 /**
  * Friendly content-type mappings used to set response types and determine
@@ -135,7 +135,7 @@ class RequestHandlerComponent extends Object {
  * @access public
  * @see Router::parseExtensions()
  */
-	private $ext = null;
+	public $ext = null;
 
 /**
  * Flag set when MIME types have been initialized

@@ -37,14 +37,14 @@ class DboMysqli extends DboMysqlBase {
  *
  * @var unknown_type
  */
-	private $description = "Mysqli DBO Driver";
+	public $description = "Mysqli DBO Driver";
 
 /**
  * Base configuration settings for Mysqli driver
  *
  * @var array
  */
-	private $_baseConfig = array(
+	protected $_baseConfig = array(
 		'persistent' => true,
 		'host' => 'localhost',
 		'login' => 'root',

@@ -39,7 +39,7 @@ class XmlNode extends Object {
  * @var string
  * @access public
  */
-	private $name = null;
+	public $name = null;
 
 /**
  * Node namespace
@@ -55,7 +55,7 @@ class XmlNode extends Object {
  * @var array
  * @access public
  */
-	private $namespaces = array();
+	public $namespaces = array();
 
 /**
  * Value of node
@@ -63,7 +63,7 @@ class XmlNode extends Object {
  * @var string
  * @access public
  */
-	private $value;
+	public $value;
 
 /**
  * Attributes on this node
@@ -71,7 +71,7 @@ class XmlNode extends Object {
  * @var array
  * @access public
  */
-	private $attributes = array();
+	public $attributes = array();
 
 /**
  * This node's children
@@ -79,7 +79,7 @@ class XmlNode extends Object {
  * @var array
  * @access public
  */
-	private $children = array();
+	public $children = array();
 
 /**
  * Reference to parent node.
@@ -1342,14 +1342,14 @@ class XmlTextNode extends XmlNode {
  *
  * @var string
  */
-	private $name = '#text';
+	public $name = '#text';
 
 /**
  * The text/data value which this node contains
  *
  * @var string
  */
-	private $value = null;
+	public $value = null;
 
 /**
  * Construct text node with the given parent object and data
@@ -1441,7 +1441,7 @@ class XmlManager {
  * @access private
  * @var array
  */
-	private $defaultNamespaceMap = array(
+	public $defaultNamespaceMap = array(
 		'dc'     => 'http://purl.org/dc/elements/1.1/',					// Dublin Core
 		'dct'    => 'http://purl.org/dc/terms/',						// Dublin Core Terms
 		'g'			=> 'http://base.google.com/ns/1.0',					// Google Base

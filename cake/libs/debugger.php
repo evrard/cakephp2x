@@ -50,14 +50,16 @@ class Debugger extends Object {
  * @var array
  * @access public
  */
-	private static $errors = array();
+	public $errors = array();
+
 /**
  * Contains the base URL for error code documentation.
  *
  * @var string
  * @access public
  */
-	private static $helpPath = null;
+	public $helpPath = null;
+
 /**
  * The current output format.
  *
@@ -65,6 +67,7 @@ class Debugger extends Object {
  * @access protected
  */
 	protected static $_outputFormat = 'js';
+
 /**
  * Templates used when generating trace or error strings.  Can be global or indexed by the format
  * value used in $_outputFormat.
@@ -108,6 +111,7 @@ class Debugger extends Object {
  * @access private
  */
 	private static $__data = array();
+
 /**
  * Constructor.
  *

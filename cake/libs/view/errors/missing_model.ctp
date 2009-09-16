@@ -31,7 +31,7 @@
 &lt;?php
 class <?php echo $model;?> extends AppModel {
 
-	private $name = '<?php echo $model;?>';
+	public $name = '<?php echo $model;?>';
 
 }
 ?&gt;

@@ -40,7 +40,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	private $to = null;
+	public $to = null;
 
 /**
  * The mail which the email is sent from
@@ -48,7 +48,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	private $from = null;
+	public $from = null;
 
 /**
  * The email the recipient will reply to
@@ -56,7 +56,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	private $replyTo = null;
+	public $replyTo = null;
 
 /**
  * The read receipt email
@@ -64,7 +64,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	private $readReceipt = null;
+	public $readReceipt = null;
 
 /**
  * The mail that will be used in case of any errors like
@@ -75,7 +75,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	private $return = null;
+	public $return = null;
 
 /**
  * Carbon Copy
@@ -86,7 +86,7 @@ class EmailComponent extends Object{
  * @var array
  * @access public
  */
-	private $cc = array();
+	public $cc = array();
 
 /**
  * Blind Carbon Copy
@@ -97,7 +97,7 @@ class EmailComponent extends Object{
  * @var array
  * @access public
  */
-	private $bcc = array();
+	public $bcc = array();
 
 /**
  * The subject of the email
@@ -105,7 +105,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	private $subject = null;
+	public $subject = null;
 
 /**
  * Associative array of a user defined headers
@@ -114,7 +114,7 @@ class EmailComponent extends Object{
  * @var array
  * @access public
  */
-	private $headers = array();
+	public $headers = array();
 
 /**
  * List of additional headers
@@ -124,7 +124,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	private $additionalParams = null;
+	public $additionalParams = null;
 
 /**
  * Layout for the View
@@ -132,7 +132,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	private $layout = 'default';
+	public $layout = 'default';
 
 /**
  * Template for the view
@@ -140,7 +140,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	private $template = null;
+	public $template = null;
 
 /**
  * as per RFC2822 Section 2.1.1
@@ -148,12 +148,12 @@ class EmailComponent extends Object{
  * @var integer
  * @access public
  */
-	private $lineLength = 70;
+	public $lineLength = 70;
 
 /**
  * @deprecated see lineLength
  */
-	private $_lineLength = null;
+	protected $_lineLength = null;
 
 /**
  * What format should the email be sent in
@@ -166,7 +166,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	private $sendAs = 'text';
+	public $sendAs = 'text';
 
 /**
  * What method should the email be sent by
@@ -179,7 +179,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	private $delivery = 'mail';
+	public $delivery = 'mail';
 
 /**
  * charset the email is sent in
@@ -187,7 +187,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	private $charset = 'utf-8';
+	public $charset = 'utf-8';
 
 /**
  * List of files that should be attached to the email.
@@ -197,7 +197,7 @@ class EmailComponent extends Object{
  * @var array
  * @access public
  */
-	private $attachments = array();
+	public $attachments = array();
 
 /**
  * What mailer should EmailComponent identify itself as
@@ -205,7 +205,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	private $xMailer = 'CakePHP Email Component';
+	public $xMailer = 'CakePHP Email Component';
 
 /**
  * The list of paths to search if an attachment isnt absolute
@@ -213,7 +213,7 @@ class EmailComponent extends Object{
  * @var array
  * @access public
  */
-	private $filePaths = array();
+	public $filePaths = array();
 
 /**
  * List of options to use for smtp mail method
@@ -228,7 +228,7 @@ class EmailComponent extends Object{
  * @var array
  * @access public
  */
-	private $smtpOptions = array(
+	public $smtpOptions = array(
 		'port'=> 25, 'host' => 'localhost', 'timeout' => 30
 	);
 
@@ -239,7 +239,7 @@ class EmailComponent extends Object{
  * @var string
  * @access public
  */
-	private $smtpError = null;
+	public $smtpError = null;
 
 /**
  * If set to true, the mail method will be auto-set to 'debug'
@@ -247,7 +247,7 @@ class EmailComponent extends Object{
  * @var string
  * @access protected
  */
-	private $_debug = false;
+	protected $_debug = false;
 
 /**
  * Temporary store of message header lines

@@ -59,7 +59,7 @@ class Folder extends Object {
  * @var boolean
  * @access public
  */
-	private $mode = 0755;
+	public $mode = 0755;
 
 /**
  * holds messages from last method.

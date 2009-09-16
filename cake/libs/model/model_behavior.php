@@ -41,7 +41,7 @@ class ModelBehavior extends Object {
  * @access public
  * @see Model::$alias
  */
-	private $settings = array();
+	public $settings = array();
 
 /**
  * Allows the mapping of preg-compatible regular expressions to public or
@@ -52,7 +52,7 @@ class ModelBehavior extends Object {
  * @var array
  * @access public
  */
-	private $mapMethods = array();
+	public $mapMethods = array();
 
 /**
  * Setup this behavior with the specified configuration settings.
@@ -159,7 +159,7 @@ class ModelBehavior extends Object {
  * @access public
  * @return mixed
  */
-	protected function dispatchMethod(&$model, $method, $params = array()) {
+	public function dispatchMethod(&$model, $method, $params = array()) {
 		if (empty($params)) {
 			return $this->{$method}($model);
 		}
@@ -223,7 +223,7 @@ class BehaviorCollection extends Object {
  * @var string
  * @access public
  */
-	private $modelName = null;
+	public $modelName = null;
 
 /**
  * Lists the currently-attached behavior objects
@@ -231,7 +231,7 @@ class BehaviorCollection extends Object {
  * @var array
  * @access private
  */
-	private $_attached = array();
+	protected $_attached = array();
 
 /**
  * Lists the currently-attached behavior objects which are disabled
@@ -239,7 +239,7 @@ class BehaviorCollection extends Object {
  * @var array
  * @access private
  */
-	private $_disabled = array();
+	protected $_disabled = array();
 
 /**
  * Keeps a list of all methods of attached behaviors
@@ -411,7 +411,7 @@ class BehaviorCollection extends Object {
  * @return array All methods for all behaviors attached to this object
  * @access public
  */
-	protected function dispatchMethod(&$model, $method, $params = array(), $strict = false) {
+	public function dispatchMethod(&$model, $method, $params = array(), $strict = false) {
 		$methods = array_keys($this->__methods);
 		foreach ($methods as $key => $value) {
 			$methods[$key] = strtolower($value);

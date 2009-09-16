@@ -53,7 +53,7 @@ class L10n extends Object {
  * @var string
  * @access public
  */
-	private $lang = 'eng';
+	public $lang = 'eng';
 
 /**
  * Locale
@@ -71,7 +71,7 @@ class L10n extends Object {
  * @var string
  * @access public
  */
-	private $default = null;
+	public $default = null;
 
 /**
  * Encoding used for current locale
@@ -79,7 +79,7 @@ class L10n extends Object {
  * @var string
  * @access public
  */
-	private $charset = 'utf-8';
+	public $charset = 'utf-8';
 
 /**
  * Set to true if a locale is found
@@ -87,7 +87,7 @@ class L10n extends Object {
  * @var string
  * @access public
  */
-	private $found = false;
+	public $found = false;
 
 /**
  * Maps ISO 639-3 to I10n::__l10nCatalog

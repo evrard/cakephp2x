@@ -756,7 +756,7 @@ class View extends Object {
  * @return array
  * @access protected
  */
-	protected function &_loadHelpers(&$loaded, $helpers, $parent = null) {
+	public function &_loadHelpers(&$loaded, $helpers, $parent = null) {
 		if (empty($loaded)) {
 			$helpers[] = 'Session';
 		}

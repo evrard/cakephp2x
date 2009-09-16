@@ -26,7 +26,7 @@ class MediaView extends View {
  * @var array
  * @access public
  */
-	private $mimeType = array('ai' => 'application/postscript', 'bcpio' => 'application/x-bcpio', 'bin' => 'application/octet-stream',
+	public $mimeType = array('ai' => 'application/postscript', 'bcpio' => 'application/x-bcpio', 'bin' => 'application/octet-stream',
 								'ccad' => 'application/clariscad', 'cdf' => 'application/x-netcdf', 'class' => 'application/octet-stream',
 								'cpio' => 'application/x-cpio', 'cpt' => 'application/mac-compactpro', 'csh' => 'application/x-csh',
 								'csv' => 'application/csv', 'dcr' => 'application/x-director', 'dir' => 'application/x-director',

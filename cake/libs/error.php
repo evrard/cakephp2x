@@ -74,7 +74,7 @@ class ErrorHandler extends Object {
  * @var Controller
  * @access public
  */
-	private $controller = null;
+	public $controller = null;
 
 /**
  * Class constructor.

@@ -37,19 +37,19 @@ class DboOracle extends DboSource {
  * @var unknown_type
  * @access public
  */
-	private $config = array();
+	public $config = array();
 
 /**
  * Enter description here...
  *
  * @var unknown_type
  */
-	private $alias = '';
+	public $alias = '';
 
 /**
  * Sequence names as introspected from the database
  */
-	private $_sequences = array();
+	protected $_sequences = array();
 
 /**
  * Transaction in progress flag
@@ -64,7 +64,7 @@ class DboOracle extends DboSource {
  * @var unknown_type
  * @access public
  */
-	private $columns = array(
+	public $columns = array(
 		'primary_key' => array('name' => ''),
 		'string' => array('name' => 'varchar2', 'limit' => '255'),
 		'text' => array('name' => 'varchar2'),
@@ -85,7 +85,7 @@ class DboOracle extends DboSource {
  * @var unknown_type
  * @access protected
  */
-	private $connection;
+	public $connection;
 
 /**
  * Enter description here...
@@ -93,7 +93,7 @@ class DboOracle extends DboSource {
  * @var unknown_type
  * @access protected
  */
-	private $_limit = -1;
+	protected $_limit = -1;
 
 /**
  * Enter description here...
@@ -101,7 +101,7 @@ class DboOracle extends DboSource {
  * @var unknown_type
  * @access protected
  */
-	private $_offset = 0;
+	protected $_offset = 0;
 
 /**
  * Enter description here...
@@ -109,7 +109,7 @@ class DboOracle extends DboSource {
  * @var unknown_type
  * @access protected
  */
-	private $_map;
+	protected $_map;
 
 /**
  * Enter description here...
@@ -117,7 +117,7 @@ class DboOracle extends DboSource {
  * @var unknown_type
  * @access protected
  */
-	private $_currentRow;
+	protected $_currentRow;
 
 /**
  * Enter description here...
@@ -125,7 +125,7 @@ class DboOracle extends DboSource {
  * @var unknown_type
  * @access protected
  */
-	private $_numRows;
+	protected $_numRows;
 
 /**
  * Enter description here...
@@ -133,21 +133,21 @@ class DboOracle extends DboSource {
  * @var unknown_type
  * @access protected
  */
-	private $_results;
+	protected $_results;
 
 /**
  * Last error issued by oci extension
  *
  * @var unknown_type
  */
-	private $_error;
+	protected $_error;
 
 /**
  * Base configuration settings for MySQL driver
  *
  * @var array
  */
-	private $_baseConfig = array(
+	protected $_baseConfig = array(
 		'persistent' => true,
 		'host' => 'localhost',
 		'login' => 'system',
@@ -162,7 +162,7 @@ class DboOracle extends DboSource {
  *
  * @var unknown_type
  */
-	private $_sequenceMap = array();
+	protected $_sequenceMap = array();
 
 /**
  * Connects to the database using options in the given configuration array.

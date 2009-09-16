@@ -36,21 +36,21 @@ class DboMssql extends DboSource {
  *
  * @var string
  */
-	private $description = "MS SQL DBO Driver";
+	public $description = "MS SQL DBO Driver";
 
 /**
  * Starting quote character for quoted identifiers
  *
  * @var string
  */
-	private $startQuote = "[";
+	public $startQuote = "[";
 
 /**
  * Ending quote character for quoted identifiers
  *
  * @var string
  */
-	private $endQuote = "]";
+	public $endQuote = "]";
 
 /**
  * Creates a map between field aliases and numeric indexes.  Workaround for the
@@ -65,7 +65,7 @@ class DboMssql extends DboSource {
  *
  * @var array
  */
-	private $_baseConfig = array(
+	protected $_baseConfig = array(
 		'persistent' => true,
 		'host' => 'localhost',
 		'login' => 'root',
@@ -79,7 +79,7 @@ class DboMssql extends DboSource {
  *
  * @var array
  */
-	private $columns = array(
+	public $columns = array(
 		'primary_key' => array('name' => 'IDENTITY (1, 1) NOT NULL'),
 		'string'	=> array('name' => 'varchar', 'limit' => '255'),
 		'text'		=> array('name' => 'text'),
@@ -99,7 +99,7 @@ class DboMssql extends DboSource {
  * @var array
  * @access protected
  */
-	private $_commands = array(
+	protected $_commands = array(
 		'begin'    => 'BEGIN TRANSACTION',
 		'commit'   => 'COMMIT',
 		'rollback' => 'ROLLBACK'
@@ -111,7 +111,7 @@ class DboMssql extends DboSource {
  * @param array $config Configuration data from app/config/databases.php
  * @return boolean True if connected successfully, false on error
  */
-	private function __construct($config, $autoConnect = true) {
+	public function __construct($config, $autoConnect = true) {
 		if ($autoConnect) {
 			if (!function_exists('mssql_min_message_severity')) {
 				trigger_error("PHP SQL Server interface is not installed, cannot continue.  For troubleshooting information, see http://php.net/mssql/", E_USER_WARNING);

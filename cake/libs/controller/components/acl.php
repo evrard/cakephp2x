@@ -37,7 +37,7 @@ class AclComponent extends Object {
  * @var object
  * @access protected
  */
-	private $_Instance = null;
+	protected $_Instance = null;
 
 /**
  * Constructor. Will return an instance of the correct ACL class.
@@ -171,7 +171,7 @@ class AclBase extends Object {
  * This class should never be instantiated, just subclassed.
  *
  */
-	private function __construct() {
+	public function __construct() {
 		if (strcasecmp(get_class($this), "AclBase") == 0 || !is_subclass_of($this, "AclBase")) {
 			trigger_error(__("[acl_base] The AclBase class constructor has been called, or the class was instantiated. This class must remain abstract. Please refer to the Cake docs for ACL configuration.", true), E_USER_ERROR);
 			return NULL;
@@ -211,7 +211,7 @@ class DbAcl extends AclBase {
  * Constructor
  *
  */
-	private function __construct() {
+	public function __construct() {
 		parent::__construct();
 		if (!class_exists('AclNode')) {
 			uses('model' . DS . 'db_acl');
@@ -488,13 +488,13 @@ class IniAcl extends AclBase {
  * @var array
  * @access public
  */
-	private $config = null;
+	public $config = null;
 
 /**
  * The constructor must be overridden, as AclBase is abstract.
  *
  */
-	private function __construct() {
+	public function __construct() {
 	}
 
 /**

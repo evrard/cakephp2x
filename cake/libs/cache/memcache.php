@@ -44,7 +44,7 @@ class MemcacheEngine extends CacheEngine {
  * @var array
  * @access public
  */
-	protected $settings = array();
+	public $settings = array();
 
 /**
  * Initialize the Cache Engine

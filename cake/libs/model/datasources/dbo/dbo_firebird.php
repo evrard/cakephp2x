@@ -36,42 +36,42 @@ class DboFirebird extends DboSource {
  *
  * @var unknown_type
  */
-	private $description = "Firebird/Interbase DBO Driver";
+	public $description = "Firebird/Interbase DBO Driver";
 
 /**
  * Saves the original table name
  *
  * @var unknown_type
  */
-	private $modeltmp = array();
+	public $modeltmp = array();
 
 /**
  * Enter description here...
  *
  * @var unknown_type
  */
-	private $startQuote = "\'";
+	public $startQuote = "\'";
 
 /**
  * Enter description here...
  *
  * @var unknown_type
  */
-	private $endQuote = "\'";
+	public $endQuote = "\'";
 
 /**
  * Enter description here...
  *
  * @var unknown_type
  */
-	private $alias = ' ';
+	public $alias = ' ';
 
 /**
  * Enter description here...
  *
  * @var unknown_type
  */
-	private $goofyLimit = true;
+	public $goofyLimit = true;
 
 /**
  * Creates a map between field aliases and numeric indexes.
@@ -85,7 +85,7 @@ class DboFirebird extends DboSource {
  *
  * @var array
  */
-	private $_baseConfig = array(
+	protected $_baseConfig = array(
 		'persistent' => true,
 		'host' => 'localhost',
 		'login' => 'SYSDBA',
@@ -100,7 +100,7 @@ class DboFirebird extends DboSource {
  *
  * @var array
  */
-	private $columns = array(
+	public $columns = array(
 		'primary_key' => array('name' => 'IDENTITY (1, 1) NOT NULL'),
 		'string'	=> array('name'	 => 'varchar', 'limit' => '255'),
 		'text'		=> array('name' => 'BLOB SUB_TYPE 1 SEGMENT SIZE 100 CHARACTER SET NONE'),
@@ -119,7 +119,7 @@ class DboFirebird extends DboSource {
  *
  * @var array
  **/
-	private $_commands = array(
+	protected $_commands = array(
 		'begin'	   => 'SET TRANSACTION',
 		'commit'   => 'COMMIT',
 		'rollback' => 'ROLLBACK'

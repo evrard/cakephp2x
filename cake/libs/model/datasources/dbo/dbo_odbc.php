@@ -36,28 +36,28 @@ class DboOdbc extends DboSource {
  *
  * @var string
  */
-	private $description = "ODBC DBO Driver";
+	public $description = "ODBC DBO Driver";
 
 /**
  * Table/column starting quote
  *
  * @var string
  */
-	private $startQuote = "`";
+	public $startQuote = "`";
 
 /**
  * Table/column end quote
  *
  * @var string
  */
-	private $endQuote = "`";
+	public $endQuote = "`";
 
 /**
  * Driver base configuration
  *
  * @var array
  */
-	private $_baseConfig = array(
+	protected $_baseConfig = array(
 		'persistent' => true,
 		'login' => 'root',
 		'password' => '',
@@ -70,9 +70,9 @@ class DboOdbc extends DboSource {
  *
  * @var unknown_type
  */
-	private $columns = array();
+	public $columns = array();
 
-	//	private $columns = array('primary_key' => array('name' => 'int(11) DEFAULT NULL auto_increment'),
+	//	public $columns = array('primary_key' => array('name' => 'int(11) DEFAULT NULL auto_increment'),
 	//						'string' => array('name' => 'varchar', 'limit' => '255'),
 	//						'text' => array('name' => 'text'),
 	//						'integer' => array('name' => 'int', 'limit' => '11'),

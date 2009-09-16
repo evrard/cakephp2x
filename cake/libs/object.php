@@ -39,7 +39,7 @@ class Object {
  * @var CakeLog
  * @access protected
  */
-	private $_log = null;
+	protected $_log = null;
 
 /**
  * Class constructor, overridden in descendant classes.
@@ -95,7 +95,7 @@ class Object {
  * @return mixed  Returns the result of the method call
  * @access public
  */
-	protected function dispatchMethod($method, $params = array()) {
+	public function dispatchMethod($method, $params = array()) {
 		switch (count($params)) {
 			case 0:
 				return $this->{$method}();

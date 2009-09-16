@@ -1172,7 +1172,7 @@ class Controller extends Object {
  * @access public
  * @link http://book.cakephp.org/view/60/Callbacks
  */
-	protected function beforeRender() {
+	public function beforeRender() {
 	}
 
 /**

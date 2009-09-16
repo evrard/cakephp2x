@@ -37,7 +37,7 @@ class DataSource extends Object {
  * @var boolean
  * @access public
  */
-	private $connected = false;
+	public $connected = false;
 
 /**
  * Print full query debug info?
@@ -45,7 +45,7 @@ class DataSource extends Object {
  * @var boolean
  * @access public
  */
-	private $fullDebug = false;
+	public $fullDebug = false;
 
 /**
  * Error description of last query
@@ -53,7 +53,7 @@ class DataSource extends Object {
  * @var unknown_type
  * @access public
  */
-	private $error = null;
+	public $error = null;
 
 /**
  * String to hold how many rows were affected by the last SQL operation.
@@ -61,7 +61,7 @@ class DataSource extends Object {
  * @var string
  * @access public
  */
-	private $affected = null;
+	public $affected = null;
 
 /**
  * Number of rows in current resultset
@@ -69,7 +69,7 @@ class DataSource extends Object {
  * @var int
  * @access public
  */
-	private $numRows = null;
+	public $numRows = null;
 
 /**
  * Time the last query took
@@ -77,7 +77,7 @@ class DataSource extends Object {
  * @var int
  * @access public
  */
-	private $took = null;
+	public $took = null;
 
 /**
  * The starting character that this DataSource uses for quoted identifiers.
@@ -101,7 +101,7 @@ class DataSource extends Object {
  * @var array
  * @access private
  */
-	private $_result = null;
+	protected $_result = null;
 
 /**
  * Queries count.
@@ -109,7 +109,7 @@ class DataSource extends Object {
  * @var int
  * @access private
  */
-	private $_queriesCnt = 0;
+	protected $_queriesCnt = 0;
 
 /**
  * Total duration of all queries.
@@ -117,7 +117,7 @@ class DataSource extends Object {
  * @var unknown_type
  * @access private
  */
-	private $_queriesTime = null;
+	protected $_queriesTime = null;
 
 /**
  * Log of queries executed by this DataSource
@@ -125,7 +125,7 @@ class DataSource extends Object {
  * @var unknown_type
  * @access private
  */
-	private $_queriesLog = array();
+	protected $_queriesLog = array();
 
 /**
  * Maximum number of items in query log, to prevent query log taking over
@@ -143,7 +143,7 @@ class DataSource extends Object {
  * @var array Maximum number of queries in the queries log.
  * @access private
  */
-	private $_queryCache = array();
+	protected $_queryCache = array();
 
 /**
  * The default configuration of a specific DataSource
@@ -167,7 +167,7 @@ class DataSource extends Object {
  * @var array
  * @access protected
  */
-	private $_sources = null;
+	protected $_sources = null;
 
 /**
  * A reference to the physical connection of this DataSource
@@ -191,7 +191,7 @@ class DataSource extends Object {
  * @var string
  * @access public
  */
-	private $configKeyName = null;
+	public $configKeyName = null;
 
 /**
  * Whether or not this DataSource is in the middle of a transaction
@@ -222,7 +222,7 @@ class DataSource extends Object {
  *
  * @return array
  */
-	protected function listSources($data = null) {
+	public function listSources($data = null) {
 		if ($this->cacheSources === false) {
 			return null;
 		}
@@ -262,7 +262,7 @@ class DataSource extends Object {
  * @param Model $model
  * @return mixed
  */
-	protected function describe($model) {
+	public function describe($model) {
 		if ($this->cacheSources === false) {
 			return null;
 		}
@@ -284,7 +284,7 @@ class DataSource extends Object {
  *
  * @return boolean Returns true if a transaction is not in progress
  */
-	protected function begin(&$model) {
+	public function begin(&$model) {
 		return !$this->_transactionStarted;
 	}
 
@@ -293,7 +293,7 @@ class DataSource extends Object {
  *
  * @return boolean Returns true if a transaction is in progress
  */
-	protected function commit(&$model) {
+	public function commit(&$model) {
 		return $this->_transactionStarted;
 	}
 
@@ -302,7 +302,7 @@ class DataSource extends Object {
  *
  * @return boolean Returns true if a transaction is in progress
  */
-	protected function rollback(&$model) {
+	public function rollback(&$model) {
 		return $this->_transactionStarted;
 	}
 
@@ -455,7 +455,7 @@ class DataSource extends Object {
  * @param array $stack
  * @return unknown
  */
-	protected function insertQueryData($query, $data, $association, $assocData, &$model, &$linkModel, $stack) {
+	public function insertQueryData($query, $data, $association, $assocData, &$model, &$linkModel, $stack) {
 		$keys = array('{$__cakeID__$}', '{$__cakeForeignKey__$}');
 
 		foreach ($keys as $key) {

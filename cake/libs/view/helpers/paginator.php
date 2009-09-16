@@ -34,7 +34,7 @@ class PaginatorHelper extends AppHelper {
  *
  * @var array
  */
-	private $helpers = array('Html', 'Ajax');
+	public $helpers = array('Html', 'Ajax');
 
 /**
  * Holds the default model for paged recordsets
@@ -65,7 +65,7 @@ class PaginatorHelper extends AppHelper {
  *
  * @var array
  */
-	private $options = array();
+	public $options = array();
 
 /**
  * Gets the current page of the in the recordset for the given model

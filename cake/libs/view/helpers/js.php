@@ -29,27 +29,27 @@
  * @subpackage    cake.cake.libs.view.helpers
  */
 class JsHelper extends Object {
-	private $base = null;
-	private $webroot = null;
-	private $here = null;
-	private $params = null;
-	private $action = null;
-	private $data = null;
-	private $themeWeb = null;
-	private $plugin = null;
+	public $base = null;
+	public $webroot = null;
+	public $here = null;
+	public $params = null;
+	public $action = null;
+	public $data = null;
+	public $themeWeb = null;
+	public $plugin = null;
 
-	private $helpers = array();
+	public $helpers = array();
 
-	private $hook = null;
+	public $hook = null;
 
 	private $__objects = array();
 
-	private $effectMap = array(
+	public $effectMap = array(
 		'Appear', 'Fade', 'Puff', 'BlindDown', 'BlindUp', 'SwitchOff', 'SlideDown', 'SlideUp',
 		'DropOut', 'Shake', 'Pulsate', 'Squish', 'Fold', 'Grow', 'Shrink', 'Highlight', 'toggle'
 	);
 
-	private $output = false;
+	public $output = false;
 /**
  * 
  */
@@ -278,13 +278,13 @@ class JsHelper extends Object {
 class JsHelperObject {
 	private $__parent = null;
 
-	private $id = null;
+	public $id = null;
 
-	private $pattern = null;
+	public $pattern = null;
 
-	private $real = null;
+	public $real = null;
 
-	private function __construct(&$parent) {
+	public function __construct(&$parent) {
 		if (is_object($parent)) {
 			$this->setParent($parent);
 		}

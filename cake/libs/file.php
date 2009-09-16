@@ -70,7 +70,7 @@ class File extends Object {
  * @var string
  * @access public
  */
-	private $info = array();
+	public $info = array();
 
 /**
  * Holds the file handler resource if the file is opened

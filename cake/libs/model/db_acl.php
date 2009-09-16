@@ -43,7 +43,7 @@ class AclNode extends AppModel {
  * @var boolean
  * @access public
  */
-	private $cacheQueries = false;
+	public $cacheQueries = false;
 
 /**
  * ACL models use the Tree behavior
@@ -51,13 +51,13 @@ class AclNode extends AppModel {
  * @var array
  * @access public
  */
-	private $actsAs = array('Tree' => 'nested');
+	public $actsAs = array('Tree' => 'nested');
 
 /**
  * Constructor
  *
  */
-	private function __construct() {
+	public function __construct() {
 		$config = Configure::read('Acl.database');
 		if (isset($config)) {
 			$this->useDbConfig = $config;
@@ -207,7 +207,7 @@ class Aco extends AclNode {
  * @var string
  * @access public
  */
-	private $name = 'Aco';
+	public $name = 'Aco';
 
 /**
  * Binds to ARO nodes through permissions settings
@@ -215,7 +215,7 @@ class Aco extends AclNode {
  * @var array
  * @access public
  */
-	private $hasAndBelongsToMany = array('Aro' => array('with' => 'Permission'));
+	public $hasAndBelongsToMany = array('Aro' => array('with' => 'Permission'));
 }
 
 /**
@@ -232,7 +232,7 @@ class AcoAction extends AppModel {
  * @var string
  * @access public
  */
-	private $name = 'AcoAction';
+	public $name = 'AcoAction';
 
 /**
  * ACO Actions belong to ACOs
@@ -240,7 +240,7 @@ class AcoAction extends AppModel {
  * @var array
  * @access public
  */
-	private $belongsTo = array('Aco');
+	public $belongsTo = array('Aco');
 }
 
 /**
@@ -257,7 +257,7 @@ class Aro extends AclNode {
  * @var string
  * @access public
  */
-	private $name = 'Aro';
+	public $name = 'Aro';
 
 /**
  * AROs are linked to ACOs by means of Permission
@@ -265,7 +265,7 @@ class Aro extends AclNode {
  * @var array
  * @access public
  */
-	private $hasAndBelongsToMany = array('Aco' => array('with' => 'Permission'));
+	public $hasAndBelongsToMany = array('Aco' => array('with' => 'Permission'));
 }
 
 /**
@@ -282,7 +282,7 @@ class Permission extends AppModel {
  * @var string
  * @access public
  */
-	private $name = 'Permission';
+	public $name = 'Permission';
 
 /**
  * Explicitly disable in-memory query caching
@@ -290,7 +290,7 @@ class Permission extends AppModel {
  * @var boolean
  * @access public
  */
-	private $cacheQueries = false;
+	public $cacheQueries = false;
 
 /**
  * Override default table name
@@ -298,7 +298,7 @@ class Permission extends AppModel {
  * @var string
  * @access public
  */
-	private $useTable = 'aros_acos';
+	public $useTable = 'aros_acos';
 
 /**
  * Permissions link AROs with ACOs
@@ -306,7 +306,7 @@ class Permission extends AppModel {
  * @var array
  * @access public
  */
-	private $belongsTo = array('Aro', 'Aco');
+	public $belongsTo = array('Aro', 'Aco');
 
 /**
  * No behaviors for this model
@@ -314,13 +314,13 @@ class Permission extends AppModel {
  * @var array
  * @access public
  */
-	private $actsAs = null;
+	public $actsAs = null;
 
 /**
  * Constructor, used to tell this model to use the
  * database configured for ACL
  */
-	private function __construct() {
+	public function __construct() {
 		$config = Configure::read('Acl.database');
 		if (!empty($config)) {
 			$this->useDbConfig = $config;

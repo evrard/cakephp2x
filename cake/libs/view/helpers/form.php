@@ -45,7 +45,7 @@ class FormHelper extends AppHelper {
  *
  * @access public
  */
-	private $fieldset = array('fields' => array(), 'key' => 'id', 'validates' => array());
+	public $fieldset = array('fields' => array(), 'key' => 'id', 'validates' => array());
 
 /**
  * Options used by DateTime fields
@@ -63,7 +63,7 @@ class FormHelper extends AppHelper {
  * @var array
  * @access public
  */
-	private $fields = array();
+	public $fields = array();
 
 /**
  * Defines the type of form being created.  Set by FormHelper::create().
@@ -71,7 +71,7 @@ class FormHelper extends AppHelper {
  * @var string
  * @access public
  */
-	private $requestType = null;
+	public $requestType = null;
 
 /**
  * Returns an HTML FORM element.
@@ -1897,7 +1897,7 @@ class FormHelper extends AppHelper {
  * @return array
  * @access protected
  */
-	private function _initInputField($field, $options = array()) {
+	protected function _initInputField($field, $options = array()) {
 		if (isset($options['secure'])) {
 			$secure = $options['secure'];
 			unset($options['secure']);

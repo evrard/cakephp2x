@@ -37,7 +37,7 @@ class DboSource extends DataSource {
  *
  * @var unknown_type
  */
-	private $description = "Database Data Source";
+	public $description = "Database Data Source";
 
 /**
  * index definition, standard cake, primary, index, unique
@@ -51,14 +51,14 @@ class DboSource extends DataSource {
  *
  * @var string
  */
-	private $alias = 'AS ';
+	public $alias = 'AS ';
 
 /**
  * Caches fields quoted in DboSource::name()
  *
  * @var array
  */
-	private $fieldCache = array();
+	public $fieldCache = array();
 
 /**
  * Bypass automatic adding of joined fields/associations.
@@ -315,7 +315,7 @@ class DboSource extends DataSource {
  *
  * @return array The fetched row as an array
  */
-	protected function fetchRow($sql = null) {
+	public function fetchRow($sql = null) {
 		if (!empty($sql) && is_string($sql) && strlen($sql) > 5) {
 			if (!$this->execute($sql)) {
 				return null;
@@ -466,7 +466,7 @@ class DboSource extends DataSource {
  *
  * @return boolean True if the result is valid else false
  */
-	protected function hasResult() {
+	public function hasResult() {
 		return is_resource($this->_result);
 	}
 
@@ -1332,7 +1332,7 @@ class DboSource extends DataSource {
  * @param array $data
  * @return string
  */
-	protected function renderStatement($type, $data) {
+	public function renderStatement($type, $data) {
 		extract($data);
 		$aliases = null;
 
@@ -1656,7 +1656,7 @@ class DboSource extends DataSource {
  * @param boolean $useAlias Use model aliases rather than table names when generating conditions
  * @return mixed
  */
-	protected function defaultConditions(&$model, $conditions, $useAlias = true) {
+	public function defaultConditions(&$model, $conditions, $useAlias = true) {
 		if (!empty($conditions)) {
 			return $conditions;
 		}
@@ -1794,7 +1794,7 @@ class DboSource extends DataSource {
  * @param Model $model A reference to the Model instance making the query
  * @return string SQL fragment
  */
-	protected function conditions($conditions, $quoteValues = true, $where = true, $model = null) {
+	public function conditions($conditions, $quoteValues = true, $where = true, $model = null) {
 		$clause = $out = '';
 
 		if ($where) {
@@ -2199,7 +2199,7 @@ class DboSource extends DataSource {
  * @param string $real Real database-layer column type (i.e. "varchar(255)")
  * @return mixed An integer or string representing the length of the column
  */
-	protected function length($real) {
+	public function length($real) {
 		if (!preg_match_all('/([\w\s]+)(?:\((\d+)(?:,(\d+))?\))?(\sunsigned)?(\szerofill)?/', $real, $result)) {
 			trigger_error(__('FIXME: Can\'t parse field: ' . $real, true), E_USER_WARNING);
 			$col = str_replace(array(')', 'unsigned'), '', $real);
@@ -2259,7 +2259,7 @@ class DboSource extends DataSource {
  * @param mixed $data Value to be translated
  * @return mixed Converted boolean value
  */
-	protected function boolean($data) {
+	public function boolean($data) {
 		if ($data === true || $data === false) {
 			if ($data === true) {
 				return 1;
@@ -2278,7 +2278,7 @@ class DboSource extends DataSource {
  * @param array $values
  * @access protected
  */
-	protected function insertMulti($table, $fields, $values) {
+	public function insertMulti($table, $fields, $values) {
 		$table = $this->fullTableName($table);
 		if (is_array($fields)) {
 			$fields = join(', ', array_map(array(&$this, 'name'), $fields));
@@ -2474,7 +2474,7 @@ class DboSource extends DataSource {
  * @return void
  * @access public
  */
-	protected function introspectType($value) {
+	public function introspectType($value) {
 		if (!is_array($value)) {
 			if ($value === true || $value === false) {
 				return 'boolean';

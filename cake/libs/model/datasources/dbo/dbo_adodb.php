@@ -41,7 +41,7 @@ class DboAdodb extends DboSource {
  *
  * @var string
  */
-	private $description = "ADOdb DBO Driver";
+	public $description = "ADOdb DBO Driver";
 
 /**
  * ADOConnection object with which we connect.
@@ -49,7 +49,7 @@ class DboAdodb extends DboSource {
  * @var ADOConnection The connection object.
  * @access private
  */
-	private $_adodb = null;
+	protected $_adodb = null;
 
 /**
  * Array translating ADOdb column MetaTypes to cake-supported metatypes
@@ -57,7 +57,7 @@ class DboAdodb extends DboSource {
  * @var array
  * @access private
  */
-	private $_adodbColumnTypes = array(
+	protected $_adodbColumnTypes = array(
 		'string' => 'C',
 		'text' => 'X',
 		'date' => 'D',
@@ -75,7 +75,7 @@ class DboAdodb extends DboSource {
  *
  * @var array
  */
-	private $columns = array(
+	public $columns = array(
 		'primary_key' => array('name' => 'R', 'limit' => 11),
 		'string' => array('name' => 'C', 'limit' => '255'),
 		'text' => array('name' => 'X'),

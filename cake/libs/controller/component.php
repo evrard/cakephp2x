@@ -41,7 +41,7 @@ class Component extends Object {
  * @var object
  * @access protected
  */
-	private $_loaded = array();
+	protected $_loaded = array();
 
 /**
  * List of components attached directly to the controller, which callbacks
@@ -50,7 +50,7 @@ class Component extends Object {
  * @var object
  * @access protected
  */
-	private $_primary = array();
+	protected $_primary = array();
 
 /**
  * Settings for loaded components.

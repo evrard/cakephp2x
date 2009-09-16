@@ -428,7 +428,7 @@ class CacheEngine extends Object {
  * @return boolean True if the engine has been succesfully initialized, false if not
  * @access public
  */
-	protected function init($settings = array()) {
+	public function init($settings = array()) {
 		$this->settings = array_merge(array('prefix' => 'cake_', 'duration'=> 3600, 'probability'=> 100), $this->settings, $settings);
 		if (!is_numeric($this->settings['duration'])) {
 			$this->settings['duration'] = strtotime($this->settings['duration']) - time();

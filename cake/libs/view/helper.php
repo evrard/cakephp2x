@@ -183,7 +183,7 @@ class Helper extends Object {
  * @param boolean $full   If true, the full base URL will be prepended to the result
  * @return string  Full translated URL with base path.
  */
-	protected function url($url = null, $full = false) {
+	public function url($url = null, $full = false) {
 		return h(Router::url($url, $full));
 	}
 
