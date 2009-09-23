@@ -62,12 +62,12 @@ class Security extends Object {
 	}
 
 /**
-  * Generate authorization hash.
-  *
-  * @return string Hash
-  * @access public
-  * @static
-  */
+ * Generate authorization hash.
+ *
+ * @return string Hash
+ * @access public
+ * @static
+ */
 	public static function generateAuthKey() {
 		if (!class_exists('String')) {
 			App::import('Core', 'String');

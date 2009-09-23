@@ -327,9 +327,9 @@ class Router extends Object {
 /**
  * Builds a route regular expression
  *
- * @param string $route			An empty string, or a route string "/"
- * @param array $default		NULL or an array describing the default route
- * @param array $params			An array matching the named elements in the route to regular expressions which that element should match.
+ * @param string $route An empty string, or a route string "/"
+ * @param array $default NULL or an array describing the default route
+ * @param array $params An array matching the named elements in the route to regular expressions which that element should match.
  * @return array
  * @see routes
  * @access public
@@ -551,11 +551,8 @@ class Router extends Object {
 	public static function compile($i) {
 		$route = self::$routes[$i];
 
-		if (!list($pattern, $names) = self::writeRoute($route[0], $route[1], $route[2])) {
-			unset(self::$routes[$i]);
-			return array();
-		}
-		self::$routes[$i] = array(
+		list($pattern, $names) = self::writeRoute($route[0], $route[1], $route[2]);
+		self::routes[$i] = array(
 			$route[0], $pattern, $names,
 			array_merge(array('plugin' => null, 'controller' => null), (array)$route[1]),
 			$route[2]
@@ -786,6 +783,9 @@ class Router extends Object {
 				$params = self::$__params[0];
 			} else {
 				$params = end(self::$__params);
+			}
+			if (isset($params['prefix']) && strpos($params['action'], $params['prefix']) === 0) {
+				$params['action'] = substr($params['action'], strlen($params['prefix']) + 1);
 			}
 		}
 		$path = array('base' => null);
@@ -1298,9 +1298,9 @@ class Router extends Object {
 				return $param;
 			}
 
-			$return = preg_replace('/^(?:[\\t ]*(?:-!)+)/', '', $param);
-			return $return;
+			return preg_replace('/^(?:[\\t ]*(?:-!)+)/', '', $param);
 		}
+
 		foreach ($param as $key => $value) {
 			if (is_string($value)) {
 				$return[$key] = preg_replace('/^(?:[\\t ]*(?:-!)+)/', '', $value);
@@ -1373,7 +1373,9 @@ class Router extends Object {
 				continue;
 			}
 			$param = self::stripEscape($param);
-			if ((!isset($options['named']) || !empty($options['named'])) && strpos($param, self::$named['separator']) !== false) {
+
+			$separatorIsPresent = strpos($param, self::$named['separator']) !== false;
+			if ((!isset($options['named']) || !empty($options['named'])) && $separatorIsPresent) {
 				list($key, $val) = explode(self::$named['separator'], $param, 2);
 				$hasRule = isset($rules[$key]);
 				$passIt = (!$hasRule && !$greedy) || ($hasRule && !self::matchNamed($key, $val, $rules[$key], $context));

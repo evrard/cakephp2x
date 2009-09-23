@@ -200,10 +200,10 @@ class DboOracle extends DboSource {
 		return $this->connected;
 	}
 
-	/**
-	 * Keeps track of the most recent Oracle error
-	 *
-	 */
+/**
+ * Keeps track of the most recent Oracle error
+ *
+ */
 	protected function _setError($source = null, $clear = false) {
 		if ($source) {
 			$e = ocierror($source);
@@ -493,11 +493,12 @@ class DboOracle extends DboSource {
  * @access public
  */
 	public function describe(&$model) {
+		$table = $this->fullTableName($model, false);
 
 		if (!empty($model->sequence)) {
-			$this->_sequenceMap[$model->table] = $model->sequence;
+			$this->_sequenceMap[$table] = $model->sequence;
 		} elseif (!empty($model->table)) {
-			$this->_sequenceMap[$model->table] = $model->table . '_seq';
+			$this->_sequenceMap[$table] = $model->table . '_seq';
 		}
 
 		$cache = parent::describe($model);
@@ -505,12 +506,14 @@ class DboOracle extends DboSource {
 		if ($cache != null) {
 			return $cache;
 		}
+
 		$sql = 'SELECT COLUMN_NAME, DATA_TYPE, DATA_LENGTH FROM all_tab_columns WHERE table_name = \'';
 		$sql .= strtoupper($this->fullTableName($model)) . '\'';
 
 		if (!$this->execute($sql)) {
 			return false;
 		}
+
 		$fields = array();
 
 		for ($i = 0; $row = $this->fetchRow(); $i++) {
@@ -873,8 +876,7 @@ class DboOracle extends DboSource {
 
 		switch($column) {
 			case 'date':
-				$date = new DateTime($data);
-				$data = $date->format('Y-m-d H:i:s');
+				$data = date('Y-m-d H:i:s', strtotime($data));
 				$data = "TO_DATE('$data', 'YYYY-MM-DD HH24:MI:SS')";
 			break;
 			case 'integer' :
@@ -1066,7 +1068,6 @@ class DboOracle extends DboSource {
 						$q = str_replace('= (', 'IN (', $q);
 						$q = str_replace('  WHERE 1 = 1', '', $q);
 
-
 						$q = $this->insertQueryData($q, null, $association, $assocData, $model, $linkModel, $stack);
 						if ($q != false) {
 							$res = $this->fetchAll($q, $model->cacheQueries, $model->alias);
@@ -1136,6 +1137,7 @@ class DboOracle extends DboSource {
 			}
 		}
 	}
+
 /**
  * Generate a "drop table" statement for the given Schema object
  *
@@ -1144,19 +1146,19 @@ class DboOracle extends DboSource {
  *						Otherwise, all tables defined in the schema are generated.
  * @return string
  */
-		public function dropSchema($schema, $table = null) {
-			if (!is_a($schema, 'CakeSchema')) {
-				trigger_error(__('Invalid schema object', true), E_USER_WARNING);
-				return null;
-			}
-			$out = '';
-
-			foreach ($schema->tables as $curTable => $columns) {
-				if (!$table || $table == $curTable) {
-					$out .= 'DROP TABLE ' . $this->fullTableName($curTable) . "\n";
-				}
-			}
-			return $out;
+	public function dropSchema($schema, $table = null) {
+		if (!is_a($schema, 'CakeSchema')) {
+			trigger_error(__('Invalid schema object', true), E_USER_WARNING);
+			return null;
 		}
+		$out = '';
+
+		foreach ($schema->tables as $curTable => $columns) {
+			if (!$table || $table == $curTable) {
+				$out .= 'DROP TABLE ' . $this->fullTableName($curTable) . "\n";
+			}
+		}
+		return $out;
+	}
 }
 ?>

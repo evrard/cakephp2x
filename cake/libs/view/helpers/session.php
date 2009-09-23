@@ -1,8 +1,6 @@
 <?php
 /**
- * Short description for file.
- *
- * Long description for file
+ * Session Helper provides access to the Session in the Views.
  *
  * PHP Version 5.x
  *
@@ -135,21 +133,20 @@ class SessionHelper extends CakeSession {
 			if (parent::check('Message.' . $key)) {
 				$flash = parent::read('Message.' . $key);
 
-				if ($flash['layout'] == 'default') {
+				if ($flash['element'] == 'default') {
 					if (!empty($flash['params']['class'])) {
 						$class = $flash['params']['class'];
 					} else {
 						$class = 'message';
 					}
 					$out = '<div id="' . $key . 'Message" class="' . $class . '">' . $flash['message'] . '</div>';
-				} elseif ($flash['layout'] == '' || $flash['layout'] == null) {
+				} elseif ($flash['element'] == '' || $flash['element'] == null) {
 					$out = $flash['message'];
 				} else {
 					$view = ClassRegistry::getObject('view');
-					list($tmpVars, $tmpTitle) = array($view->viewVars, $view->pageTitle);
-					list($view->viewVars, $view->pageTitle) = array($flash['params'], '');
-					$out = $view->renderLayout($flash['message'], $flash['layout']);
-					list($view->viewVars, $view->pageTitle) = array($tmpVars, $tmpTitle);
+					$tmpVars = $flash['params'];
+					$tmpVars['message'] = $flash['message'];
+					$out = $view->element($flash['element'], $tmpVars);
 				}
 				echo($out);
 				parent::del('Message.' . $key);

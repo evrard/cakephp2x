@@ -99,6 +99,25 @@ class XmlTest extends CakeTestCase {
 	}
 
 /**
+ * testSerializeOnMultiDimensionalArray method
+ *
+ * @access public
+ * @return void
+ */
+	function testSerializeOnMultiDimensionalArray() {
+		$data = array(
+			'Statuses' => array(
+				array('Status' => array('id' => 1)),
+				array('Status' => array('id' => 2))
+			)
+		);
+		$result =& new Xml($data, array('format' => 'tags'));
+		$expected = '<statuses><status><id>1</id></status><status><id>2</id></status></statuses>';
+		$this->assertIdentical($result->toString(), $expected);
+
+	}
+
+/**
  * test serialization of boolean and null values.  false = 0, true = 1, null = ''
  *
  * @return void
@@ -759,6 +778,60 @@ class XmlTest extends CakeTestCase {
 	}
 
 /**
+ * test that empty values do not casefold collapse
+ * 
+ * @see http://code.cakephp.org/tickets/view/8
+ * @return void
+ **/
+	function testCaseFoldingWithEmptyValues() {
+		$filledValue = '<method name="set_user_settings">
+			<title>update user information</title>
+			<user>1</user>
+			<User>
+				<id>1</id>
+				<name>varchar(45)</name>
+			</User>
+		</method>';
+		$xml =& new XML($filledValue);
+		$expected = array(
+			'Method' => array(
+				'name' => 'set_user_settings',
+				'title' => 'update user information',
+				'user' => '1',
+				'User' => array(
+					'id' => 1,
+					'name' => 'varchar(45)',
+				),
+			)
+		);
+		$result = $xml->toArray();
+		$this->assertEqual($result, $expected);
+
+		$emptyValue ='<method name="set_user_settings">
+			<title>update user information</title>
+			<user></user>
+			<User>
+				<id>1</id>
+				<name>varchar(45)</name>
+			</User>
+		</method>';
+		
+		$xml =& new XML($emptyValue);
+		$expected = array(
+			'Method' => array(
+				'name' => 'set_user_settings',
+				'title' => 'update user information',
+				'user' => array(),
+				'User' => array(
+					'id' => 1,
+					'name' => 'varchar(45)',
+				),
+			)
+		);
+		$result = $xml->toArray();
+		$this->assertEqual($result, $expected);
+	}
+/**
  * testMixedParsing method
  *
  * @access public
@@ -926,7 +999,7 @@ class XmlTest extends CakeTestCase {
 			'Example' => array(
 				'Item' => array(
 					'title' => 'An example of a correctly reversed XMLNode',
-					'Desc' => array(),
+					'desc' => array(),
 				)
 			)
 		);

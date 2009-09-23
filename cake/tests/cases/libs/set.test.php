@@ -340,6 +340,21 @@ class SetTest extends CakeTestCase {
 		);
 		$a = Set::sort($a, '{n}.Person.name', 'ASC');
 		$this->assertIdentical($a, $b);
+
+		$names = array(
+			array('employees' => array(array('name' => array('first' => 'John', 'last' => 'Doe')))),
+			array('employees' => array(array('name' => array('first' => 'Jane', 'last' => 'Doe')))),
+			array('employees' => array(array('name' => array()))),
+			array('employees' => array(array('name' => array())))
+		);
+		$result = Set::sort($names, '{n}.employees.0.name', 'asc', 1);
+		$expected = array(
+			array('employees' => array(array('name' => array('first' => 'John', 'last' => 'Doe')))),
+			array('employees' => array(array('name' => array('first' => 'Jane', 'last' => 'Doe')))),
+			array('employees' => array(array('name' => array()))),
+			array('employees' => array(array('name' => array())))
+		);
+		$this->assertEqual($result, $expected);
 	}
 
 /**
@@ -538,6 +553,30 @@ class SetTest extends CakeTestCase {
 
 		$expected = array(array('id', 'name'), array('id', 'name'), array('id', 'name'), array('id', 'name'));
 		$r = Set::extract('/User/@*', $tricky);
+		$this->assertEqual($r, $expected);
+
+		$nonZero = array(
+			1 => array(
+				'User' => array(
+					'id' => 1,
+					'name' => 'John',
+				)
+			),
+			2 => array(
+				'User' => array(
+					'id' => 2,
+					'name' => 'Bob',
+				)
+			),
+			3 => array(
+				'User' => array(
+					'id' => 3,
+					'name' => 'Tony',
+				)
+			)
+		);
+		$expected = array(1, 2, 3);
+		$r = Set::extract('/User/id', $nonZero);
 		$this->assertEqual($r, $expected);
 
 		$common = array(
@@ -975,6 +1014,23 @@ class SetTest extends CakeTestCase {
 		$r = Set::extract('/file/.[type=application/zip]', $f);
 		$this->assertEqual($r, $expected);
 
+		$hasMany = array(
+			'Node' => array(
+				'id' => 1,
+				'name' => 'First',
+				'state' => 50
+			),
+			'ParentNode' => array(
+				0 => array(
+					'id' => 2,
+					'name' => 'Second',
+					'state' => 60,
+				)
+			)
+		);
+		$result = Set::extract('/ParentNode/name', $hasMany);
+		$expected = array('Second');
+		$this->assertEqual($result, $expected);
 	}
 
 /**
@@ -1786,7 +1842,6 @@ class SetTest extends CakeTestCase {
 		$result = Set::reverse($class);
 		$this->assertIdentical($result, $expected);
 
-		uses('model'.DS.'model');
 		$model = new Model(array('id' => false, 'name' => 'Model', 'table' => false));
 		$expected = array(
 			'Behaviors' => array('modelName' => 'Model', '_attached' => array(), '_disabled' => array(), '__methods' => array(), '__mappedMethods' => array(), '_log' => null),
@@ -2433,7 +2488,7 @@ class SetTest extends CakeTestCase {
 			array(
 				'Item' => array(
 					'title' => 'An example of a correctly reversed XMLNode',
-					'Desc' => array(),
+					'desc' => array(),
 				)
 			)
 		);

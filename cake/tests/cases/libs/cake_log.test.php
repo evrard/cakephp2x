@@ -49,5 +49,27 @@ class CakeLogTest extends CakeTestCase {
 		$this->assertPattern('/2[0-9]{3}-[0-9]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+ Warning: Test warning 2$/', $result);
 		unlink(LOGS . 'error.log');
 	}
+
+/**
+ * Test logging with the error handler.
+ *
+ * @return void
+ **/
+	function testLoggingWithErrorHandling() {
+		@unlink(LOGS . 'debug.log');
+		Configure::write('log', E_ALL & ~E_DEPRECATED);
+		Configure::write('debug', 0);
+
+		set_error_handler(array('CakeLog', 'handleError'));
+		$out .= '';
+
+		$result = file(LOGS . 'debug.log');
+		$this->assertEqual(count($result), 1);
+		$this->assertPattern(
+			'/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} Notice: Notice \(8\): Undefined variable: out in \[.+ line \d{2}\]$/',
+			$result[0]
+		);
+		@unlink(LOGS . 'debug.log');
+	}
 }
 ?>

@@ -130,9 +130,9 @@ class Cache extends Object {
 			if (self::engine($engine, self::$__config[$name]) === false) {
 				return false;
 			}
-			$settings = self::$__config[$name] = self::settings($engine);
-		} else {
-			$settings = self::$__config[$name] = self::set(self::$__config[$name]);
+			$settings = self::__config[$name] = self::settings($engine);
+		} else if ($settings = self::set(self::__config[$name])) {
+			self::__config[$name] = $settings;
 		}
 		return compact('engine', 'settings');
 	}

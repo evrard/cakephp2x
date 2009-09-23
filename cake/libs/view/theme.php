@@ -22,19 +22,24 @@
 /**
  * Theme view class
  *
+ * Allows the creation of multiple themes to be used in an app. Theme views are regular view files
+ * that can provide unique HTML and static assets.  If theme views are not found for the current view
+ * the default app view files will be used. You can set `$this->theme` and `$this->view = 'Theme'` 
+ * in your Controller to use the ThemeView.
+ *
+ * Example of theme path with `$this->theme = 'super_hot';` Would be `app/views/themed/super_hot/posts`
+ *
  * @package       cake
  * @subpackage    cake.cake.libs.view
  */
 class ThemeView extends View {
 
 /**
- * Enter description here...
+ * Constructor for ThemeView sets $this->theme.
  *
- * @param unknown_type $controller
- * @return void
- * @access public
+ * @param Controller $controller
  */
-	public function __construct (&$controller) {
+	public function __construct($controller) {
 		parent::__construct($controller);
 		$this->theme = $controller->theme;
 
@@ -66,7 +71,6 @@ class ThemeView extends View {
 		if (empty($this->__paths)) {
 			$this->__paths = $paths;
 		}
-
 		return $paths;
 	}
 }

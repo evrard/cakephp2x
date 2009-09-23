@@ -22,6 +22,7 @@
  */
 App::import('Controller', array('Component', 'Controller'), false);
 App::import('Component', 'Cookie');
+
 /**
  * CookieComponentTestController class
  *
@@ -176,9 +177,9 @@ class CookieComponentTest extends CakeTestCase {
 		$this->assertEqual($this->Controller->Cookie->read('version'), '1.2.0.x');
 		$this->assertEqual($this->Controller->Cookie->read('tag'), 'CakePHP Rocks!');
 
-		$this->Controller->Cookie->del('name');
-		$this->Controller->Cookie->del('version');
-		$this->Controller->Cookie->del('tag');
+		$this->Controller->Cookie->delete('name');
+		$this->Controller->Cookie->delete('version');
+		$this->Controller->Cookie->delete('tag');
 	}
 
 /**
@@ -216,22 +217,22 @@ class CookieComponentTest extends CakeTestCase {
  * @return void
  */
 	function testDeleteCookieValue() {
-		$this->Controller->Cookie->del('Encrytped_multi_cookies.name');
+		$this->Controller->Cookie->delete('Encrytped_multi_cookies.name');
 		$data = $this->Controller->Cookie->read('Encrytped_multi_cookies');
 		$expected = array('version' => '1.2.0.x', 'tag' =>'CakePHP Rocks!');
 		$this->assertEqual($data, $expected);
 
-		$this->Controller->Cookie->del('Encrytped_array');
+		$this->Controller->Cookie->delete('Encrytped_array');
 		$data = $this->Controller->Cookie->read('Encrytped_array');
 		$expected = array();
 		$this->assertEqual($data, $expected);
 
-		$this->Controller->Cookie->del('Plain_multi_cookies.name');
+		$this->Controller->Cookie->delete('Plain_multi_cookies.name');
 		$data = $this->Controller->Cookie->read('Plain_multi_cookies');
 		$expected = array('version' => '1.2.0.x', 'tag' =>'CakePHP Rocks!');
 		$this->assertEqual($data, $expected);
 
-		$this->Controller->Cookie->del('Plain_array');
+		$this->Controller->Cookie->delete('Plain_array');
 		$data = $this->Controller->Cookie->read('Plain_array');
 		$expected = array();
 		$this->assertEqual($data, $expected);

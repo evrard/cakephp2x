@@ -153,7 +153,7 @@ class XmlNode extends Object {
  * @param string $namespace Node namespace
  * @return object XmlNode
  */
-	public function &createNode($name = null, $value = null, $namespace = false) {
+	public function createNode($name = null, $value = null, $namespace = false) {
 		$node = new XmlNode($name, $value, $namespace);
 		$node->setParent($this);
 		return $node;
@@ -168,7 +168,7 @@ class XmlNode extends Object {
  * @param string $namespace Node namespace
  * @return object XmlElement
  */
-	public function &createElement($name = null, $value = null, $attributes = array(), $namespace = false) {
+	public function createElement($name = null, $value = null, $attributes = array(), $namespace = false) {
 		$element = new XmlElement($name, $value, $attributes, $namespace);
 		$element->setParent($this);
 		return $element;
@@ -180,7 +180,7 @@ class XmlNode extends Object {
  * @param string $value Node value
  * @return object XmlTextNode
  */
-	public function &createTextNode($value = null) {
+	public function createTextNode($value = null) {
 		$node = new XmlTextNode($value);
 		$node->setParent($this);
 		return $node;
@@ -211,6 +211,7 @@ class XmlNode extends Object {
 		}
 
 		$tagOpts = $this->__tagOptions($name);
+
 		if ($tagOpts === false) {
 			return;
 		}
@@ -231,7 +232,6 @@ class XmlNode extends Object {
 		$attributes = array();
 		$children = array();
 		$chldObjs = array();
-		$document = $this->document();
 
 		if (is_object($object)) {
 			$chldObjs = get_object_vars($object);
@@ -249,7 +249,12 @@ class XmlNode extends Object {
 			$node->createTextNode($chldObjs[$tagOpts['value']]);
 			unset($chldObjs[$tagOpts['value']]);
 		}
-		unset($chldObjs['_name_']);
+
+		$n = $name;
+		if (!empty($chldObjs['_name_'])) {
+			$n = null;
+			unset($chldObjs['_name_']);
+		}
 		$c = 0;
 
 		foreach ($chldObjs as $key => $val) {
@@ -257,14 +262,11 @@ class XmlNode extends Object {
 				$attributes[$key] = $val;
 			} else {
 				if (!isset($tagOpts['children']) || $tagOpts['children'] === array() || (is_array($tagOpts['children']) && in_array($key, $tagOpts['children']))) {
-					$n = $key;
-
-					if (is_numeric($n)) {
-						$n = $name;
+					if (!is_numeric($key)) {
+						$n = $key;
 					}
 					if (is_array($val)) {
-						foreach ($val as $i => $obj2) {
-							$n2 = $i;
+						foreach ($val as $n2 => $obj2) {
 							if (is_numeric($n2)) {
 								$n2 = $n;
 							}
@@ -393,7 +395,7 @@ class XmlNode extends Object {
  * @return object A reference to the appended child node
  * @access public
  */
-	public function &append(&$child, $options = array()) {
+	public function append($child, $options = array()) {
 		if (empty($child)) {
 			$return = false;
 			return $return;
@@ -446,7 +448,7 @@ class XmlNode extends Object {
  * @return object First XmlNode
  * @access public
  */
-	public function &first() {
+	public function first() {
 		if (isset($this->children[0])) {
 			return $this->children[0];
 		} else {
@@ -461,7 +463,7 @@ class XmlNode extends Object {
  * @return object Last XmlNode
  * @access public
  */
-	public function &last() {
+	public function last() {
 		if (count($this->children) > 0) {
 			return $this->children[count($this->children) - 1];
 		} else {
@@ -477,7 +479,7 @@ class XmlNode extends Object {
  * @return object Child XmlNode
  * @access public
  */
-	public function &child($id) {
+	public function child($id) {
 		$null = null;
 
 		if (is_int($id)) {
@@ -520,7 +522,7 @@ class XmlNode extends Object {
  * @return object A reference to the XmlNode object
  * @access public
  */
-	public function &nextSibling() {
+	public function nextSibling() {
 		$null = null;
 		$count = count($this->__parent->children);
 		for ($i = 0; $i < $count; $i++) {
@@ -540,7 +542,7 @@ class XmlNode extends Object {
  * @return object A reference to the XmlNode object
  * @access public
  */
-	public function &previousSibling() {
+	public function previousSibling() {
 		$null = null;
 		$count = count($this->__parent->children);
 		for ($i = 0; $i < $count; $i++) {
@@ -560,7 +562,7 @@ class XmlNode extends Object {
  * @return object Parent XmlNode
  * @access public
  */
-	public function &parent() {
+	public function parent() {
 		return $this->__parent;
 	}
 
@@ -570,7 +572,7 @@ class XmlNode extends Object {
  * @return object Parent XML object
  * @access public
  */
-	public function &document() {
+	public function document() {
 		$document = $this;
 		while (true) {
 			if (get_class($document) == 'Xml' || $document == null) {
@@ -656,7 +658,6 @@ class XmlNode extends Object {
 				if ($options['whitespace']) {
 					$d .= "\n";
 				}
-
 				$count = count($this->children);
 				$cDepth = $depth + 1;
 				for ($i = 0; $i < $count; $i++) {
@@ -701,7 +702,6 @@ class XmlNode extends Object {
 				if ($child->attributes) {
 					$value = array_merge(array('value' => $value), $child->attributes);
 				}
-
 				if (isset($out[$child->name]) || isset($multi[$key])) {
 					if (!isset($multi[$key])) {
 						$multi[$key] = array($out[$child->name]);
@@ -714,15 +714,16 @@ class XmlNode extends Object {
 				continue;
 			} elseif (count($child->children) === 0 && $child->value == '') {
 				$value = $child->attributes;
-
 				if (isset($out[$child->name]) || isset($multi[$key])) {
 					if (!isset($multi[$key])) {
 						$multi[$key] = array($out[$child->name]);
 						unset($out[$child->name]);
 					}
 					$multi[$key][] = $value;
-				} else {
+				} elseif (!empty($value)) {
 					$out[$key] = $value;
+				} else {
+					$out[$child->name] = $value;
 				}
 				continue;
 			} else {
@@ -844,19 +845,19 @@ class Xml extends XmlNode {
  * Constructor.  Sets up the XML parser with options, gives it this object as
  * its XML object, and sets some variables.
  *
+ * ### Options
+ * - 'root': The name of the root element, defaults to '#document'
+ * - 'version': The XML version, defaults to '1.0'
+ * - 'encoding': Document encoding, defaults to 'UTF-8'
+ * - 'namespaces': An array of namespaces (as strings) used in this document
+ * - 'format': Specifies the format this document converts to when parsed or
+ *    rendered out as text, either 'attributes' or 'tags', defaults to 'attributes'
+ * - 'tags': An array specifying any tag-specific formatting options, indexed
+ *    by tag name.  See XmlNode::normalize().
  * @param mixed $input The content with which this XML document should be initialized.  Can be a
- *                     string, array or object.  If a string is specified, it may be a literal XML
- *                     document, or a URL or file path to read from.
- * @param array $options Options to set up with, valid options are as follows:
- *                      - 'root': The name of the root element, defaults to '#document'
- *                      - 'version': The XML version, defaults to '1.0'
- *                      - 'encoding': Document encoding, defaults to 'UTF-8'
- *                      - 'namespaces': An array of namespaces (as strings) used in this document
- *                      - 'format': Specifies the format this document converts to when parsed or
- *                         rendered out as text, either 'attributes' or 'tags',
- *                         defaults to 'attributes'
- *                       - 'tags': An array specifying any tag-specific formatting options, indexed
- *                         by tag name.  See XmlNode::normalize().
+ *    string, array or object.  If a string is specified, it may be a literal XML
+ *    document, or a URL or file path to read from.
+ * @param array $options Options to set up with, for valid options see above:
  * @see XmlNode::normalize()
  */
 	public function __construct($input = null, $options = array()) {
@@ -885,9 +886,6 @@ class Xml extends XmlNode {
 				$Root->append($input, $options);
 			}
 		}
-		// if (Configure::read('App.encoding') !== null) {
-		// 	$this->encoding = Configure::read('App.encoding');
-		// }
 	}
 
 /**
@@ -931,8 +929,8 @@ class Xml extends XmlNode {
 		$this->__initParser();
 		$this->__rawData = trim($this->__rawData);
 		$this->__header = trim(str_replace(
-			a('<' . '?', '?' . '>'),
-			a('', ''),
+			array('<' . '?', '?' . '>'),
+			array('', ''),
 			substr($this->__rawData, 0, strpos($this->__rawData, '?' . '>'))
 		));
 
@@ -943,7 +941,6 @@ class Xml extends XmlNode {
 		for ($i = 0; $i < $count; $i++) {
 			$data = $vals[$i];
 			$data += array('tag' => null, 'value' => null, 'attributes' => array());
-
 			switch ($data['type']) {
 				case "open" :
 					$xml = $xml->createElement($data['tag'], $data['value'], $data['attributes']);
@@ -1025,7 +1022,7 @@ class Xml extends XmlNode {
  * @return object
  * @access public
  */
-	public function &next() {
+	public function next() {
 		$return = null;
 		return $return;
 	}
@@ -1036,7 +1033,7 @@ class Xml extends XmlNode {
  * @return object
  * @access public
  */
-	public function &previous() {
+	public function previous() {
 		$return = null;
 		return $return;
 	}
@@ -1047,7 +1044,7 @@ class Xml extends XmlNode {
  * @return object
  * @access public
  */
-	public function &parent() {
+	public function parent() {
 		$return = null;
 		return $return;
 	}
@@ -1459,6 +1456,7 @@ class XmlManager {
  *
  * @return object
  * @access public
+ * @todo: Deprecate / remove
  */
 	public function &getInstance() {
 		static $instance = array();

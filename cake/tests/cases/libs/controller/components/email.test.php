@@ -459,7 +459,7 @@ HTMLBLOC;
 HTMLBLOC;
 
 		$this->Controller->EmailTest->sendAs = 'html';
-		$expect = '<pre>' . str_replace('{CONTENTTYPE}', 'text/html; charset=UTF-8', $header) . $html . "\n" . '</pre>';
+		$expect = '<pre>' . str_replace('{CONTENTTYPE}', 'text/html; charset=UTF-8', $header) . $html . '</pre>';
 		$this->assertTrue($this->Controller->EmailTest->send('This is the body of the message', 'default', 'thin'));
 		$this->assertEqual($this->Controller->Session->read('Message.email.message'), $this->__osFix($expect));
 
@@ -500,10 +500,9 @@ TEXTBLOC;
 		$response = $this->Controller->EmailTest->smtpSend('HELO', '250');
 		$this->assertPattern('/501 Syntax: HELO hostname/', $this->Controller->EmailTest->smtpError);
 
-		$this->Controller->EmailTest->smtpError = null;
+		$this->Controller->EmailTest->reset();
 		$response = $this->Controller->EmailTest->smtpSend('HELO somehostname', '250');
 		$this->assertNoPattern('/501 Syntax: HELO hostname/', $this->Controller->EmailTest->smtpError);
-
 	}
 
 /**

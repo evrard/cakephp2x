@@ -29,7 +29,7 @@
  * @package       cake
  * @subpackage    cake.tests.groups
  */
-class NoDatabaseGroupTest extends GroupTest {
+class NoDatabaseGroupTest extends TestSuite {
 
 /**
  * label property
@@ -50,7 +50,7 @@ class NoDatabaseGroupTest extends GroupTest {
 		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'router');
 		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'inflector');
 		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'validation');
-		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'session');
+		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'cake_session');
 		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'cake_socket');
 		TestManager::addTestCasesFromDirectory($this, CORE_TEST_CASES . DS . 'libs' . DS . 'view');
 	}

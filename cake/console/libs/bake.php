@@ -56,6 +56,12 @@ class BakeShell extends Shell {
 			if (isset($this->params['connection'])) {
 				$this->{$task}->connection = $this->params['connection'];
 			}
+			foreach($this->args as $i => $arg) {
+				if (strpos($arg, '.')) {
+					list($this->params['plugin'], $this->args[$i]) = explode('.', $arg);
+					break;
+				}
+			}
 			if (isset($this->params['plugin'])) {
 				$this->{$task}->plugin = $this->params['plugin'];
 			}
@@ -91,9 +97,10 @@ class BakeShell extends Shell {
 		$this->out('[C]ontroller');
 		$this->out('[P]roject');
 		$this->out('[F]ixture');
+		$this->out('[T]est case');
 		$this->out('[Q]uit');
 
-		$classToBake = strtoupper($this->in(__('What would you like to Bake?', true), array('D', 'M', 'V', 'C', 'P', 'Q')));
+		$classToBake = strtoupper($this->in(__('What would you like to Bake?', true), array('D', 'M', 'V', 'C', 'P', 'F', 'T', 'Q')));
 		switch ($classToBake) {
 			case 'D':
 				$this->DbConfig->execute();
@@ -113,11 +120,14 @@ class BakeShell extends Shell {
 			case 'F':
 				$this->Fixture->execute();
 				break;
+			case 'T':
+				$this->Test->execute();
+				break;
 			case 'Q':
 				exit(0);
 				break;
 			default:
-				$this->out(__('You have made an invalid selection. Please choose a type of class to Bake by entering D, M, V, or C.', true));
+				$this->out(__('You have made an invalid selection. Please choose a type of class to Bake by entering D, M, V, F, T, or C.', true));
 		}
 		$this->hr();
 		$this->main();
@@ -157,7 +167,7 @@ class BakeShell extends Shell {
 			$object = new $model();
 			$modelExists = true;
 		} else {
-			App::import('Model');
+			App::import('Model', 'Model', false);
 			$object = new Model(array('name' => $name, 'ds' => $this->connection));
 		}
 

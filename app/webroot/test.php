@@ -1,6 +1,6 @@
 <?php
 /**
- * Short description for file.
+ * Web Access Frontend for TestSuite
  *
  * Long description for file
  *
@@ -20,7 +20,6 @@
  * @since         CakePHP(tm) v 1.2.0.4433
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
-error_reporting(E_ALL);
 set_time_limit(0);
 ini_set('memory_limit','128M');
 ini_set('display_errors', 1);

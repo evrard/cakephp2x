@@ -24,7 +24,7 @@
  *
  */
 if (!class_exists('Object')) {
-	uses('object');
+	require LIBS . 'object.php';
 }
 
 /**
@@ -159,6 +159,9 @@ class Folder extends Object {
 	public function read($sort = true, $exceptions = false, $fullPath = false) {
 		$dirs = $files = array();
 
+		if (!$this->pwd()) {
+			return array($dirs, $files);
+		}
 		if (is_array($exceptions)) {
 			$exceptions = array_flip($exceptions);
 		}
@@ -210,6 +213,9 @@ class Folder extends Object {
  * @access public
  */
 	public function findRecursive($pattern = '.*', $sort = false) {
+		if (!$this->pwd()) {
+			return array();
+		}
 		$startsOn = $this->path;
 		$out = $this->_findRecursive($pattern, $sort);
 		$this->cd($startsOn);
@@ -550,6 +556,9 @@ class Folder extends Object {
 		if (!$path) {
 			$path = $this->pwd();
 		}
+		if (!$path) {
+			return null;
+		}
 		$path = Folder::slashTerm($path);
 		if (is_dir($path) === true) {
 			$normalFiles = glob($path . '*');
@@ -594,6 +603,9 @@ class Folder extends Object {
  * @access public
  */
 	public function copy($options = array()) {
+		if (!$this->pwd()) {
+			return false;
+		}
 		$to = null;
 		if (is_string($options)) {
 			$to = $options;
@@ -611,7 +623,7 @@ class Folder extends Object {
 		}
 
 		if (!is_dir($toDir)) {
-			$this->mkdir($toDir, $mode);
+			$this->create($toDir, $mode);
 		}
 
 		if (!is_writable($toDir)) {
@@ -703,56 +715,6 @@ class Folder extends Object {
  */
 	public function errors() {
 		return $this->__errors;
-	}
-
-/**
- * nix flavored alias
- *
- * @see read
- * @access public
- */
-	public function ls($sort = true, $exceptions = false) {
-		return $this->read($sort, $exceptions);
-	}
-
-/**
- * nix flavored alias
- *
- * @see create
- * @access public
- */
-	public function mkdir($pathname, $mode = 0755) {
-		return $this->create($pathname, $mode);
-	}
-
-/**
- * nix flavored alias
- *
- * @see copy
- * @access public
- */
-	public function cp($options) {
-		return $this->copy($options);
-	}
-
-/**
- * nix flavored alias
- *
- * @see move
- * @access public
- */
-	public function mv($options) {
-		return $this->move($options);
-	}
-
-/**
- * nix flavored alias
- *
- * @see delete
- * @access public
- */
-	public function rm($path) {
-		return $this->delete($path);
 	}
 
 /**

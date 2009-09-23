@@ -1,8 +1,6 @@
 <?php
 /**
- * Short description for file.
- *
- * Long description for file
+ * SessionComponent.  Provides access to Sessions from the Controller layer
  *
  * PHP Version 5.x
  *
@@ -162,23 +160,6 @@ class SessionComponent extends CakeSession {
 	}
 
 /**
- * Used to delete a session variable.
- *
- * In your controller: $this->Session->del('Controller.sessKey');
- *
- * @param string $name the name of the session key you want to delete
- * @return boolean true is session variable is set and can be deleted, false is variable was not set.
- * @access public
- */
-	public function del($name) {
-		if ($this->__active === true) {
-			$this->__start();
-			return parent::del($name);
-		}
-		return false;
-	}
-
-/**
  * Wrapper for SessionComponent::del();
  *
  * In your controller: $this->Session->delete('Controller.sessKey');
@@ -190,7 +171,7 @@ class SessionComponent extends CakeSession {
 	public function delete($name) {
 		if ($this->__active === true) {
 			$this->__start();
-			return $this->del($name);
+			return parent::delete($name);
 		}
 		return false;
 	}
@@ -236,15 +217,15 @@ class SessionComponent extends CakeSession {
  * Additional params below can be passed to customize the output, or the Message.[key]
  *
  * @param string $message Message to be flashed
- * @param string $layout Layout to wrap flash message in
+ * @param string $element Element to wrap flash message in.
  * @param array $params Parameters to be sent to layout as view variables
  * @param string $key Message key, default is 'flash'
  * @access public
  */
-	public function setFlash($message, $layout = 'default', $params = array(), $key = 'flash') {
+	public function setFlash($message, $element = 'default', $params = array(), $key = 'flash') {
 		if ($this->__active === true) {
 			$this->__start();
-			$this->write('Message.' . $key, compact('message', 'layout', 'params'));
+			$this->write('Message.' . $key, compact('message', 'element', 'params'));
 		}
 	}
 

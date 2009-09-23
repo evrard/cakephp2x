@@ -48,22 +48,22 @@ class SessionHelperTest extends CakeTestCase {
 			'test' => 'info',
 			'Message' => array(
 				'flash' => array(
-					'layout' => 'default',
+					'element' => 'default',
 					'params' => array(),
 					'message' => 'This is a calling'
 				),
 				'notification' => array(
-					'layout' => 'session_helper',
+					'element' => 'session_helper',
 					'params' => array('title' => 'Notice!', 'name' => 'Alert!'),
 					'message' => 'This is a test of the emergency broadcasting system',
 				),
 				'classy' => array(
-					'layout' => 'default',
+					'element' => 'default',
 					'params' => array('class' => 'positive'),
 					'message' => 'Recorded'
 				),
 				'bare' => array(
-					'layout' => null,
+					'element' => null,
 					'message' => 'Bare message',
 					'params' => array(),
 				),
@@ -116,7 +116,7 @@ class SessionHelperTest extends CakeTestCase {
 	function testCheck() {
 		$this->assertTrue($this->Session->check('test'));
 
-		$this->assertTrue($this->Session->check('Message.flash.layout'));
+		$this->assertTrue($this->Session->check('Message.flash.element'));
 
 		$this->assertFalse($this->Session->check('Does.not.exist'));
 

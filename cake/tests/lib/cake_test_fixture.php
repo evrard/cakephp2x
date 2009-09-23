@@ -30,6 +30,13 @@
 class CakeTestFixture extends Object {
 
 /**
+ * Name of the object
+ *
+ * @var string
+ **/
+	var $name = null;
+
+/**
  * Cake's DBO driver (e.g: DboMysql).
  *
  * @access public

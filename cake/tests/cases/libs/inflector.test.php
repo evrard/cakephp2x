@@ -106,12 +106,15 @@ class InflectorTest extends CakeTestCase {
 		$this->assertEqual(Inflector::singularize('lives'), 'life');
 		$this->assertEqual(Inflector::singularize('knives'), 'knife');
 		$this->assertEqual(Inflector::singularize('wolves'), 'wolf');
+		$this->assertEqual(Inflector::singularize('slaves'), 'slave');
 		$this->assertEqual(Inflector::singularize('shelves'), 'shelf');
 		$this->assertEqual(Inflector::singularize('taxis'), 'taxi');
 		$this->assertEqual(Inflector::singularize('taxes'), 'tax');
+		$this->assertEqual(Inflector::singularize('Taxes'), 'Tax');
 		$this->assertEqual(Inflector::singularize('faxes'), 'fax');
 		$this->assertEqual(Inflector::singularize('waxes'), 'wax');
         $this->assertEqual(Inflector::singularize('niches'), 'niche');
+		$this->assertEqual(Inflector::singularize('waves'), 'wave');
 		$this->assertEqual(Inflector::singularize(''), '');
 	}
 
@@ -156,6 +159,8 @@ class InflectorTest extends CakeTestCase {
 		$this->assertEqual(Inflector::pluralize('people'), 'people');
 		$this->assertEqual(Inflector::pluralize('glove'), 'gloves');
 		$this->assertEqual(Inflector::pluralize('crisis'), 'crises');
+		$this->assertEqual(Inflector::pluralize('tax'), 'taxes');
+		$this->assertEqual(Inflector::pluralize('wave'), 'waves');
 		$this->assertEqual(Inflector::pluralize(''), '');
 	}
 
@@ -208,6 +213,18 @@ class InflectorTest extends CakeTestCase {
 
 		$result = Inflector::slug('#this melts your face1#2#3', '-');
 		$expected = 'this-melts-your-face1-2-3';
+		$this->assertEqual($result, $expected);
+
+		$result = Inflector::slug('controller/action/りんご/1');
+		$expected = 'controller_action_りんご_1';
+		$this->assertEqual($result, $expected);
+
+		$result = Inflector::slug('の話が出たので大丈夫かなあと');
+		$expected = 'の話が出たので大丈夫かなあと';
+		$this->assertEqual($result, $expected);
+
+		$result = Inflector::slug('posts/view/한국어/page:1/sort:asc');
+		$expected = 'posts_view_한국어_page_1_sort_asc';
 		$this->assertEqual($result, $expected);
 	}
 

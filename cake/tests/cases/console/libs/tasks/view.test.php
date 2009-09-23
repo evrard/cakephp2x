@@ -38,7 +38,6 @@ require_once CAKE . 'console' .  DS . 'libs' . DS . 'tasks' . DS . 'controller.p
 require_once CAKE . 'console' .  DS . 'libs' . DS . 'tasks' . DS . 'template.php';
 require_once CAKE . 'console' .  DS . 'libs' . DS . 'tasks' . DS . 'project.php';
 
-
 Mock::generatePartial(
 	'ShellDispatcher', 'TestViewTaskMockShellDispatcher',
 	array('getInput', 'stdout', 'stderr', '_stop', '_initEnvironment')
@@ -119,6 +118,8 @@ class ViewTaskTest extends CakeTestCase {
 /**
  * startTest method
  *
+ * Ensure that the default theme is used
+ *
  * @return void
  * @access public
  */
@@ -131,6 +132,7 @@ class ViewTaskTest extends CakeTestCase {
 		$this->Task->Controller =& new ViewTaskMockControllerTask();
 		$this->Task->Project =& new ViewTaskMockProjectTask();
 		$this->Task->path = TMP;
+		$this->Task->Template->params['theme'] = 'default';
 	}
 
 /**
@@ -258,11 +260,11 @@ class ViewTaskTest extends CakeTestCase {
 
 		$this->Task->expectAt(0, 'createFile', array(
 			TMP . 'view_task_comments' . DS . 'view.ctp',
-			new PatternExpectation('/ViewTaskComments/')
+			new PatternExpectation('/View Task Comments/')
 		));
 		$this->Task->expectAt(1, 'createFile', array(
 			TMP . 'view_task_comments' . DS . 'edit.ctp',
-			new PatternExpectation('/Edit ViewTaskComment/')
+			new PatternExpectation('/Edit View Task Comment/')
 		));
 		$this->Task->expectAt(2, 'createFile', array(
 			TMP . 'view_task_comments' . DS . 'index.ctp',
@@ -301,11 +303,9 @@ class ViewTaskTest extends CakeTestCase {
 		$this->Task->Controller->setReturnValue('listAll', array('view_task_comments'));
 		$this->Task->Controller->expectOnce('listAll');
 
-		$this->Task->expectCallCount('createFile', 4);
+		$this->Task->expectCallCount('createFile', 2);
 		$this->Task->expectAt(0, 'createFile', array(TMP . 'view_task_comments' . DS . 'index.ctp', '*'));
-		$this->Task->expectAt(1, 'createFile', array(TMP . 'view_task_comments' . DS . 'view.ctp', '*'));
-		$this->Task->expectAt(2, 'createFile', array(TMP . 'view_task_comments' . DS . 'add.ctp', '*'));
-		$this->Task->expectAt(3, 'createFile', array(TMP . 'view_task_comments' . DS . 'edit.ctp', '*'));
+		$this->Task->expectAt(1, 'createFile', array(TMP . 'view_task_comments' . DS . 'add.ctp', '*'));
 
 		$this->Task->execute();
 	}
@@ -389,11 +389,11 @@ class ViewTaskTest extends CakeTestCase {
 		));
 		$this->Task->expectAt(2, 'createFile', array(
 			TMP . 'view_task_comments' . DS . 'add.ctp',
-			new PatternExpectation('/Add ViewTaskComment/')
+			new PatternExpectation('/Add View Task Comment/')
 		));
 		$this->Task->expectAt(3, 'createFile', array(
 			TMP . 'view_task_comments' . DS . 'edit.ctp',
-			new PatternExpectation('/Edit ViewTaskComment/')
+			new PatternExpectation('/Edit View Task Comment/')
 		));
 
 		$this->Task->execute();
@@ -426,11 +426,11 @@ class ViewTaskTest extends CakeTestCase {
 		));
 		$this->Task->expectAt(2, 'createFile', array(
 			TMP . 'view_task_comments' . DS . 'admin_add.ctp',
-			new PatternExpectation('/Add ViewTaskComment/')
+			new PatternExpectation('/Add View Task Comment/')
 		));
 		$this->Task->expectAt(3, 'createFile', array(
 			TMP . 'view_task_comments' . DS . 'admin_edit.ctp',
-			new PatternExpectation('/Edit ViewTaskComment/')
+			new PatternExpectation('/Edit View Task Comment/')
 		));
 
 		$this->Task->execute();

@@ -29,7 +29,7 @@
  * @package       cake
  * @subpackage    cake.tests.groups
  */
-class LibGroupTest extends GroupTest {
+class LibGroupTest extends TestSuite {
 
 /**
  * label property

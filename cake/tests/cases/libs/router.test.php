@@ -709,6 +709,20 @@ class RouterTest extends CakeTestCase {
 		));
 		$expected = '/admin/shows/show_tickets/edit/6';
 		$this->assertEqual($result, $expected);
+
+		Router::reload();
+
+		Router::setRequestInfo(array(
+			array('pass' => array(), 'action' => 'admin_index', 'plugin' => null, 'controller' => 'posts', 'prefix' => 'admin', 'admin' => true, 'url' => array('url' => 'admin/posts')),
+			array('base' => '', 'here' => '/admin/posts', 'webroot' => '/')
+		));
+
+		Router::connect('/admin/posts/*', array('controller' => 'posts', 'action' => 'index', 'admin' => true));
+		Router::parse('/');
+
+		$result = Router::url(array('all'));
+		$expected = '/admin/posts/all';
+		$this->assertEqual($result, $expected);
 	}
 
 /**
@@ -1077,11 +1091,13 @@ class RouterTest extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 
 		Configure::write('Routing.admin', 'admin');
-		$paths = Configure::read('pluginPaths');
-		Configure::write('pluginPaths', array(
-			TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS
-		));
-		Configure::write('__objects.plugin', array('test_plugin'));
+		$paths = App::path('plugins');
+		App::build(array(
+			'plugins' =>  array(
+				TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS
+			)
+		), true);
+		App::objects('plugin', null, false);
 
 		Router::reload();
 		Router::setRequestInfo(array(
@@ -1096,7 +1112,7 @@ class RouterTest extends CakeTestCase {
 		$expected = '/admin/test_plugin';
 		$this->assertEqual($result, $expected);
 
-		Configure::write('pluginPaths', $paths);
+		App::build(array('plugins' => $paths));
 	}
 
 /**
@@ -1714,6 +1730,75 @@ class RouterTest extends CakeTestCase {
 		$this->assertEqual(Router::stripPlugin($url, $pluginName), $expected);
 		$this->assertEqual(Router::stripPlugin($url), $url);
 		$this->assertEqual(Router::stripPlugin($url, null), $url);
+	}
+/**
+ * testCurentRoute
+ *
+ * This test needs some improvement and actual requestAction() usage
+ * 
+ * @return void
+ * @access public
+ */
+	function testCurentRoute() {
+		$url = array('controller' => 'pages', 'action' => 'display', 'government');
+		Router::connect('/government', $url);
+		Router::parse('/government');
+		$route = Router::currentRoute();
+		$this->assertEqual(array_merge($url, array('plugin' => false)), $route[3]);
+	}
+/**
+ * testRequestRoute
+ *
+ * @return void
+ * @access public
+ */
+	function testRequestRoute() {
+		$url = array('controller' => 'products', 'action' => 'display', 5);
+		Router::connect('/government', $url);
+		Router::parse('/government');
+		$route = Router::requestRoute();
+		$this->assertEqual(array_merge($url, array('plugin' => false)), $route[3]);
+
+		// test that the first route is matched
+		$newUrl = array('controller' => 'products', 'action' => 'display', 6);
+		Router::connect('/government', $url);
+		Router::parse('/government');
+		$route = Router::requestRoute();
+		$this->assertEqual(array_merge($url, array('plugin' => false)), $route[3]);
+
+		// test that an unmatched route does not change the current route
+		$newUrl = array('controller' => 'products', 'action' => 'display', 6);
+		Router::connect('/actor', $url);
+		Router::parse('/government');
+		$route = Router::requestRoute();
+		$this->assertEqual(array_merge($url, array('plugin' => false)), $route[3]);
+	}
+/**
+ * testGetParams
+ *
+ * @return void
+ * @access public
+ */
+	function testGetParams() {
+		$paths = array('base' => '/', 'here' => '/products/display/5', 'webroot' => '/webroot');
+		$params = array('param1' => '1', 'param2' => '2');
+		Router::setRequestInfo(array($params, $paths));
+		$expected = array(
+			'plugin' => false, 'controller' => false, 'action' => false,
+			'param1' => '1', 'param2' => '2'
+		);
+		$this->assertEqual(Router::getparams(), $expected);
+		$this->assertEqual(Router::getparam('controller'), false);
+		$this->assertEqual(Router::getparam('param1'), '1');
+		$this->assertEqual(Router::getparam('param2'), '2');
+
+		Router::reload();
+
+		$params = array('controller' => 'pages', 'action' => 'display');
+		Router::setRequestInfo(array($params, $paths));
+		$expected = array('plugin' => false, 'controller' => 'pages', 'action' => 'display');
+		$this->assertEqual(Router::getparams(), $expected);
+		$this->assertEqual(Router::getparams(true), $expected);
 	}
 }
 ?>

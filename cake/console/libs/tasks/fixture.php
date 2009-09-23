@@ -74,7 +74,7 @@ class FixtureTask extends Shell {
 		parent::__construct($dispatch);
 		$this->path = $this->params['working'] . DS . 'tests' . DS . 'fixtures' . DS;
 		if (!class_exists('CakeSchema')) {
-			App::import('Model', 'CakeSchema');
+			App::import('Model', 'CakeSchema', false);
 		}
 	}
 
@@ -384,13 +384,13 @@ class FixtureTask extends Shell {
 		while (!$condition) {
 			$condition = $this->in($prompt, null, 'WHERE 1=1 LIMIT 10');
 		}
-		App::import('Core', 'Model');
+		App::import('Model', 'Model', false);
 		$modelObject =& new Model(array('name' => $modelName, 'table' => $useTable, 'ds' => $this->connection));
 		$records = $modelObject->find('all', array(
 			'conditions' => $condition,
 			'recursive' => -1
 		));
-		$db =& $modelObject->getDataSource();
+		$db =& ConnectionManager::getDataSource($modelObject->useDbConfig);
 		$schema = $modelObject->schema();
 		$out = array();
 		foreach ($records as $record) {
@@ -419,7 +419,7 @@ class FixtureTask extends Shell {
 		$this->out('Parameters:');
 		$this->out("\t-count       When using generated data, the number of records to include in the fixture(s).");
 		$this->out("\t-connection  Which database configuration to use for baking.");
-		$this->out("\t-plugin      lowercased_underscored name of plugin to bake fixtures for.");
+		$this->out("\t-plugin      CamelCased name of plugin to bake fixtures for.");
 		$this->out("");
 		$this->_stop();
 	}

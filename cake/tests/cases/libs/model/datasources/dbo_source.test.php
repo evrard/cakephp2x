@@ -23,8 +23,7 @@
 if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
 	define('CAKEPHP_UNIT_TEST_EXECUTION', 1);
 }
-App::import('Core', array('Model', 'DataSource', 'DboSource', 'DboMysql'));
-App::import('Model', 'App');
+App::import('Model', array('Model', 'DataSource', 'DboSource', 'DboMysql', 'App'));
 require_once dirname(dirname(__FILE__)) . DS . 'models.php';
 
 /**
@@ -1327,6 +1326,8 @@ class DboSourceTest extends CakeTestCase {
 
 		$this->testDb = new DboTest($this->__config);
 		$this->testDb->cacheSources = false;
+		$this->testDb->startQuote = '`';
+		$this->testDb->endQuote = '`';
 		Configure::write('debug', 1);
 		$this->debug = Configure::read('debug');
 		$this->Model = new TestModel();
@@ -1353,6 +1354,7 @@ class DboSourceTest extends CakeTestCase {
 	function testFieldDoubleEscaping() {
 		$config = array_merge($this->__config, array('driver' => 'test'));
 		$test = ConnectionManager::create('quoteTest', $config);
+		$test->simulated = array();
 
 		$this->Model = new Article2(array('alias' => 'Article', 'ds' => 'quoteTest'));
 		$this->Model->setDataSource('quoteTest');
@@ -2843,6 +2845,10 @@ class DboSourceTest extends CakeTestCase {
 		);
 		$this->assertEqual($result, $expected);
 
+		$result = $this->testDb->fields($this->Model, null, "(`Provider`.`star_total` / `Provider`.`total_ratings`) as `rating`");
+		$expected = array("(`Provider`.`star_total` / `Provider`.`total_ratings`) as `rating`");
+		$this->assertEqual($result, $expected);
+
 		$result = $this->testDb->fields($this->Model, 'Post');
 		$expected = array(
 			'`Post`.`id`', '`Post`.`client_id`', '`Post`.`name`', '`Post`.`login`',
@@ -2920,7 +2926,7 @@ class DboSourceTest extends CakeTestCase {
 		$expected = array(
 			'`Foo`.`id`',
 			'`Foo`.`title`',
-			'(user_count + discussion_count + post_count) AS `score`'
+			'(user_count + discussion_count + post_count) AS score'
 		);
 		$this->assertEqual($result, $expected);
 	}
@@ -3552,14 +3558,14 @@ class DboSourceTest extends CakeTestCase {
 			'MyIndex' => array('column' => 'id', 'unique' => true)
 		);
 		$result = $this->testDb->buildIndex($data);
-		$expected = array('UNIQUE KEY MyIndex (`id`)');
+		$expected = array('UNIQUE KEY `MyIndex` (`id`)');
 		$this->assertEqual($result, $expected);
 
 		$data = array(
 			'MyIndex' => array('column' => array('id', 'name'), 'unique' => true)
 		);
 		$result = $this->testDb->buildIndex($data);
-		$expected = array('UNIQUE KEY MyIndex (`id`, `name`)');
+		$expected = array('UNIQUE KEY `MyIndex` (`id`, `name`)');
 		$this->assertEqual($result, $expected);
 	}
 
@@ -3612,11 +3618,11 @@ class DboSourceTest extends CakeTestCase {
 	function testHasAny() {
 		$this->testDb->hasAny($this->Model, array());
 		$expected = 'SELECT COUNT(`TestModel`.`id`) AS count FROM `test_models` AS `TestModel` WHERE 1 = 1';
-		$this->assertEqual($this->testDb->simulated[0], $expected);
+		$this->assertEqual($this->testDb->simulated[1], $expected);
 
 		$this->testDb->hasAny($this->Model, array('TestModel.name' => 'harry'));
 		$expected = "SELECT COUNT(`TestModel`.`id`) AS count FROM `test_models` AS `TestModel` WHERE `TestModel`.`name` = 'harry'";
-		$this->assertEqual($this->testDb->simulated[1], $expected);
+		$this->assertEqual($this->testDb->simulated[2], $expected);
 	}
 
 /**
@@ -3959,6 +3965,30 @@ class DboSourceTest extends CakeTestCase {
 
 		$this->testDb->error = $oldError;
 		Configure::write('debug', $oldDebug);
+	}
+
+/**
+ * test getting the query log as an array.
+ *
+ * @return void
+ **/
+	function testGetLog() {
+		$this->testDb->logQuery('Query 1');
+		$this->testDb->logQuery('Query 2');
+
+		$oldError = $this->testDb->error;
+		$this->testDb->error = true;
+		$result = $this->testDb->logQuery('Error 1');
+		$this->assertFalse($result);
+		$this->testDb->error = $oldError;
+
+		$log = $this->testDb->getLog();
+		$expected = array('query' => 'Query 1', 'error' => '', 'affected' => '', 'numRows' => '', 'took' => '');
+		$this->assertEqual($log[0], $expected);
+		$expected = array('query' => 'Query 2', 'error' => '', 'affected' => '', 'numRows' => '', 'took' => '');
+		$this->assertEqual($log[1], $expected);
+		$expected = array('query' => 'Error 1', 'error' => true, 'affected' => '', 'numRows' => '', 'took' => '');
+		$this->assertEqual($log[2], $expected);
 	}
 
 /**

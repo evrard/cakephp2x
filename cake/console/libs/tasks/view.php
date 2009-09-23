@@ -20,7 +20,7 @@
  * @since         CakePHP(tm) v 1.2
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-App::import('Core', 'Controller');
+App::import('Controller', 'Controller', false);
 
 /**
  * Task class for creating and updating view files.
@@ -102,63 +102,40 @@ class ViewTask extends Shell {
 		if (empty($this->args)) {
 			$this->__interactive();
 		}
+		if (empty($this->args[0])) {
+			return;
+		}
+		if (!isset($this->connection)) {
+			$this->connection = 'default';
+		}
+		$controller = $action = $alias = null;
+		$this->controllerName = Inflector::camelize($this->args[0]);
+		$this->controllerPath = Inflector::underscore($this->controllerName);
 
-		if (isset($this->args[0])) {
-			if (!isset($this->connection)) {
-				$this->connection = 'default';
-			}
-			$controller = $action = $alias = null;
-			$this->controllerName = Inflector::camelize($this->args[0]);
-			$this->controllerPath = Inflector::underscore($this->controllerName);
+		if (strtolower($this->args[0]) == 'all') {
+			return $this->all();
+		}
 
-			if (isset($this->args[1])) {
-				$this->template = $this->args[1];
-			}
+		if (isset($this->args[1])) {
+			$this->template = $this->args[1];
+		}
+		if (isset($this->args[2])) {
+			$action = $this->args[2];
+		}
+		if (!$action) {
+			$action = $this->template;
+		}
+		if ($action) {
+			return $this->bake($action, true);
+		}
 
-			if (isset($this->args[2])) {
-				$action = $this->args[2];
-			}
+		$vars = $this->__loadController();
+		$methods = $this->_methodsToBake();
 
-			if (!$action) {
-				$action = $this->template;
-			}
-
-			if (strtolower($this->args[0]) == 'all') {
-				return $this->all();
-			}
-
-			if (in_array($action, $this->scaffoldActions)) {
-				$this->bake($action, true);
-			} elseif ($action) {
-				$this->bake($action, true);
-			} else {
-				$vars = $this->__loadController();
-				$methods = $this->_methodsToBake();
-				$methods =  array_diff(
-					array_map('strtolower', get_class_methods($this->controllerName . 'Controller')),
-					array_map('strtolower', get_class_methods('appcontroller'))
-				);
-				if (empty($methods)) {
-					$methods = $this->scaffoldActions;
-				}
-				$adminRoute = Configure::read('Routing.admin');
-				if ($adminRoute && isset($this->params['admin'])) {
-					foreach ($methods as $i => $method) {
-						if (strpos($method, $adminRoute . '_') === false) {
-							unset($methods[$i]);
-						}
-					}
-				}
-				$adminDelete = null;
-				if (!empty($adminRoute)) {
-					$adminDelete = $adminRoute . '_delete';
-				}
-				foreach ($methods as $method) {
-					if ($method{0} != '_' && !in_array($method, array('delete', $adminDelete))) {
-						$content = $this->getContent($method, $vars);
-						$this->bake($method, $content);
-					}
-				}
+		foreach ($methods as $method) {
+			$content = $this->getContent($method, $vars);
+			if ($content) {
+				$this->bake($method, $content);
 			}
 		}
 	}
@@ -172,15 +149,22 @@ class ViewTask extends Shell {
 			array_map('strtolower', get_class_methods($this->controllerName . 'Controller')),
 			array_map('strtolower', get_class_methods('appcontroller'))
 		);
+		$scaffoldActions = false;
 		if (empty($methods)) {
+			$scaffoldActions = true;
 			$methods = $this->scaffoldActions;
 		}
 		$adminRoute = Configure::read('Routing.admin');
 		foreach ($methods as $i => $method) {
-			if ($method == 'delete' || $method = $adminRoute . '_delete' || $method{0} == '_') {
-				unset($methods[$i]);
+			if ($adminRoute && isset($this->params['admin'])) {
+				if ($scaffoldActions) {
+					$methods[$i] = $adminRoute . '_' . $method;
+					continue;
+				} elseif (strpos($method, $adminRoute . '_') === false) {
+					unset($methods[$i]);
+				}
 			}
-			if ($adminRoute && isset($this->params['admin']) && strpos($method, $adminRoute . '_') === false) {
+			if ($method[0] === '_' || $method == strtolower($this->controllerName . 'Controller')) {
 				unset($methods[$i]);
 			}
 		}
@@ -193,9 +177,9 @@ class ViewTask extends Shell {
  * @return void
  **/
 	function all() {
-		$actions = $this->scaffoldActions;
 		$this->Controller->interactive = false;
 		$tables = $this->Controller->listAll($this->connection, false);
+
 		$this->interactive = false;
 		foreach ($tables as $table) {
 			$model = $this->_modelName($table);
@@ -203,6 +187,7 @@ class ViewTask extends Shell {
 			$this->controllerPath = Inflector::underscore($this->controllerName);
 			if (App::import('Model', $model)) {
 				$vars = $this->__loadController();
+				$actions = $this->_methodsToBake();
 				$this->bakeActions($actions, $vars);
 			}
 		}
@@ -296,9 +281,7 @@ class ViewTask extends Shell {
 			$primaryKey = $modelObj->primaryKey;
 			$displayField = $modelObj->displayField;
 			$singularVar = Inflector::variable($modelClass);
-			$pluralVar = Inflector::variable($this->controllerName);
-			$singularHumanName = Inflector::humanize($modelClass);
-			$pluralHumanName = Inflector::humanize($this->controllerName);
+			$singularHumanName = $this->_singularHumanName($modelClass);
 			$schema = $modelObj->schema();
 			$fields = array_keys($schema);
 			$associations = $this->__associations($modelObj);
@@ -306,13 +289,13 @@ class ViewTask extends Shell {
 			$primaryKey = null;
 			$displayField = null;
 			$singularVar = Inflector::variable(Inflector::singularize($this->controllerName));
-			$pluralVar = Inflector::variable($this->controllerName);
-			$singularHumanName = Inflector::humanize(Inflector::singularize($this->controllerName));
-			$pluralHumanName = Inflector::humanize($this->controllerName);
+			$singularHumanName = $this->_singularHumanName($this->controllerName);
 			$fields = array();
 			$schema = array();
 			$associations = array();
 		}
+		$pluralVar = Inflector::variable($this->controllerName);
+		$pluralHumanName = $this->_pluralHumanName($this->controllerName);
 
 		return compact('modelClass', 'schema', 'primaryKey', 'displayField', 'singularVar', 'pluralVar',
 				'singularHumanName', 'pluralHumanName', 'fields','associations');
@@ -400,6 +383,9 @@ class ViewTask extends Shell {
 		if (in_array($template, array('add', 'edit'))) {
 			$action = $template;
 			$template = 'form';
+		} elseif (preg_match('@(_add|_edit)$@', $template)) {
+			$action = $template;
+			$template = str_replace(array('_add', '_edit'), '_form', $template);
 		}
 		if (!$vars) {
 			$vars = $this->__loadController();
@@ -413,8 +399,6 @@ class ViewTask extends Shell {
 		if (!empty($output)) {
 			return $output;
 		}
-		$this->hr();
-		$this->err(sprintf(__('Template for %s could not be found', true), $template));
 		return false;
 	}
 /**
@@ -470,5 +454,4 @@ class ViewTask extends Shell {
 		return $associations;
 	}
 }
-
 ?>

@@ -48,6 +48,8 @@ class TheHtmlTestController extends Controller {
 	var $uses = null;
 }
 
+Mock::generate('View', 'HtmlHelperMockView');
+
 /**
  * HtmlHelperTest class
  *
@@ -57,7 +59,19 @@ class TheHtmlTestController extends Controller {
 class HtmlHelperTest extends CakeTestCase {
 
 /**
- * Html property
+ * Regexp for CDATA start block
+ *
+ * @var string
+ */
+	var $cDataStart = 'preg:/^\/\/<!\[CDATA\[[\n\r]*/';
+/**
+ * Regexp for CDATA end block
+ *
+ * @var string
+ */
+	var $cDataEnd = 'preg:/[^\]]*\]\]\>[\s\r\n]*/';
+/**
+ * html property
  *
  * @var object
  * @access public
@@ -94,7 +108,7 @@ class HtmlHelperTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function setUp() {
+	function startTest() {
 		$this->Html = new HtmlHelper();
 		$view = new View(new TheHtmlTestController());
 		ClassRegistry::addObject('view', $view);
@@ -104,16 +118,17 @@ class HtmlHelperTest extends CakeTestCase {
 	}
 
 /**
- * tearDown method
+ * endTest method
  *
  * @access public
  * @return void
  */
-	function tearDown() {
+	function endTest() {
 		Configure::write('App.encoding', $this->_appEncoding);
 		Configure::write('Asset', $this->_asset);
 		Configure::write('debug', $this->_debug);
 		ClassRegistry::flush();
+		unset($this->Html);
 	}
 
 /**
@@ -243,7 +258,7 @@ class HtmlHelperTest extends CakeTestCase {
 		);
 		$this->assertTags($result, $expected);
 
-		Configure::write('Asset.timestamp', true);
+		Configure::write('Asset.timestamp', 'force');
 
  		$result = $this->Html->link($this->Html->image('test.gif'), '#', array(), false, false, false);
  		$expected = array(
@@ -283,7 +298,7 @@ class HtmlHelperTest extends CakeTestCase {
 		$result = $this->Html->image('/test/view/1.gif');
 		$this->assertTags($result, array('img' => array('src' => '/test/view/1.gif', 'alt' => '')));
 
-		Configure::write('Asset.timestamp', true);
+		Configure::write('Asset.timestamp', 'force');
 
 		$result = $this->Html->image('cake.icon.gif');
 		$this->assertTags($result, array('img' => array('src' => 'preg:/img\/cake\.icon\.gif\?\d+/', 'alt' => '')));
@@ -367,6 +382,7 @@ class HtmlHelperTest extends CakeTestCase {
 		$result = $this->Html->css('cake.generic');
 		$expected['link']['href'] = 'preg:/.*ccss\/cake\.generic\.css/';
 		$this->assertTags($result, $expected);
+
 		Configure::write('Asset.filter.css', false);
 
 		$result = explode("\n", trim($this->Html->css(array('cake.generic', 'vendor.generic'))));
@@ -376,6 +392,7 @@ class HtmlHelperTest extends CakeTestCase {
 		$this->assertTags($result[1], $expected);
 		$this->assertEqual(count($result), 2);
 
+		Configure::write('debug', 2);
 		Configure::write('Asset.timestamp', true);
 
 		Configure::write('Asset.filter.css', 'css.php');
@@ -415,6 +432,177 @@ class HtmlHelperTest extends CakeTestCase {
 		$this->Html->webroot = $webroot;
 	}
 
+/**
+ * test timestamp enforcement for script tags.
+ *
+ * @return void
+ **/
+	function testScriptTimestamping() {
+		$skip = $this->skipIf(!is_writable(JS), 'webroot/js is not Writable, timestamp testing has been skipped');
+		if ($skip) {
+			return;
+		}
+		Configure::write('debug', 2);
+		Configure::write('Asset.timestamp', true);
+
+		touch(WWW_ROOT . 'js' . DS. '__cake_js_test.js');
+		$timestamp = substr(strtotime('now'), 0, 8);
+
+		$result = $this->Html->script('__cake_js_test', array('inline' => true, 'once' => false));
+		$this->assertPattern('/__cake_js_test.js\?' . $timestamp . '[0-9]{2}"/', $result, 'Timestamp value not found %s');
+
+		Configure::write('debug', 0);
+		Configure::write('Asset.timestamp', 'force');
+		$result = $this->Html->script('__cake_js_test', array('inline' => true, 'once' => false));
+		$this->assertPattern('/__cake_js_test.js\?' . $timestamp . '[0-9]{2}"/', $result, 'Timestamp value not found %s');
+		unlink(WWW_ROOT . 'js' . DS. '__cake_js_test.js');
+		Configure::write('Asset.timestamp', false);
+	}
+
+/**
+ * test that scripts added with uses() are only ever included once.
+ * test script tag generation
+ *
+ * @return void
+ **/
+	function testScript() {
+		$result = $this->Html->script('foo');
+		$expected = array(
+			'script' => array('type' => 'text/javascript', 'src' => 'js/foo.js')
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->script(array('foobar', 'bar'));
+		$expected = array(
+			array('script' => array('type' => 'text/javascript', 'src' => 'js/foobar.js')),
+			'/script',
+			array('script' => array('type' => 'text/javascript', 'src' => 'js/bar.js')),
+			'/script',
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->script('jquery-1.3');
+		$expected = array(
+			'script' => array('type' => 'text/javascript', 'src' => 'js/jquery-1.3.js')
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->script('/plugin/js/jquery-1.3.2.js?someparam=foo');
+		$expected = array(
+			'script' => array('type' => 'text/javascript', 'src' => '/plugin/js/jquery-1.3.2.js?someparam=foo')
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->script('foo');
+		$this->assertNull($result, 'Script returned upon duplicate inclusion %s');
+
+		$result = $this->Html->script(array('foo', 'bar', 'baz'));
+		$this->assertNoPattern('/foo.js/', $result);
+
+		$result = $this->Html->script('foo', array('inline' => true, 'once' => false));
+		$this->assertNotNull($result);
+
+		$result = $this->Html->script('jquery-1.3.2', array('defer' => true, 'encoding' => 'utf-8'));
+		$expected = array(
+			'script' => array('type' => 'text/javascript', 'src' => 'js/jquery-1.3.2.js', 'defer' => 'defer', 'encoding' => 'utf-8')
+		);
+		$this->assertTags($result, $expected);
+	}
+/**
+ * test Script block generation
+ *
+ * @return void
+ **/
+	function testScriptBlock() {
+		$result = $this->Html->scriptBlock('window.foo = 2;');
+		$expected = array(
+			'script' => array('type' => 'text/javascript'),
+			$this->cDataStart,
+			'window.foo = 2;',
+			$this->cDataEnd,
+			'/script',
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->scriptBlock('window.foo = 2;', array('safe' => false));
+		$expected = array(
+			'script' => array('type' => 'text/javascript'),
+			'window.foo = 2;',
+			'/script',
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->scriptBlock('window.foo = 2;', array('safe' => true));
+		$expected = array(
+			'script' => array('type' => 'text/javascript'),
+			$this->cDataStart,
+			'window.foo = 2;',
+			$this->cDataEnd,
+			'/script',
+		);
+		$this->assertTags($result, $expected);
+
+		$view =& ClassRegistry::getObject('view');
+		$view =& new HtmlHelperMockView();
+		$view->expectAt(0, 'addScript', array(new PatternExpectation('/window\.foo\s\=\s2;/')));
+
+		$result = $this->Html->scriptBlock('window.foo = 2;', array('inline' => false));
+		$this->assertNull($result);
+
+		$result = $this->Html->scriptBlock('window.foo = 2;', array('safe' => false, 'encoding' => 'utf-8'));
+		$expected = array(
+			'script' => array('type' => 'text/javascript', 'encoding' => 'utf-8'),
+			'window.foo = 2;',
+			'/script',
+		);
+		$this->assertTags($result, $expected);
+	}
+/**
+ * test script tag output buffering when using scriptStart() and scriptEnd();
+ *
+ * @return void
+ **/
+	function testScriptStartAndScriptEnd() {
+		$result = $this->Html->scriptStart(array('safe' => true));
+		$this->assertNull($result);
+		echo 'this is some javascript';
+
+		$result = $this->Html->scriptEnd();
+		$expected = array(
+			'script' => array('type' => 'text/javascript'),
+			$this->cDataStart,
+			'this is some javascript',
+			$this->cDataEnd,
+			'/script'
+		);
+		$this->assertTags($result, $expected);
+
+
+		$result = $this->Html->scriptStart(array('safe' => false));
+		$this->assertNull($result);
+		echo 'this is some javascript';
+
+		$result = $this->Html->scriptEnd();
+		$expected = array(
+			'script' => array('type' => 'text/javascript'),
+			'this is some javascript',
+			'/script'
+		);
+		$this->assertTags($result, $expected);
+
+		ClassRegistry::removeObject('view');
+		$View =& new HtmlHelperMockView();
+
+		$View->expectOnce('addScript');
+		ClassRegistry::addObject('view', $View);
+
+		$result = $this->Html->scriptStart(array('safe' => false, 'inline' => false));
+		$this->assertNull($result);
+		echo 'this is some javascript';
+
+		$result = $this->Html->scriptEnd();
+		$this->assertNull($result);
+	}
 /**
  * testCharsetTag method
  *
@@ -929,6 +1117,9 @@ class HtmlHelperTest extends CakeTestCase {
 		$this->assertTags($result, '<div', 'text', '/div');
 
 		$result = $this->Html->tag('div', '<text>', array('class' => 'class-name'), true);
+		$this->assertTags($result, array('div' => array('class' => 'class-name'), '&lt;text&gt;', '/div'));
+
+		$result = $this->Html->tag('div', '<text>', array('class' => 'class-name', 'escape' => true));
 		$this->assertTags($result, array('div' => array('class' => 'class-name'), '&lt;text&gt;', '/div'));
 
 		$result = $this->Html->tag('div', '<text>', 'class-name', true);

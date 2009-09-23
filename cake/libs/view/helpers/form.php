@@ -416,11 +416,10 @@ class FormHelper extends AppHelper {
 			if (is_array($text) && is_numeric($error) && $error > 0) {
 				$error--;
 			}
-			if (is_array($text) && isset($text[$error])) {
-				$text = $text[$error];
-			} elseif (is_array($text)) {
+			if (is_array($text)) {
 				$options = array_merge($options, $text);
-				$text = null;
+				$text = isset($text[$error]) ? $text[$error] : null;
+				unset($options[$error]);
 			}
 
 			if ($text != null) {
@@ -523,16 +522,16 @@ class FormHelper extends AppHelper {
 		}
 
 		if ($legend === true) {
-			$actionName = __('New', true);
+			$actionName = __('New %s', true);
 			$isEdit = (
 				strpos($this->action, 'update') !== false ||
 				strpos($this->action, 'edit') !== false
 			);
 			if ($isEdit) {
-				$actionName = __('Edit', true);
+				$actionName = __('Edit %s', true);
 			}
 			$modelName = Inflector::humanize(Inflector::underscore($this->model()));
-			$legend = $actionName .' '. __($modelName, true);
+			$legend = sprintf($actionName, __($modelName, true));
 		}
 
 		$out = null;
@@ -1642,15 +1641,16 @@ class FormHelper extends AppHelper {
 			}
 			$opt = implode($separator, $selects);
 		}
-
+		if (!empty($interval) && $interval > 1 && !empty($min)) {
+			$min = round($min * (1 / $interval)) * $interval;
+		}
+		$selectMinuteAttr['interval'] = $interval;
 		switch ($timeFormat) {
 			case '24':
-				$selectMinuteAttr['interval'] = $interval;
 				$opt .= $this->hour($fieldName, true, $hour, $selectHourAttr, $showEmpty) . ':' .
 				$this->minute($fieldName, $min, $selectMinuteAttr, $showEmpty);
 			break;
 			case '12':
-				$selectMinuteAttr['interval'] = $interval;
 				$opt .= $this->hour($fieldName, false, $hour, $selectHourAttr, $showEmpty) . ':' .
 				$this->minute($fieldName, $min, $selectMinuteAttr, $showEmpty) . ' ' .
 				$this->meridian($fieldName, $meridian, $selectMeridianAttr, $showEmpty);

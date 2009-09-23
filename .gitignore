@@ -1,8 +1,4 @@
-nbproject/*
-.project
-.settings
-.buildpath
-.DS_Store
-/vendors/simpletest
-/app/config/database.php
-/app/tmp/**/*
+app/config
+app/tmp
+plugins
+vendors

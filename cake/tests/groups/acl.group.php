@@ -29,7 +29,7 @@
  * @package       cake
  * @subpackage    cake.tests.groups
  */
-class AclAndAuthGroupTest extends GroupTest {
+class AclAndAuthGroupTest extends TestSuite {
 
 /**
  * label property

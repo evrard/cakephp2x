@@ -208,10 +208,10 @@ class HttpSocket extends CakeSocket {
 		}
 
 		if (isset($this->request['auth']['user']) && isset($this->request['auth']['pass'])) {
-			$this->request['header']['Authorization'] = $this->request['auth']['method'] ." ". base64_encode($this->request['auth']['user'] .":".$this->request['auth']['pass']);
+			$this->request['header']['Authorization'] = $this->request['auth']['method'] . " " . base64_encode($this->request['auth']['user'] . ":" . $this->request['auth']['pass']);
 		}
 		if (isset($this->request['uri']['user']) && isset($this->request['uri']['pass'])) {
-			$this->request['header']['Authorization'] = $this->request['auth']['method'] ." ". base64_encode($this->request['uri']['user'] .":".$this->request['uri']['pass']);
+			$this->request['header']['Authorization'] = $this->request['auth']['method'] . " " . base64_encode($this->request['uri']['user'] . ":" . $this->request['uri']['pass']);
 		}
 
 		if (is_array($this->request['body'])) {
@@ -449,7 +449,7 @@ class HttpSocket extends CakeSocket {
 		if (empty($encoding)) {
 			return array('body' => $body, 'header' => false);
 		}
-		$decodeMethod = 'decode'.Inflector::camelize(str_replace('-', '_', $encoding)).'Body';
+		$decodeMethod = '_decode'.Inflector::camelize(str_replace('-', '_', $encoding)).'Body';
 
 		if (!is_callable(array(&$this, $decodeMethod))) {
 			if (!$this->quirksMode) {
@@ -832,7 +832,7 @@ class HttpSocket extends CakeSocket {
 			return false;
 		}
 
-		preg_match_all("/(.+):(.+)(?:(?<![\t ])".$this->lineBreak."|\$)/Uis", $header, $matches, PREG_SET_ORDER);
+		preg_match_all("/(.+):(.+)(?:(?<![\t ])" . $this->lineBreak . "|\$)/Uis", $header, $matches, PREG_SET_ORDER);
 
 		$header = array();
 		foreach ($matches as $match) {
@@ -873,9 +873,16 @@ class HttpSocket extends CakeSocket {
 
 		$cookies = array();
 		foreach ((array)$header['Set-Cookie'] as $cookie) {
-			$parts = preg_split('/(?<![^;]");[ \t]*/', $cookie);
+			if (strpos($cookie, '";"') !== false) {
+				$cookie = str_replace('";"', "{__cookie_replace__}", $cookie);
+				$parts  = str_replace("{__cookie_replace__}", '";"', preg_split('/\;/', $cookie));
+			} else {
+				$parts = preg_split('/\;[ \t]*/', $cookie);
+			}
+
 			list($name, $value) = explode('=', array_shift($parts), 2);
 			$cookies[$name] = compact('value');
+
 			foreach ($parts as $part) {
 				if (strpos($part, '=') !== false) {
 					list($key, $value) = explode('=', $part);

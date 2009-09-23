@@ -81,8 +81,8 @@ class DboSource extends DataSource {
  * @access protected
  */
 	protected $_commands = array(
-		'begin'	   => 'BEGIN',
-		'commit'   => 'COMMIT',
+		'begin' => 'BEGIN',
+		'commit' => 'COMMIT',
 		'rollback' => 'ROLLBACK'
 	);
 
@@ -424,14 +424,15 @@ class DboSource extends DataSource {
 			$data[$i] = str_replace($this->startQuote . $this->startQuote, $this->startQuote, $data[$i]);
 			$data[$i] = str_replace($this->startQuote . '(', '(', $data[$i]);
 			$data[$i] = str_replace(')' . $this->startQuote, ')', $data[$i]);
+			$alias = !empty($this->alias) ? $this->alias : 'AS ';
 
-			if (preg_match('/\s+AS\s+/', $data[$i])) {
-				if (preg_match('/\w+\s+AS\s+/', $data[$i])) {
-					$quoted = $this->endQuote . ' AS ' . $this->startQuote;
-					$data[$i] = str_replace(' AS ', $quoted, $data[$i]);
+			if (preg_match('/\s+' . $alias . '\s*/', $data[$i])) {
+				if (preg_match('/\w+\s+' . $alias . '\s*/', $data[$i])) {
+					$quoted = $this->endQuote . ' ' . $alias . $this->startQuote;
+					$data[$i] = str_replace(' ' . $alias, $quoted, $data[$i]);
 				} else {
-					$quoted = ' AS ' . $this->startQuote;
-					$data[$i] = str_replace(' AS ', $quoted, $data[$i]) . $this->endQuote;
+					$quoted = $alias . $this->startQuote;
+					$data[$i] = str_replace($alias, $quoted, $data[$i]) . $this->endQuote;
 				}
 			}
 
@@ -471,16 +472,27 @@ class DboSource extends DataSource {
 	}
 
 /**
- * Outputs the contents of the queries log.
+ * Get the query log as an array.
  *
- * @param boolean $sorted
- */
-	public function showLog($sorted = false) {
+ * @param boolean $sorted Get the queries sorted by time taken, defaults to false.
+ * @return array Array of queries run as an array
+ **/
+	public function getLog($sorted = false) {
 		if ($sorted) {
 			$log = sortByKey($this->_queriesLog, 'took', 'desc', SORT_NUMERIC);
 		} else {
 			$log = $this->_queriesLog;
 		}
+		return $log;
+	}
+
+/**
+ * Outputs the contents of the queries log.
+ *
+ * @param boolean $sorted Get the queries sorted by time taken, defaults to false
+ */
+	public function showLog($sorted = false) {
+		$log = $this->getLog($sorted);
 
 		if ($this->_queriesCnt > 1) {
 			$text = 'queries';
@@ -1445,6 +1457,7 @@ class DboSource extends DataSource {
 	protected function _prepareUpdateFields(&$model, $fields, $quoteValues = true, $alias = false) {
 		$quotedAlias = $this->startQuote . $model->alias . $this->endQuote;
 
+		$updates = array();
 		foreach ($fields as $field => $value) {
 			if ($alias && strpos($field, '.') === false) {
 				$quoted = $model->escapeField($field);
@@ -1484,7 +1497,7 @@ class DboSource extends DataSource {
  * @param mixed $conditions
  * @return boolean Success
  */
-	public function delete(&$model, $conditions = null) {
+	public function delete($model, $conditions = null) {
 		$alias = $joins = null;
 		$table = $this->fullTableName($model);
 		$conditions = $this->_matchRecords($model, $conditions);
@@ -1548,7 +1561,7 @@ class DboSource extends DataSource {
 					'alias' => $assoc,
 					'type' => isset($assocData['type']) ? $assocData['type'] : 'LEFT',
 					'conditions' => trim($this->conditions(
-						$this->getConstraint($assocData['association'], $model, $model->{$assoc}, $assoc, $assocData),
+						$this->__mergeConditions($assocData['conditions'], $this->getConstraint($assocData['association'], $model, $model->{$assoc}, $assoc, $assocData)),
 						true, false, $model
 					))
 				));
@@ -1731,7 +1744,9 @@ class DboSource extends DataSource {
 
 		if ($count >= 1 && !in_array($fields[0], array('*', 'COUNT(*)'))) {
 			for ($i = 0; $i < $count; $i++) {
-				if (!preg_match('/^.+\\(.*\\)/', $fields[$i])) {
+				if (preg_match('/^\(.*\)\s' . $this->alias . '.*/i', $fields[$i])){
+					continue;
+				} elseif (!preg_match('/^.+\\(.*\\)/', $fields[$i])) {
 					$prepend = '';
 
 					if (strpos($fields[$i], 'DISTINCT') !== false) {
@@ -2456,11 +2471,12 @@ class DboSource extends DataSource {
 				if (!empty($value['unique'])) {
 					$out .= 'UNIQUE ';
 				}
+				$name = $this->startQuote . $name . $this->endQuote;
 			}
 			if (is_array($value['column'])) {
-				$out .= 'KEY '. $name .' (' . join(', ', array_map(array(&$this, 'name'), $value['column'])) . ')';
+				$out .= 'KEY ' . $name . ' (' . join(', ', array_map(array(&$this, 'name'), $value['column'])) . ')';
 			} else {
-				$out .= 'KEY '. $name .' (' . $this->name($value['column']) . ')';
+				$out .= 'KEY ' . $name . ' (' . $this->name($value['column']) . ')';
 			}
 			$join[] = $out;
 		}
@@ -2474,7 +2490,7 @@ class DboSource extends DataSource {
  * @return void
  * @access public
  */
-	public function introspectType($value) {
+	function introspectType($value) {
 		if (!is_array($value)) {
 			if ($value === true || $value === false) {
 				return 'boolean';

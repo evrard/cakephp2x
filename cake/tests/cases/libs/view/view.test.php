@@ -21,12 +21,13 @@
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 App::import('Core', array('View', 'Controller'));
+App::import('Helper', 'Cache');
+
+Mock::generate('Helper', 'CallbackMockHelper');
+Mock::generate('CacheHelper', 'ViewTestMockCacheHelper');
 
 if (!class_exists('ErrorHandler')) {
 	App::import('Core', array('Error'));
-}
-if (!defined('CAKEPHP_UNIT_TEST_EXECUTION')) {
-	define('CAKEPHP_UNIT_TEST_EXECUTION', 1);
 }
 
 /**
@@ -106,18 +107,6 @@ class ViewTestErrorHandler extends ErrorHandler {
 class TestView extends View {
 
 /**
- * renderElement method
- *
- * @param mixed $name
- * @param array $params
- * @access public
- * @return void
- */
-	function renderElement($name, $params = array()) {
-		return $name;
-	}
-
-/**
  * getViewFileName method
  *
  * @param mixed $name
@@ -150,6 +139,18 @@ class TestView extends View {
  */
 	function loadHelpers(&$loaded, $helpers, $parent = null) {
 		return $this->_loadHelpers($loaded, $helpers, $parent);
+	}
+
+/**
+ * paths method
+ *
+ * @param string $plugin
+ * @param boolean $cached
+ * @access public
+ * @return void
+ */
+	function paths($plugin = null, $cached = true) {
+		return $this->_paths($plugin, $cached);
 	}
 
 /**
@@ -203,7 +204,7 @@ class TestAfterHelper extends Helper {
 		$View->output .= 'modified in the afterlife';
 	}
 }
-Mock::generate('Helper', 'CallbackMockHelper');
+
 
 /**
  * ViewTest class
@@ -249,8 +250,11 @@ class ViewTest extends CakeTestCase {
 	function startTest() {
 		App::build(array(
 			'plugins' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS),
-			'views' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views'. DS)
-		));
+			'views' => array(
+				TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views'. DS,
+				TEST_CAKE_CORE_INCLUDE_PATH . 'libs' . DS . 'view' . DS
+			)
+		), true);
 	}
 
 /**
@@ -287,6 +291,32 @@ class ViewTest extends CakeTestCase {
 	}
 
 /**
+ * test that plugin/$plugin_name is only appended to the paths it should be.
+ *
+ * @return void
+ **/
+	function testPluginPathGeneration() {
+		$this->Controller->plugin = 'test_plugin';
+		$this->Controller->name = 'TestPlugin';
+		$this->Controller->viewPath = 'tests';
+		$this->Controller->action = 'index';
+
+		$View = new TestView($this->Controller);
+		$paths = $View->paths();
+		$this->assertEqual($paths, App::path('views'));
+
+		$paths = $View->paths('test_plugin');
+
+		$expected = array(
+			TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views' . DS . 'plugins' . DS . 'test_plugin' . DS,
+			TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS . 'test_plugin' . DS . 'views' . DS,
+			TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views' . DS,
+			TEST_CAKE_CORE_INCLUDE_PATH . 'libs' . DS . 'view' . DS
+		);
+		$this->assertEqual($paths, $expected);
+	}
+
+/**
  * test that CamelCase plugins still find their view files.
  *
  * @return void
@@ -298,8 +328,10 @@ class ViewTest extends CakeTestCase {
 		$this->Controller->action = 'index';
 
 		$View = new TestView($this->Controller);
-		Configure::write('pluginPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS));
-		Configure::write('viewPaths', array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views'. DS));
+		App::build(array(
+			'plugins' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS),
+			'views' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views'. DS)
+		));
 
 		$expected = TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS .'test_plugin' . DS . 'views' . DS .'tests' . DS .'index.ctp';
 		$result = $View->getViewFileName('index');
@@ -607,6 +639,14 @@ class ViewTest extends CakeTestCase {
 		$this->assertTrue(is_object($helpers['form']->Html));
 		$this->assertTrue(is_object($helpers['ajax']->Html));
 		$this->assertTrue(is_object($helpers['pluggedHelper']->OtherHelper));
+
+		$this->assertTrue(is_object($View->Html));
+		$this->assertTrue(is_object($View->Form));
+		$this->assertTrue(is_object($View->Form->Html));
+		$this->assertTrue(is_object($View->PluggedHelper->OtherHelper));
+		$this->assertReference($View->Form, $View->loaded['form']);
+		$this->assertReference($View->Html, $View->loaded['html']);
+		$this->assertReference($View->PluggedHelper->OtherHelper, $View->loaded['otherHelper']);
 	}
 
 /**
@@ -647,6 +687,27 @@ class ViewTest extends CakeTestCase {
 		$this->assertPattern("/<meta http-equiv=\"Content-Type\" content=\"text\/html; charset=utf-8\" \/><title>/", $result);
 		$this->assertPattern("/<div id=\"content\">posts index<\/div>/", $result);
 		$this->assertPattern("/<div id=\"content\">posts index<\/div>/", $result);
+	}
+
+/**
+ * test rendering layout with cache helper loaded
+ *
+ * @return void
+ **/
+	function testRenderLayoutWithMockCacheHelper() {
+		$_check = Configure::read('Cache.check');
+		Configure::write('Cache.check', true);
+
+		$Controller = new ViewPostsController();
+		$Controller->cacheAction = '1 day';
+		$View = new View($Controller);
+		$View->loaded['cache'] = new ViewTestMockCacheHelper();
+		$View->loaded['cache']->expectCallCount('cache', 2);
+
+		$result = $View->render('index');
+		$this->assertPattern('/posts index/', $result);
+
+		Configure::write('Cache.check', $_check);
 	}
 
 /**
@@ -703,7 +764,10 @@ class ViewTest extends CakeTestCase {
 		ob_start();
 		$View->renderCache($path, '+1 second');
 		$result = ob_get_clean();
-		$this->assertFalse(empty($result));
+
+		$expected = 'some cacheText';
+		$this->assertPattern('/^some cacheText/', $result);
+
 		@unlink($path);
 	}
 

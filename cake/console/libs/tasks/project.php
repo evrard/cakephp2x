@@ -19,7 +19,6 @@
  * @since         CakePHP(tm) v 1.2
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-
 /**
  * Task class for creating new project apps and plugins
  *
@@ -46,7 +45,6 @@ class ProjectTask extends Shell {
 		if ($project === null) {
 			if (isset($this->args[0])) {
 				$project = $this->args[0];
-				$this->Dispatch->shiftArgs();
 			}
 		}
 
@@ -57,19 +55,22 @@ class ProjectTask extends Shell {
 
 		if (empty($this->params['skel'])) {
 			$this->params['skel'] = '';
-			if (is_dir(CAKE_CORE_INCLUDE_PATH.DS.'cake'.DS.'console'.DS.'libs'.DS.'templates'.DS.'skel') === true) {
-				$this->params['skel'] = CAKE_CORE_INCLUDE_PATH.DS.'cake'.DS.'console'.DS.'libs'.DS.'templates'.DS.'skel';
+			if (is_dir(CAKE . 'console' . DS . 'templates' . DS . 'skel') === true) {
+				$this->params['skel'] = CAKE . 'console' . DS . 'templates' . DS . 'skel';
 			}
 		}
 
 		while (!$project) {
-			$project = $this->in("What is the full path for this app including the app directory name?\nExample: ".$this->params['working'] . DS . "myapp", null, $this->params['working'] . DS . 'myapp');
+			$prompt = __("What is the full path for this app including the app directory name?\n Example:", true);
+			$default = $this->params['working'] . DS . 'myapp';
+			$project = $this->in($prompt . $default, null, $default);
 		}
 
 		if ($project) {
 			$response = false;
 			while ($response == false && is_dir($project) === true && file_exists($project . 'config' . 'core.php')) {
-				$response = $this->in('A project already exists in this location: ' . $project . ' Overwrite?', array('y','n'), 'n');
+				$prompt = sprintf(__('A project already exists in this location: %s Overwrite?', true), $project);
+				$response = $this->in($prompt, array('y','n'), 'n');
 				if (strtolower($response) === 'n') {
 					$response = $project = false;
 				}
@@ -125,7 +126,6 @@ class ProjectTask extends Shell {
 		if (!$skel) {
 			$skel = $this->params['skel'];
 		}
-
 		while (!$skel) {
 			$skel = $this->in(sprintf(__("What is the path to the directory layout you wish to copy?\nExample: %s"), APP, null, ROOT . DS . 'myapp' . DS));
 			if ($skel == '') {
@@ -139,12 +139,12 @@ class ProjectTask extends Shell {
 
 		$app = basename($path);
 
-		$this->out('Bake Project');
-		$this->out("Skel Directory: $skel");
-		$this->out("Will be copied to: {$path}");
+		$this->out(__('Bake Project', true));
+		$this->out(__("Skel Directory: ", true) . $skel);
+		$this->out(__("Will be copied to: ", true) . $path);
 		$this->hr();
 
-		$looksGood = $this->in('Look okay?', array('y', 'n', 'q'), 'y');
+		$looksGood = $this->in(__('Look okay?', true), array('y', 'n', 'q'), 'y');
 
 		if (strtolower($looksGood) == 'y') {
 			$verbose = $this->in(__('Do you want verbose output?', true), array('y', 'n'), 'n');
@@ -155,7 +155,7 @@ class ProjectTask extends Shell {
 				$this->out(sprintf(__("Created: %s in %s", true), $app, $path));
 				$this->hr();
 			} else {
-				$this->err(" '".$app."' could not be created properly");
+				$this->err(sprintf(__(" '%s' could not be created properly", true), $app));
 				return false;
 			}
 
@@ -167,7 +167,7 @@ class ProjectTask extends Shell {
 
 			return true;
 		} elseif (strtolower($looksGood) == 'q') {
-			$this->out('Bake Aborted.');
+			$this->out(__('Bake Aborted.', true));
 		} else {
 			$this->execute(false);
 			return false;
@@ -184,7 +184,8 @@ class ProjectTask extends Shell {
 	function createHome($dir) {
 		$app = basename($dir);
 		$path = $dir . 'views' . DS . 'pages' . DS;
-		include(CAKE_CORE_INCLUDE_PATH.DS.'cake'.DS.'console'.DS.'libs'.DS.'templates'.DS.'default'.DS.'views'.DS.'home.ctp');
+		$source = CAKE . 'console' . DS . 'templates' . DS .'default' . DS . 'views' . DS . 'home.ctp';
+		include($source);
 		return $this->createFile($path.'home.ctp', $output);
 	}
 
@@ -200,7 +201,7 @@ class ProjectTask extends Shell {
 		$contents = $File->read();
 		if (preg_match('/([\\t\\x20]*Configure::write\\(\\\'Security.salt\\\',[\\t\\x20\'A-z0-9]*\\);)/', $contents, $match)) {
 			if (!class_exists('Security')) {
-				uses('Security');
+				require LIBS . 'security.php';
 			}
 			$string = Security::generateAuthKey();
 			$result = str_replace($match[0], "\t" . 'Configure::write(\'Security.salt\', \''.$string.'\');', $contents);
@@ -224,7 +225,7 @@ class ProjectTask extends Shell {
 			$File = new File($path . 'webroot' . DS . 'index.php');
 			$contents = $File->read();
 			if (preg_match('/([\\t\\x20]*define\\(\\\'CAKE_CORE_INCLUDE_PATH\\\',[\\t\\x20\'A-z0-9]*\\);)/', $contents, $match)) {
-				$result = str_replace($match[0], "\t\tdefine('CAKE_CORE_INCLUDE_PATH', '".CAKE_CORE_INCLUDE_PATH."');", $contents);
+				$result = str_replace($match[0], "\t\tdefine('CAKE_CORE_INCLUDE_PATH', '" . CAKE_CORE_INCLUDE_PATH . "');", $contents);
 				if (!$File->write($result)) {
 					return false;
 				}
@@ -235,7 +236,7 @@ class ProjectTask extends Shell {
 			$File = new File($path . 'webroot' . DS . 'test.php');
 			$contents = $File->read();
 			if (preg_match('/([\\t\\x20]*define\\(\\\'CAKE_CORE_INCLUDE_PATH\\\',[\\t\\x20\'A-z0-9]*\\);)/', $contents, $match)) {
-				$result = str_replace($match[0], "\t\tdefine('CAKE_CORE_INCLUDE_PATH', '".CAKE_CORE_INCLUDE_PATH."');", $contents);
+				$result = str_replace($match[0], "\t\tdefine('CAKE_CORE_INCLUDE_PATH', '" . CAKE_CORE_INCLUDE_PATH . "');", $contents);
 				if (!$File->write($result)) {
 					return false;
 				}
@@ -284,13 +285,13 @@ class ProjectTask extends Shell {
 		 	return $adminRoute . '_';
 		}
 		$this->out('You need to enable Configure::write(\'Routing.admin\',\'admin\') in /app/config/core.php to use admin routing.');
-		$this->out('What would you like the admin route to be?');
-		$this->out('Example: www.example.com/admin/controller');
+		$this->out(__('What would you like the admin route to be?', true));
+		$this->out(__('Example: www.example.com/admin/controller', true));
 		while ($admin == '') {
-			$admin = $this->in("What would you like the admin route to be?", null, 'admin');
+			$admin = $this->in(__("What would you like the admin route to be?", true), null, 'admin');
 		}
 		if ($this->cakeAdmin($admin) !== true) {
-			$this->out('Unable to write to /app/config/core.php.');
+			$this->out(__('Unable to write to /app/config/core.php.', true));
 			$this->out('You need to enable Configure::write(\'Routing.admin\',\'admin\') in /app/config/core.php to use admin routing.');
 			$this->_stop();
 		}

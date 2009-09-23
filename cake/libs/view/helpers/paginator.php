@@ -10,7 +10,6 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
@@ -34,7 +33,7 @@ class PaginatorHelper extends AppHelper {
  *
  * @var array
  */
-	public $helpers = array('Html', 'Ajax');
+	public $helpers = array('Html');
 
 /**
  * Holds the default model for paged recordsets
@@ -42,6 +41,13 @@ class PaginatorHelper extends AppHelper {
  * @var string
  */
 	private $__defaultModel = null;
+
+/**
+ * The class used for 'Ajax' pagination links.
+ *
+ * @var string
+ **/
+	protected $_ajaxHelperClass = 'Js';
 
 /**
  * Holds the default options for pagination links
@@ -68,10 +74,36 @@ class PaginatorHelper extends AppHelper {
 	public $options = array();
 
 /**
- * Gets the current page of the in the recordset for the given model
+ * Constructor for the helper. Sets up the helper that is used for creating 'AJAX' links.
+ *
+ * Use `var $helpers = array('Paginator' => array('ajax' => 'CustomHelper'));` to set a custom Helper
+ * or choose a non JsHelper Helper.  If you want to use a specific library with JsHelper declare JsHelper and its 
+ * adapter before including PaginatorHelper in your helpers array.
+ *
+ * The chosen custom helper must implement a `link()` method.
+ *
+ * @return void
+ **/
+	public function __construct($config = array()) {
+		$ajaxProvider = isset($config['ajax']) ? $config['ajax'] : 'Js';
+		$this->helpers[] = $ajaxProvider;
+		$this->_ajaxHelperClass = $ajaxProvider;
+
+		App::import('Helper', $ajaxProvider);
+		$classname = $ajaxProvider . 'Helper';
+		if (!method_exists($classname, 'link')) {
+			$message = sprintf(
+				__('%s does not implement a link() method, it is incompatible with PaginatorHelper', true),
+				$classname);
+			trigger_error($message, E_USER_WARNING);
+		}
+	}
+
+/**
+ * Gets the current paging parameters from the resultset for the given model
  *
  * @param  string $model Optional model name.  Uses the default if none is specified.
- * @return string The current page number of the paginated resultset.
+ * @return array The array of paging parameters for the paginated resultset.
  */
 	public function params($model = null) {
 		if (empty($model)) {
@@ -234,12 +266,22 @@ class PaginatorHelper extends AppHelper {
 			$key = $title;
 			$title = __(Inflector::humanize(preg_replace('/_id$/', '', $title)), true);
 		}
-		$dir = 'asc';
+		$dir = isset($options['direction']) ? $options['direction'] : 'asc';
+		unset($options['direction']);
+
 		$sortKey = $this->sortKey($options['model']);
 		$isSorted = ($sortKey === $key || $sortKey === $this->defaultModel() . '.' . $key);
 
-		if ($isSorted && $this->sortDir($options['model']) === 'asc') {
-			$dir = 'desc';
+		if ($isSorted) {
+			if ($this->sortDir($options['model']) === 'asc') {
+				$dir = 'desc';
+			}
+			$class = $dir === 'asc' ? 'desc' : 'asc';
+			if (!empty($options['class'])) {
+				$options['class'] .= $class;
+			} else {
+				$options['class'] = $class;
+			}
 		}
 
 		if (is_array($title) && array_key_exists($dir, $title)) {
@@ -272,7 +314,7 @@ class PaginatorHelper extends AppHelper {
 		}
 		$url = $this->url($url, true, $model);
 
-		$obj = isset($options['update']) ? 'Ajax' : 'Html';
+		$obj = isset($options['update']) ? $this->_ajaxHelperClass : 'Html';
 		$url = array_merge(array('page' => $this->current($model)), $url);
 		$url = array_merge(Set::filter($url, true), array_intersect_key($url, array('plugin'=>true)));
 		return $this->{$obj}->link($title, $url, $options);
@@ -313,9 +355,15 @@ class PaginatorHelper extends AppHelper {
  */
 	private function __pagingLink($which, $title = null, $options = array(), $disabledTitle = null, $disabledOptions = array()) {
 		$check = 'has' . $which;
-		$_defaults = array('url' => array(), 'step' => 1, 'escape' => true, 'model' => null, 'tag' => 'div');
+		$_defaults = array(
+			'url' => array(), 'step' => 1, 'escape' => true,
+			'model' => null, 'tag' => 'span', 'class' => strtolower($which)
+		);
 		$options = array_merge($_defaults, (array)$options);
 		$paging = $this->params($options['model']);
+		if (empty($disabledOptions)) {
+			$disabledOptions = $options;
+		}
 
 		if (!$this->{$check}($options['model']) && (!empty($disabledTitle) || !empty($disabledOptions))) {
 			if (!empty($disabledTitle) && $disabledTitle !== true) {
@@ -333,9 +381,9 @@ class PaginatorHelper extends AppHelper {
 		$url = array_merge(array('page' => $paging['page'] + ($which == 'Prev' ? $step * -1 : $step)), $url);
 
 		if ($this->{$check}($model)) {
-			return $this->link($title, $url, array_merge($options, array('escape' => $escape)));
+			return $this->link($title, $url, array_merge($options, array('escape' => $escape, 'class' => $class)));
 		} else {
-			return $this->Html->tag($tag, $title, $options, $escape);
+			return $this->Html->tag($tag, $title, array_merge($options, array('class' => $class, 'escape' => $escape)));
 		}
 	}
 
@@ -515,15 +563,12 @@ class PaginatorHelper extends AppHelper {
 				$end = $params['page'] + ($modulus  - $params['page']) + 1;
 			}
 
-			if ($first) {
-				if ($start > (int)$first) {
-					if ($start == $first + 1) {
-						$out .= $this->first($first, array('tag' => $tag, 'after' => $separator, 'separator' => $separator));
-					} else {
-						$out .= $this->first($first, array('tag' => $tag, 'separator' => $separator));
-					}
-				} elseif ($start == 2) {
-					$out .= $this->Html->tag($tag, $this->link(1, array('page' => 1), $options)) . $separator;
+			if ($first && $start > 1) {
+				$offset = ($start <= (int)$first) ? $start - 1 : $first;
+				if ($offset < $start - 1) {
+					$out .= $this->first($offset, array('tag' => $tag, 'separator' => $separator));
+				} else {
+					$out .= $this->first($offset, array('tag' => $tag, 'after' => $separator, 'separator' => $separator));
 				}
 			}
 
@@ -551,15 +596,12 @@ class PaginatorHelper extends AppHelper {
 
 			$out .= $after;
 
-			if ($last) {
-				if ($end <= $params['pageCount'] - (int)$last) {
-					if ($end + 1 == $params['pageCount']) {
-						$out .= $this->last($last, array('tag' => $tag, 'before' => $separator, 'separator' => $separator));
-					} else {
-						$out .= $this->last($last, array('tag' => $tag, 'separator' => $separator));
-					}
-				} elseif ($end == $params['pageCount'] - 1) {
-					$out .= $separator . $this->Html->tag($tag, $this->link($params['pageCount'], array('page' => $params['pageCount']), $options));
+			if ($last && $end < $params['pageCount']) {
+				$offset = ($params['pageCount'] < $end + (int)$last) ? $params['pageCount'] - $end : $last;
+				if ($offset <= $last && $params['pageCount'] - $end > $offset) {
+					$out .= $this->last($offset, array('tag' => $tag, 'separator' => $separator));
+				} else {
+					$out .= $this->last($offset, array('tag' => $tag, 'before' => $separator, 'separator' => $separator));
 				}
 			}
 

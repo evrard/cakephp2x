@@ -18,8 +18,11 @@
  * @since         CakePHP(tm) v 1.2.0
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
+if (!class_exists('Object')) {
+	require LIBS . 'object.php';
+}
 if (!class_exists('File')) {
-	uses('object', 'file');
+	require LIBS . 'file.php';
 }
 
 /**

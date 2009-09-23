@@ -56,6 +56,36 @@ class BasicsTest extends CakeTestCase {
 	}
 
 /**
+ * test the array_diff_key compatibility function.
+ *
+ * @return void
+ **/
+	function testArrayDiffKey() {
+		$one = array('one' => 1, 'two' => 2, 'three' => 3);
+		$two = array('one' => 'one', 'two' => 'two');
+		$result = array_diff_key($one, $two);
+		$expected = array('three' => 3);
+		$this->assertEqual($result, $expected);
+
+		$one = array('one' => array('value', 'value-two'), 'two' => 2, 'three' => 3);
+		$two = array('two' => 'two');
+		$result = array_diff_key($one, $two);
+		$expected = array('one' => array('value', 'value-two'), 'three' => 3);
+		$this->assertEqual($result, $expected);
+
+		$one = array('one' => null, 'two' => 2, 'three' => '', 'four' => 0);
+		$two = array('two' => 'two');
+		$result = array_diff_key($one, $two);
+		$expected = array('one' => null, 'three' => '', 'four' => 0);
+		$this->assertEqual($result, $expected);
+
+		$one = array('minYear' => null, 'maxYear' => null, 'separator' => '-', 'interval' => 1, 'monthNames' => true);
+		$two = array('minYear' => null, 'maxYear' => null, 'separator' => '-', 'interval' => 1, 'monthNames' => true);
+		$result = array_diff_key($one, $two);
+		$this->assertEqual($result, array());
+
+	}
+/**
  * testHttpBase method
  *
  * @return void
@@ -148,6 +178,7 @@ class BasicsTest extends CakeTestCase {
  *
  * @access public
  * @return void
+ * @deprecated
  */
 	function testUses() {
 		$this->skipIf(class_exists('Security') || class_exists('Sanitize'), '%s Security and/or Sanitize class already loaded');
@@ -229,6 +260,9 @@ class BasicsTest extends CakeTestCase {
  */
 	function testCache() {
 		$_cacheDisable = Configure::read('Cache.disable');
+		if ($this->skipIf($_cacheDisable, 'Cache is disabled, skipping cache() tests. %s')) {
+			return;
+		}
 
 		Configure::write('Cache.disable', true);
 		$result = cache('basics_test', 'simple cache write');
@@ -261,6 +295,11 @@ class BasicsTest extends CakeTestCase {
  * @return void
  */
 	function testClearCache() {
+		$cacheOff = Configure::read('Cache.disable');
+		if ($this->skipIf($cacheOff, 'Cache is disabled, skipping clearCache() tests. %s')) {
+			return;
+		}
+
 		cache('views' . DS . 'basics_test.cache', 'simple cache write');
 		$this->assertTrue(file_exists(CACHE . 'views' . DS . 'basics_test.cache'));
 
@@ -582,7 +621,7 @@ class BasicsTest extends CakeTestCase {
 		ob_start();
 			debug('this-is-a-test');
 		$result = ob_get_clean();
-		$pattern = '/.*\>(cake(\/|\\\)tests(\/|\\\)cases(\/|\\\)basics\.test\.php|';
+		$pattern = '/.*\>(.+?tests(\/|\\\)cases(\/|\\\)basics\.test\.php|';
 		$pattern .= preg_quote(substr(__FILE__, 1), '/') . ')';
 		$pattern .= '.*line.*' . (__LINE__ - 4) . '.*this-is-a-test.*/s';
 		$this->assertPattern($pattern, $result);
@@ -590,7 +629,7 @@ class BasicsTest extends CakeTestCase {
 		ob_start();
 			debug('<div>this-is-a-test</div>', true);
 		$result = ob_get_clean();
-		$pattern = '/.*\>(cake(\/|\\\)tests(\/|\\\)cases(\/|\\\)basics\.test\.php|';
+		$pattern = '/.*\>(.+?tests(\/|\\\)cases(\/|\\\)basics\.test\.php|';
 		$pattern .= preg_quote(substr(__FILE__, 1), '/') . ')';
 		$pattern .=	'.*line.*' . (__LINE__ - 4) . '.*&lt;div&gt;this-is-a-test&lt;\/div&gt;.*/s';
 		$this->assertPattern($pattern, $result);

@@ -73,7 +73,7 @@ class CodeCoverageManagerTest extends CakeTestCase {
 			CodeCoverageManager::report(false);
 			$this->assertError();
 
-			CodeCoverageManager::start('libs/'.basename(__FILE__), new CakeHtmlReporter());
+			CodeCoverageManager::start('tests' . DS . 'lib' . DS . basename(__FILE__), new CakeHtmlReporter());
 			CodeCoverageManager::report(false);
 			$this->assertError();
 

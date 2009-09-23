@@ -36,7 +36,7 @@ final class Configure extends Object {
  * @var array
  * @access private
  */
-	public static $__values = array('debug' => null);
+	private static $__values = array('debug' => null);
 
 /**
  * Returns a singleton instance of the Configure class.
@@ -92,24 +92,30 @@ final class Configure extends Object {
 		}
 
 		if (isset($config['debug'])) {
+			$reporting = 0;
 			if (self::$__values['debug']) {
-				error_reporting(E_ALL);
-
-				if (function_exists('ini_set')) {
-					ini_set('display_errors', 1);
-				}
-
 				if (!class_exists('Debugger')) {
 					require LIBS . 'debugger.php';
 				}
+				$reporting = E_ALL & ~E_DEPRECATED;
+				if (function_exists('ini_set')) {
+					ini_set('display_errors', 1);
+				}
+			} elseif (function_exists('ini_set')) {
+				ini_set('display_errors', 0);
+			}
+
+			if (isset(self::$__values['log']) && self::$__values['log']) {
 				if (!class_exists('CakeLog')) {
 					require LIBS . 'cake_log.php';
 				}
-				Configure::write('log', LOG_NOTICE);
-			} else {
-				error_reporting(0);
-				Configure::write('log', LOG_NOTICE);
+				if (is_integer(self::$__values['log']) && !self::$__values['debug']) {
+					$reporting = self::$__values['log'];
+				} else {
+					$reporting = E_ALL & ~E_DEPRECATED;
+				}
 			}
+			error_reporting($reporting);
 		}
 	}
 
@@ -126,17 +132,6 @@ final class Configure extends Object {
  * @access public
  */
 	public static function read($var = 'debug') {
-		if ($var === 'debug') {
-			if (!isset(self::$__values['debug'])) {
-				if (defined('DEBUG')) {
-					self::$__values['debug'] = DEBUG;
-				} else {
-					self::$__values['debug'] = 0;
-				}
-			}
-			return self::$__values['debug'];
-		}
-
 		if (strpos($var, '.') !== false) {
 			$names = explode('.', $var, 2);
 			$var = $names[0];
@@ -144,7 +139,6 @@ final class Configure extends Object {
 		if (!isset(self::$__values[$var])) {
 			return null;
 		}
-
 		if (!empty($names[1])) {
 			return Set::extract(self::$__values[$var], $names[1]);
 		}
@@ -594,9 +588,9 @@ class App extends Object {
 			'views' => array(VIEWS),
 			'helpers' => array(HELPERS),
 			'locales' => array(APP . 'locale' . DS),
-			'shells' => array(APP . 'vendors' . DS . 'shells', VENDORS . 'shells'),
+			'shells' => array(APP . 'vendors' . DS . 'shells' . DS, VENDORS . 'shells' . DS),
 			'vendors' => array(APP . 'vendors' . DS, VENDORS),
-			'plugins' => array(APP . 'plugins' . DS),
+			'plugins' => array(APP . 'plugins' . DS)
 		);
 
 		if ($reset == true) {
@@ -673,6 +667,7 @@ class App extends Object {
 					$paths['components'][] = $libs . 'controller' . DS . 'components' . DS;
 					$paths['views'][] = $libs . 'view' . DS;
 					$paths['helpers'][] = $libs . 'view' . DS . 'helpers' . DS;
+					$paths['plugins'][] = $path . DS . 'plugins' . DS;
 					$paths['vendors'][] = $path . DS . 'vendors' . DS;
 					$paths['shells'][] = $cake . 'console' . DS . 'libs' . DS;
 					break;
@@ -806,7 +801,7 @@ class App extends Object {
 					}
 				}
 
-				if (!self::import($tempType, $plugin . $class)) {
+				if (!self::import($tempType, $plugin . $class, $parent)) {
 					return false;
 				}
 			}
@@ -828,6 +823,8 @@ class App extends Object {
 		if ($name != null && !class_exists($name . $ext['class'])) {
 			if ($load = self::__mapped($name . $ext['class'], $type, $plugin)) {
 				if (self::__load($load)) {
+					self::__overload($type, $name . $ext['class'], $parent);
+
 					if (self::$return) {
 						$value = include $load;
 						return $value;
@@ -868,6 +865,7 @@ class App extends Object {
 			if ($directory !== null) {
 				self::$__cache = true;
 				self::__map($directory . $file, $name . $ext['class'], $type, $plugin);
+				self::__overload($type, $name . $ext['class'], $parent);
 
 				if (self::$return) {
 					$value = include $directory . $file;
@@ -996,6 +994,19 @@ class App extends Object {
 	}
 
 /**
+ * Used to overload objects as needed.
+ *
+ * @param string $type Model or Helper
+ * @param string $name Class name to overload
+ * @access private
+ */
+	private function __overload($type, $name, $parent) {
+		if (($type === 'Model' || $type === 'Helper') && $parent !== false) {
+			Overloadable::overload($name);
+		}
+	}
+
+/**
  * Loads parent classes based on $type.
  * Returns a prefix or suffix needed for loading files.
  *
@@ -1019,10 +1030,10 @@ class App extends Object {
 		switch ($load) {
 			case 'model':
 				if (!class_exists('Model')) {
-					self::import('Model', 'Model', false, self::core('models'));
+					require LIBS . 'model' . DS . 'model.php';
 				}
 				if (!class_exists('AppModel')) {
-					self::import($type, 'AppModel', false, self::path('models'));
+					self::import($type, 'AppModel', false);
 				}
 				if ($plugin) {
 					if (!class_exists($plugin . 'AppModel')) {
@@ -1148,6 +1159,24 @@ class App extends Object {
 			}
 		}
 		return $items;
+	}
+
+/**
+ * Object destructor.
+ *
+ * Writes cache file if changes have been made to the $__map or $__paths
+ *
+ * @return void
+ * @access private
+ */
+	private function __destruct() {
+		if (self::$__cache) {
+			$core = self::core('cake');
+			unset(self::$__paths[rtrim($core[0], DS)]);
+			Cache::write('dir_map', array_filter(self::$__paths), '_cake_core_');
+			Cache::write('file_map', array_filter(self::$__map), '_cake_core_');
+			Cache::write('object_map', self::$__objects, '_cake_core_');
+		}
 	}
 }
 ?>

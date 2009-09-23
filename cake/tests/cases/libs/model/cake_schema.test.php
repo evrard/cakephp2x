@@ -398,6 +398,7 @@ class CakeSchemaTest extends CakeTestCase {
  * @return void
  */
 	function tearDown() {
+		@unlink(TMP . 'tests' . DS .'schema.php');
 		unset($this->Schema);
 	}
 
@@ -461,7 +462,6 @@ class CakeSchemaTest extends CakeTestCase {
 		require_once( TMP . 'tests' . DS .'schema.php');
 		$OtherSchema = new MyOtherAppSchema();
 		$this->assertEqual($this->Schema->tables, $OtherSchema->tables);
-
 	}
 
 /**

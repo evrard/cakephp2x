@@ -24,10 +24,13 @@
 /**
  * Included libs
  */
-App::import('Core', array(
-	'ClassRegistry', 'Overloadable', 'Validation', 'Set', 'String'
-));
-App::import('Model', array('ModelBehavior', 'ConnectionManager'), false);
+App::import('Core', array('ClassRegistry', 'Validation', 'Set', 'String'));
+App::import('Model', 'ModelBehavior', false);
+App::import('Model', 'ConnectionManager', false);
+
+if (!class_exists('Overloadable')) {
+	require LIBS . 'overloadable.php';
+}
 
 /**
  * Object-relational mapper.
@@ -485,56 +488,6 @@ class Model extends Overloadable {
 /**
  * Bind model associations on the fly.
  *
- * If $permanent is true, association will not be reset
- * to the originals defined in the model.
- *
- * @param mixed $model A model or association name (string) or set of binding options (indexed by model name type)
- * @param array $options If $model is a string, this is the list of association properties with which $model will
- * 						 be bound
- * @param boolean $permanent Set to true to make the binding permanent
- * @return void
- * @access public
- * @todo
- */
-	public function bind($model, $options = array(), $permanent = true) {
-		if (!is_array($model)) {
-			$model = array($model => $options);
-		}
-
-		foreach ($model as $name => $options) {
-			if (isset($options['type'])) {
-				$assoc = $options['type'];
-			} elseif (isset($options[0])) {
-				$assoc = $options[0];
-			} else {
-				$assoc = 'belongsTo';
-			}
-
-			if (!$permanent) {
-				$this->__backAssociation[$assoc] = $this->{$assoc};
-			}
-			foreach ($model as $key => $value) {
-				$assocName = $modelName = $key;
-
-				if (isset($this->{$assoc}[$assocName])) {
-					$this->{$assoc}[$assocName] = array_merge($this->{$assoc}[$assocName], $options);
-				} else {
-					if (isset($value['className'])) {
-						$modelName = $value['className'];
-					}
-
-					ModelAssociation::construct($this, $assocName, $modelName);
-					$this->{$assoc}[$assocName] = $model[$assocName];
-					ModelAssociation::generate($this, $assoc);
-				}
-				unset($this->{$assoc}[$assocName]['type'], $this->{$assoc}[$assocName][0]);
-			}
-		}
-	}
-
-/**
- * Bind model associations on the fly.
- *
  * If $reset is false, association will not be reset
  * to the originals defined in the model
  *
@@ -694,7 +647,11 @@ class Model extends Overloadable {
  * @return mixed The resulting data that should be assigned to a field
  * @access public
  */
-	public function deconstruct($field, $data) {
+	function deconstruct($field, $data) {
+		if (!is_array($data)) {
+			return $data;
+		}
+
 		$copy = $data;
 		$type = $this->getColumnType($field);
 
@@ -1566,7 +1523,8 @@ class Model extends Overloadable {
  * @deprecated
  * @link http://book.cakephp.org/view/691/remove
  */
-	public function remove($id = null, $cascade = true) {
+	function remove($id = null, $cascade = true) {
+		trigger_error('Deprecated method, use Model::delete instead', E_USER_WARNING);
 		return $this->delete($id, $cascade);
 	}
 
@@ -1616,7 +1574,6 @@ class Model extends Overloadable {
 		return false;
 	}
 
-/**
  * Cascades model deletes through associated hasMany and hasOne child records.
  *
  * @param string $id ID of record that was deleted
@@ -1667,8 +1624,6 @@ class Model extends Overloadable {
  * @access protected
  */
 	protected function _deleteLinks($id) {
-		$db = ConnectionManager::getDataSource($this->useDbConfig);
-
 		foreach ($this->hasAndBelongsToMany as $assoc => $data) {
 			$with = $data['with'];
 			$records = $this->{$data['with']}->find('all', array(
@@ -1832,7 +1787,6 @@ class Model extends Overloadable {
 			list($type, $query) = array($conditions, $fields);
 		}
 
-		$db = ConnectionManager::getDataSource($this->useDbConfig);
 		$this->findQueryType = $type;
 		$this->id = $this->getID();
 
@@ -1879,6 +1833,9 @@ class Model extends Overloadable {
 			}
 		}
 
+		if (!$db = ConnectionManager::getDataSource($this->useDbConfig)) {
+			return false;
+		}
 		$results = $db->read($this, $query);
 		$this->resetAssociations();
 		$this->findQueryType = null;
@@ -2392,8 +2349,8 @@ class Model extends Overloadable {
  * rule (in case of multiple validation for field) that was broken.
  *
  * @param string $field The name of the field to invalidate
- * @param mixed $value Name of validation rule that was not failed. If no validation key
- * 						is provided, defaults to true.
+ * @param mixed $value Name of validation rule that was not failed, or validation message to
+ *                     be returned. If no validation key is provided, defaults to true.
  * @access public
  */
 	public function invalidate($field, $value = true) {
@@ -2418,17 +2375,6 @@ class Model extends Overloadable {
 			}
 		}
 		return in_array($field, $foreignKeys);
-	}
-
-/**
- * Returns the display field for this model.
- *
- * @return string The name of the display field for this Model (i.e. 'name', 'title').
- * @access public
- * @deprecated
- */
-	public function getDisplayField() {
-		return $this->displayField;
 	}
 
 /**

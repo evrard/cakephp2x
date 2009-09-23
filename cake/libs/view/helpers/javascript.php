@@ -592,16 +592,21 @@ class JavascriptHelper extends AppHelper {
  * Generates a JavaScript object in JavaScript Object Notation (JSON)
  * from an array
  *
+ * ### Options
+ *
+ * - block - Wraps the return value in a script tag if true. Default is false
+ * - prefix - Prepends the string to the returned data. Default is ''
+ * - postfix - Appends the string to the returned data. Default is ''
+ * - stringKeys - A list of array keys to be treated as a string.
+ * - quoteKeys - If false treats $stringKeys as a list of keys **not** to be quoted. Default is true.
+ * - q - The type of quote to use. Default is "'"
+ *
  * @param array $data Data to be converted
  * @param array $options Set of options: block, prefix, postfix, stringKeys, quoteKeys, q
- * @param string $prefix DEPRECATED, use $options['prefix'] instead. Prepends the string to the returned data
- * @param string $postfix DEPRECATED, use $options['postfix'] instead. Appends the string to the returned data
- * @param array $stringKeys DEPRECATED, use $options['stringKeys'] instead. A list of array keys to be treated as a string
- * @param boolean $quoteKeys DEPRECATED, use $options['quoteKeys'] instead. If false, treats $stringKey as a list of keys *not* to be quoted
- * @param string $q DEPRECATED, use $options['q'] instead. The type of quote to use
  * @return string A JSON code block
+ * @access public
  */
-	public function object($data = array(), $options = array(), $prefix = null, $postfix = null, $stringKeys = null, $quoteKeys = null, $q = null) {
+	public function object($data = array(), $options = array()) {
 		if (!empty($options) && !is_array($options)) {
 			$options = array('block' => $options);
 		} else if (empty($options)) {
@@ -687,7 +692,7 @@ class JavascriptHelper extends AppHelper {
 				$val = 'null';
 			break;
 			case (is_bool($val)):
-				$val = ife($val, 'true', 'false');
+				$val = !empty($val) ? 'true' : 'false';
 			break;
 			case (is_int($val)):
 				$val = $val;

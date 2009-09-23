@@ -22,14 +22,6 @@
  */
 
 /**
- * Included libraries.
- *
- */
-if (!class_exists('Object')) {
-	require LIBS . 'object.php';
-}
-
-/**
  * Pluralize and singularize English words.
  *
  * Inflector pluralizes and singularizes English nouns.
@@ -40,6 +32,7 @@ if (!class_exists('Object')) {
  * @link          http://book.cakephp.org/view/491/Inflector
  */
 final class Inflector extends Object {
+
 /**
  * Plural inflector rules
  *
@@ -107,6 +100,7 @@ final class Inflector extends Object {
 			'turf' => 'turfs'
 		)
 	);
+
 /**
  * Singular inflector rules
  *
@@ -123,9 +117,9 @@ final class Inflector extends Object {
 			'/^(ox)en/i' => '\1',
 			'/(alias)(es)*$/i' => '\1',
 			'/(alumn|bacill|cact|foc|fung|nucle|radi|stimul|syllab|termin|viri?)i$/i' => '\1us',
-			'/([ftw]ax)es/' => '\1',
+			'/([ftw]ax)es/i' => '\1',
 			'/(cris|ax|test)es$/i' => '\1is',
-			'/(shoe)s$/i' => '\1',
+			'/(shoe|slave)s$/i' => '\1',
 			'/(o)es$/i' => '\1',
 			'/ouses$/' => 'ouse',
 			'/uses$/' => 'us',
@@ -151,9 +145,12 @@ final class Inflector extends Object {
 		),
 		'uninflected' => array(
 			'.*[nrlm]ese', '.*deer', '.*fish', '.*measles', '.*ois', '.*pox', '.*sheep', '.*ss'
-	),
-		'irregular' => array()
+		),
+		'irregular' => array(
+			'waves' => 'wave'
+		)
 	);
+
 /**
  * Words that should not be inflected
  *
@@ -174,6 +171,7 @@ final class Inflector extends Object {
 		'trousers', 'trout','tuna', 'Vermontese', 'Wenchowese', 'whiting', 'wildebeest',
 		'Yengeese'
 	);
+
 /**
  * Cached array identity map of pluralized words.
  *
@@ -181,6 +179,7 @@ final class Inflector extends Object {
  * @access protected
  **/
 	protected $_pluralized = array();
+
 /**
  * Cached array identity map of singularized words.
  *
@@ -188,6 +187,7 @@ final class Inflector extends Object {
  * @access protected
  **/
 	protected $__singularized = array();
+
 /**
  * Gets a reference to the Inflector object instance
  *
@@ -443,10 +443,11 @@ final class Inflector extends Object {
 			'/Ü/' => 'Ue',
 			'/Ö/' => 'Oe',
 			'/ß/' => 'ss',
-			'/[^\w\s]/' => ' ',
+			'/[^\s\p{Ll}\p{Lm}\p{Lo}\p{Lt}\p{Lu}\p{Nd}]/mu' => ' ',
 			'/\\s+/' => $replacement,
 			sprintf('/^[%s]+|[%s]+$/', $quotedReplacement, $quotedReplacement) => '',
 		);
+
 		$map = array_merge($default, $map);
 		return preg_replace(array_keys($map), array_values($map), $string);
 	}

@@ -35,7 +35,7 @@
  * @package       cake
  * @subpackage    cake.tests.groups
  */
-class SocketGroupTest extends GroupTest {
+class SocketGroupTest extends TestSuite {
 
 /**
  * label property
