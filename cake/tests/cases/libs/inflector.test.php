@@ -34,35 +34,6 @@ App::import('Core', 'Inflector');
  * @subpackage    cake.tests.cases.libs
  */
 class InflectorTest extends CakeTestCase {
-
-/**
- * Inflector property
- *
- * @var mixed null
- * @access public
- */
-	var $Inflector = null;
-
-/**
- * setUp method
- *
- * @access public
- * @return void
- */
-	function setUp() {
-		$this->Inflector = Inflector::getInstance();
-	}
-
-/**
- * testInstantiation method
- *
- * @access public
- * @return void
- */
-	function testInstantiation() {
-		$this->assertEqual(new Inflector(), $this->Inflector);
-	}
-
 /**
  * testInflectingSingulars method
  *
@@ -341,15 +312,5 @@ class InflectorTest extends CakeTestCase {
         $this->assertEqual(Inflector::singularize('spins'), 'spinor');
         $this->assertEqual(Inflector::singularize('singulars'), 'singulars');
     }
-
-/**
- * tearDown method
- *
- * @access public
- * @return void
- */
-	function tearDown() {
-		unset($this->Inflector);
-	}
 }
 ?>
