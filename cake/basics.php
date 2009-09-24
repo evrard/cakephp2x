@@ -499,7 +499,7 @@
  * @return mixed translated string if $return is false string will be echoed
  * @link http://book.cakephp.org/view/693/__
  */
-	function __($singular, $return = false) {
+	function __($singular, $return = true) {
 		if (!$singular) {
 			return;
 		}
@@ -524,7 +524,7 @@
  * @param boolean $return true to return, false to echo
  * @return mixed plural form of translated string if $return is false string will be echoed
  */
-	function __n($singular, $plural, $count, $return = false) {
+	function __n($singular, $plural, $count, $return = true) {
 		if (!$singular) {
 			return;
 		}
@@ -547,7 +547,7 @@
  * @param string $return true to return, false to echo
  * @return translated string if $return is false string will be echoed
  */
-	function __d($domain, $msg, $return = false) {
+	function __d($domain, $msg, $return = true) {
 		if (!$msg) {
 			return;
 		}
@@ -574,7 +574,7 @@
  * @param boolean $return true to return, false to echo
  * @return plural form of translated string if $return is false string will be echoed
  */
-	function __dn($domain, $singular, $plural, $count, $return = false) {
+	function __dn($domain, $singular, $plural, $count, $return = true) {
 		if (!$singular) {
 			return;
 		}
@@ -612,7 +612,7 @@
  * @param boolean $return true to return, false to echo
  * @return translated string if $return is false string will be echoed
  */
-	function __dc($domain, $msg, $category, $return = false) {
+	function __dc($domain, $msg, $category, $return = true) {
 		if (!$msg) {
 			return;
 		}
@@ -654,7 +654,7 @@
  * @param boolean $return true to return, false to echo
  * @return plural form of translated string if $return is false string will be echoed
  */
-	function __dcn($domain, $singular, $plural, $count, $category, $return = false) {
+	function __dcn($domain, $singular, $plural, $count, $category, $return = true) {
 		if (!$singular) {
 			return;
 		}
@@ -688,7 +688,7 @@
  * @param string $return true to return, false to echo
  * @return translated string if $return is false string will be echoed
  */
-	function __c($msg, $category, $return = false) {
+	function __c($msg, $category, $return = true) {
 		if (!$msg) {
 			return;
 		}
@@ -750,46 +750,6 @@
 		$string = preg_replace('/\/\//', '/', $string);
 		$string = str_replace('/', '_', $string);
 		return $string;
-	}
-
-/**
- * Implements http_build_query for PHP4.
- *
- * @param string $data Data to set in query string
- * @param string $prefix If numeric indices, prepend this to index for elements in base array.
- * @param string $argSep String used to separate arguments
- * @param string $baseKey Base key
- * @return string URL encoded query string
- * @see http://php.net/http_build_query
- */
-	if (!function_exists('http_build_query')) {
-		function http_build_query($data, $prefix = null, $argSep = null, $baseKey = null) {
-			if (empty($argSep)) {
-				$argSep = ini_get('arg_separator.output');
-			}
-			if (is_object($data)) {
-				$data = get_object_vars($data);
-			}
-			$out = array();
-
-			foreach ((array)$data as $key => $v) {
-				if (is_numeric($key) && !empty($prefix)) {
-					$key = $prefix . $key;
-				}
-				$key = urlencode($key);
-
-				if (!empty($baseKey)) {
-					$key = $baseKey . '[' . $key . ']';
-				}
-
-				if (is_array($v) || is_object($v)) {
-					$out[] = http_build_query($v, $prefix, $argSep, $key);
-				} else {
-					$out[] = $key . '=' . urlencode($v);
-				}
-			}
-			return implode($argSep, $out);
-		}
 	}
 
 /**

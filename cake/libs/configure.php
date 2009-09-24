@@ -2,7 +2,7 @@
 /**
  * Short description for file.
  *
- * Long description for filec
+ * Long description for file.
  *
  * PHP Version 5.x
  *
@@ -159,12 +159,10 @@ final class Configure extends Object {
  * @access public
  */
 	public static function delete($var = null) {
-
 		if (strpos($var, '.') === false) {
 			unset(self::$__values[$var]);
 			return;
 		}
-
 		$names = explode('.', $var, 2);
 		self::$__values[$names[0]] = Set::remove(self::$__values[$names[0]], $names[1]);
 	}
@@ -823,8 +821,6 @@ class App extends Object {
 		if ($name != null && !class_exists($name . $ext['class'])) {
 			if ($load = self::__mapped($name . $ext['class'], $type, $plugin)) {
 				if (self::__load($load)) {
-					self::__overload($type, $name . $ext['class'], $parent);
-
 					if (self::$return) {
 						$value = include $load;
 						return $value;
@@ -865,7 +861,6 @@ class App extends Object {
 			if ($directory !== null) {
 				self::$__cache = true;
 				self::__map($directory . $file, $name . $ext['class'], $type, $plugin);
-				self::__overload($type, $name . $ext['class'], $parent);
 
 				if (self::$return) {
 					$value = include $directory . $file;
@@ -999,6 +994,7 @@ class App extends Object {
  * @param string $type Model or Helper
  * @param string $name Class name to overload
  * @access private
+ * @todo remove
  */
 	private function __overload($type, $name, $parent) {
 		if (($type === 'Model' || $type === 'Helper') && $parent !== false) {
@@ -1169,7 +1165,7 @@ class App extends Object {
  * @return void
  * @access private
  */
-	private function __destruct() {
+	public static function destruct__() {
 		if (self::$__cache) {
 			$core = self::core('cake');
 			unset(self::$__paths[rtrim($core[0], DS)]);
@@ -1179,4 +1175,5 @@ class App extends Object {
 		}
 	}
 }
+register_shutdown_function(array('App','destruct__'));
 ?>

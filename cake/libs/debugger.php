@@ -51,7 +51,7 @@ class Debugger extends Object {
  * @var array
  * @access public
  */
-	public $errors = array();
+	public static $errors = array();
 
 /**
  * Contains the base URL for error code documentation.
@@ -418,7 +418,7 @@ class Debugger extends Object {
 		} elseif (strpos($path, ROOT) === 0) {
 			return str_replace(ROOT, 'ROOT', $path);
 		}
-		$corePaths = Configure::corePaths('cake');
+		$corePaths = App::core('cake');
 		foreach ($corePaths as $corePath) {
 			if (strpos($path, $corePath) === 0) {
 				return str_replace($corePath, 'CORE' .DS . 'cake' .DS, $path);

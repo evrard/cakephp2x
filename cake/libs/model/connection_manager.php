@@ -12,15 +12,14 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model
- * @since         CakePHP(tm) v 0.10.x.1402
+ * @since         CakePHP(tm) v 0.10.0.1402
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
-uses ('model' . DS . 'datasources' . DS . 'datasource');
+require 'cake' . DS . 'libs' . DS . 'model' . DS . 'datasources' . DS . 'datasource.php';
 config('database');
 
 /**

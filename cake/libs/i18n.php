@@ -100,7 +100,7 @@ class I18n extends Object {
  * @var array
  * @access private
  */
-	private static $__categories = array('LC_CTYPE', 'LC_NUMERIC', 'LC_TIME', 'LC_COLLATE', 'LC_MONETARY', 'LC_MESSAGES', 'LC_ALL');
+	private static $__categories = array('LC_ALL', 'LC_COLLATE', 'LC_CTYPE', 'LC_MONETARY', 'LC_NUMERIC', 'LC_TIME', 'LC_MESSAGES');
 
 /**
  * Used by the translation functions in basics.php
@@ -114,7 +114,7 @@ class I18n extends Object {
  * @return string translated strings.
  * @access public
  */
-	public static function translate($singular, $plural = null, $domain = null, $category = null, $count = null) {
+	public static function translate($singular, $plural = null, $domain = null, $category = 6, $count = null) {
 		self::init();
 
 		if (strpos($singular, "\r\n") !== false) {
@@ -192,7 +192,7 @@ class I18n extends Object {
  * @return integer plural match
  * @access private
  */
-	private function __pluralGuess($header, $n) {
+	private static function __pluralGuess($header, $n) {
 		if (!is_string($header) || $header === "nplurals=1;plural=0;" || !isset($header[0])) {
 			return 0;
 		}
@@ -241,7 +241,7 @@ class I18n extends Object {
  * @return string Domain binded
  * @access private
  */
-	private function __bindTextDomain($domain) {
+	private static function __bindTextDomain($domain) {
 		self::$__noLocale = true;
 		$core = true;
 		$merge = array();
@@ -327,10 +327,11 @@ class I18n extends Object {
  * @param string $domain Domain where to load file in
  * @access private
  */
-	private function __loadMo($file, $domain) {
+	private static function __loadMo($file, $domain) {
 		$data = file_get_contents($file);
 
 		if ($data) {
+			$magic = $version = $count = $o_msg = $o_trn = $msgid_plural = null;
 			$header = substr($data, 0, 20);
 			$header = unpack("L1magic/L1version/L1count/L1o_msg/L1o_trn", $header);
 			extract($header);
@@ -368,7 +369,7 @@ class I18n extends Object {
  * @return array Binded domain elements
  * @access private
  */
-	private function __loadPo($file, $domain) {
+	private static function __loadPo($file, $domain) {
 		$type = 0;
 		$translations = array();
 		$translationKey = "";
@@ -438,21 +439,23 @@ class I18n extends Object {
  * @access private
  * @static
  */
-	private static function init() {
+	public static function init() {
 		if (!self::$L10n) {
 			self::$L10n = new L10n();
 		}
 	}
+
 /**
  * Object destructor
  *
  * Write cache file if changes have been made to the $__map or $__paths
  * @access private
  */
-	private function __destruct() {
+	public static function destruct__() {
 		if (self::$__cache) {
 			Cache::write(self::$domain, array_filter(self::$__domains), '_cake_core_');
 		}
 	}
 }
+register_shutdown_function(array('I18n','destruct__'));
 ?>

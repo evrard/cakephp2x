@@ -174,25 +174,6 @@ class BasicsTest extends CakeTestCase {
 	}
 
 /**
- * test uses()
- *
- * @access public
- * @return void
- * @deprecated
- */
-	function testUses() {
-		$this->skipIf(class_exists('Security') || class_exists('Sanitize'), '%s Security and/or Sanitize class already loaded');
-
-		$this->assertFalse(class_exists('Security'));
-		$this->assertFalse(class_exists('Sanitize'));
-
-		uses('Security', 'Sanitize');
-
-		$this->assertTrue(class_exists('Security'));
-		$this->assertTrue(class_exists('Sanitize'));
-	}
-
-/**
  * Test h()
  *
  * @access public
@@ -345,16 +326,16 @@ class BasicsTest extends CakeTestCase {
 	function test__() {
 		Configure::write('Config.language', 'rule_1_po');
 
-		$result = __('Plural Rule 1', true);
+		$result = __('Plural Rule 1');
 		$expected = 'Plural Rule 1 (translated)';
 		$this->assertEqual($result, $expected);
 
-		$result = __('Plural Rule 1 (from core)', true);
+		$result = __('Plural Rule 1 (from core)');
 		$expected = 'Plural Rule 1 (from core translated)';
 		$this->assertEqual($result, $expected);
 
 		ob_start();
-			__('Plural Rule 1 (from core)');
+			__('Plural Rule 1 (from core)', false);
 		$result = ob_get_clean();
 		$expected = 'Plural Rule 1 (from core translated)';
 		$this->assertEqual($result, $expected);
@@ -369,20 +350,20 @@ class BasicsTest extends CakeTestCase {
 	function test__n() {
 		Configure::write('Config.language', 'rule_1_po');
 
-		$result = __n('%d = 1', '%d = 0 or > 1', 0, true);
+		$result = __n('%d = 1', '%d = 0 or > 1', 0);
 		$expected = '%d = 0 or > 1 (translated)';
 		$this->assertEqual($result, $expected);
 
-		$result = __n('%d = 1', '%d = 0 or > 1', 1, true);
+		$result = __n('%d = 1', '%d = 0 or > 1', 1);
 		$expected = '%d = 1 (translated)';
 		$this->assertEqual($result, $expected);
 
-		$result = __n('%d = 1 (from core)', '%d = 0 or > 1 (from core)', 2, true);
+		$result = __n('%d = 1 (from core)', '%d = 0 or > 1 (from core)', 2);
 		$expected = '%d = 0 or > 1 (from core translated)';
 		$this->assertEqual($result, $expected);
 
 		ob_start();
-			__n('%d = 1 (from core)', '%d = 0 or > 1 (from core)', 2);
+			__n('%d = 1 (from core)', '%d = 0 or > 1 (from core)', 2, false);
 		$result = ob_get_clean();
 		$expected = '%d = 0 or > 1 (from core translated)';
 		$this->assertEqual($result, $expected);
@@ -397,20 +378,20 @@ class BasicsTest extends CakeTestCase {
 	function test__d() {
 		Configure::write('Config.language', 'rule_1_po');
 
-		$result = __d('default', 'Plural Rule 1', true);
+		$result = __d('default', 'Plural Rule 1');
 		$expected = 'Plural Rule 1 (translated)';
 		$this->assertEqual($result, $expected);
 
-		$result = __d('core', 'Plural Rule 1', true);
+		$result = __d('core', 'Plural Rule 1');
 		$expected = 'Plural Rule 1';
 		$this->assertEqual($result, $expected);
 
-		$result = __d('core', 'Plural Rule 1 (from core)', true);
+		$result = __d('core', 'Plural Rule 1 (from core)');
 		$expected = 'Plural Rule 1 (from core translated)';
 		$this->assertEqual($result, $expected);
 
 		ob_start();
-			__d('core', 'Plural Rule 1 (from core)');
+			__d('core', 'Plural Rule 1 (from core)', false);
 		$result = ob_get_clean();
 		$expected = 'Plural Rule 1 (from core translated)';
 		$this->assertEqual($result, $expected);
@@ -425,24 +406,24 @@ class BasicsTest extends CakeTestCase {
 	function test__dn() {
 		Configure::write('Config.language', 'rule_1_po');
 
-		$result = __dn('default', '%d = 1', '%d = 0 or > 1', 0, true);
+		$result = __dn('default', '%d = 1', '%d = 0 or > 1', 0);
 		$expected = '%d = 0 or > 1 (translated)';
 		$this->assertEqual($result, $expected);
 
-		$result = __dn('core', '%d = 1', '%d = 0 or > 1', 0, true);
+		$result = __dn('core', '%d = 1', '%d = 0 or > 1', 0);
 		$expected = '%d = 0 or > 1';
 		$this->assertEqual($result, $expected);
 
-		$result = __dn('core', '%d = 1 (from core)', '%d = 0 or > 1 (from core)', 0, true);
+		$result = __dn('core', '%d = 1 (from core)', '%d = 0 or > 1 (from core)', 0);
 		$expected = '%d = 0 or > 1 (from core translated)';
 		$this->assertEqual($result, $expected);
 
-		$result = __dn('default', '%d = 1', '%d = 0 or > 1', 1, true);
+		$result = __dn('default', '%d = 1', '%d = 0 or > 1', 1);
 		$expected = '%d = 1 (translated)';
 		$this->assertEqual($result, $expected);
 
 		ob_start();
-			__dn('core', '%d = 1 (from core)', '%d = 0 or > 1 (from core)', 2);
+			__dn('core', '%d = 1 (from core)', '%d = 0 or > 1 (from core)', 2, false);
 		$result = ob_get_clean();
 		$expected = '%d = 0 or > 1 (from core translated)';
 		$this->assertEqual($result, $expected);
@@ -457,16 +438,16 @@ class BasicsTest extends CakeTestCase {
 	function test__c() {
 		Configure::write('Config.language', 'rule_1_po');
 
-		$result = __c('Plural Rule 1', 6, true);
+		$result = __c('Plural Rule 1', 6);
 		$expected = 'Plural Rule 1 (translated)';
 		$this->assertEqual($result, $expected);
 
-		$result = __c('Plural Rule 1 (from core)', 6, true);
+		$result = __c('Plural Rule 1 (from core)', 6);
 		$expected = 'Plural Rule 1 (from core translated)';
 		$this->assertEqual($result, $expected);
 
 		ob_start();
-			__c('Plural Rule 1 (from core)', 6);
+			__c('Plural Rule 1 (from core)', 6, false);
 		$result = ob_get_clean();
 		$expected = 'Plural Rule 1 (from core translated)';
 		$this->assertEqual($result, $expected);
@@ -481,24 +462,24 @@ class BasicsTest extends CakeTestCase {
 	function test__dc() {
 		Configure::write('Config.language', 'rule_1_po');
 
-		$result = __dc('default', 'Plural Rule 1', 6, true);
+		$result = __dc('default', 'Plural Rule 1', 6);
 		$expected = 'Plural Rule 1 (translated)';
 		$this->assertEqual($result, $expected);
 
-		$result = __dc('default', 'Plural Rule 1 (from core)', 6, true);
+		$result = __dc('default', 'Plural Rule 1 (from core)', 6);
 		$expected = 'Plural Rule 1 (from core translated)';
 		$this->assertEqual($result, $expected);
 
-		$result = __dc('core', 'Plural Rule 1', 6, true);
+		$result = __dc('core', 'Plural Rule 1', 6);
 		$expected = 'Plural Rule 1';
 		$this->assertEqual($result, $expected);
 
-		$result = __dc('core', 'Plural Rule 1 (from core)', 6, true);
+		$result = __dc('core', 'Plural Rule 1 (from core)', 6);
 		$expected = 'Plural Rule 1 (from core translated)';
 		$this->assertEqual($result, $expected);
 
 		ob_start();
-			__dc('default', 'Plural Rule 1 (from core)', 6);
+			__dc('default', 'Plural Rule 1 (from core)', 6, false);
 		$result = ob_get_clean();
 		$expected = 'Plural Rule 1 (from core translated)';
 		$this->assertEqual($result, $expected);
@@ -513,20 +494,20 @@ class BasicsTest extends CakeTestCase {
 	function test__dcn() {
 		Configure::write('Config.language', 'rule_1_po');
 
-		$result = __dcn('default', '%d = 1', '%d = 0 or > 1', 0, 6, true);
+		$result = __dcn('default', '%d = 1', '%d = 0 or > 1', 0, 6);
 		$expected = '%d = 0 or > 1 (translated)';
 		$this->assertEqual($result, $expected);
 
-		$result = __dcn('default', '%d = 1 (from core)', '%d = 0 or > 1 (from core)', 1, 6, true);
+		$result = __dcn('default', '%d = 1 (from core)', '%d = 0 or > 1 (from core)', 1, 6);
 		$expected = '%d = 1 (from core translated)';
 		$this->assertEqual($result, $expected);
 
-		$result = __dcn('core', '%d = 1', '%d = 0 or > 1', 0, 6, true);
+		$result = __dcn('core', '%d = 1', '%d = 0 or > 1', 0, 6);
 		$expected = '%d = 0 or > 1';
 		$this->assertEqual($result, $expected);
 
 		ob_start();
-			__dcn('default', '%d = 1 (from core)', '%d = 0 or > 1 (from core)', 1, 6);
+			__dcn('default', '%d = 1 (from core)', '%d = 0 or > 1 (from core)', 1, 6, false);
 		$result = ob_get_clean();
 		$expected = '%d = 1 (from core translated)';
 		$this->assertEqual($result, $expected);

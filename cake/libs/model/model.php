@@ -1573,7 +1573,7 @@ class Model extends Overloadable {
 		}
 		return false;
 	}
-
+/**
  * Cascades model deletes through associated hasMany and hasOne child records.
  *
  * @param string $id ID of record that was deleted

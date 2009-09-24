@@ -552,7 +552,7 @@ class Router extends Object {
 		$route = self::$routes[$i];
 
 		list($pattern, $names) = self::writeRoute($route[0], $route[1], $route[2]);
-		self::routes[$i] = array(
+		self::$routes[$i] = array(
 			$route[0], $pattern, $names,
 			array_merge(array('plugin' => null, 'controller' => null), (array)$route[1]),
 			$route[2]
