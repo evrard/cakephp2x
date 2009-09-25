@@ -13,7 +13,6 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
@@ -289,8 +288,6 @@ class Dispatcher extends Object {
 				unset($params['form']['_method']);
 			}
 		}
-		$namedExpressions = Router::getNamedExpressions();
-		extract($namedExpressions);
 		include CONFIGS . 'routes.php';
 		$params = array_merge(Router::parse($fromUrl), $params);
 

@@ -12,7 +12,6 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
@@ -22,20 +21,18 @@
  */
 
 /**
- * Included libraries.
- *
- */
-if (!class_exists('Object')) {
-	require LIBS . 'object.php';
-}
-
-/**
  * Parses the request URL into controller, action, and parameters.
  *
  * @package       cake
  * @subpackage    cake.cake.libs
  */
-class Router extends Object {
+class Router {
+	const ACTION = 'index|show|add|create|edit|update|remove|del|delete|view|item';
+	const YEAR = '[12][0-9]{3}';
+	const MONTH = '0[1-9]|1[012]';
+	const DAY = '0[1-9]|[12][0-9]|3[01]';
+	const ID = '[0-9]+';
+	const UUID = '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}';
 
 /**
  * Array of routes
@@ -78,21 +75,6 @@ class Router extends Object {
 	private static $__validExtensions = null;
 
 /**
- * 'Constant' regular expression definitions for named route elements
- *
- * @var array
- * @access private
- */
-	private static $__named = array(
-		'Action'	=> 'index|show|add|create|edit|update|remove|del|delete|view|item',
-		'Year'		=> '[12][0-9]{3}',
-		'Month'		=> '0[1-9]|1[012]',
-		'Day'		=> '0[1-9]|[12][0-9]|3[01]',
-		'ID'		=> '[0-9]+',
-		'UUID'		=> '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'
-	);
-
-/**
  * Stores all information necessary to decide what named arguments are parsed under what conditions.
  *
  * @var string
@@ -126,29 +108,6 @@ class Router extends Object {
 	);
 
 /**
- * Default HTTP request method => controller action map.
- *
- * @var array
- * @access private
- */
-	private static $__resourceMap = array(
-		array('action' => 'index',	'method' => 'GET',		'id' => false),
-		array('action' => 'view',	'method' => 'GET',		'id' => true),
-		array('action' => 'add',	'method' => 'POST',		'id' => false),
-		array('action' => 'edit',	'method' => 'PUT', 		'id' => true),
-		array('action' => 'delete',	'method' => 'DELETE',	'id' => true),
-		array('action' => 'edit',	'method' => 'POST', 	'id' => true)
-	);
-
-/**
- * List of resource-mapped controllers
- *
- * @var array
- * @access private
- */
-	private static $__resourceMapped = array();
-
-/**
  * Maintains the parameter stack for the current request
  *
  * @var array
@@ -173,36 +132,14 @@ class Router extends Object {
 	private static $__defaultsMapped = false;
 
 /**
- * Gets a reference to the Router object instance
- *
- * @return object Object instance
- * @access public
- * @static
- */
-	/*
-	public function &getInstance() {
-		static $instance = array();
-
-		if (!$instance) {
-			$instance[0] = new Router();
-			$instance[0]->__admin = Configure::read('Routing.admin');
-		}
-		return $instance[0];
-	}
-	*/
-/**
- * Gets the named route elements for use in app/config/routes.php
- *
- * @return array Named route elements
- * @access public
- * @see Router::$__named
- * @static
+ * @todo remove since since these are now constants proper usage in routes.php
+ * will be:
+ * Current way: Router::connect('/:plugin/:id/*', array('controller' => 'posts', 'action' => 'view'), array('id' => $ID));
+ * New way: Router::connect('/:plugin/:id/*', array('controller' => 'posts', 'action' => 'view'), array('id' => Router::ID));
+ * @deprecated
  */
 	public static function getNamedExpressions() {
-		if (self::$__admin !== null) {
-			self::$__admin = Configure::read('Routing.admin');
-		}
-		return self::$__named;
+		trigger_error('Router::getNamedExpressions(); is deprectated please use Router::{const}', E_USER_ERROR);
 	}
 
 /**
@@ -217,6 +154,9 @@ class Router extends Object {
  * @static
  */
 	public static function connect($route, $default = array(), $params = array()) {
+		//if (empty(self::$__admin)) {
+		//	self::$__admin = Configure::read('Routing.admin');
+	//	}
 		if (!isset($default['action'])) {
 			$default['action'] = 'index';
 		}
@@ -305,13 +245,21 @@ class Router extends Object {
  * @static
  */
 	public static function mapResources($controller, $options = array()) {
-		$options = array_merge(array('prefix' => '/', 'id' => self::$__named['ID'] . '|' . self::$__named['UUID']), $options);
+		$options = array_merge(array('prefix' => '/', 'id' => self::ID . '|' . self::UUID), $options);
 		$prefix = $options['prefix'];
 
 		foreach ((array)$controller as $ctlName) {
 			$urlName = Inflector::underscore($ctlName);
+			
+			$resourceMap =	array(
+				array('action' => 'index',	'method' => 'GET',		'id' => false),
+				array('action' => 'view',	'method' => 'GET',		'id' => true),
+				array('action' => 'add',	'method' => 'POST',		'id' => false),
+				array('action' => 'edit',	'method' => 'PUT', 		'id' => true),
+				array('action' => 'delete',	'method' => 'DELETE',	'id' => true),
+				array('action' => 'edit',	'method' => 'POST', 	'id' => true));
 
-			foreach (self::$__resourceMap as $params) {
+			foreach ($resourceMap as $params) {
 				extract($params);
 				$url = $prefix . $urlName . (($id) ? '/:id' : '');
 
@@ -320,7 +268,6 @@ class Router extends Object {
 					array('id' => $options['id'], 'pass' => array('id'))
 				);
 			}
-			self::$__resourceMapped[] = $urlName;
 		}
 	}
 
@@ -418,6 +365,9 @@ class Router extends Object {
  * @static
  */
 	public function parse($url) {
+	//	if (empty(self::$__admin)) {
+	//		self::$__admin = Configure::read('Routing.admin');
+	//	}
 		if (!self::$__defaultsMapped) {
 			self::__connectDefaultRoutes();
 		}
@@ -644,6 +594,10 @@ class Router extends Object {
  * @static
  */
 	public static function setRequestInfo($params) {
+		if (empty(self::$__admin)) {
+			self::$__admin = Configure::read('Routing.admin');
+		}
+		
 		$defaults = array('plugin' => null, 'controller' => null, 'action' => null);
 		$params[0] = array_merge($defaults, (array)$params[0]);
 		$params[1] = array_merge($defaults, (array)$params[1]);
@@ -719,10 +673,24 @@ class Router extends Object {
  * @static
  */
 	public static function reload() {
-		foreach (get_class_vars('Router') as $key => $val) {
-			self::${$key} = $val;
-		}
+		self::$routes = array();
 		self::$__admin = Configure::read('Routing.admin');
+		self::$__prefixes = array();
+		self::$__parseExtensions = false;
+		self::$__validExtensions = null;
+		self::$named = array(
+			'default' => array('page', 'fields', 'order', 'limit', 'recursive', 'sort', 'direction', 'step'),
+			'greedy' => true,
+			'separator' => ':',
+			'rules' => false);
+		self::$__currentRoute = array();
+		self::$__headerMap = array(
+			'type'		=> 'content_type',
+			'method'	=> 'request_method',
+			'server'	=> 'server_name');
+		self::$__params = array();
+		self::$__paths = array();
+		self::$__defaultsMapped = false;
 	}
 
 /**
@@ -771,6 +739,10 @@ class Router extends Object {
  */
 	public static function url($url = null, $full = false) {
 		$defaults = $params = array('plugin' => null, 'controller' => null, 'action' => 'index');
+		
+		if (empty(self::$__admin)) {
+			self::$__admin = Configure::read('Routing.admin');
+		}
 
 		if (is_bool($full)) {
 			$escape = false;

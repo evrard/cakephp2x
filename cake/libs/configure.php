@@ -12,7 +12,6 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
@@ -760,6 +759,10 @@ class App extends Object {
  * @access public
  */
 	public static function import($type = null, $name = null, $parent = true, $search = array(), $file = null, $return = false) {
+		if (empty(self::$__map)) {
+			self::$__map = Cache::read('file_map', '_cake_core_');
+		}
+		
 		$plugin = $directory = null;
 
 		if (is_array($type)) {
