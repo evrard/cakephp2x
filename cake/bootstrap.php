@@ -36,6 +36,6 @@ require LIBS . 'inflector.php';
 require LIBS . 'configure.php';
 require LIBS . 'set.php';
 require LIBS . 'cache.php';
-Configure::getInstance();
+Configure::init();
 require CAKE . 'dispatcher.php';
 ?>

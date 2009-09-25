@@ -172,12 +172,12 @@ class Dispatcher extends Object {
 		$controller->here = $this->here;
 		$controller->webroot = $this->webroot;
 		$controller->plugin = $this->plugin;
-		$controller->params = $this->params;
-		$controller->action = $this->params['action'];
+		$controller->params =& $this->params;
+		$controller->action =& $this->params['action'];
 		$controller->passedArgs = array_merge($this->params['pass'], $this->params['named']);
 
 		if (!empty($this->params['data'])) {
-			$controller->data = $this->params['data'];
+			$controller->data =& $this->params['data'];
 		} else {
 			$controller->data = null;
 		}

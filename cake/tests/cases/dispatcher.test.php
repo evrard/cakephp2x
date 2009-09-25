@@ -1773,8 +1773,6 @@ class DispatcherTest extends CakeTestCase {
  */
 	function testStaticAssets() {
 		Router::reload();
-		$Configure = Configure::getInstance();
-		$Configure->__objects = null;
 
 		App::build(array(
 			'plugins' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS),

@@ -156,11 +156,12 @@ class Router {
 	public static function connect($route, $default = array(), $params = array()) {
 		//if (empty(self::$__admin)) {
 		//	self::$__admin = Configure::read('Routing.admin');
-	//	}
+		//}
+
 		if (!isset($default['action'])) {
 			$default['action'] = 'index';
 		}
-		if (isset($default[self::$__admin])) {
+		if (!empty(self::$__admin) && isset($default[self::$__admin])) {
 			$default['prefix'] = self::$__admin;
 		}
 		if (isset($default['prefix'])) {
@@ -594,9 +595,9 @@ class Router {
  * @static
  */
 	public static function setRequestInfo($params) {
-		if (empty(self::$__admin)) {
-			self::$__admin = Configure::read('Routing.admin');
-		}
+		//if (empty(self::$__admin)) {
+		//	self::$__admin = Configure::read('Routing.admin');
+		//}
 		
 		$defaults = array('plugin' => null, 'controller' => null, 'action' => null);
 		$params[0] = array_merge($defaults, (array)$params[0]);

@@ -38,18 +38,6 @@ final class Configure extends Object {
 	private static $__values = array('debug' => null);
 
 /**
- * Returns a singleton instance of the Configure class.
- *
- * @return Configure instance
- * @access public
- */
-	public static function getInstance($boot = true) {
-		if ($boot) {
-			self::__loadBootstrap($boot);
-		}
-	}
-
-/**
  * Used to store a dynamic variable in the Configure instance.
  *
  * Usage:
@@ -310,9 +298,9 @@ final class Configure extends Object {
  *
  * @param boolean $boot Load application bootstrap (if true)
  * @return void
- * @access private
+ * @access public
  */
-	private static function __loadBootstrap($boot) {
+	public static function init($boot = true) {
 		$modelPaths = $behaviorPaths = $controllerPaths = $componentPaths = $viewPaths = $helperPaths = $pluginPaths = $vendorPaths = $localePaths = $shellPaths = null;
 
 		if ($boot) {
