@@ -195,25 +195,17 @@
 	}
 
 /**
- * Convenience method for strtolower().
- *
- * @param string $str String to lowercase
- * @return string Lowercased string
- * @link http://book.cakephp.org/view/705/low
+ * @deprecated
  */
 	function low($str) {
-		return strtolower($str);
+		trigger_error('low() is deprecated replace with strtolower()', E_USER_ERROR);
 	}
 
 /**
- * Convenience method for strtoupper().
- *
- * @param string $str String to uppercase
- * @return string Uppercased string
- * @link http://book.cakephp.org/view/710/up
+ * @deprecated
  */
 	function up($str) {
-		return strtoupper($str);
+		trigger_error('up() is deprecated replace with strtoupper()', E_USER_ERROR);
 	}
 
 /**
@@ -226,7 +218,7 @@
  * @link http://book.cakephp.org/view/708/r
  */
 	function r($search, $replace, $subject) {
-		return str_replace($search, $replace, $subject);
+		trigger_error('r() is deprecated replace with str_replace()', E_USER_ERROR);
 	}
 
 /**

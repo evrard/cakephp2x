@@ -127,8 +127,8 @@ class CakeSocket extends Object {
 			$this->setLastError($errStr, $errNum);
 		}
 
-		if (is_resource($this->connection)) {
-			stream_set_timeout($this->connection, $this->config['timeout']);
+		if (is_resource($this->__connection)) {
+			stream_set_timeout($this->__connection, $this->__config['timeout']);
 			return true;
 		}
 		return false;

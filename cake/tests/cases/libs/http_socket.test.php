@@ -621,13 +621,13 @@ class HttpSocketTest extends CakeTestCase {
 
 		foreach (array('POST', 'PUT', 'DELETE') as $method) {
 			$this->RequestSocket->expect('request', a(array('method' => $method, 'uri' => 'http://www.google.com/', 'body' => array())));
-			$this->RequestSocket->{low($method)}('http://www.google.com/');
+			$this->RequestSocket->{strtolower($method)}('http://www.google.com/');
 
 			$this->RequestSocket->expect('request', a(array('method' => $method, 'uri' => 'http://www.google.com/', 'body' => array('Foo' => 'bar'))));
-			$this->RequestSocket->{low($method)}('http://www.google.com/', array('Foo' => 'bar'));
+			$this->RequestSocket->{strtolower($method)}('http://www.google.com/', array('Foo' => 'bar'));
 
 			$this->RequestSocket->expect('request', a(array('method' => $method, 'uri' => 'http://www.google.com/', 'body' => null, 'line' => 'Hey Server')));
-			$this->RequestSocket->{low($method)}('http://www.google.com/', null, array('line' => 'Hey Server'));
+			$this->RequestSocket->{strtolower($method)}('http://www.google.com/', null, array('line' => 'Hey Server'));
 		}
 	}
 

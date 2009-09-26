@@ -155,9 +155,14 @@ class CakeSocketTest extends CakeTestCase {
 			'port'			=> 80,
 			'timeout'		=> 20
 		);
-		$anotherSocket = new CakeSocket($config);
-		$anotherSocket->reset();
-		$this->assertEqual(array(), $anotherSocket->config);
+		
+		$FirstSocket = new CakeSocket($config);
+		$SecondSocket = new CakeSocket($config); 
+		
+		$this->assertEqual($FirstSocket, $SecondSocket);
+		
+		$FirstSocket->reset();
+		$this->assertNotEqual($FirstSocket, $SecondSocket);
 	}
 }
 ?>

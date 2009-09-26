@@ -59,6 +59,7 @@ class Controller extends Object {
  *
  * @var string
  * @access public
+ */
 	public $webroot = null;
 
 /**
