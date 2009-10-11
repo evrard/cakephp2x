@@ -1653,19 +1653,19 @@ class SetTest extends CakeTestCase {
 
 		$expected = array(
 		'Array1' => array(
-				'Array1Data1' => 'Array1Data1 value 1', 'Array1Data2' => 'Array1Data2 value 2'),
+			'Array1Data1' => 'Array1Data1 value 1', 'Array1Data2' => 'Array1Data2 value 2'),
 		'Array2' => array(
-				0 => array('Array2Data1' => 1, 'Array2Data2' => 'Array2Data2 value 2', 'Array2Data3' => 'Array2Data3 value 2', 'Array2Data4' => 'Array2Data4 value 4'),
-				1 => array('Array2Data1' => 2, 'Array2Data2' => 'Array2Data2 value 2', 'Array2Data3' => 'Array2Data3 value 2', 'Array2Data4' => 'Array2Data4 value 4'),
-				2 => array('Array2Data1' => 3, 'Array2Data2' => 'Array2Data2 value 2', 'Array2Data3' => 'Array2Data3 value 2', 'Array2Data4' => 'Array2Data4 value 4'),
-				3 => array('Array2Data1' => 4, 'Array2Data2' => 'Array2Data2 value 2', 'Array2Data3' => 'Array2Data3 value 2', 'Array2Data4' => 'Array2Data4 value 4'),
-				4 => array('Array2Data1' => 5, 'Array2Data2' => 'Array2Data2 value 2', 'Array2Data3' => 'Array2Data3 value 2', 'Array2Data4' => 'Array2Data4 value 4')),
+			0 => array('Array2Data1' => 1, 'Array2Data2' => 'Array2Data2 value 2', 'Array2Data3' => 'Array2Data3 value 2', 'Array2Data4' => 'Array2Data4 value 4'),
+			1 => array('Array2Data1' => 2, 'Array2Data2' => 'Array2Data2 value 2', 'Array2Data3' => 'Array2Data3 value 2', 'Array2Data4' => 'Array2Data4 value 4'),
+			2 => array('Array2Data1' => 3, 'Array2Data2' => 'Array2Data2 value 2', 'Array2Data3' => 'Array2Data3 value 2', 'Array2Data4' => 'Array2Data4 value 4'),
+			3 => array('Array2Data1' => 4, 'Array2Data2' => 'Array2Data2 value 2', 'Array2Data3' => 'Array2Data3 value 2', 'Array2Data4' => 'Array2Data4 value 4'),
+			4 => array('Array2Data1' => 5, 'Array2Data2' => 'Array2Data2 value 2', 'Array2Data3' => 'Array2Data3 value 2', 'Array2Data4' => 'Array2Data4 value 4')),
 		'Array3' => array(
-				0 => array('Array3Data1' => 1, 'Array3Data2' => 'Array3Data2 value 2', 'Array3Data3' => 'Array3Data3 value 2', 'Array3Data4' => 'Array3Data4 value 4'),
-				1 => array('Array3Data1' => 2, 'Array3Data2' => 'Array3Data2 value 2', 'Array3Data3' => 'Array3Data3 value 2', 'Array3Data4' => 'Array3Data4 value 4'),
-				2 => array('Array3Data1' => 3, 'Array3Data2' => 'Array3Data2 value 2', 'Array3Data3' => 'Array3Data3 value 2', 'Array3Data4' => 'Array3Data4 value 4'),
-				3 => array('Array3Data1' => 4, 'Array3Data2' => 'Array3Data2 value 2', 'Array3Data3' => 'Array3Data3 value 2', 'Array3Data4' => 'Array3Data4 value 4'),
-				4 => array('Array3Data1' => 5, 'Array3Data2' => 'Array3Data2 value 2', 'Array3Data3' => 'Array3Data3 value 2', 'Array3Data4' => 'Array3Data4 value 4')));
+			0 => array('Array3Data1' => 1, 'Array3Data2' => 'Array3Data2 value 2', 'Array3Data3' => 'Array3Data3 value 2', 'Array3Data4' => 'Array3Data4 value 4'),
+			1 => array('Array3Data1' => 2, 'Array3Data2' => 'Array3Data2 value 2', 'Array3Data3' => 'Array3Data3 value 2', 'Array3Data4' => 'Array3Data4 value 4'),
+			2 => array('Array3Data1' => 3, 'Array3Data2' => 'Array3Data2 value 2', 'Array3Data3' => 'Array3Data3 value 2', 'Array3Data4' => 'Array3Data4 value 4'),
+			3 => array('Array3Data1' => 4, 'Array3Data2' => 'Array3Data2 value 2', 'Array3Data3' => 'Array3Data3 value 2', 'Array3Data4' => 'Array3Data4 value 4'),
+			4 => array('Array3Data1' => 5, 'Array3Data2' => 'Array3Data2 value 2', 'Array3Data3' => 'Array3Data3 value 2', 'Array3Data4' => 'Array3Data4 value 4')));
 		$map = Set::map($expected, true);
 		$this->assertEqual($map->Array1->Array1Data1, $expected['Array1']['Array1Data1']);
 		$this->assertEqual($map->Array2[0]->Array2Data1, $expected['Array2'][0]['Array2Data1']);
@@ -1844,18 +1844,53 @@ class SetTest extends CakeTestCase {
 
 		$model = new Model(array('id' => false, 'name' => 'Model', 'table' => false));
 		$expected = array(
-			'Behaviors' => array('modelName' => 'Model', '_attached' => array(), '_disabled' => array(), '__methods' => array(), '__mappedMethods' => array(), '_log' => null),
-			'useDbConfig' => 'default', 'useTable' => false, 'displayField' => null, 'id' => false, 'data' => array(), 'table' => 'models', 'primaryKey' => 'id', '_schema' => null, 'validate' => array(),
-			'validationErrors' => array(), 'tablePrefix' => null, 'name' => 'Model', 'alias' => 'Model', 'tableToModel' => array(), 'logTransactions' => false, 'transactional' => false, 'cacheQueries' => false,
-			'belongsTo' => array(), 'hasOne' =>  array(), 'hasMany' =>  array(), 'hasAndBelongsToMany' =>  array(), 'actsAs' => null, 'whitelist' =>  array(), 'cacheSources' => true,
-			'findQueryType' => null, 'recursive' => 1, 'order' => null, '__exists' => null,
+			'Behaviors' => array(
+				'modelName' => 'Model',
+				// '_attached' => array(),
+				// '_disabled' => array(),
+				// '__methods' => array(),
+				// '__mappedMethods' => array(),
+				'_log' => null),
+			//'useDbConfig' => 'default',
+			//'useTable' => false,
+			'displayField' => null,
+			'id' => false,
+			'data' => array(),
+			'table' => 'models',
+			'primaryKey' => 'id',
+			//'_schema' => null,
+			'validate' => array(),
+			'validationErrors' => array(),
+			'tablePrefix' => null,
+			//'name' => 'Model',
+			'alias' => 'Model',
+			'tableToModel' => array(),
+			'logTransactions' => false,
+			'transactional' => false,
+			'cacheQueries' => false,
+			'belongsTo' => array(),
+			'hasOne' =>  array(),
+			'hasMany' =>  array(),
+			'hasAndBelongsToMany' =>  array(),
+			'actsAs' => null,
+			//'whitelist' =>  array(),
+			'cacheSources' => true,
+			'findQueryType' => null,
+			'recursive' => 1,
+			'order' => null,
+			'__exists' => null,
 			'__associationKeys' => array(
 				'belongsTo' => array('className', 'foreignKey', 'conditions', 'fields', 'order', 'counterCache'),
 				'hasOne' => array('className', 'foreignKey', 'conditions', 'fields', 'order', 'dependent'),
 				'hasMany' => array('className', 'foreignKey', 'conditions', 'fields', 'order', 'limit', 'offset', 'dependent', 'exclusive', 'finderQuery', 'counterQuery'),
 				'hasAndBelongsToMany' => array('className', 'joinTable', 'with', 'foreignKey', 'associationForeignKey', 'conditions', 'fields', 'order', 'limit', 'offset', 'unique', 'finderQuery', 'deleteQuery', 'insertQuery')),
-			'__associations' => array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany'), '__backAssociation' => array(), '__insertID' => null, '__numRows' => null, '__affectedRows' => null,
-				'_findMethods' => array('all' => true, 'first' => true, 'count' => true, 'neighbors' => true, 'list' => true, 'threaded' => true), '_log' => null);
+			'__associations' => array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany'),
+			'__backAssociation' => array(),
+			'__insertID' => null,
+			'__numRows' => null,
+			'__affectedRows' => null,
+			'_findMethods' => array('all' => true, 'first' => true, 'count' => true, 'neighbors' => true, 'list' => true, 'threaded' => true),
+			'_log' => null);
 		$result = Set::reverse($model);
 
 		ksort($result);
