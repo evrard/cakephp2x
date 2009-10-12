@@ -395,7 +395,12 @@ class Validation extends Object {
 
 		if ($return === true && preg_match('/@(' . self::$__pattern['hostname'] . ')$/i', $check, $regs)) {
 			$host = gethostbynamel($regs[1]);
-			return is_array($host);
+			$return = is_array($host);
+			$isWindows = (DIRECTORY_SEPARATOR === '\\');
+			if (!$isWindows || (version_compare(PHP_VERSION, '5.3.0', '>=') && $isWindows)) {
+				$return = $return && getmxrr($regs[1], $mxhosts);
+			}
+			return $return;
 		}
 		return false;
 	}
@@ -732,7 +737,6 @@ class Validation extends Object {
  * @access protected
  */
 	protected static function _check($check, $regex) {
-		//debug('Checking: '.$check. ' Against: '. $regex);
 		if (preg_match($regex, $check)) {
 			self::$errors[] = false;
 			return true;
