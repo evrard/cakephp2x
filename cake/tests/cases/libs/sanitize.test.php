@@ -451,6 +451,26 @@ class SanitizeTest extends CakeTestCase {
 		Sanitize::formatColumns($this->Article);
 		$result = $this->Article->data;
 		$this->assertEqual($result, $expected);
+
+		$this->Article = new SanitizeArticle(array('alias' => 'Article'));
+		$data = array('Article' => array(
+			'id' => 'ZB',
+			'user_id' => '12',
+			'title' => 'title of article',
+			'body' => 'body text',
+			'published' => 'QQQQQQQ',
+		));
+		$this->Article->set($data);
+		$expected = array('Article' => array(
+			'id' => '0',
+			'user_id' => '12',
+			'title' => 'title of article',
+			'body' => 'body text',
+			'published' => 'QQQQQQQ',
+		));
+		Sanitize::formatColumns($this->Article);
+		$result = $this->Article->data;
+		$this->assertEqual($result, $expected);
 	}
 }
 ?>
