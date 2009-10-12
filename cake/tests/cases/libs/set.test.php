@@ -417,13 +417,8 @@ class SetTest extends CakeTestCase {
 		$b = array('Deep' => $a[0]['Deep']);
 		$c = array(
 			array('a' => array('I' => array('a' => 1))),
-			array(
-				'a' => array(
-					2
-				)
-			),
-			array('a' => array('II' => array('a' => 3, 'III' => array('a' => array('foo' => 4))))),
-		);
+			array('a' => array(2)),
+			array('a' => array('II' => array('a' => 3, 'III' => array('a' => array('foo' => 4))))));
 
 		$nonSequential = array(
 			'User' => array(
@@ -431,9 +426,7 @@ class SetTest extends CakeTestCase {
 				2  => array('id' => 2),
 				6  => array('id' => 3),
 				9  => array('id' => 4),
-				3  => array('id' => 5),
-			),
-		);
+				3  => array('id' => 5)));
 
 		$nonZero = array(
 			'User' => array(
@@ -441,9 +434,7 @@ class SetTest extends CakeTestCase {
 				4  => array('id' => 2),
 				6  => array('id' => 3),
 				9  => array('id' => 4),
-				3  => array('id' => 5),
-			),
-		);
+				3  => array('id' => 5)));
 
 		$expected = array(array('a' => $c[2]['a']));
 		$r = Set::extract('/a/II[a=3]/..', $c);
@@ -1197,8 +1188,7 @@ class SetTest extends CakeTestCase {
 		$expected = array(
 			array('Comment 10', 'Comment 11', 'Comment 12'),
 			array('Comment 13', 'Comment 14'),
-			null
-		);
+			null);
 		$this->assertIdentical($result, $expected);
 
 		$a = array(array('1day' => '20 sales'), array('1day' => '2 sales'));
@@ -1207,10 +1197,9 @@ class SetTest extends CakeTestCase {
 		$this->assertIdentical($result, $expected);
 
 		$a = array(
-			'pages'     => array('name' => 'page'),
-			'fruites'   => array('name' => 'fruit'),
-			0           => array('name' => 'zero')
-		);
+			'pages' => array('name' => 'page'),
+			'fruites' => array('name' => 'fruit'),
+			0 => array('name' => 'zero'));
 		$result = Set::extract($a, '{s}.name');
 		$expected = array('page','fruit');
 		$this->assertIdentical($result, $expected);
@@ -1219,8 +1208,7 @@ class SetTest extends CakeTestCase {
 			0 => array('pages' => array('name' => 'page')),
 			1 => array('fruites'=> array('name' => 'fruit')),
 			'test' => array(array('name' => 'jippi')),
-			'dot.test' => array(array('name' => 'jippi'))
-		);
+			'dot.test' => array(array('name' => 'jippi')));
 
 		$result = Set::extract($a, '{n}.{s}.name');
 		$expected = array(0 => array('page'), 1 => array('fruit'));
@@ -1235,8 +1223,7 @@ class SetTest extends CakeTestCase {
 			array('pages' => 'page'),
 			array('fruites' => 'fruit'),
 			'test' => array('jippi'),
-			'dot.test' => array('jippi')
-		);
+			'dot.test' => array('jippi'));
 		$this->assertIdentical($result, $expected);
 
 		$result = Set::extract($a,'{\d+}.{\w+}.name');
@@ -1279,6 +1266,12 @@ class SetTest extends CakeTestCase {
 		$result = Set::extract($a, 'articles.{n}.Article.title');
 		$expected = array( 'Article 1', 'Article 2', 'Article 3' );
 		$this->assertIdentical($result, $expected);
+		
+		$result = Set::extract($a, '');
+		$this->assertIdentical($result, $a);
+		
+		$result = Set::extract('Data', 'something.cool');
+		$this->assertIdentical($result, 'Data');
 	}
 
 /**
@@ -1288,40 +1281,30 @@ class SetTest extends CakeTestCase {
  * @return void
  */
 	function testInsert() {
-		$a = array(
-			'pages' => array('name' => 'page')
-		);
+		$a = array('pages' => array('name' => 'page'));
 
 		$result = Set::insert($a, 'files', array('name' => 'files'));
 		$expected = array(
-			'pages'     => array('name' => 'page'),
-			'files'		=> array('name' => 'files')
+			'pages' => array('name' => 'page'),
+			'files' => array('name' => 'files')
 		);
 		$this->assertIdentical($result, $expected);
 
-		$a = array(
-			'pages' => array('name' => 'page')
-		);
+		$a = array('pages' => array('name' => 'page'));
 		$result = Set::insert($a, 'pages.name', array());
-		$expected = array(
-			'pages'     => array('name' => array()),
-		);
+		$expected = array('pages' => array('name' => array()));
 		$this->assertIdentical($result, $expected);
 
 		$a = array(
 			'pages' => array(
 				0 => array('name' => 'main'),
-				1 => array('name' => 'about')
-			)
-		);
+				1 => array('name' => 'about')));
 
 		$result = Set::insert($a, 'pages.1.vars', array('title' => 'page title'));
 		$expected = array(
 			'pages' => array(
 				0 => array('name' => 'main'),
-				1 => array('name' => 'about', 'vars' => array('title' => 'page title'))
-			)
-		);
+				1 => array('name' => 'about', 'vars' => array('title' => 'page title'))));
 		$this->assertIdentical($result, $expected);
 	}
 
@@ -1333,30 +1316,23 @@ class SetTest extends CakeTestCase {
  */
 	function testRemove() {
 		$a = array(
-			'pages'     => array('name' => 'page'),
-			'files'		=> array('name' => 'files')
-		);
+			'pages' => array('name' => 'page'),
+			'files' => array('name' => 'files'));
 
 		$result = Set::remove($a, 'files', array('name' => 'files'));
-		$expected = array(
-			'pages'     => array('name' => 'page')
-		);
+		$expected = array('pages' => array('name' => 'page'));
 		$this->assertIdentical($result, $expected);
 
 		$a = array(
 			'pages' => array(
 				0 => array('name' => 'main'),
-				1 => array('name' => 'about', 'vars' => array('title' => 'page title'))
-			)
-		);
+				1 => array('name' => 'about', 'vars' => array('title' => 'page title'))));
 
 		$result = Set::remove($a, 'pages.1.vars', array('title' => 'page title'));
 		$expected = array(
 			'pages' => array(
 				0 => array('name' => 'main'),
-				1 => array('name' => 'about')
-			)
-		);
+				1 => array('name' => 'about')));
 		$this->assertIdentical($result, $expected);
 
 		$result = Set::remove($a, 'pages.2.vars', array('title' => 'page title'));

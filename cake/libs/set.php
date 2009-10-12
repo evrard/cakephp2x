@@ -429,7 +429,7 @@ class Set extends Object {
 			return true;
 		}
 		if (is_string($conditions)) {
-			return !!self::extract($conditions, $data);
+			return (boolean)self::extract($conditions, $data);
 		}
 		foreach ($conditions as $condition) {
 			if ($condition === ':last') {
@@ -990,27 +990,7 @@ class Set extends Object {
 		}
 		return $sorted;
 	}
-/**
- * Get the array value of $array. If $array is null, it will return
- * the current array Set holds. If it is an object of type Set, it
- * will return its value. If it is another object, its object variables.
- * If it is anything else but an array, it will return an array whose first
- * element is $array.
- *
- * @param mixed $array Data from where to get the array.
- * @return array Array from $array.
- * @access private
- */
-	private static function __array($array) {
-		if (empty($array)) {
-			$array = array();
-		} elseif (is_object($array)) {
-			$array = get_object_vars($array);
-		} elseif (!is_array($array)) {
-			$array = array($array);
-		}
-		return $array;
-	}
+
 /**
  * Flattens an array for sorting
  *
@@ -1119,6 +1099,7 @@ class Set extends Object {
 		}
 		return $path;
 	}
+
 /**
  * Adjust the key to reflect numberic indexes from string paths
  *
