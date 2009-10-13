@@ -506,7 +506,6 @@ class HttpSocketTest extends CakeTestCase {
 		$serverResponse = "HTTP/1.x 200 OK\r\nDate: Mon, 16 Apr 2007 04:14:16 GMT\r\nServer: CakeHttp Server\r\nContent-Type: text/html\r\n\r\n<h1>Hello, your lucky number is " . $number . "</h1>";
 		$this->Socket->setReturnValueAt(0, 'read', $serverResponse);
 		$this->Socket->expect('write', array("GET / HTTP/1.1\r\nHost: www.cakephp.org\r\nConnection: close\r\nUser-Agent: CakePHP\r\n\r\n"));
-		$this->Socket->expectCallCount('read', 2);
 		$response = $this->Socket->request($request);
 		$this->assertIdentical($response, "<h1>Hello, your lucky number is " . $number . "</h1>");
 
@@ -517,7 +516,7 @@ class HttpSocketTest extends CakeTestCase {
 		$this->Socket->_mock->_call_counts['read'] = 0;
 		$this->Socket->setReturnValueAt(0, 'read', $serverResponse);
 
-		$this->Socket->connected = true;
+		$this->Socket->reset();
 		$this->Socket->request($request);
 		$result = $this->Socket->response['cookies'];
 		$expect = array(
@@ -527,7 +526,7 @@ class HttpSocketTest extends CakeTestCase {
 		);
 		$this->assertEqual($result, $expect);
 		$this->assertEqual($this->Socket->config['request']['cookies'], $expect);
-		$this->assertFalse($this->Socket->connected);
+		$this->assertFalse($this->Socket->isConnected());
 	}
 
 /**
