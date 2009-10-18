@@ -53,7 +53,7 @@ class Model extends Overloadable {
  * @access public
  * @link http://book.cakephp.org/view/435/useDbConfig
  */
-	protected $useDbConfig = 'default';
+	public $useDbConfig = 'default';
 
 /**
  * Custom database table name, or null/false if no table association is desired.
@@ -62,7 +62,7 @@ class Model extends Overloadable {
  * @access public
  * @link http://book.cakephp.org/view/436/useTable
  */
-	protected $useTable = null;
+	public $useTable = null;
 
 /**
  * Custom display field name. Display fields are used by Scaffold, in SELECT boxes' OPTION elements.
