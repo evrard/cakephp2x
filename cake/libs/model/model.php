@@ -153,7 +153,7 @@ class Model extends Overloadable {
  * @access public
  * @link http://book.cakephp.org/view/444/name
  */
-	protected $name = null;
+	public $name = null;
 
 /**
  * Alias name for model.
