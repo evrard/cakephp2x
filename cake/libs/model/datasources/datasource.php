@@ -538,8 +538,10 @@ class DataSource extends Object {
 /**
  * Closes the current datasource.
  *
+ * @return void
+ * @access public
  */
-	private function __destruct() {
+	public function __destruct() {
 		if ($this->_transactionStarted) {
 			$null = null;
 			$this->rollback($null);

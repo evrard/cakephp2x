@@ -260,9 +260,10 @@ class ConnectionManager extends Object {
 /**
  * Destructor.
  *
- * @access private
+ * @return void
+ * @access public
  */
-	private function __destruct() {
+	public function __destruct() {
 		if (Configure::read('Session.save') == 'database' && function_exists('session_write_close')) {
 			session_write_close();
 		}
