@@ -244,7 +244,7 @@ class CakeSession extends Object {
  * @return boolean Success
  * @access public
  */
-	public function del($name) {
+	public function delete($name) {
 		if ($this->check($name)) {
 			if ($var = $this->__validateKeys($name)) {
 				if (in_array($var, $this->watchKeys)) {
