@@ -2228,7 +2228,6 @@ class Model extends Overloadable {
 			$data = array();
 		}
 
-		$Validation = Validation::getInstance();
 		$this->exists();
 
 		$_validate = $this->validate;
@@ -2312,8 +2311,9 @@ class Model extends Overloadable {
 							$ruleParams[] = $validator;
 							$ruleParams[0] = array($fieldName => $ruleParams[0]);
 							$valid = $this->Behaviors->dispatchMethod($this, $rule, $ruleParams);
-						} elseif (method_exists($Validation, $rule)) {
-							$valid = $Validation->dispatchMethod($rule, $ruleParams);
+						} elseif (method_exists('Validation', $rule)) {
+							die('x');
+							$valid = Validation::dispatchMethod($rule, $ruleParams);
 						} elseif (!is_array($validator['rule'])) {
 							$valid = preg_match($rule, $data[$fieldName]);
 						}
