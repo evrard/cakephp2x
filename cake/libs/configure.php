@@ -38,6 +38,18 @@ final class Configure extends Object {
 	private static $__values = array('debug' => null);
 
 /**
+ * Initialization of required libraries
+ *
+ * @return void
+ * @access private
+ */
+	private function __init() {
+		if (!class_exists('Set')) {
+			require LIBS . 'set.php';
+		}
+	}
+
+/**
  * Used to store a dynamic variable in the Configure instance.
  *
  * Usage:
@@ -62,6 +74,7 @@ final class Configure extends Object {
  * @access public
  */
 	public static function write($config, $value = null) {
+		self::__init();
 		if (!is_array($config)) {
 			$config = array($config => $value);
 		}
@@ -119,6 +132,7 @@ final class Configure extends Object {
  * @access public
  */
 	public static function read($var = 'debug') {
+		self::__init();
 		if (strpos($var, '.') !== false) {
 			$names = explode('.', $var, 2);
 			$var = $names[0];
@@ -146,6 +160,7 @@ final class Configure extends Object {
  * @access public
  */
 	public static function delete($var = null) {
+		self::__init();
 		if (strpos($var, '.') === false) {
 			unset(self::$__values[$var]);
 			return;
