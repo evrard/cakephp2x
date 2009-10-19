@@ -1,8 +1,8 @@
 <?php
 /**
- * Short description for file.
+ * Xdebug Installation Page
  *
- * Long description for file
+ * Displays a message to the developer indicating that they need to install Xdebug
  *
  * PHP Version 5.x
  *
@@ -21,7 +21,7 @@
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 ?>
-	<div id="content">
-		<h2>Xdebug is not installed</h2>
-		<p>You must install Xdebug to use the CakePHP(tm) Code Coverage Analyzation.</p>
-		<p><a href="http://www.xdebug.org/docs/install" target="_blank">Learn How To Install Xdebug</a></p>
+<div id="content">
+	<h2>Xdebug is not installed</h2>
+	<p>You must install Xdebug to use the CakePHP(tm) Code Coverage Analyzation.</p>
+	<p><a href="http://www.xdebug.org/docs/install" target="_blank">Learn How To Install Xdebug</a></p>
