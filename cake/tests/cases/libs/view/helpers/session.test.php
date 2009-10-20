@@ -40,7 +40,6 @@ class SessionHelperTest extends CakeTestCase {
  */
 	function setUp() {
 		$this->Session = new SessionHelper();
-//		$this->Session->__start();
 
 		$_SESSION = array(
 			'test' => 'info',
