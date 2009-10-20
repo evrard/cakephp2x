@@ -117,7 +117,7 @@ class RssHelper extends XmlHelper {
 			$attrib['version'] = $this->version;
 		}
 
-		return $this->elem('rss', $attrib, $content);
+		return $this->element('rss', $attrib, $content);
 	}
 
 /**
@@ -155,14 +155,14 @@ class RssHelper extends XmlHelper {
 				} else {
 					$innerElements = '';
 					foreach ($data as $subElement => $value) {
-						$innerElements .= $this->elem($subElement, array(), $value);
+						$innerElements .= $this->element($subElement, array(), $value);
 					}
 					$data = $innerElements;
 				}
 			}
-			$elems .= $this->elem($elem, $attributes, $data);
+			$elems .= $this->element($elem, $attributes, $data);
 		}
-		return $this->elem('channel', $attrib, $elems . $content, !($content === null));
+		return $this->element('channel', $attrib, $elems . $content, !($content === null));
 	}
 
 /**
@@ -216,7 +216,7 @@ class RssHelper extends XmlHelper {
 								$attrib['domain'] = $category['domain'];
 								unset($category['domain']);
 							}
-							$categories[] = $this->elem($key, $attrib, $category);
+							$categories[] = $this->element($key, $attrib, $category);
 						}
 						$elements[$key] = join('', $categories);
 						continue 2;
@@ -265,12 +265,12 @@ class RssHelper extends XmlHelper {
 			if (!is_null($val) && $escape) {
 				$val = h($val);
 			}
-			$elements[$key] = $this->elem($key, $attrib, $val);
+			$elements[$key] = $this->element($key, $attrib, $val);
 		}
 		if (!empty($elements)) {
 			$content = join('', $elements);
 		}
-		return $this->output($this->elem('item', $att, $content, !($content === null)));
+		return $this->output($this->element('item', $att, $content, !($content === null)));
 	}
 
 /**

@@ -124,7 +124,7 @@ class XmlNode extends Object {
  * @return void
  */
 	public function addNamespace($prefix, $url) {
-		if ($ns = Xml::addGlobalNs($prefix, $url)) {
+		if ($ns = Xml::addGlobalNamespace($prefix, $url)) {
 			$this->namespaces = array_merge($this->namespaces, $ns);
 			return true;
 		}
@@ -139,7 +139,7 @@ class XmlNode extends Object {
  * @return void
  */
 	public function removeNamespace($prefix) {
-		if (Xml::removeGlobalNs($prefix)) {
+		if (Xml::removeGlobalNamespace($prefix)) {
 			return true;
 		}
 		return false;
@@ -1148,7 +1148,7 @@ class Xml extends XmlNode {
  * @access public
  * @static
  */
-	public function addGlobalNs($name, $url = null) {
+	public function addGlobalNamespace($name, $url = null) {
 		$_this = XmlManager::getInstance();
 		if ($ns = Xml::resolveNamespace($name, $url)) {
 			$_this->namespaces = array_merge($_this->namespaces, $ns);
@@ -1181,23 +1181,13 @@ class Xml extends XmlNode {
 	}
 
 /**
- * Alias to Xml::addNs
- *
- * @access public
- * @static
- */
-	public function addGlobalNamespace($name, $url = null) {
-		return Xml::addGlobalNs($name, $url);
-	}
-
-/**
  * Removes a namespace added in addNs()
  *
  * @param  string  $name The namespace name or URI
  * @access public
  * @static
  */
-	public function removeGlobalNs($name) {
+	public function removeGlobalNamespace($name) {
 		$_this = XmlManager::getInstance();
 		if (isset($_this->namespaces[$name])) {
 			unset($_this->namespaces[$name]);
@@ -1215,16 +1205,6 @@ class Xml extends XmlNode {
 			}
 		}
 		return false;
-	}
-
-/**
- * Alias to Xml::removeNs
- *
- * @access public
- * @static
- */
-	public function removeGlobalNamespace($name) {
-		return Xml::removeGlobalNs($name);
 	}
 
 /**

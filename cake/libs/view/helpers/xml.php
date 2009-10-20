@@ -41,6 +41,7 @@ class XmlHelper extends AppHelper {
 /**
  * Constructor
  * @return void
+ * @access public
  */
 	public function __construct() {
 		parent::__construct();
@@ -53,6 +54,7 @@ class XmlHelper extends AppHelper {
  *
  * @param  array $attrib Header tag attributes
  * @return string XML header
+ * @access public
  */
 	public function header($attrib = array()) {
 		if (Configure::read('App.encoding') !== null) {
@@ -76,21 +78,20 @@ class XmlHelper extends AppHelper {
  * @param  string  $url  The namespace URI; can be empty if in the default namespace map
  * @return boolean False if no URL is specified, and the namespace does not exist
  *                 default namespace map, otherwise true
- * @deprecated
- * @see Xml::addNs()
+ * @see Xml::addNamespace()
+ * @access public
  */
-	private function addNs($name, $url = null) {
+	public function addNamespace($name, $url = null) {
 		return $this->Xml->addNamespace($name, $url);
 	}
 
 /**
- * Removes a namespace added in addNs()
+ * Removes a namespace added in addNamespace()
  *
  * @param  string  $name The namespace name or URI
- * @deprecated
- * @see Xml::removeNs()
+ * @see Xml::removeNamespace()
  */
-	private function removeNs($name) {
+	public function removeNamespace($name) {
 		return $this->Xml->removeGlobalNamespace($name);
 	}
 
@@ -103,7 +104,7 @@ class XmlHelper extends AppHelper {
  * @param  boolean  $endTag Whether the end tag of the element should be printed
  * @return string XML
  */
-	public function elem($name, $attrib = array(), $content = null, $endTag = true) {
+	public function element($name, $attrib = array(), $content = null, $endTag = true) {
 		$namespace = null;
 		if (isset($attrib['namespace'])) {
 			$namespace = $attrib['namespace'];
@@ -140,7 +141,7 @@ class XmlHelper extends AppHelper {
  *
  * @return string
  */
-	public function closeElem() {
+	public function closeElement() {
 		$name = $this->Xml->name();
 		if ($parent = $this->Xml->parent()) {
 			$this->Xml = $parent;

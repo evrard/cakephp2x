@@ -101,7 +101,7 @@ class XmlHelperTest extends CakeTestCase {
  * @return void
  */
 	function testAddNamespace() {
-		$this->Xml->addNs('custom', 'http://example.com/dtd.xml');
+		$this->Xml->addNamespace('custom', 'http://example.com/dtd.xml');
 		$manager = XmlManager::getInstance();
 
 		$expected = array('custom' => 'http://example.com/dtd.xml');
@@ -115,14 +115,14 @@ class XmlHelperTest extends CakeTestCase {
  * @return void
  */
 	function testRemoveNamespace() {
-		$this->Xml->addNs('custom', 'http://example.com/dtd.xml');
-		$this->Xml->addNs('custom2', 'http://example.com/dtd2.xml');
+		$this->Xml->addNamespace('custom', 'http://example.com/dtd.xml');
+		$this->Xml->addNamespace('custom2', 'http://example.com/dtd2.xml');
 		$manager = XmlManager::getInstance();
 
 		$expected = array('custom' => 'http://example.com/dtd.xml', 'custom2' => 'http://example.com/dtd2.xml');
 		$this->assertEqual($manager->namespaces, $expected);
 
-		$this->Xml->removeNs('custom');
+		$this->Xml->removeNamespace('custom');
 		$expected = array('custom2' => 'http://example.com/dtd2.xml');
 		$this->assertEqual($manager->namespaces, $expected);
 	}
@@ -134,7 +134,7 @@ class XmlHelperTest extends CakeTestCase {
  * @return void
  */
 	function testRenderZeroElement() {
-		$result = $this->Xml->elem('count', null, 0);
+		$result = $this->Xml->element('count', null, 0);
 		$expected = '<count>0</count>';
 		$this->assertEqual($result, $expected);
 	}
@@ -146,16 +146,16 @@ class XmlHelperTest extends CakeTestCase {
  * @return void
  */
 	function testRenderElementWithNamespace() {
-		$result = $this->Xml->elem('count', array('namespace' => 'myNameSpace'), 'content');
+		$result = $this->Xml->element('count', array('namespace' => 'myNameSpace'), 'content');
 		$expected = '<myNameSpace:count>content</myNameSpace:count>';
 		$this->assertEqual($result, $expected);
 
-		$result = $this->Xml->elem('count', array('namespace' => 'myNameSpace'), 'content', false);
+		$result = $this->Xml->element('count', array('namespace' => 'myNameSpace'), 'content', false);
 		$expected = '<myNameSpace:count>content';
 		$this->assertEqual($result, $expected);
 
 		$expected .= '</myNameSpace:count>';
-		$result .= $this->Xml->closeElem();
+		$result .= $this->Xml->closeElement();
 		$this->assertEqual($result, $expected);
 	}
 	/**
@@ -165,11 +165,11 @@ class XmlHelperTest extends CakeTestCase {
  * @return void
  */
 	function testRenderElementWithComplexContent() {
-		$result = $this->Xml->elem('count', array('namespace' => 'myNameSpace'), array('contrived' => 'content'));
+		$result = $this->Xml->element('count', array('namespace' => 'myNameSpace'), array('contrived' => 'content'));
 		$expected = '<myNameSpace:count><content /></myNameSpace:count>';
 		$this->assertEqual($result, $expected);
 
-		$result = $this->Xml->elem('count', array('namespace' => 'myNameSpace'), array('cdata' => true, 'value' => 'content'));
+		$result = $this->Xml->element('count', array('namespace' => 'myNameSpace'), array('cdata' => true, 'value' => 'content'));
 		$expected = '<myNameSpace:count><![CDATA[content]]></myNameSpace:count>';
 		$this->assertEqual($result, $expected);
 	}
