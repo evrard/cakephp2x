@@ -465,15 +465,15 @@ class XmlTest extends CakeTestCase {
 
 		$xml = new Xml($raw);
 		$this->assertEqual($xml->toArray(), $array);
-		$this->assertEqual($xml->__header, 'xml version="1.0" encoding="ISO-8859-1"');
+		$this->assertEqual(str_replace("\n", '', $xml->toString(true)), $raw);
 
 		$xml = new Xml(' ' . $raw);
 		$this->assertEqual($xml->toArray(), $array);
-		$this->assertEqual($xml->__header, 'xml version="1.0" encoding="ISO-8859-1"');
+		$this->assertEqual(str_replace("\n", '', $xml->toString(true)), $raw);
 
 		$xml = new Xml("\n" . $raw);
 		$this->assertEqual($xml->toArray(), $array);
-		$this->assertEqual($xml->__header, 'xml version="1.0" encoding="ISO-8859-1"');
+		$this->assertEqual(str_replace("\n", '', $xml->toString(true)), $raw);
 	}
 
 	/* Not implemented yet */
