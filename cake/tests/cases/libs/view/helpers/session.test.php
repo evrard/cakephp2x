@@ -2,8 +2,6 @@
 /**
  * SessionHelperTest file
  *
- * Long description for file
- *
  * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
@@ -42,7 +40,7 @@ class SessionHelperTest extends CakeTestCase {
  */
 	function setUp() {
 		$this->Session = new SessionHelper();
-		$this->Session->__start();
+//		$this->Session->__start();
 
 		$_SESSION = array(
 			'test' => 'info',
@@ -115,11 +113,8 @@ class SessionHelperTest extends CakeTestCase {
  */
 	function testCheck() {
 		$this->assertTrue($this->Session->check('test'));
-
 		$this->assertTrue($this->Session->check('Message.flash.element'));
-
 		$this->assertFalse($this->Session->check('Does.not.exist'));
-
 		$this->assertFalse($this->Session->check('Nope'));
 	}
 
