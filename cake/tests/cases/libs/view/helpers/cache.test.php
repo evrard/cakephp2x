@@ -141,7 +141,7 @@ class CacheHelperTest extends CakeTestCase {
 
 		$contents = file_get_contents($filename);
 		$this->assertPattern('/php echo \$variable/', $contents);
-		$this->assertPattern('/php echo microtime(true)/', $contents);
+		$this->assertPattern('/php echo microtime\(true\)/', $contents);
 		$this->assertPattern('/clark kent/', $result);
 
 		@unlink($filename);
@@ -190,7 +190,7 @@ class CacheHelperTest extends CakeTestCase {
 		$contents = file_get_contents($filename);
 		$this->assertPattern('/if \(is_writable\(TMP\)\)\:/', $contents);
 		$this->assertPattern('/php echo \$variable/', $contents);
-		$this->assertPattern('/php echo microtime(true)/', $contents);
+		$this->assertPattern('/php echo microtime\(true\)/', $contents);
 
 		@unlink($filename);
 	}
