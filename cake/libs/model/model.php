@@ -259,7 +259,7 @@ class Model extends Overloadable {
  * @var array
  * @access public
  */
-	protected $whitelist = array();
+	public $whitelist = array();
 
 /**
  * Whether or not to cache sources for this model.
