@@ -100,7 +100,7 @@ class I18n extends Object {
  * @var array
  * @access private
  */
-	var $__categories = array(
+	private static $__categories = array(
 		 'LC_ALL', 'LC_COLLATE', 'LC_CTYPE', 'LC_MONETARY', 'LC_NUMERIC', 'LC_TIME', 'LC_MESSAGES'
 	);
 
@@ -266,7 +266,7 @@ class I18n extends Object {
 				$file = $directory . DS . $lang . DS . self::$category . DS . $domain;
 
 				if ($core) {
-					$app = $directory . $lang . DS . $this->category . DS . 'core';
+					$app = $directory . $lang . DS . self::$category . DS . 'core';
 
 					if (file_exists($fn = "$app.mo")) {
 						self::__loadMo($fn, $domain);
