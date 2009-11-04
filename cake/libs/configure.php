@@ -43,10 +43,8 @@ final class Configure extends Object {
  * @return void
  * @access private
  */
-	private function __init() {
-		if (!class_exists('Set')) {
-			require LIBS . 'set.php';
-		}
+	public static function init() {
+		self::__loadBootstrap(true);
 	}
 
 /**
@@ -74,7 +72,6 @@ final class Configure extends Object {
  * @access public
  */
 	public static function write($config, $value = null) {
-		self::__init();
 		if (!is_array($config)) {
 			$config = array($config => $value);
 		}
@@ -132,7 +129,6 @@ final class Configure extends Object {
  * @access public
  */
 	public static function read($var = 'debug') {
-		self::__init();
 		if (strpos($var, '.') !== false) {
 			$names = explode('.', $var, 2);
 			$var = $names[0];
@@ -160,7 +156,6 @@ final class Configure extends Object {
  * @access public
  */
 	public static function delete($var = null) {
-		self::__init();
 		if (strpos($var, '.') === false) {
 			unset(self::$__values[$var]);
 			return;
