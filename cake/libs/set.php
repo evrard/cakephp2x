@@ -1090,6 +1090,21 @@ class Set {
 	}
 
 /**
+ * Adjust the key to reflect numeric indexes from string paths
+ *
+ * @param string $key
+ * @return mixed
+ * @access private
+ * @static
+ */
+	private static function __convertKey($key) {
+		if (is_numeric($key)) {
+			$key = intval($key);
+		}
+		return $key;
+	}
+
+/**
  * Allows the application of a callback method to elements of an
  * array extracted by a Set::extract() compatible path.
  *
