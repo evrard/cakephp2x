@@ -123,7 +123,7 @@ class I18nShell extends Shell {
 		$this->out(__('usage:', true));
 		$this->out('   cake i18n help');
 		$this->out('   cake i18n initdb [-datasource custom]');
-		$this->out('');
+		$this->out();
 		$this->hr();
 
 		$this->Extract->help();

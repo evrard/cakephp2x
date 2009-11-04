@@ -313,10 +313,10 @@ final class Configure extends Object {
  *
  * @param boolean $boot Load application bootstrap (if true)
  * @return void
- * @access public
+ * @access private
  */
-	public static function init($boot = true) {
-		$modelPaths = $behaviorPaths = $controllerPaths = $componentPaths = $viewPaths = $helperPaths = $pluginPaths = $vendorPaths = $localePaths = $shellPaths = null;
+	private function __loadBootstrap($boot) {
+		$libPaths = $modelPaths = $behaviorPaths = $controllerPaths = $componentPaths = $viewPaths = $helperPaths = $pluginPaths = $vendorPaths = $localePaths = $shellPaths = null;
 
 		if ($boot) {
 			self::write('App', array('base' => false, 'baseUrl' => false, 'dir' => APP_DIR, 'webroot' => WEBROOT_DIR));
@@ -370,7 +370,7 @@ final class Configure extends Object {
 					'models' => $modelPaths, 'views' => $viewPaths, 'controllers' => $controllerPaths,
 					'helpers' => $helperPaths, 'components' => $componentPaths, 'behaviors' => $behaviorPaths,
 					'plugins' => $pluginPaths, 'vendors' => $vendorPaths, 'locales' => $localePaths,
-					'shells' => $shellPaths
+					'shells' => $shellPaths, 'libs' => $libPaths
 				));
 			}
 		}
@@ -397,24 +397,16 @@ class App extends Object {
 		'class' => array('suffix' => '.php', 'extends' => null, 'core' => true),
 		'file' => array('suffix' => '.php', 'extends' => null, 'core' => true),
 		'model' => array('suffix' => '.php', 'extends' => 'AppModel', 'core' => false),
-		'datasources' => array('suffix' => '.php', 'extends' => 'DataSource', 'core' => false),
 		'behavior' => array('suffix' => '.php', 'extends' => 'ModelBehavior', 'core' => true),
 		'controller' => array('suffix' => '_controller.php', 'extends' => 'AppController', 'core' => true),
 		'component' => array('suffix' => '.php', 'extends' => null, 'core' => true),
+		'lib' => array('suffix' => '.php', 'extends' => null, 'core' => true),
 		'view' => array('suffix' => '.php', 'extends' => null, 'core' => true),
 		'helper' => array('suffix' => '.php', 'extends' => 'AppHelper', 'core' => true),
 		'vendor' => array('suffix' => '', 'extends' => null, 'core' => true),
 		'shell' => array('suffix' => '.php', 'extends' => 'Shell', 'core' => true),
 		'plugin' => array('suffix' => '', 'extends' => null, 'core' => true)
 	);
-
-/**
- * List of additional path(s) where datasource files reside.
- *
- * @var array
- * @access public
- */
-	private static $datasources = array();
 
 /**
  * List of additional path(s) where model files reside.
@@ -448,6 +440,13 @@ class App extends Object {
  */
 	private static $components = array();
 
+/**
+ * List of additional path(s) where libs files reside.
+ *
+ * @var array
+ * @access public
+ */
+	private static $libs = array();
 /**
  * List of additional path(s) where view files reside.
  *
@@ -585,6 +584,7 @@ class App extends Object {
 			'datasources' => array(MODELS . 'datasources'),
 			'controllers' => array(CONTROLLERS),
 			'components' => array(COMPONENTS),
+			'libs' => array(APPLIBS),
 			'views' => array(VIEWS),
 			'helpers' => array(HELPERS),
 			'locales' => array(APP . 'locale' . DS),
@@ -625,6 +625,23 @@ class App extends Object {
 				self::${$type} = array_values($path);
 			}
 		}
+	}
+
+/**
+ * Get the path that a plugin is on.  Searches through the defined plugin paths.
+ *
+ * @param string $plugin CamelCased plugin name to find the path of.
+ * @return string full path to the plugin.
+ **/
+	function pluginPath($plugin) {
+		$_this = App::getInstance();
+		$pluginDir = Inflector::underscore($plugin);
+		for ($i = 0, $length = count($_this->plugins); $i < $length; $i++) {
+			if (is_dir($_this->plugins[$i] . $pluginDir)) {
+				return $_this->plugins[$i] . $pluginDir . DS ;
+			}
+		}
+		return $_this->plugins[0] . $pluginDir . DS;
 	}
 
 /**
@@ -823,10 +840,10 @@ class App extends Object {
 			$file = Inflector::underscore($name) . ".{$ext}";
 		}
 		$ext = self::__settings($type, $plugin, $parent);
-
 		if ($name != null && !class_exists($name . $ext['class'])) {
 			if ($load = self::__mapped($name . $ext['class'], $type, $plugin)) {
 				if (self::__load($load)) {
+
 					if (self::$return) {
 						$value = include $load;
 						return $value;
@@ -1065,6 +1082,12 @@ class App extends Object {
 				}
 				return array('class' => $type, 'suffix' => null, 'path' => $path);
 			break;
+			case 'lib':
+				if ($plugin) {
+					$path = $pluginPath . DS . 'libs' . DS;
+				}
+				return array('class' => null, 'suffix' => null, 'path' => $path);
+			break;
 			case 'view':
 				if ($plugin) {
 					$path = $pluginPath . DS . 'views' . DS;
@@ -1169,7 +1192,7 @@ class App extends Object {
  * Writes cache file if changes have been made to the $__map or $__paths
  *
  * @return void
- * @access private
+ * @access public
  */
 	public static function destruct__() {
 		if (self::$__cache) {

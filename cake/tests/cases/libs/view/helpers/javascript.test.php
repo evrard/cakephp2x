@@ -177,6 +177,10 @@ class JavascriptTest extends CakeTestCase {
 		$expected = '<script type="text/javascript" src="js/scriptaculous.js?load=effects"></script>';
 		$this->assertEqual($result, $expected);
 
+		$result = $this->Javascript->link('some.json.libary');
+		$expected = '<script type="text/javascript" src="js/some.json.libary.js"></script>';
+		$this->assertEqual($result, $expected);
+
 		$result = $this->Javascript->link('jquery-1.1.2');
 		$expected = '<script type="text/javascript" src="js/jquery-1.1.2.js"></script>';
 		$this->assertEqual($result, $expected);
@@ -261,6 +265,10 @@ class JavascriptTest extends CakeTestCase {
 		$expected = '<script type="text/javascript" src="cjs/jquery-1.1.2.js"></script>';
 		$this->assertEqual($result, $expected);
 
+		$result = $this->Javascript->link('folderjs/jquery-1.1.2');
+		$expected = '<script type="text/javascript" src="cjs/folderjs/jquery-1.1.2.js"></script>';
+		$this->assertEqual($result, $expected);
+
 		if ($old === null) {
 			Configure::delete('Asset.filter.js');
 		}
@@ -273,11 +281,11 @@ class JavascriptTest extends CakeTestCase {
 
 		$this->Javascript->webroot = '/testing/';
 		$result = $this->Javascript->link('__cake_js_test');
-		$this->assertPattern('/^<script[^<>]+src="\/testing\/js\/__cake_js_test\.js\?"[^<>]*>/', $result);
+		$this->assertPattern('/^<script[^<>]+src="\/testing\/js\/__cake_js_test\.js\?\d+"[^<>]*>/', $result);
 
 		$this->Javascript->webroot = '/testing/longer/';
 		$result = $this->Javascript->link('__cake_js_test');
-		$this->assertPattern('/^<script[^<>]+src="\/testing\/longer\/js\/__cake_js_test\.js\?"[^<>]*>/', $result);
+		$this->assertPattern('/^<script[^<>]+src="\/testing\/longer\/js\/__cake_js_test\.js\?\d+"[^<>]*>/', $result);
 
 		$this->Javascript->webroot = $webroot;
 		Configure::write('debug', $debug);

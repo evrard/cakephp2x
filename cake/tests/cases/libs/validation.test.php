@@ -161,7 +161,10 @@ class ValidationTest extends CakeTestCase {
 	function testBetween() {
 		$this->assertTrue(Validation::between('abcdefg', 1, 7));
 		$this->assertTrue(Validation::between('', 0, 7));
+		$this->assertTrue(Validation::between('אกあアꀀ豈', 1, 7));
+
 		$this->assertFalse(Validation::between('abcdefg', 1, 6));
+		$this->assertFalse(Validation::between('ÆΔΩЖÇ', 1, 3));
 	}
 
 /**
@@ -1709,7 +1712,10 @@ class ValidationTest extends CakeTestCase {
 	function testMaxLength() {
 		$this->assertTrue(Validation::maxLength('ab', 3));
 		$this->assertTrue(Validation::maxLength('abc', 3));
+		$this->assertTrue(Validation::maxLength('ÆΔΩЖÇ', 10));
+
 		$this->assertFalse(Validation::maxLength('abcd', 3));
+		$this->assertFalse(Validation::maxLength('ÆΔΩЖÇ', 3));
 	}
 
 /**
@@ -1720,8 +1726,11 @@ class ValidationTest extends CakeTestCase {
  */
 	function testMinLength() {
 		$this->assertFalse(Validation::minLength('ab', 3));
+		$this->assertFalse(Validation::minLength('ÆΔΩЖÇ', 10));
+
 		$this->assertTrue(Validation::minLength('abc', 3));
 		$this->assertTrue(Validation::minLength('abcd', 3));
+		$this->assertTrue(Validation::minLength('ÆΔΩЖÇ', 2));
 	}
 
 /**
@@ -1766,6 +1775,7 @@ class ValidationTest extends CakeTestCase {
 		$this->assertFalse(Validation::url('http://en.(wikipedia).org/'));
 		$this->assertFalse(Validation::url('www.cakephp.org', true));
 		$this->assertTrue(Validation::url('http://www.cakephp.org', true));
+		$this->assertTrue(Validation::url('http://example.com/~userdir/'));
 	}
 
 /**

@@ -407,6 +407,41 @@ class HelperTest extends CakeTestCase {
 	}
 
 /**
+ * test assetTimestamp application
+ *
+ * @return void
+ **/
+	function testAssetTimestamp() {
+		$_timestamp = Configure::read('Asset.timestamp');
+		$_debug = Configure::read('debug');
+
+		Configure::write('Asset.timestamp', false);
+		$result = $this->Helper->assetTimestamp(CSS_URL . 'cake.generic.css');
+		$this->assertEqual($result, CSS_URL . 'cake.generic.css');
+
+		Configure::write('Asset.timestamp', true);
+		Configure::write('debug', 0);
+		$result = $this->Helper->assetTimestamp(CSS_URL . 'cake.generic.css');
+		$this->assertEqual($result, CSS_URL . 'cake.generic.css');
+
+		Configure::write('Asset.timestamp', true);
+		Configure::write('debug', 2);
+		$result = $this->Helper->assetTimestamp(CSS_URL . 'cake.generic.css');
+		$this->assertPattern('/' . preg_quote(CSS_URL . 'cake.generic.css?', '/') . '[0-9]+/', $result);
+
+		Configure::write('Asset.timestamp', 'force');
+		Configure::write('debug', 0);
+		$result = $this->Helper->assetTimestamp(CSS_URL . 'cake.generic.css');
+		$this->assertPattern('/' . preg_quote(CSS_URL . 'cake.generic.css?', '/') . '[0-9]+/', $result);
+
+		$result = $this->Helper->assetTimestamp(CSS_URL . 'cake.generic.css?someparam');
+		$this->assertEqual($result, CSS_URL . 'cake.generic.css?someparam');
+
+		Configure::write('debug', $_debug);
+		Configure::write('Asset.timestamp', $_timestamp);
+	}
+
+/**
  * testFieldsWithSameName method
  *
  * @access public
@@ -552,5 +587,63 @@ class HelperTest extends CakeTestCase {
 		$result = $this->Helper->clean('&lt;script&gt;alert(document.cookie)&lt;/script&gt;');
 		$this->assertEqual($result, '&amp;lt;script&amp;gt;alert(document.cookie)&amp;lt;/script&amp;gt;');
 	}
+
+/**
+ * testMultiDimensionalField method
+ *
+ * @access public
+ * @return void
+ */
+	function testMultiDimensionalField() {
+		// PHP4 reference hack
+		ClassRegistry::removeObject('view');
+		ClassRegistry::addObject('view', $this->View);
+
+		$this->Helper->setEntity('HelperTestPost', true);
+
+		$this->Helper->setEntity('HelperTestPost.2.HelperTestComment.1.title');
+		$this->assertEqual($this->View->model, 'HelperTestPost');
+		$this->assertEqual($this->View->association, 'HelperTestComment');
+		$this->assertEqual($this->View->modelId,2);
+		$this->assertEqual($this->View->field, 'title');
+
+		$this->Helper->setEntity('HelperTestPost.1.HelperTestComment.1.HelperTestTag.1.created');
+		$this->assertEqual($this->View->field,'created');
+		$this->assertEqual($this->View->association,'HelperTestTag');
+		$this->assertEqual($this->View->modelId,1);
+
+		$this->Helper->setEntity('HelperTestPost.0.HelperTestComment.1.HelperTestTag.1.fake');
+		$this->assertEqual($this->View->model,'HelperTestPost');
+		$this->assertEqual($this->View->association,'HelperTestTag');
+		$this->assertEqual($this->View->field,null);
+
+		$this->Helper->setEntity('1.HelperTestComment.1.HelperTestTag.created.year');
+		$this->assertEqual($this->View->model,'HelperTestPost');
+		$this->assertEqual($this->View->association,'HelperTestTag');
+		$this->assertEqual($this->View->field,'created');
+		$this->assertEqual($this->View->modelId,1);
+		$this->assertEqual($this->View->fieldSuffix,'year');
+
+		$this->Helper->data['HelperTestPost'][2]['HelperTestComment'][1]['title'] = 'My Title';
+		$result = $this->Helper->value('HelperTestPost.2.HelperTestComment.1.title');
+		$this->assertEqual($result,'My Title');
+
+		$this->Helper->data['HelperTestPost'][2]['HelperTestComment'][1]['created']['year'] = 2008;
+		$result = $this->Helper->value('HelperTestPost.2.HelperTestComment.1.created.year');
+		$this->assertEqual($result,2008);
+
+		$this->Helper->data[2]['HelperTestComment'][1]['created']['year'] = 2008;
+		$result = $this->Helper->value('HelperTestPost.2.HelperTestComment.1.created.year');
+		$this->assertEqual($result,2008);
+
+		$this->Helper->data['HelperTestPost']['title'] = 'My Title';
+		$result = $this->Helper->value('title');
+		$this->assertEqual($result,'My Title');
+
+		$this->Helper->data['My']['title'] = 'My Title';
+		$result = $this->Helper->value('My.title');
+		$this->assertEqual($result,'My Title');
+	}
+
 }
 ?>

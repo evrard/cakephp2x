@@ -12,7 +12,6 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
@@ -237,7 +236,7 @@ class XmlNode extends Object {
 			$chldObjs = get_object_vars($object);
 		} elseif (is_array($object)) {
 			$chldObjs = $object;
-		} elseif (!empty($object) || $object === 0) {
+		} elseif (!empty($object) || $object === 0 || $object === '0') {
 			$node->createTextNode($object);
 		}
 		$attr = array();
@@ -277,7 +276,7 @@ class XmlNode extends Object {
 							$node->normalize($val, $n, $options);
 						} elseif ($options['format'] == 'tags' && $this->__tagOptions($key) !== false) {
 							$tmp = $node->createElement($key);
-							if (!empty($val) || $val === 0) {
+							if (!empty($val) || $val === 0 || $val === '0') {
 								$tmp->createTextNode($val);
 							}
 						} elseif ($options['format'] == 'attributes') {
@@ -698,7 +697,6 @@ class XmlNode extends Object {
 				continue;
 			} elseif (isset($child->children[0]) && is_a($child->children[0], 'XmlTextNode')) {
 				$value = $child->children[0]->value;
-
 				if ($child->attributes) {
 					$value = array_merge(array('value' => $value), $child->attributes);
 				}
@@ -714,10 +712,10 @@ class XmlNode extends Object {
 				continue;
 			} elseif (count($child->children) === 0 && $child->value == '') {
 				$value = $child->attributes;
-				if (isset($out[$child->name]) || isset($multi[$key])) {
+				if (isset($out[$key]) || isset($multi[$key])) {
 					if (!isset($multi[$key])) {
-						$multi[$key] = array($out[$child->name]);
-						unset($out[$child->name]);
+						$multi[$key] = array($out[$key]);
+						unset($out[$key]);
 					}
 					$multi[$key][] = $value;
 				} elseif (!empty($value)) {
@@ -821,7 +819,7 @@ class Xml extends XmlNode {
  * structures to XML. Set by passing $options['tags'] to this object's constructor.
  *
  * @var array
- * @access private
+ * @access protected
  */
 	protected $_tags = array();
 

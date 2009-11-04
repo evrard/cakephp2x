@@ -27,7 +27,7 @@
  * @package       cake
  * @subpackage    cake.cake.libs
  */
-class Set extends Object {
+class Set {
 
 /**
  * This function can be thought of as a hybrid between PHP's array_merge and array_merge_recursive. The difference
@@ -247,9 +247,11 @@ class Set extends Object {
 	}
 
 /**
- * Implements partial support for XPath 2.0. If $path is an array or $data is empty it the call is delegated to Set::classicExtract.
+ * Implements partial support for XPath 2.0. If $path is an array or $data is empty it the call 
+ * is delegated to Set::classicExtract.
  *
- * Currently implemented selectors:
+ * #### Currently implemented selectors:
+ *
  * - /User/id (similar to the classic {n}.User.id)
  * - /User[2]/name (selects the name of the second User)
  * - /User[id>2] (selects all Users with an id > 2)
@@ -262,15 +264,17 @@ class Set extends Object {
  * - /Comment[text=/cakephp/i] (Selects the all comments that have a text matching the regex /cakephp/i)
  * - /Comment/@* (Selects the all key names of all comments)
  *
- * Other limitations:
+ * #### Other limitations:
+ *
  * - Only absolute paths starting with a single '/' are supported right now
  *
- * Warning: Even so it has plenty of unit tests the XPath support has not gone through a lot of real-world testing. Please report
- * Bugs as you find them. Suggestions for additional features to imlement are also very welcome!
+ * **Warning**: Even so it has plenty of unit tests the XPath support has not gone through a lot of 
+ * real-world testing. Please report Bugs as you find them. Suggestions for additional features to 
+ * implement are also very welcome!
  *
  * @param string $path An absolute XPath 2.0 path
- * @param string $data An array of data to extract from
- * @param string $options Currently only supports 'flatten' which can be disabled for higher XPath-ness
+ * @param array $data An array of data to extract from
+ * @param array $options Currently only supports 'flatten' which can be disabled for higher XPath-ness
  * @return array An array of matched items
  * @access public
  * @static
@@ -697,19 +701,6 @@ class Set extends Object {
 	}
 
 /**
- * Determines if two Sets or arrays are equal
- *
- * @param array $val1 First value
- * @param array $val2 Second value
- * @return boolean true if they are equal, false otherwise
- * @access public
- * @static
- */
-	public static function isEqual($val1, $val2 = null) {
-		return ($val1 == $val2);
-	}
-
-/**
  * Determines if one Set or array contains the exact keys and values of another.
  *
  * @param array $val1 First value
@@ -880,11 +871,10 @@ class Set extends Object {
 	}
 
 /**
- * Converts an object into an array. If $object is no object, reverse
- * will return the same value.
- *
+ * Converts an object into an array.
  * @param object $object Object to reverse
- * @return array
+ * @return array Array representation of given object
+ * @access public
  * @static
  */
 	public static function reverse($object) {
@@ -1023,11 +1013,10 @@ class Set extends Object {
  * returned object (recursively). If $key is numeric will maintain array
  * structure
  *
- * @param mixed $value Value to map
- * @param string $class Class name
- * @param boolean $primary whether to assign first array key as the _name_
- * @return mixed Mapped object
- * @access private
+ * @param array $data An array of data to sort
+ * @param string $path A Set-compatible path to the array value
+ * @param string $dir Direction of sorting - either ascending (ASC), or descending (DESC)
+ * @return array Sorted array of data
  * @static
  */
 	private static function __map(&$array, $class, $primary = false) {
@@ -1046,9 +1035,9 @@ class Set extends Object {
 					if (is_object($out)) {
 						$out = get_object_vars($out);
 					}
-					$out[$key] = Set::__map($value, $class);
+					$out[$key] = self::__map($value, $class);
 					if (is_object($out[$key])) {
-						if ($primary !== true && is_array($value) && Set::countDim($value, true) === 2) {
+						if ($primary !== true && is_array($value) && self::countDim($value, true) === 2) {
 							if (!isset($out[$key]->_name_)) {
 								$out[$key]->_name_ = $primary;
 							}
@@ -1061,18 +1050,18 @@ class Set extends Object {
 						}
 						$primary = false;
 						foreach ($value as $key2 => $value2) {
-							$out->{$key2} = Set::__map($value2, true);
+							$out->{$key2} = self::__map($value2, true);
 						}
 					} else {
 						if (!is_numeric($key)) {
-							$out->{$key} = Set::__map($value, true, $key);
+							$out->{$key} = self::__map($value, true, $key);
 							if (is_object($out->{$key}) && !is_numeric($key)) {
 								if (!isset($out->{$key}->_name_)) {
 									$out->{$key}->_name_ = $key;
 								}
 							}
 						} else {
-							$out->{$key} = Set::__map($value, true);
+							$out->{$key} = self::__map($value, true);
 						}
 					}
 				} else {
@@ -1101,18 +1090,38 @@ class Set extends Object {
 	}
 
 /**
- * Adjust the key to reflect numberic indexes from string paths
+ * Allows the application of a callback method to elements of an
+ * array extracted by a Set::extract() compatible path.
  *
- * @param string $key
- * @return mixed
- * @access private
+ * @param mixed $path Set-compatible path to the array value
+ * @param array $data An array of data to extract from & then process with the $callback.
+ * @param mixed $callback Callback method to be applied to extracted data.
+ * See http://ca2.php.net/manual/en/language.pseudo-types.php#language.types.callback for examples
+ * of callback formats.
+ * @param array $options Options are:
+ *                       - type : can be pass, map, or reduce. Map will handoff the given callback
+ *                                to array_map, reduce will handoff to array_reduce, and pass will
+ *                                use call_user_func_array().
+ * @return mixed Result of the callback when applied to extracted data
+ * @access public
  * @static
  */
-	private static function __convertKey($key) {
-		if (is_numeric($key)) {
-			$key = intval($key);
+	public function apply($path, $data, $callback, $options = array()) {
+		$defaults = array('type' => 'pass');
+		$options = array_merge($defaults, $options);
+		$extracted = self::extract($path, $data);
+
+		if ($options['type'] === 'map') {
+			$result = array_map($callback, $extracted);
+		} elseif ($options['type'] === 'reduce') {
+			$result = array_reduce($extracted, $callback);
+		} elseif ($options['type'] === 'pass') {
+			$result = call_user_func_array($callback, array($extracted));
+		} else {
+			return null;
 		}
-		return $key;
+
+		return  $result;
 	}
 }
 ?>

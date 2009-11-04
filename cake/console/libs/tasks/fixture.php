@@ -90,6 +90,7 @@ class FixtureTask extends Shell {
 		}
 
 		if (isset($this->args[0])) {
+			$this->interactive = false;
 			if (!isset($this->connection)) {
 				$this->connection = 'default';
 			}
@@ -109,6 +110,7 @@ class FixtureTask extends Shell {
  **/
 	function all() {
 		$this->interactive = false;
+		$this->Model->interactive = false;
 		$tables = $this->Model->listAll($this->connection, false);
 		foreach ($tables as $table) {
 			$model = $this->_modelName($table);
@@ -215,7 +217,7 @@ class FixtureTask extends Shell {
 			}
 			$records = $this->_makeRecordString($this->_generateRecords($tableInfo, $recordCount));
 		}
-		if (isset($importOptions['fromTable'])) {
+		if (isset($this->params['records']) || isset($importOptions['fromTable'])) {
 			$records = $this->_makeRecordString($this->_getRecordsFromTable($model, $useTable));
 		}
 		$out = $this->generateFixtureFile($model, compact('records', 'table', 'schema', 'import', 'fields'));
@@ -256,28 +258,8 @@ class FixtureTask extends Shell {
  * @return string fields definitions
  **/
 	function _generateSchema($tableInfo) {
-		$cols = array();
-		$out = "array(\n";
-		foreach ($tableInfo as $field => $fieldInfo) {
-			if (is_array($fieldInfo)) {
-				if ($field != 'indexes') {
-					$col = "\t\t'{$field}' => array('type'=>'" . $fieldInfo['type'] . "', ";
-					$col .= join(', ',  $this->_Schema->__values($fieldInfo));
-				} else {
-					$col = "\t\t'indexes' => array(";
-					$props = array();
-					foreach ((array)$fieldInfo as $key => $index) {
-						$props[] = "'{$key}' => array(".join(', ',  $this->_Schema->__values($index)).")";
-					}
-					$col .= join(', ', $props);
-				}
-				$col .= ")";
-				$cols[] = $col;
-			}
-		}
-		$out .= join(",\n", $cols);
-		$out .= "\n\t)";
-		return $out;
+		$schema = $this->_Schema->generateTable('f', $tableInfo);
+		return substr($schema, 10, -2);
 	}
 
 /**
@@ -379,10 +361,14 @@ class FixtureTask extends Shell {
  * @return array Array of records.
  **/
 	function _getRecordsFromTable($modelName, $useTable = null) {
-		$condition = null;
-		$prompt = __("Please provide a SQL fragment to use as conditions\nExample: WHERE 1=1 LIMIT 10", true);
-		while (!$condition) {
-			$condition = $this->in($prompt, null, 'WHERE 1=1 LIMIT 10');
+		if ($this->interactive) {
+			$condition = null;
+			$prompt = __("Please provide a SQL fragment to use as conditions\nExample: WHERE 1=1 LIMIT 10", true);
+			while (!$condition) {
+				$condition = $this->in($prompt, null, 'WHERE 1=1 LIMIT 10');
+			}
+		} else {
+			$condition = 'WHERE 1=1 ' . isset($this->params['count']) ? $this->params['count'] : 10;
 		}
 		App::import('Model', 'Model', false);
 		$modelObject =& new Model(array('name' => $modelName, 'table' => $useTable, 'ds' => $this->connection));
@@ -412,15 +398,21 @@ class FixtureTask extends Shell {
 		$this->hr();
 		$this->out("Usage: cake bake fixture <arg1> <params>");
 		$this->hr();
+		$this->out('Arguments:');
+		$this->out();
+		$this->out("<name>");
+		$this->out("\tName of the fixture to bake. Can use Plugin.name");
+		$this->out("\tas a shortcut for plugin baking.");
+		$this->out();
 		$this->out('Commands:');
 		$this->out("\nfixture <name>\n\tbakes fixture with specified name.");
 		$this->out("\nfixture all\n\tbakes all fixtures.");
-		$this->out("");
+		$this->out();
 		$this->out('Parameters:');
 		$this->out("\t-count       When using generated data, the number of records to include in the fixture(s).");
 		$this->out("\t-connection  Which database configuration to use for baking.");
 		$this->out("\t-plugin      CamelCased name of plugin to bake fixtures for.");
-		$this->out("");
+		$this->out();
 		$this->_stop();
 	}
 }

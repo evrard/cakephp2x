@@ -59,9 +59,9 @@ class HtmlHelper extends AppHelper {
 		'password' => '<input type="password" name="%s" %s/>',
 		'file' => '<input type="file" name="%s" %s/>',
 		'file_no_model' => '<input type="file" name="%s" %s/>',
-		'submit' => '<input type="submit" %s/>',
+		'submit' => '<input %s/>',
 		'submitimage' => '<input type="image" src="%s" %s/>',
-		'button' => '<input type="%s" %s/>',
+		'button' => '<button type="%s"%s>%s</button>',
 		'image' => '<img src="%s" %s/>',
 		'tableheader' => '<th%s>%s</th>',
 		'tableheaderrow' => '<tr%s>%s</tr>',
@@ -178,6 +178,8 @@ class HtmlHelper extends AppHelper {
  * @param string $name Text for link
  * @param string $link URL for link (if empty it won't be a link)
  * @param mixed $options Link attributes e.g. array('id'=>'selected')
+ * @return void
+ * @see HtmlHelper::link() for details on $options that can be used.
  * @access public
  */
 	public function addCrumb($name, $link = null, $options = null) {
@@ -188,15 +190,16 @@ class HtmlHelper extends AppHelper {
  * Returns a doctype string.
  *
  * Possible doctypes:
- *   + html4-strict:  HTML4 Strict.
- *   + html4-trans:  HTML4 Transitional.
- *   + html4-frame:  HTML4 Frameset.
- *   + xhtml-strict: XHTML1 Strict.
- *   + xhtml-trans: XHTML1 Transitional.
- *   + xhtml-frame: XHTML1 Frameset.
- *   + xhtml11: XHTML1.1.
  *
- * @param  string $type Doctype to use.
+ *  - html4-strict:  HTML4 Strict.
+ *  - html4-trans:  HTML4 Transitional.
+ *  - html4-frame:  HTML4 Frameset.
+ *  - xhtml-strict: XHTML1 Strict.
+ *  - xhtml-trans: XHTML1 Transitional.
+ *  - xhtml-frame: XHTML1 Frameset.
+ *  - xhtml11: XHTML1.1.
+ *
+ * @param string $type Doctype to use.
  * @return string Doctype string
  * @access public
  */
@@ -210,14 +213,21 @@ class HtmlHelper extends AppHelper {
 /**
  * Creates a link to an external resource and handles basic meta tags
  *
- * @param  string  $type The title of the external resource
- * @param  mixed   $url   The address of the external resource or string for content attribute
- * @param  array   $attributes Other attributes for the generated tag. If the type attribute is html, rss, atom, or icon, the mime-type is returned.
- * @param  boolean $inline If set to false, the generated tag appears in the head tag of the layout.
- * @return string
+ * #### Options
+ *
+ * - `inline` Whether or not the link element should be output inline, or in scripts_for_layout.
+ *
+ * @param string $type The title of the external resource
+ * @param mixed $url The address of the external resource or string for content attribute
+ * @param array $options Other attributes for the generated tag. If the type attribute is html,
+ *    rss, atom, or icon, the mime-type is returned.
+ * @return string A completed <link /> element.
  * @access public
  */
-	public function meta($type, $url = null, $attributes = array(), $inline = true) {
+	public function meta($type, $url = null, $options = array()) {
+		$inline = isset($options['inline']) ? $options['inline'] : true;
+		unset($options['inline']);
+
 		if (!is_array($type)) {
 			$types = array(
 				'rss'	=> array('type' => 'application/rss+xml', 'rel' => 'alternate', 'title' => $type, 'link' => $url),
@@ -233,34 +243,34 @@ class HtmlHelper extends AppHelper {
 
 			if (isset($types[$type])) {
 				$type = $types[$type];
-			} elseif (!isset($attributes['type']) && $url !== null) {
+			} elseif (!isset($options['type']) && $url !== null) {
 				if (is_array($url) && isset($url['ext'])) {
 					$type = $types[$url['ext']];
 				} else {
 					$type = $types['rss'];
 				}
-			} elseif (isset($attributes['type']) && isset($types[$attributes['type']])) {
-				$type = $types[$attributes['type']];
-				unset($attributes['type']);
+			} elseif (isset($options['type']) && isset($types[$options['type']])) {
+				$type = $types[$options['type']];
+				unset($options['type']);
 			} else {
 				$type = array();
 			}
 		} elseif ($url !== null) {
 			$inline = $url;
 		}
-		$attributes = array_merge($type, $attributes);
+		$options = array_merge($type, $options);
 		$out = null;
 
-		if (isset($attributes['link'])) {
-			if (isset($attributes['rel']) && $attributes['rel'] === 'icon') {
-				$out = sprintf($this->tags['metalink'], $attributes['link'], $this->_parseAttributes($attributes, array('link'), ' ', ' '));
-				$attributes['rel'] = 'shortcut icon';
+		if (isset($options['link'])) {
+			if (isset($options['rel']) && $options['rel'] === 'icon') {
+				$out = sprintf($this->tags['metalink'], $options['link'], $this->_parseAttributes($options, array('link'), ' ', ' '));
+				$options['rel'] = 'shortcut icon';
 			} else {
-				$attributes['link'] = $this->url($attributes['link'], true);
+				$options['link'] = $this->url($options['link'], true);
 			}
-			$out .= sprintf($this->tags['metalink'], $attributes['link'], $this->_parseAttributes($attributes, array('link'), ' ', ' '));
+			$out .= sprintf($this->tags['metalink'], $options['link'], $this->_parseAttributes($options, array('link'), ' ', ' '));
 		} else {
-			$out = sprintf($this->tags['meta'], $this->_parseAttributes($attributes, array('type')));
+			$out = sprintf($this->tags['meta'], $this->_parseAttributes($options, array('type')));
 		}
 
 		if ($inline) {
@@ -294,15 +304,19 @@ class HtmlHelper extends AppHelper {
  *
  * If the $url is empty, $title is used instead.
  *
- * @param  string  $title The content to be wrapped by <a> tags.
- * @param  mixed   $url Cake-relative URL or array of URL parameters, or external URL (starts with http://)
- * @param  array   $htmlAttributes Array of HTML attributes.
- * @param  string  $confirmMessage JavaScript confirmation message.
- * @param  boolean $escapeTitle	Whether or not $title should be HTML escaped.
- * @return string	An <a /> element.
+ * #### Options
+ *
+ * - `escape` Set to false to disable escaping of title and attributes.
+ *
+ * @param string $title The content to be wrapped by <a> tags.
+ * @param mixed $url Cake-relative URL or array of URL parameters, or external URL (starts with http://)
+ * @param array $options Array of HTML attributes.
+ * @param string $confirmMessage JavaScript confirmation message.
+ * @return string An <a /> element.
  * @access public
  */
-	public function link($title, $url = null, $htmlAttributes = array(), $confirmMessage = false, $escapeTitle = true) {
+	public function link($title, $url = null, $options = array(), $confirmMessage = false) {
+		$escapeTitle = true;
 		if ($url !== null) {
 			$url = $this->url($url);
 		} else {
@@ -311,8 +325,8 @@ class HtmlHelper extends AppHelper {
 			$escapeTitle = false;
 		}
 
-		if (isset($htmlAttributes['escape']) && $escapeTitle == true) {
-			$escapeTitle = $htmlAttributes['escape'];
+		if (isset($options['escape'])) {
+			$escapeTitle = $options['escape'];
 		}
 
 		if ($escapeTitle === true) {
@@ -321,42 +335,46 @@ class HtmlHelper extends AppHelper {
 			$title = htmlentities($title, ENT_QUOTES, $escapeTitle);
 		}
 
-		if (!empty($htmlAttributes['confirm'])) {
-			$confirmMessage = $htmlAttributes['confirm'];
-			unset($htmlAttributes['confirm']);
+		if (!empty($options['confirm'])) {
+			$confirmMessage = $options['confirm'];
+			unset($options['confirm']);
 		}
 		if ($confirmMessage) {
 			$confirmMessage = str_replace("'", "\'", $confirmMessage);
 			$confirmMessage = str_replace('"', '\"', $confirmMessage);
-			$htmlAttributes['onclick'] = "return confirm('{$confirmMessage}');";
-		} elseif (isset($htmlAttributes['default']) && $htmlAttributes['default'] == false) {
-			if (isset($htmlAttributes['onclick'])) {
-				$htmlAttributes['onclick'] .= ' event.returnValue = false; return false;';
+			$options['onclick'] = "return confirm('{$confirmMessage}');";
+		} elseif (isset($options['default']) && $options['default'] == false) {
+			if (isset($options['onclick'])) {
+				$options['onclick'] .= ' event.returnValue = false; return false;';
 			} else {
-				$htmlAttributes['onclick'] = 'event.returnValue = false; return false;';
+				$options['onclick'] = 'event.returnValue = false; return false;';
 			}
-			unset($htmlAttributes['default']);
+			unset($options['default']);
 		}
-		return $this->output(sprintf($this->tags['link'], $url, $this->_parseAttributes($htmlAttributes), $title));
+		return $this->output(sprintf($this->tags['link'], $url, $this->_parseAttributes($options), $title));
 	}
 
 /**
  * Creates a link element for CSS stylesheets.
  *
+ * #### Options 
+ *
+ * - `inline` If set to false, the generated tag appears in the head tag of the layout.
+ *
  * @param mixed $path The name of a CSS style sheet or an array containing names of
  *   CSS stylesheets. If `$path` is prefixed with '/', the path will be relative to the webroot
  *   of your application. Otherwise, the path will be relative to your CSS path, usually webroot/css.
  * @param string $rel Rel attribute. Defaults to "stylesheet". If equal to 'import' the stylesheet will be imported.
- * @param array $htmlAttributes Array of HTML attributes.
- * @param boolean $inline If set to false, the generated tag appears in the head tag of the layout.
+ * @param array $options Array of HTML attributes.
  * @return string CSS <link /> or <style /> tag, depending on the type of link.
  * @access public
  */
-	public function css($path, $rel = null, $htmlAttributes = array(), $inline = true) {
+	public function css($path, $rel = null, $options = array()) {
+		$inline = isset($options['inline']) ? $options['inline'] : true;
 		if (is_array($path)) {
 			$out = '';
 			foreach ($path as $i) {
-				$out .= "\n\t" . $this->css($i, $rel, $htmlAttributes, $inline);
+				$out .= "\n\t" . $this->css($i, $rel, $options, $inline);
 			}
 			if ($inline)  {
 				return $out . "\n";
@@ -372,34 +390,27 @@ class HtmlHelper extends AppHelper {
 			}
 
 			if (strpos($path, '?') === false) {
-				if (strpos($path, '.css') === false) {
+				if (substr($path, -4) !== '.css') {
 					$path .= '.css';
 				}
 			}
-
-			$path = $this->webroot($path);
-
-			$url = $path;
-			$timestampEnabled = (
-				(Configure::read('Asset.timestamp') === true && Configure::read() > 0) ||
-				Configure::read('Asset.timestamp') === 'force'
-			);
-			if (strpos($path, '?') === false && $timestampEnabled) {
-				$url .= '?' . @filemtime(WWW_ROOT . str_replace('/', DS, $path));
-			}
+			$url = $this->webroot($this->assetTimestamp($path));
 
 			if (Configure::read('Asset.filter.css')) {
-				$url = str_replace(CSS_URL, 'ccss/', $url);
+				$pos = strpos($url, CSS_URL);
+				if ($pos !== false) {
+					$url = substr($url, 0, $pos) . 'ccss/' . substr($url, $pos + strlen(CSS_URL));
+				}
 			}
 		}
 
 		if ($rel == 'import') {
-			$out = sprintf($this->tags['style'], $this->_parseAttributes($htmlAttributes, null, '', ' '), '@import url(' . $url . ');');
+			$out = sprintf($this->tags['style'], $this->_parseAttributes($options, null, '', ' '), '@import url(' . $url . ');');
 		} else {
 			if ($rel == null) {
 				$rel = 'stylesheet';
 			}
-			$out = sprintf($this->tags['css'], $rel, $url, $this->_parseAttributes($htmlAttributes, null, '', ' '));
+			$out = sprintf($this->tags['css'], $rel, $url, $this->_parseAttributes($options, null, '', ' '));
 		}
 		$out = $this->output($out);
 
@@ -455,21 +466,10 @@ class HtmlHelper extends AppHelper {
 			if ($url[0] !== '/') {
 				$url = JS_URL . $url;
 			}
-			$url = $this->webroot($url);
-			if (strpos($url, '?') === false) {
-				if (strpos($url, '.js') === false) {
-					$url .= '.js';
-				}
+			if (strpos($url, '?') === false && strpos($url, '.js') === false) {
+				$url .= '.js';
 			}
-
-			$timestampEnabled = (
-				(Configure::read('Asset.timestamp') === true && Configure::read('debug') > 0) ||
-				Configure::read('Asset.timestamp') === 'force'
-			);
-
-			if (strpos($url, '?') === false && $timestampEnabled) {
-				$url .= '?' . @filemtime(WWW_ROOT . str_replace('/', DS, $url));
-			}
+			$url = $this->webroot($this->assetTimestamp($url));
 
 			if (Configure::read('Asset.filter.js')) {
 				$url = str_replace(JS_URL, 'cjs/', $url);
@@ -497,7 +497,7 @@ class HtmlHelper extends AppHelper {
  *
  * @param string $script The script to wrap
  * @param array $options The options to use.
- * @return mixed string or null
+ * @return mixed string or null depending on the value of `$options['inline']`
  **/
 	function scriptBlock($script, $options = array()) {
 		$defaultOptions = array('safe' => true, 'inline' => true);
@@ -553,19 +553,19 @@ class HtmlHelper extends AppHelper {
  * Builds CSS style data from an array of CSS properties
  *
  * @param array $data Style data array
- * @param boolean $inline Whether or not the style block should be displayed inline
+ * @param boolean $oneline Whether or not the style block should be displayed on one line.
  * @return string CSS styling data
  * @access public
  */
-	public function style($data, $inline = true) {
+	function style($data, $oneline = true) {
 		if (!is_array($data)) {
 			return $data;
 		}
 		$out = array();
-		foreach ($data as $key=> $value) {
-			$out[] = $key.':'.$value.';';
+		foreach ($data as $key => $value) {
+			$out[] = $key . ':' . $value . ';';
 		}
-		if ($inline) {
+		if ($oneline) {
 			return join(' ', $out);
 		}
 		return join("\n", $out);
@@ -574,8 +574,8 @@ class HtmlHelper extends AppHelper {
 /**
  * Returns the breadcrumb trail as a sequence of &raquo;-separated links.
  *
- * @param  string  $separator Text to separate crumbs.
- * @param  string  $startText This will be the first crumb, if false it defaults to first crumb in array
+ * @param string $separator Text to separate crumbs.
+ * @param string $startText This will be the first crumb, if false it defaults to first crumb in array
  * @return string
  * @access public
  */
@@ -600,23 +600,23 @@ class HtmlHelper extends AppHelper {
 	}
 
 /**
- * Creates a formatted IMG element.
+ * Creates a formatted IMG element. If `$options['url']` is provided, an image link will be 
+ * generated with the link pointed at `$options['url']`.  This method will set an empty
+ * alt attribute if one is not supplied.
  *
  * @param string $path Path to the image file, relative to the app/webroot/img/ directory.
- * @param array	$options Array of HTML attributes.
+ * @param array $options Array of HTML attributes.
  * @return string completed img tag
  * @access public
  */
 	public function image($path, $options = array()) {
 		if (is_array($path)) {
 			$path = $this->url($path);
-		} elseif ($path[0] === '/') {
-			$path = $this->webroot($path);
 		} elseif (strpos($path, '://') === false) {
-			$path = $this->webroot(IMAGES_URL . $path);
-			if ((Configure::read('Asset.timestamp') == true && Configure::read() > 0) || Configure::read('Asset.timestamp') === 'force') {
-				$path .= '?' . @filemtime(str_replace('/', DS, WWW_ROOT . $path));
+			if ($path[0] !== '/') {
+				$path = IMAGES_URL . $path;
 			}
+			$path = $this->webroot($this->assetTimestamp($path));
 		}
 
 		if (!isset($options['alt'])) {
@@ -634,7 +634,6 @@ class HtmlHelper extends AppHelper {
 		if ($url) {
 			return $this->output(sprintf($this->tags['link'], $this->url($url), null, $image));
 		}
-
 		return $this->output($image);
 	}
 
@@ -659,12 +658,13 @@ class HtmlHelper extends AppHelper {
 /**
  * Returns a formatted string of table rows (TR's with TD's in them).
  *
- * @param array $data		Array of table data
+ * @param array $data Array of table data
  * @param array $oddTrOptions HTML options for odd TR elements if true useCount is used
  * @param array $evenTrOptions HTML options for even TR elements
  * @param bool $useCount adds class "column-$i"
- * @param bool $continueOddEven If false, will use a non-static $count variable, so that the odd/even count is reset to zero just for that call
- * @return string	Formatted HTML
+ * @param bool $continueOddEven If false, will use a non-static $count variable,
+ *    so that the odd/even count is reset to zero just for that call.
+ * @return string Formatted HTML
  * @access public
  */
 	public function tableCells($data, $oddTrOptions = null, $evenTrOptions = null, $useCount = false, $continueOddEven = true) {
@@ -712,123 +712,127 @@ class HtmlHelper extends AppHelper {
 /**
  * Returns a formatted block tag, i.e DIV, SPAN, P.
  *
- * ## Attributes
+ * #### Options
  *
  * - `escape` Whether or not the contents should be html_entity escaped.
  *
  * @param string $name Tag name.
  * @param string $text String content that will appear inside the div element.
  *   If null, only a start tag will be printed
- * @param array $attributes Additional HTML attributes of the DIV tag, see above.
+ * @param array $options Additional HTML attributes of the DIV tag, see above.
  * @param boolean $escape If true, $text will be HTML-escaped (Deprecated, use $attributes[escape])
  * @return string The formatted tag element
  * @access public
  */
-	function tag($name, $text = null, $attributes = array(), $escape = false) {
-		if ($escape || isset($attributes['escape']) && $attributes['escape']) {
-			if (is_array($attributes)) {
-				unset($attributes['escape']);
-			}
+	public function tag($name, $text = null, $options = array()) {
+		if (is_array($options) && isset($options['escape']) && $options['escape']) {
 			$text = h($text);
+			unset($options['escape']);
 		}
-		if (!is_array($attributes)) {
-			$attributes = array('class' => $attributes);
+		if (!is_array($options)) {
+			$options = array('class' => $options);
 		}
 		if ($text === null) {
 			$tag = 'tagstart';
 		} else {
 			$tag = 'tag';
 		}
-		return $this->output(sprintf($this->tags[$tag], $name, $this->_parseAttributes($attributes, null, ' ', ''), $text, $name));
+		return $this->output(sprintf($this->tags[$tag], $name, $this->_parseAttributes($options, null, ' ', ''), $text, $name));
 	}
 
 /**
  * Returns a formatted DIV tag for HTML FORMs.
  *
+ * #### Options
+ *
+ * - `escape` Whether or not the contents should be html_entity escaped.
+ *
  * @param string $class CSS class name of the div element.
  * @param string $text String content that will appear inside the div element.
  *   If null, only a start tag will be printed
- * @param array $attributes Additional HTML attributes of the DIV tag
- * @param boolean $escape If true, $text will be HTML-escaped
+ * @param array $options Additional HTML attributes of the DIV tag
  * @return string The formatted DIV element
  * @access public
  */
-	public function div($class = null, $text = null, $attributes = array(), $escape = false) {
-		if ($class != null && !empty($class)) {
-			$attributes['class'] = $class;
+	public function div($class = null, $text = null, $options = array()) {
+		if (!empty($class)) {
+			$options['class'] = $class;
 		}
-		return $this->tag('div', $text, $attributes, $escape);
+		return $this->tag('div', $text, $options);
 	}
 
 /**
  * Returns a formatted P tag.
  *
+ * #### Options
+ *
+ * - `escape` Whether or not the contents should be html_entity escaped.
+ *
  * @param string $class CSS class name of the p element.
  * @param string $text String content that will appear inside the p element.
- * @param array $attributes Additional HTML attributes of the P tag
- * @param boolean $escape If true, $text will be HTML-escaped
+ * @param array $options Additional HTML attributes of the P tag
  * @return string The formatted P element
  * @access public
  */
-	public function para($class, $text, $attributes = array(), $escape = false) {
-		if ($escape) {
+	function para($class, $text, $options = array()) {
+		if (isset($options['escape'])) {
 			$text = h($text);
 		}
 		if ($class != null && !empty($class)) {
-			$attributes['class'] = $class;
+			$options['class'] = $class;
 		}
 		if ($text === null) {
 			$tag = 'parastart';
 		} else {
 			$tag = 'para';
 		}
-		return $this->output(sprintf($this->tags[$tag], $this->_parseAttributes($attributes, null, ' ', ''), $text));
+		return $this->output(sprintf($this->tags[$tag], $this->_parseAttributes($options, null, ' ', ''), $text));
 	}
 
 /**
  * Build a nested list (UL/OL) out of an associative array.
  *
  * @param array $list Set of elements to list
- * @param array $attributes Additional HTML attributes of the list (ol/ul) tag or if ul/ol use that as tag
- * @param array $itemAttributes Additional HTML attributes of the list item (LI) tag
+ * @param array $options Additional HTML attributes of the list (ol/ul) tag or if ul/ol use that as tag
+ * @param array $itemOptions Additional HTML attributes of the list item (LI) tag
  * @param string $tag Type of list tag to use (ol/ul)
  * @return string The nested list
  * @access public
  */
-	public function nestedList($list, $attributes = array(), $itemAttributes = array(), $tag = 'ul') {
-		if (is_string($attributes)) {
-			$tag = $attributes;
-			$attributes = array();
+	public function nestedList($list, $options = array(), $itemOptions = array(), $tag = 'ul') {
+		if (is_string($options)) {
+			$tag = $options;
+			$options = array();
 		}
-		$items = $this->__nestedListItem($list, $attributes, $itemAttributes, $tag);
-		return sprintf($this->tags[$tag], $this->_parseAttributes($attributes, null, ' ', ''), $items);
+		$items = $this->__nestedListItem($list, $options, $itemOptions, $tag);
+		return sprintf($this->tags[$tag], $this->_parseAttributes($options, null, ' ', ''), $items);
 	}
 
 /**
  * Internal function to build a nested list (UL/OL) out of an associative array.
  *
  * @param array $list Set of elements to list
- * @param array $attributes Additional HTML attributes of the list (ol/ul) tag
- * @param array $itemAttributes Additional HTML attributes of the list item (LI) tag
+ * @param array $options Additional HTML attributes of the list (ol/ul) tag
+ * @param array $itemOptions Additional HTML attributes of the list item (LI) tag
  * @param string $tag Type of list tag to use (ol/ul)
  * @return string The nested list element
  * @access private
- * @see nestedList()
+ * @see HtmlHelper::nestedList()
  */
-	private function __nestedListItem($items, $attributes, $itemAttributes, $tag) {
+	public function __nestedListItem($items, $options, $itemOptions, $tag) {
 		$out = '';
 
 		$index = 1;
 		foreach ($items as $key => $item) {
 			if (is_array($item)) {
-				$item = $key . $this->nestedList($item, $attributes, $itemAttributes, $tag);
+				$item = $key . $this->nestedList($item, $options, $itemOptions, $tag);
 			}
-			if (isset($itemAttributes['even']) && $index % 2 == 0) {
-				$itemAttributes['class'] = $itemAttributes['even'];
-			} else if (isset($itemAttributes['odd']) && $index % 2 != 0) {
-				$itemAttributes['class'] = $itemAttributes['odd'];
+			if (isset($itemOptions['even']) && $index % 2 == 0) {
+				$itemOptions['class'] = $itemOptions['even'];
+			} else if (isset($itemOptions['odd']) && $index % 2 != 0) {
+				$itemOptions['class'] = $itemOptions['odd'];
 			}
-			$out .= sprintf($this->tags['li'], $this->_parseAttributes(array_diff_key($itemAttributes, array_flip(array('even', 'odd'))), null, ' ', ''), $item);
+			$out .= sprintf($this->tags['li'], $this->_parseAttributes($itemOptions, array('even', 'odd'), ' ', ''), $item);
 			$index++;
 		}
 		return $out;

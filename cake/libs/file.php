@@ -308,7 +308,7 @@ class File extends Object {
 	}
 
 /**
- * Returns File information.
+ * Returns the File info.
  *
  * @return string File information
  * @access public
@@ -533,6 +533,21 @@ class File extends Object {
  */
 	public function Folder() {
 		return $this->Folder;
+	}
+
+/**
+ * Copy the File to $dest
+ *
+ * @param string $dest destination for the copy
+ * @param boolean $overwrite Overwrite $dest if exists
+ * @return boolean Succes
+ * @access public
+ */
+	public function copy($dest, $overwrite = true) {
+		if (!$this->exists() || is_file($dest) && !$overwrite) {
+			return false;
+		}
+		return copy($this->path, $dest);
 	}
 }
 ?>

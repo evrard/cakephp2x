@@ -109,8 +109,8 @@ class TextHelper extends AppHelper {
 	public function autoLinkUrls($text, $htmlOptions = array()) {
 		$options = 'array(';
 		foreach ($htmlOptions as $option => $value) {
-				$value = var_export($value, true);
-				$options .= "'$option' => $value, ";
+			$value = var_export($value, true);
+			$options .= "'$option' => $value, ";
 		}
 		$options .= ')';
 
@@ -133,7 +133,8 @@ class TextHelper extends AppHelper {
 		$options = 'array(';
 
 		foreach ($htmlOptions as $option => $value) {
-			$options .= "'$option' => '$value', ";
+			$value = var_export($value, true);
+			$options .= "'$option' => $value, ";
 		}
 		$options .= ')';
 
@@ -221,7 +222,7 @@ class TextHelper extends AppHelper {
 			if (mb_strlen($text) <= $length) {
 				return $text;
 			} else {
-				$truncate = mb_substr($text, 0, $length - strlen($ending));
+				$truncate = mb_substr($text, 0, $length - mb_strlen($ending));
 			}
 		}
 		if (!$exact) {
@@ -254,17 +255,6 @@ class TextHelper extends AppHelper {
 	}
 
 /**
- * Alias for truncate().
- *
- * @see TextHelper::truncate()
- * @access public
- */
-	public function trim() {
-		$args = func_get_args();
-		return call_user_func_array(array(&$this, 'truncate'), $args);
-	}
-
-/**
  * Extracts an excerpt from the text surrounding the phrase with a number of characters on each side determined by radius.
  *
  * @param string $text String to search the phrase in
@@ -279,26 +269,26 @@ class TextHelper extends AppHelper {
 			return $this->truncate($text, $radius * 2, $ending);
 		}
 
-		$phraseLen = strlen($phrase);
+		$phraseLen = mb_strlen($phrase);
 		if ($radius < $phraseLen) {
 			$radius = $phraseLen;
 		}
 
-		$pos = strpos(strtolower($text), strtolower($phrase));
+		$pos = mb_strpos(mb_strtolower($text), mb_strtolower($phrase));
 
 		$startPos = 0;
 		if ($pos > $radius) {
 			$startPos = $pos - $radius;
 		}
 
-		$textLen = strlen($text);
+		$textLen = mb_strlen($text);
 
 		$endPos = $pos + $phraseLen + $radius;
 		if ($endPos >= $textLen) {
 			$endPos = $textLen;
 		}
 
-		$excerpt = substr($text, $startPos, $endPos - $startPos);
+		$excerpt = mb_substr($text, $startPos, $endPos - $startPos);
 		if ($startPos != 0) {
 			$excerpt = substr_replace($excerpt, $ending, 0, $phraseLen);
 		}

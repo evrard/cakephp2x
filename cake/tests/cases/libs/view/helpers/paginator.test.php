@@ -446,8 +446,11 @@ class PaginatorHelperTest extends CakeTestCase {
  * @return void
  */
 	function testUrlGenerationWithPrefixes() {
-		$memberPrefixes = array('prefix' => 'members', 'members' => true);
-		Router::connect('/members/:controller/:action/*', $memberPrefixes);
+		$_back = Configure::read('Routing');
+
+		Configure::write('Routing.prefixes', array('members'));
+		Router::reload();
+
 		Router::parse('/');
 
 		Router::setRequestInfo( array(
@@ -497,6 +500,8 @@ class PaginatorHelperTest extends CakeTestCase {
 		$result = $this->Paginator->url($options);
 		$expected = '/posts/index/page:2/sort:Article.name/direction:desc';
 		$this->assertEqual($result, $expected);
+
+		Configure::write('Routing', $_back);
 	}
 
 /**

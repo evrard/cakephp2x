@@ -186,6 +186,27 @@ class FixtureTaskTest extends CakeTestCase {
 	}
 
 /**
+ * test using all() with -count and -records
+ *
+ * @return void
+ **/
+	function testAllWithCountAndRecordsFlags() {
+		$this->Task->connection = 'test_suite';
+		$this->Task->path = '/my/path/';
+		$this->Task->args = array('all');
+		$this->Task->params = array('count' => 10, 'records' => true);
+		$this->Task->Model->setReturnValue('listAll', array('articles', 'comments'));
+
+		$filename = '/my/path/article_fixture.php';
+		$this->Task->expectAt(0, 'createFile', array($filename, new PatternExpectation('/title\' => \'Third Article\'/')));
+
+		$filename = '/my/path/comment_fixture.php';
+		$this->Task->expectAt(1, 'createFile', array($filename, new PatternExpectation('/comment\' => \'First Comment for First Article/')));
+		$this->Task->expectCallCount('createFile', 2);
+		$this->Task->all();
+	}
+
+/**
  * test interactive mode of execute
  *
  * @return void
@@ -222,6 +243,7 @@ class FixtureTaskTest extends CakeTestCase {
 		$this->assertPattern('/class ArticleFixture extends CakeTestFixture/', $result);
 		$this->assertPattern('/var \$name \= \'Article\';/', $result);
 		$this->assertPattern('/var \$table \= \'comments\';/', $result);
+		$this->assertPattern('/var \$fields = array\(/', $result);
 
 		$result = $this->Task->bake('Article', 'comments', array('records' => true));
 		$this->assertPattern("/var \\\$import \= array\('records' \=\> true\);/", $result);

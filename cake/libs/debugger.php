@@ -179,6 +179,7 @@ class Debugger extends Object {
  * @return object
  * @access public
  * @static
+ * @todo Remove this. Make the class properly static.
  */
 	public static function &getInstance($class = null) {
 		static $instance = array();
@@ -419,6 +420,7 @@ class Debugger extends Object {
 			return str_replace(ROOT, 'ROOT', $path);
 		}
 		$corePaths = App::core('cake');
+
 		foreach ($corePaths as $corePath) {
 			if (strpos($path, $corePath) === 0) {
 				return str_replace($corePath, 'CORE' .DS . 'cake' .DS, $path);

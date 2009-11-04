@@ -38,7 +38,7 @@ class SessionHelperTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function setUp() {
+	function startTest() {
 		$this->Session = new SessionHelper();
 
 		$_SESSION = array(
@@ -90,6 +90,15 @@ class SessionHelperTest extends CakeTestCase {
 		App::build();
 	}
 
+/**
+ * test construction and initial property settings
+ *
+ * @return void
+ **/
+	function testConstruct() {
+		$this->assertFalse(empty($this->Session->sessionTime));
+		$this->assertFalse(empty($this->Session->security));
+	}
 /**
  * testRead method
  *

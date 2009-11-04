@@ -37,9 +37,9 @@ App::import('Core', 'l10n');
 class I18n extends Object {
 
 /**
- * Instance of the I10n class for localization
+ * Instance of the L10n class for localization
  *
- * @var I10n
+ * @var L10n
  * @access public
  */
 	private static $L10n = null;
@@ -100,7 +100,9 @@ class I18n extends Object {
  * @var array
  * @access private
  */
-	private static $__categories = array('LC_ALL', 'LC_COLLATE', 'LC_CTYPE', 'LC_MONETARY', 'LC_NUMERIC', 'LC_TIME', 'LC_MESSAGES');
+	var $__categories = array(
+		 'LC_ALL', 'LC_COLLATE', 'LC_CTYPE', 'LC_MONETARY', 'LC_NUMERIC', 'LC_TIME', 'LC_MESSAGES'
+	);
 
 /**
  * Used by the translation functions in basics.php
@@ -249,14 +251,10 @@ class I18n extends Object {
 		$plugins = App::objects('plugin');
 
 		if (!empty($plugins)) {
-			$pluginPaths = App::path('plugins');
-
 			foreach ($plugins as $plugin) {
 				$plugin = Inflector::underscore($plugin);
 				if ($plugin === $domain) {
-					foreach ($pluginPaths as $pluginPath) {
-						$searchPaths[] = $pluginPath . DS . $plugin . DS . 'locale';
-					}
+					$searchPaths[] = App::pluginPath($plugin) . DS . 'locale' . DS;
 					$searchPaths = array_reverse($searchPaths);
 					break;
 				}
@@ -268,7 +266,8 @@ class I18n extends Object {
 				$file = $directory . DS . $lang . DS . self::$category . DS . $domain;
 
 				if ($core) {
-					$app = $directory . DS . $lang . DS . self::$category . DS . 'core';
+					$app = $directory . $lang . DS . $this->category . DS . 'core';
+
 					if (file_exists($fn = "$app.mo")) {
 						self::__loadMo($fn, $domain);
 						self::$__noLocale = false;

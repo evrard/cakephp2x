@@ -185,7 +185,7 @@ class DboMysqlTest extends CakeTestCase {
  *
  * @access public
  */
-	function setUp() {
+	function startTest() {
 		$db = ConnectionManager::getDataSource('test_suite');
 		$this->db = new DboMysqlTestDb($db->config);
 		$this->model = new MysqlTestModel();
@@ -196,7 +196,7 @@ class DboMysqlTest extends CakeTestCase {
  *
  * @access public
  */
-	function tearDown() {
+	function endTest() {
 		unset($this->db);
 	}
 
@@ -381,6 +381,40 @@ class DboMysqlTest extends CakeTestCase {
 	}
 
 /**
+ * testBuildColumn method
+ *
+ * @access public
+ * @return void
+ */
+	function testBuildColumn() {
+		$this->db->columns = array('varchar(255)' => 1);
+		$data = array(
+			'name' => 'testName',
+			'type' => 'varchar(255)',
+			'default',
+			'null' => true,
+			'key',
+			'comment' => 'test'
+		);
+		$result = $this->db->buildColumn($data);
+		$expected = '`testName`  DEFAULT NULL COMMENT \'test\'';
+		$this->assertEqual($result, $expected);
+
+		$data = array(
+			'name' => 'testName',
+			'type' => 'varchar(255)',
+			'default',
+			'null' => true,
+			'key',
+			'charset' => 'utf8',
+			'collate' => 'utf8_unicode_ci'
+		);
+		$result = $this->db->buildColumn($data);
+		$expected = '`testName`  CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL';
+		$this->assertEqual($result, $expected);
+	}
+
+/**
  * MySQL 4.x returns index data in a different format,
  * Using a mock ensure that MySQL 4.x output is properly parsed.
  *
@@ -529,7 +563,7 @@ class DboMysqlTest extends CakeTestCase {
  * @return void
  */
 	function testAlterSchemaIndexes() {
-		App::import('Core', 'CakeSchema');
+		App::import('Model', 'CakeSchema');
 		$this->db->cacheSources = $this->db->testing = false;
 
 		$schema1 = new CakeSchema(array(
@@ -594,5 +628,117 @@ class DboMysqlTest extends CakeTestCase {
 
 		$this->db->query($this->db->dropSchema($schema1));
 	}
+
+/**
+ * test altering the table settings with schema.
+ *
+ * @return void
+ **/
+	function testAlteringTableParameters() {
+		App::import('Model', 'CakeSchema');
+		$this->db->cacheSources = $this->db->testing = false;
+
+		$schema1 =& new CakeSchema(array(
+			'name' => 'AlterTest1',
+			'connection' => 'test_suite',
+			'altertest' => array(
+				'id' => array('type' => 'integer', 'null' => false, 'default' => 0),
+				'name' => array('type' => 'string', 'null' => false, 'length' => 50),
+				'tableParameters' => array(
+					'charset' => 'latin1',
+					'collate' => 'latin1_general_ci',
+					'engine' => 'MyISAM'
+				)
+			)
+		));
+		$this->db->query($this->db->createSchema($schema1));
+		$schema2 =& new CakeSchema(array(
+			'name' => 'AlterTest1',
+			'connection' => 'test_suite',
+			'altertest' => array(
+				'id' => array('type' => 'integer', 'null' => false, 'default' => 0),
+				'name' => array('type' => 'string', 'null' => false, 'length' => 50),
+				'tableParameters' => array(
+					'charset' => 'utf8',
+					'collate' => 'utf8_general_ci',
+					'engine' => 'InnoDB'
+				)
+			)
+		));
+		$result = $this->db->alterSchema($schema2->compare($schema1));
+		$this->assertPattern('/DEFAULT CHARSET=utf8/', $result);
+		$this->assertPattern('/ENGINE=InnoDB/', $result);
+		$this->assertPattern('/COLLATE=utf8_general_ci/', $result);
+
+		$this->db->query($result);
+		$result = $this->db->listDetailedSources('altertest');
+		$this->assertEqual($result['Collation'], 'utf8_general_ci');
+		$this->assertEqual($result['Engine'], 'InnoDB');
+		$this->assertEqual($result['charset'], 'utf8');
+
+		$this->db->query($this->db->dropSchema($schema1));
+	}
+
+/**
+ * testReadTableParameters method
+ *
+ * @access public
+ * @return void
+ */
+	function testReadTableParameters() {
+		$this->db->cacheSources = $this->db->testing = false;
+		$this->db->query('CREATE TABLE ' . $this->db->fullTableName('tinyint') . ' (id int(11) AUTO_INCREMENT, bool tinyint(1), small_int tinyint(2), primary key(id)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;');
+		$result = $this->db->readTableParameters('tinyint');
+		$expected = array(
+			'charset' => 'utf8',
+			'collate' => 'utf8_unicode_ci',
+			'engine' => 'InnoDB');
+		$this->assertEqual($result, $expected);
+
+		$this->db->query('DROP TABLE ' . $this->db->fullTableName('tinyint'));
+		$this->db->query('CREATE TABLE ' . $this->db->fullTableName('tinyint') . ' (id int(11) AUTO_INCREMENT, bool tinyint(1), small_int tinyint(2), primary key(id)) ENGINE=MyISAM DEFAULT CHARSET=cp1250 COLLATE=cp1250_general_ci;');
+		$result = $this->db->readTableParameters('tinyint');
+		$expected = array(
+			'charset' => 'cp1250',
+			'collate' => 'cp1250_general_ci',
+			'engine' => 'MyISAM');
+		$this->assertEqual($result, $expected);
+		$this->db->query('DROP TABLE ' . $this->db->fullTableName('tinyint'));
+	}
+
+/**
+ * testBuildTableParameters method
+ *
+ * @access public
+ * @return void
+ */
+	function testBuildTableParameters() {
+		$this->db->cacheSources = $this->db->testing = false;
+		$data = array(
+			'charset' => 'utf8',
+			'collate' => 'utf8_unicode_ci',
+			'engine' => 'InnoDB');
+		$result = $this->db->buildTableParameters($data);
+		$expected = array(
+			'DEFAULT CHARSET=utf8',
+			'COLLATE=utf8_unicode_ci',
+			'ENGINE=InnoDB');
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * testBuildTableParameters method
+ *
+ * @access public
+ * @return void
+ */
+	function testGetCharsetName() {
+		$this->db->cacheSources = $this->db->testing = false;
+		$result = $this->db->getCharsetName('utf8_unicode_ci');
+		$this->assertEqual($result, 'utf8');
+		$result = $this->db->getCharsetName('cp1250_general_ci');
+		$this->assertEqual($result, 'cp1250');
+	}
+
 }
 ?>

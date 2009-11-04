@@ -23,6 +23,7 @@
  * @since         CakePHP(tm) v .0.10.0.1222
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
+
 /**
  * Session class for Cake.
  *
@@ -121,8 +122,8 @@ class CakeSession extends Object {
  * @param boolean $start Should session be started right now
  * @access public
  */
-	public function __construct($base = null, $start = true) {
-		App::import('Core', 'Security');
+	function __construct($base = null, $start = true) {
+		App::import('Core', 'Set', 'Security');
 		$this->time = time();
 
 		if (Configure::read('Session.checkAgent') === true || Configure::read('Session.checkAgent') === null) {
@@ -165,6 +166,8 @@ class CakeSession extends Object {
 			if (strpos($this->host, ':') !== false) {
 				$this->host = substr($this->host, 0, strpos($this->host, ':'));
 			}
+		}
+		if (isset($_SESSION) || $start === true) {
 			if (!class_exists('Security')) {
 				App::import('Core', 'Security');
 			}

@@ -26,7 +26,6 @@
  * @license       http://www.opensource.org/licenses/opengroup.php The Open Group Test Suite License
  */
 require_once dirname(__FILE__) . DS . 'model.test.php';
-require_once dirname(__FILE__) . DS . 'model_validation.test.php';
 
 /**
  * ModelValidationTest
@@ -124,6 +123,33 @@ class ModelValidationTest extends BaseModelTest {
 		$TestModel->validationErrors = array();
 
 		$this->assertEqual($TestModel->validate, $validate);
+	}
+
+/**
+ * Test that missing validation methods trigger errors in development mode.
+ * Helps to make developement easier.
+ *
+ * @return void
+ **/
+	function testMissingValidationErrorTriggering() {
+		$restore = Configure::read('debug');
+		Configure::write('debug', 2);
+
+		$TestModel =& new ValidationTest1();
+		$TestModel->create(array('title' => 'foo'));
+		$TestModel->validate = array(
+			'title' => array(
+				'rule' => array('thisOneBringsThePain'),
+				'required' => true
+			)
+		);
+		$this->expectError(new PatternExpectation('/thisOneBringsThePain for title/i'));
+		$TestModel->invalidFields(array('fieldList' => array('title')));
+
+		Configure::write('debug', 0);
+		$this->assertNoErrors();
+		$TestModel->invalidFields(array('fieldList' => array('title')));
+		Configure::write('debug', $restore);
 	}
 
 }

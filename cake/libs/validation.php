@@ -20,6 +20,9 @@
  * @since         CakePHP(tm) v 1.2.0.3830
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
+if (!class_exists('Multibyte')) {
+	App::import('Core', 'Multibyte', false);
+}
 
 /**
  * Offers different validation methods.
@@ -111,7 +114,7 @@ class Validation extends Object {
  * @access public
  */
 	public static function between($check, $min, $max) {
-		$length = strlen($check);
+		$length = mb_strlen($check);
 		return ($length >= $min && $length <= $max);
 	}
 
@@ -153,7 +156,7 @@ class Validation extends Object {
 		}
 
 		$check = str_replace(array('-', ' '), '', $check);
-		if (strlen($check) < 13) {
+		if (mb_strlen($check) < 13) {
 			return false;
 		}
 
@@ -208,10 +211,10 @@ class Validation extends Object {
  * Used to compare 2 numeric values.
  *
  * @param mixed $check1 if string is passed for a string must also be passed for $check2
- * 							used as an array it must be passed as array('check1' => value, 'operator' => 'value', 'check2' -> value)
+ *    used as an array it must be passed as array('check1' => value, 'operator' => 'value', 'check2' -> value)
  * @param string $operator Can be either a word or operand
- * 								is greater >, is less <, greater or equal >=
- * 								less or equal <=, is less <, equal to ==, not equal !=
+ *    is greater >, is less <, greater or equal >=
+ *    less or equal <=, is less <, equal to ==, not equal !=
  * @param integer $check2 only needed if $check1 is a string
  * @return boolean Success
  * @access public
@@ -327,6 +330,7 @@ class Validation extends Object {
 		}
 		return false;
 	}
+
 /**
  * Time validation, determines if the string passed is a valid time.
  * Validates time as 24hr (HH:MM) or am/pm ([H]H:MM[a|p]m)
@@ -339,6 +343,7 @@ class Validation extends Object {
 	public static function time($check) {
 		return self::_check($check, '%^((0?[1-9]|1[012])(:[0-5]\d){0,2}([AP]M|[ap]m))$|^([01]\d|2[0-3])(:[0-5]\d){0,2}$%');
 	}
+
 /**
  * Boolean validation, determines if value passed is a boolean integer or true/false.
  *
@@ -350,6 +355,7 @@ class Validation extends Object {
 		$booleanList = array(0, 1, '0', '1', true, false);
 		return in_array($check, $booleanList, true);
 	}
+
 /**
  * Checks that a value is a valid decimal. If $places is null, the $check is allowed to be a scientific float
  * If no decimal point is found a false will be returned. Both the sign and exponent are optional.
@@ -483,7 +489,7 @@ class Validation extends Object {
  * @access public
  */
 	public static function minLength($check, $min) {
-		return strlen($check) >= $min;
+		return mb_strlen($check) >= $min;
 	}
 
 /**
@@ -495,7 +501,7 @@ class Validation extends Object {
  * @access public
  */
 	public static function maxLength($check, $max) {
-		return strlen($check) <= $max;
+		return mb_strlen($check) <= $max;
 	}
 
 /**
@@ -768,7 +774,7 @@ class Validation extends Object {
 		);
 		$params = array_merge($defaults, $params);
 		if ($params['country'] !== null) {
-			$params['country'] = strtolower($params['country']);
+			$params['country'] = mb_strtolower($params['country']);
 		}
 		return $params;
 	}

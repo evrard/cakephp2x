@@ -135,14 +135,6 @@ class View extends Object {
 	public $layoutPath = null;
 
 /**
- * Title HTML element of this View.
- *
- * @var string
- * @access public
- */
-	public $pageTitle = false;
-
-/**
  * Turns on or off Cake's conventional mode of rendering views. On by default.
  *
  * @var boolean
@@ -273,7 +265,7 @@ class View extends Object {
  */
 	private $__passedVars = array(
 		'viewVars', 'action', 'autoLayout', 'autoRender', 'ext', 'base', 'webroot',
-		'helpers', 'here', 'layout', 'name', 'pageTitle', 'layoutPath', 'viewPath',
+		'helpers', 'here', 'layout', 'name', 'layoutPath', 'viewPath',
 		'params', 'data', 'plugin', 'passedArgs', 'cacheAction'
 	);
 
@@ -464,27 +456,25 @@ class View extends Object {
 			unset($this->viewVars['cakeDebug']);
 		}
 
-		if ($this->pageTitle !== false) {
-			$pageTitle = $this->pageTitle;
-		} else {
-			$pageTitle = Inflector::humanize($this->viewPath);
-		}
-		$data_for_layout = array_merge($this->viewVars, array(
-			'title_for_layout' => $pageTitle,
+		$dataForLayout = array_merge($this->viewVars, array(
 			'content_for_layout' => $content_for_layout,
 			'scripts_for_layout' => join("\n\t", $this->__scripts),
 			'cakeDebug' => $debug
 		));
 
+		if (!isset($dataForLayout['title_for_layout'])) {
+			$dataForLayout['title_for_layout'] = Inflector::humanize($this->viewPath);
+		}
+
 		if (empty($this->loaded) && !empty($this->helpers)) {
 			$loadHelpers = true;
 		} else {
 			$loadHelpers = false;
-			$data_for_layout = array_merge($data_for_layout, $this->loaded);
+			$dataForLayout = array_merge($dataForLayout, $this->loaded);
 		}
 
 		$this->_triggerHelpers('beforeLayout');
-		$this->output = $this->_render($layoutFileName, $data_for_layout, $loadHelpers, true);
+		$this->output = $this->_render($layoutFileName, $dataForLayout, $loadHelpers, true);
 
 		if ($this->output === false) {
 			$this->output = $this->_render($layoutFileName, $data_for_layout);
@@ -625,6 +615,19 @@ class View extends Object {
  */
 	public function entity() {
 		$assoc = ($this->association) ? $this->association : $this->model;
+		if (!empty($this->entityPath)) {
+			$path = explode('.', $this->entityPath);
+			$count = count($path);
+			if (
+				($count == 1 && !empty($this->association)) ||
+				($count == 1 && $this->model != $this->entityPath) ||
+				($count  == 2 && !empty($this->fieldSuffix)) ||
+				is_numeric($path[0])
+			) {
+				array_unshift($path, $assoc);
+			}
+			return Set::filter($path);
+		}
 		return array_values(Set::filter(
 			array($assoc, $this->modelId, $this->field, $this->fieldSuffix)
 		));
@@ -636,10 +639,8 @@ class View extends Object {
  *
  * @param mixed $one A string or an array of data.
  * @param mixed $two Value in case $one is a string (which then works as the key).
- *              Unused if $one is an associative array, otherwise serves as the
- *              values to $one's keys.
- * @return unknown
- * @access public
+ *    Unused if $one is an associative array, otherwise serves as the values to $one's keys.
+ * @return void
  */
 	public function set($one, $two = null) {
 		$data = null;
@@ -652,18 +653,10 @@ class View extends Object {
 		} else {
 			$data = array($one => $two);
 		}
-
 		if ($data == null) {
 			return false;
 		}
-
-		foreach ($data as $name => $value) {
-			if ($name == 'title') {
-				$this->pageTitle = $value;
-			} else {
-				$this->viewVars[$name] = $value;
-			}
-		}
+		$this->viewVars = array_merge($this->viewVars, $data);
 	}
 
 /**
@@ -706,6 +699,7 @@ class View extends Object {
 				$this->{$helpers[$i]} = ${$name};
 			}
 			$this->_triggerHelpers('beforeRender');
+			unset($name, $loadedHelpers, $helpers, $i, $helperNames);
 		}
 
 		extract($___dataForView, EXTR_SKIP);
@@ -919,7 +913,8 @@ class View extends Object {
  * Return a misssing view error message
  *
  * @param string $viewFileName the filename that should exist
- * @protected cakeError
+ * @return cakeError
+ * @access protected
  */
 	protected function _missingView($file, $error = 'missingView') {
 
@@ -963,12 +958,7 @@ class View extends Object {
 					$paths[] = $viewPaths[$i] . 'plugins' . DS . $plugin . DS;
 				}
 			}
-			$pluginPaths = App::path('plugins');
-			$count = count($pluginPaths);
-
-			for ($i = 0; $i < $count; $i++) {
-				$paths[] = $pluginPaths[$i] . $plugin . DS . 'views' . DS;
-			}
+			$paths[] = App::pluginPath($plugin) . 'views' . DS;
 		}
 		$paths = array_merge($paths, $viewPaths);
 

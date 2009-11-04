@@ -40,7 +40,8 @@ class RouterTest extends CakeTestCase {
  * @return void
  */
 	function setUp() {
-		Configure::write('Routing.admin', null);
+		$this->_routing = Configure::read('Routing');
+		Configure::write('Routing', array('admin' => null, 'prefixes' => array()));
 		Router::reload();
 	}
 
@@ -67,6 +68,7 @@ class RouterTest extends CakeTestCase {
 		$this->assertEqual(Router::$routes[0][0], '/');
 		$this->assertEqual(Router::$routes[0][1], '/^[\/]*$/');
 		$this->assertEqual(Router::$routes[0][2], array());
+
 		Router::reload();
 		Router::connect('/', array('controller' => 'testing'));
 		Router::parse('/');
@@ -640,7 +642,7 @@ class RouterTest extends CakeTestCase {
 
 		Router::parse('/');
 
-		$result = Router::url(array('plugin' => null, 'controller' => 'pages', 'action' => 'edit', 'id' => '284'));
+		$result = Router::url(array('plugin' => null, 'controller' => 'pages', 'action' => 'edit', 284));
 		$expected = '/admin/pages/edit/284';
 		$this->assertEqual($result, $expected);
 
@@ -660,7 +662,7 @@ class RouterTest extends CakeTestCase {
 		Router::parse('/');
 
 		$result = Router::url(array(
-			'plugin' => 'shows', 'controller' => 'show_tickets', 'action' => 'edit', 'id' => '6',
+			'plugin' => 'shows', 'controller' => 'show_tickets', 'action' => 'edit', 6,
 			'admin' => true, 'prefix' => 'admin'
 		));
 		$expected = '/admin/shows/show_tickets/edit/6';
@@ -981,22 +983,46 @@ class RouterTest extends CakeTestCase {
 	}
 
 /**
- * testAdminRouting method
+ * Test that Routing.prefixes and Routing.admin are used when a Router instance is created
+ * or reset
+ *
+ * @return void
+ **/
+	function testRoutingPrefixesSetting() {
+		$restore = Configure::read('Routing');
+
+		Configure::write('Routing.admin', 'admin');
+		Configure::write('Routing.prefixes', array('member', 'super_user'));
+		Router::reload();
+		$result = Router::prefixes();
+		$expected = array('admin', 'member', 'super_user');
+		$this->assertEqual($result, $expected);
+
+		Configure::write('Routing.prefixes', 'member');
+		Router::reload();
+		$result = Router::prefixes();
+		$expected = array('admin', 'member');
+		$this->assertEqual($result, $expected);
+
+		Configure::write('Routing', $restore);
+	}
+
+/**
+ * test compatibility with old Routing.admin config setting.
  *
  * @access public
  * @return void
+ * @todo Once Routing.admin is removed update these tests.
  */
-	function testAdminRouting() {
+	function testAdminRoutingCompatibility() {
 		Configure::write('Routing.admin', 'admin');
-		Router::reload();
-		Router::parse('/');
 
 		Router::reload();
 		Router::connect('/admin', array('admin' => true, 'controller' => 'users'));
 		$result = Router::parse('/admin');
+
 		$expected = array('pass' => array(), 'named' => array(), 'plugin' => '', 'controller' => 'users', 'action' => 'index', 'admin' => true, 'prefix' => 'admin');
 		$this->assertEqual($result, $expected);
-
 
 		$result = Router::url(array('admin' => true, 'controller' => 'posts', 'action' => 'index', '0', '?' => 'var=test&var2=test2'));
 		$expected = '/admin/posts/index/0?var=test&var2=test2';
@@ -1044,8 +1070,15 @@ class RouterTest extends CakeTestCase {
 		$result = Router::url(array('controller' => 'posts', 'action' => 'index', '0', '?' => 'var=test&var2=test2'));
 		$expected = '/beheer/posts/index/0?var=test&var2=test2';
 		$this->assertEqual($result, $expected);
+	}
 
-		Configure::write('Routing.admin', 'admin');
+/**
+ * Test prefix routing and plugin combinations
+ *
+ * @return void
+ **/
+	function testPrefixRoutingAndPlugins() {
+		Configure::write('Routing.prefixes', array('admin'));
 		$paths = App::path('plugins');
 		App::build(array(
 			'plugins' =>  array(
@@ -1198,7 +1231,7 @@ class RouterTest extends CakeTestCase {
 		$expected = '/12/file:asdf.png';
 		$this->assertEqual($result, $expected);
 
-		$result = Router::url(array('controller' => 'graphs', 'action' => 'view', 'id' => 12, 'file' => 'asdf.foo'));
+		$result = Router::url(array('controller' => 'graphs', 'action' => 'view', 12, 'file' => 'asdf.foo'));
 		$expected = '/graphs/view/12/file:asdf.foo';
 		$this->assertEqual($result, $expected);
 
@@ -1294,12 +1327,14 @@ class RouterTest extends CakeTestCase {
 	}
 
 /**
- * testUrlGenerationWithPrefixes method
+ * test url generation with legacy (1.2) style prefix routes.
  *
  * @access public
  * @return void
+ * @todo Remove tests related to legacy style routes.
+ * @see testUrlGenerationWithAutoPrefixes
  */
-	function testUrlGenerationWithPrefixes() {
+	function testUrlGenerationWithLegacyPrefixes() {
 		Router::reload();
 		Router::connect('/protected/:controller/:action/*', array(
 			'controller'	=> 'users',
@@ -1342,7 +1377,7 @@ class RouterTest extends CakeTestCase {
 		$expected = '/others/edit/1';
 		$this->assertEqual($result, $expected);
 
-		$result = Router::url(array('controller' => 'others', 'action' => 'edit', 1, 'protected' => true));;
+		$result = Router::url(array('controller' => 'others', 'action' => 'edit', 1, 'protected' => true));
 		$expected = '/protected/others/edit/1';
 		$this->assertEqual($result, $expected);
 
@@ -1353,6 +1388,115 @@ class RouterTest extends CakeTestCase {
 		Router::connectNamed(array('random'));
 		$result = Router::url(array('controller' => 'others', 'action' => 'edit', 1, 'protected' => true, 'random' => 'my-value'));
 		$expected = '/protected/others/edit/1/random:my-value';
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * test newer style automatically generated prefix routes.
+ *
+ * @return void
+ **/
+	function testUrlGenerationWithAutoPrefixes() {
+		Configure::write('Routing.prefixes', array('protected'));
+		Router::reload();
+		Router::parse('/');
+
+		Router::setRequestInfo(array(
+			array('plugin' => null, 'controller' => 'images', 'action' => 'index', 'pass' => array(), 'prefix' => null, 'protected' => false, 'form' => array(), 'url' => array('url' => 'images/index')),
+			array('base' => '', 'here' => '/images/index', 'webroot' => '/')
+		));
+
+		$result = Router::url(array('controller' => 'images', 'action' => 'add'));
+		$expected = '/images/add';
+		$this->assertEqual($result, $expected);
+
+		$result = Router::url(array('controller' => 'images', 'action' => 'add', 'protected' => true));
+		$expected = '/protected/images/add';
+		$this->assertEqual($result, $expected);
+
+		$result = Router::url(array('action' => 'edit', 1));
+		$expected = '/images/edit/1';
+		$this->assertEqual($result, $expected);
+
+		$result = Router::url(array('action' => 'edit', 1, 'protected' => true));
+		$expected = '/protected/images/edit/1';
+		$this->assertEqual($result, $expected);
+
+		$result = Router::url(array('action' => 'protected_edit', 1, 'protected' => true));
+		$expected = '/protected/images/edit/1';
+		$this->assertEqual($result, $expected);
+
+		$result = Router::url(array('action' => 'edit', 1, 'protected' => true));
+		$expected = '/protected/images/edit/1';
+		$this->assertEqual($result, $expected);
+
+		$result = Router::url(array('controller' => 'others', 'action' => 'edit', 1));
+		$expected = '/others/edit/1';
+		$this->assertEqual($result, $expected);
+
+		$result = Router::url(array('controller' => 'others', 'action' => 'edit', 1, 'protected' => true));
+		$expected = '/protected/others/edit/1';
+		$this->assertEqual($result, $expected);
+
+		$result = Router::url(array('controller' => 'others', 'action' => 'edit', 1, 'protected' => true, 'page' => 1));
+		$expected = '/protected/others/edit/1/page:1';
+		$this->assertEqual($result, $expected);
+
+		Router::connectNamed(array('random'));
+		$result = Router::url(array('controller' => 'others', 'action' => 'edit', 1, 'protected' => true, 'random' => 'my-value'));
+		$expected = '/protected/others/edit/1/random:my-value';
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * test that auto-generated prefix routes persist
+ *
+ * @return void
+ **/
+	function testAutoPrefixRoutePersistence() {
+		Configure::write('Routing.prefixes', array('protected'));
+		Router::reload();
+		Router::parse('/');
+
+		Router::setRequestInfo(array(
+			array('plugin' => null, 'controller' => 'images', 'action' => 'index', 'pass' => array(), 'prefix' => 'protected', 'protected' => true, 'form' => array(), 'url' => array('url' => 'protected/images/index')),
+			array('base' => '', 'here' => '/protected/images/index', 'webroot' => '/')
+		));
+
+		$result = Router::url(array('controller' => 'images', 'action' => 'add'));
+		$expected = '/protected/images/add';
+		$this->assertEqual($result, $expected);
+
+		$result = Router::url(array('controller' => 'images', 'action' => 'add', 'protected' => false));
+		$expected = '/images/add';
+		$this->assertEqual($result, $expected);
+	}
+
+/**
+ * test that setting a prefix override the current one
+ * 
+ * @return void
+ */
+	function testPrefixOverride() {
+		Configure::write('Routing.prefixes', array('protected', 'admin'));
+		Router::reload();
+		Router::parse('/');
+
+		Router::setRequestInfo(array(
+			array('plugin' => null, 'controller' => 'images', 'action' => 'index', 'pass' => array(), 'prefix' => 'protected', 'protected' => true, 'form' => array(), 'url' => array('url' => 'protected/images/index')),
+			array('base' => '', 'here' => '/protected/images/index', 'webroot' => '/')
+		));
+
+		$result = Router::url(array('controller' => 'images', 'action' => 'add', 'admin' => true));
+		$expected = '/admin/images/add';
+		$this->assertEqual($result, $expected);
+		
+		Router::setRequestInfo(array(
+			array('plugin' => null, 'controller' => 'images', 'action' => 'index', 'pass' => array(), 'prefix' => 'admin', 'admin' => true, 'form' => array(), 'url' => array('url' => 'admin/images/index')),
+			array('base' => '', 'here' => '/admin/images/index', 'webroot' => '/')
+		));
+		$result = Router::url(array('controller' => 'images', 'action' => 'add', 'protected' => true));
+		$expected = '/protected/images/add';
 		$this->assertEqual($result, $expected);
 	}
 
@@ -1596,7 +1740,7 @@ class RouterTest extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 
 		$result = Router::prefixes();
-		$expected = array('protected', 'admin');
+		$expected = array('admin', 'protected');
 		$this->assertEqual($result, $expected);
 	}
 

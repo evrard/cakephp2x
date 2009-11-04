@@ -34,7 +34,6 @@ App::import('View', 'View', false);
  * @package       cake
  * @subpackage    cake.cake.libs.controller
  * @link          http://book.cakephp.org/view/49/Controllers
- *
  */
 class Controller extends Object {
 /**
@@ -429,7 +428,9 @@ class Controller extends Object {
 							$this->{$var} = Set::merge($app, $normal);
 						}
 					} else {
-						$this->{$var} = Set::merge($this->{$var}, array_diff($appVars[$var], $this->{$var}));
+						$this->{$var} = Set::merge(
+							$this->{$var}, array_diff($appVars[$var], $this->{$var})
+						);
 					}
 				}
 			}
@@ -453,7 +454,9 @@ class Controller extends Object {
 							$this->{$var} = Set::merge($app, $normal);
 						}
 					} else {
-						$this->{$var} = Set::merge($this->{$var}, array_diff($appVars[$var], $this->{$var}));
+						$this->{$var} = Set::merge(
+							$this->{$var}, array_diff($appVars[$var], $this->{$var})
+						);
 					}
 				}
 			}
@@ -534,10 +537,13 @@ class Controller extends Object {
 
 		if (($cached === false)) {
 			$this->modelNames[] = $modelClass;
-			$this->{$modelClass} = ClassRegistry::init(array('class' => $plugin . $modelClass, 'alias' => $modelClass, 'id' => $id));
+			$this->{$modelClass} = ClassRegistry::init(array(
+				'class' => $plugin . $modelClass, 'alias' => $modelClass, 'id' => $id));
 
 			if (!$this->{$modelClass}) {
-				return $this->cakeError('missingModel', array(array('className' => $modelClass, 'webroot' => '', 'base' => $this->base)));
+				return $this->cakeError('missingModel', array(array(
+					'className' => $modelClass, 'webroot' => '', 'base' => $this->base
+				)));
 			}
 
 			if ($this->persistModel === true) {
@@ -697,14 +703,7 @@ class Controller extends Object {
 		} else {
 			$data = array($one => $two);
 		}
-
-		foreach ($data as $name => $value) {
-			if ($name === 'title') {
-				$this->pageTitle = $value;
-			} else {
-				$this->viewVars[$name] = $value;
-			}
-		}
+		$this->viewVars = array_merge($this->viewVars, $data);
 	}
 
 /**
@@ -735,7 +734,9 @@ class Controller extends Object {
  * @link http://book.cakephp.org/view/396/authorize
  */
 	public function isAuthorized() {
-		trigger_error(sprintf(__('%s::isAuthorized() is not defined.', true), $this->name), E_USER_WARNING);
+		trigger_error(sprintf(
+			__('%s::isAuthorized() is not defined.', true), $this->name
+		), E_USER_WARNING);
 		return false;
 	}
 
@@ -897,17 +898,18 @@ class Controller extends Object {
  * @param string $message Message to display to the user
  * @param mixed $url Relative string or array-based URL to redirect to after the time expires
  * @param integer $pause Time to show the message
+ * @param string $layout Layout you want to use, defaults to 'flash'
  * @return void Renders flash layout
  * @access public
  * @link http://book.cakephp.org/view/426/flash
  */
-	public function flash($message, $url, $pause = 1) {
+	function flash($message, $url, $pause = 1, $layout = 'flash') {
 		$this->autoRender = false;
 		$this->set('url', Router::url($url));
 		$this->set('message', $message);
 		$this->set('pause', $pause);
 		$this->set('page_title', $message);
-		$this->render(false, 'flash');
+		$this->render(false, $layout);
 	}
 
 /**
@@ -970,13 +972,13 @@ class Controller extends Object {
 /**
  * Handles automatic pagination of model records.
  *
- * @todo Some of this code, maybe the whole method, should be refactored in the model
  * @param mixed $object Model to paginate (e.g: model instance, or 'Model', or 'Model.InnerModel')
  * @param mixed $scope Conditions to use while paginating
  * @param array $whitelist List of allowed options for paging
  * @return array Model query results
  * @access public
  * @link http://book.cakephp.org/view/165/Controller-Setup
+ * @todo Some of this code, maybe the whole method, should be refactored in the model
  */
 	public function paginate($object = null, $scope = array(), $whitelist = array()) {
 		if (is_array($object)) {

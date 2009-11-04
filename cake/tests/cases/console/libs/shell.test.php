@@ -229,7 +229,11 @@ class ShellTest extends CakeTestCase {
 
 		$this->Shell->Dispatch->expectAt(2, 'stdout', array("Just\na\ntest\n\n", false));
 		$this->Shell->out(array('Just', 'a', 'test'), 2);
+
+		$this->Shell->Dispatch->expectAt(3, 'stdout', array("\n", false));
+		$this->Shell->out();
 	}
+
 /**
  * testErr method
  *
@@ -245,7 +249,11 @@ class ShellTest extends CakeTestCase {
 
 		$this->Shell->Dispatch->expectAt(2, 'stderr', array("Just\na\ntest\n\n"));
 		$this->Shell->err(array('Just', 'a', 'test'), 2);
+
+		$this->Shell->Dispatch->expectAt(3, 'stderr', array("\n"));
+		$this->Shell->err();
 	}
+
 /**
  * testNl
  *
@@ -258,8 +266,8 @@ class ShellTest extends CakeTestCase {
 		$this->assertEqual($this->Shell->nl(false), "");
 		$this->assertEqual($this->Shell->nl(2), "\n\n");
 		$this->assertEqual($this->Shell->nl(1), "\n");
-		$this->assertEqual($this->Shell->nl("custom"), "custom\n");
 	}
+
 /**
  * testHr
  *
@@ -284,6 +292,7 @@ class ShellTest extends CakeTestCase {
 		$this->Shell->Dispatch->expectAt(5, 'stdout', array("\n\n", false));
 		$this->Shell->hr(2);
 	}
+
 /**
  * testError
  *
@@ -302,6 +311,7 @@ class ShellTest extends CakeTestCase {
 		$this->Shell->error('Foo Not Found', 'Searched all...');
 		$this->assertIdentical($this->Shell->stopped, 1);
 	}
+
 /**
  * testLoadTasks method
  *

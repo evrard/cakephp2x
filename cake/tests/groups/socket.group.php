@@ -1,6 +1,6 @@
 <?php
 /**
- * Short description for file.
+ * Socket and HttpSocket Group tests
  *
  * Long description for file
  *

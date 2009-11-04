@@ -69,6 +69,11 @@ if (!defined('APP')) {
 /**
  * Path to the application's views directory.
  */
+	define('APPLIBS', APP.'libs'.DS);
+
+/**
+ * Path to the application's views directory.
+ */
 	define('VIEWS', APP.'views'.DS);
 
 /**

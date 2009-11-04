@@ -34,10 +34,10 @@ class LibGroupTest extends TestSuite {
 /**
  * label property
  *
- * @var string 'All cake/libs/* (Not yet implemented)'
+ * @var string
  * @access public
  */
-	var $label = 'All Libs';
+	var $label = 'All core, non MVC element libs';
 
 /**
  * LibGroupTest method
@@ -46,7 +46,15 @@ class LibGroupTest extends TestSuite {
  * @return void
  */
 	function LibGroupTest() {
-		TestManager::addTestCasesFromDirectory($this, CORE_TEST_CASES . DS . 'libs');
+		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'cake_log');
+		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'class_registry');
+		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'inflector');
+		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'overloadable');
+		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'sanitize');
+		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'security');
+		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'set');
+		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'string');
+		TestManager::addTestFile($this, CORE_TEST_CASES . DS . 'libs' . DS . 'validation');
 	}
 }
 ?>

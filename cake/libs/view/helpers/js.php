@@ -44,6 +44,14 @@ class JsHelper extends AppHelper {
 	public $helpers = array('Html', 'Form');
 
 /**
+ * Variables to pass to Javascript.
+ *
+ * @var array
+ * @see JsHelper::set()
+ **/
+	private $__jsVars = array();
+
+/**
  * Scripts that are queued for output
  *
  * @var array
@@ -59,19 +67,11 @@ class JsHelper extends AppHelper {
 	private $__engineName;
 
 /**
- * __objects
- *
- * @var array
- * @access private
- **/
-	private $__objects = array();
-
-/**
- * output
+ * The javascript variable created by set() variables.
  *
  * @var string
  **/
-	public $output = false;
+	public $setVariable = APP_DIR;
 
 /**
  * Constructor - determines engine helper
@@ -220,12 +220,27 @@ class JsHelper extends AppHelper {
  * @param boolean $clear Whether or not to clear the script caches (default true)
  * @return array Array of scripts added to the request.
  **/
-	public function getBuffer($clear = true) {
+	function getBuffer($clear = true) {
+		$this->_createVars();
 		$scripts = $this->__bufferedScripts;
 		if ($clear) {
 			$this->__bufferedScripts = array();
+			$this->__jsVars = array();
 		}
 		return $scripts;
+	}
+
+/**
+ * Generates the object string for variables passed to javascript.
+ *
+ * @return string
+ * @access protected
+ **/
+	protected function _createVars() {
+		if (!empty($this->__jsVars)) {
+			$setVar = (strpos($this->setVariable, '.')) ? $this->setVariable : 'var ' . $this->setVariable;
+			$this->buffer($setVar . ' = ' . $this->object($this->__jsVars) . ';');
+		}
 	}
 
 /**
@@ -270,6 +285,33 @@ class JsHelper extends AppHelper {
 			$out .= $this->Html->scriptBlock($event, $opts);
 		}
 		return $out;
+	}
+
+/**
+ * Pass variables into Javascript.  Allows you to set variables that will be
+ * output when the buffer is fetched with `JsHelper::getBuffer()` or `JsHelper::writeBuffer()`
+ * The Javascript variable used to output set variables can be controlled with `JsHelper::$setVariable`
+ *
+ * @param mixed $one
+ * @param mixed $two
+ * @return void
+ * @access protected
+ **/
+	protected function set($one, $two = null) {
+		$data = null;
+		if (is_array($one)) {
+			if (is_array($two)) {
+				$data = array_combine($one, $two);
+			} else {
+				$data = $one;
+			}
+		} else {
+			$data = array($one => $two);
+		}
+		if ($data == null) {
+			return false;
+		}
+		$this->__jsVars = array_merge($this->__jsVars, $data);
 	}
 
 /**

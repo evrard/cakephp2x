@@ -62,7 +62,7 @@ class CakeTestDispatcher extends Dispatcher {
  * @param array $params
  * @param boolean $missingAction
  * @return Controller
- * @access proptected
+ * @access protected
  */
 	function _invoke(&$controller, $params, $missingAction = false) {
 		$this->controller = $controller;
@@ -770,13 +770,7 @@ class CakeTestCase extends UnitTestCase {
 					TESTS . 'fixtures',
 					VENDORS . 'tests' . DS . 'fixtures'
 				);
-				$pluginPaths = App::path('plugins');
-				foreach ($pluginPaths as $path) {
-					if (file_exists($path . $pluginName . DS . 'tests' . DS. 'fixtures')) {
-						$fixturePaths[0] = $path . $pluginName . DS . 'tests' . DS. 'fixtures';
-						break;
-					}
-				}
+				$fixturesPaths[0] = App::pluginPath($pluginName) . DS . 'tests' . DS . 'fixtures';
 			} else {
 				$fixturePaths = array(
 					TESTS . 'fixtures',

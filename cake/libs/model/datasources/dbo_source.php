@@ -87,6 +87,22 @@ class DboSource extends DataSource {
 	);
 
 /**
+ * List of table engine specific parameters used on table creating
+ *
+ * @var array
+ * @access protected
+ */
+	public $tableParameters = array();
+
+/**
+ * List of engine specific additional field parameters used on table creating
+ *
+ * @var array
+ * @access protected
+ */
+	public $fieldParameters = array();
+
+/**
  * Constructor
  */
 	public function __construct($config = null, $autoConnect = true) {
@@ -194,9 +210,9 @@ class DboSource extends DataSource {
 		$defaults = array('stats' => true, 'log' => $this->fullDebug);
 		$options = array_merge($defaults, $options);
 
+		$t = microtime(true);
+		$this->_result = $this->_execute($sql);
 		if ($options['stats']) {
-			$t = microtime(true);
-			$this->_result = $this->_execute($sql);
 			$this->took = round((microtime(true) - $t) * 1000, 0);
 			$this->affected = $this->lastAffected();
 			$this->error = $this->lastError();
@@ -1368,15 +1384,17 @@ class DboSource extends DataSource {
 				return "DELETE {$alias} FROM {$table} {$aliases}{$conditions}";
 			break;
 			case 'schema':
-				foreach (array('columns', 'indexes') as $var) {
+				foreach (array('columns', 'indexes', 'tableParameters') as $var) {
 					if (is_array(${$var})) {
 						${$var} = "\t" . join(",\n\t", array_filter(${$var}));
+					} else {
+						${$var} = '';
 					}
 				}
 				if (trim($indexes) != '') {
 					$columns .= ',';
 				}
-				return "CREATE TABLE {$table} (\n{$columns}{$indexes});";
+				return "CREATE TABLE {$table} (\n{$columns}{$indexes}){$tableParameters};";
 			break;
 			case 'alter':
 			break;
@@ -2331,7 +2349,7 @@ class DboSource extends DataSource {
 
 		foreach ($schema->tables as $curTable => $columns) {
 			if (!$tableName || $tableName == $curTable) {
-				$cols = $colList = $indexes = array();
+				$cols = $colList = $indexes = $tableParameters = array();
 				$primary = null;
 				$table = $this->fullTableName($curTable);
 
@@ -2342,14 +2360,16 @@ class DboSource extends DataSource {
 					if (isset($col['key']) && $col['key'] == 'primary') {
 						$primary = $name;
 					}
-					if ($name !== 'indexes') {
+					if ($name !== 'indexes' && $name !== 'tableParameters') {
 						$col['name'] = $name;
 						if (!isset($col['type'])) {
 							$col['type'] = 'string';
 						}
 						$cols[] = $this->buildColumn($col);
-					} else {
+					} elseif ($name == 'indexes') {
 						$indexes = array_merge($indexes, $this->buildIndex($col, $table));
+					} elseif ($name == 'tableParameters') {
+						$tableParameters = array_merge($tableParameters, $this->buildTableParameters($col, $table));
 					}
 				}
 				if (empty($indexes) && !empty($primary)) {
@@ -2357,7 +2377,7 @@ class DboSource extends DataSource {
 					$indexes = array_merge($indexes, $this->buildIndex($col, $table));
 				}
 				$columns = $cols;
-				$out .= $this->renderStatement('schema', compact('table', 'columns', 'indexes')) . "\n\n";
+				$out .= $this->renderStatement('schema', compact('table', 'columns', 'indexes', 'tableParameters')) . "\n\n";
 			}
 		}
 		return $out;
@@ -2437,6 +2457,16 @@ class DboSource extends DataSource {
 			$column['default'] = null;
 		}
 
+		foreach ($this->fieldParameters as $paramName => $value) {
+			if (isset($column[$paramName]) && $value['position'] == 'beforeDefault') {
+				$val = $column[$paramName];
+				if ($value['quote']) {
+					$val = $this->value($val);
+				}
+				$out .= ' ' . $value['value'] . $value['join'] . $val;
+			}
+		}
+
 		if (isset($column['key']) && $column['key'] == 'primary' && $type == 'integer') {
 			$out .= ' ' . $this->columns['primary_key']['name'];
 		} elseif (isset($column['key']) && $column['key'] == 'primary') {
@@ -2450,6 +2480,17 @@ class DboSource extends DataSource {
 		} elseif (isset($column['null']) && $column['null'] == false) {
 			$out .= ' NOT NULL';
 		}
+
+		foreach ($this->fieldParameters as $paramName => $value) {
+			if (isset($column[$paramName]) && $value['position'] == 'afterDefault') {
+				$val = $column[$paramName];
+				if ($value['quote']) {
+					$val = $this->value($val);
+				}
+				$out .= ' ' . $value['value'] . $value['join'] . $val;
+			}
+		}
+
 		return $out;
 	}
 
@@ -2481,6 +2522,48 @@ class DboSource extends DataSource {
 			$join[] = $out;
 		}
 		return $join;
+	}
+
+/**
+ * Read additional table parameters
+ *
+ * @param array $parameters
+ * @param string $table
+ * @return array
+ * @access public
+ */
+	public function readTableParameters($name) {
+		$parameters = array();
+		if ($this->isInterfaceSupported('listDetailedSources')) {
+			$currentTableDetails = $this->listDetailedSources($name);
+			foreach ($this->tableParameters as $paramName => $parameter) {
+				if (!empty($parameter['column']) && !empty($currentTableDetails[$parameter['column']])) {
+					$parameters[$paramName] = $currentTableDetails[$parameter['column']];
+				}
+			}
+		}
+		return $parameters;
+	}
+
+/**
+ * Format parameters for create table
+ *
+ * @param array $parameters
+ * @param string $table
+ * @return array
+ * @access public
+ */
+	public function buildTableParameters($parameters, $table = null) {
+		$result = array();
+		foreach ($parameters as $name => $value) {
+			if (isset($this->tableParameters[$name])) {
+				if ($this->tableParameters[$name]['quote']) {
+					$value = $this->value($value);
+				}
+				$result[] = $this->tableParameters[$name]['value'] . $this->tableParameters[$name]['join'] . $value;
+			}
+		}
+		return $result;
 	}
 
 /**

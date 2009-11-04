@@ -408,21 +408,26 @@ class AppImportTest extends UnitTestCase {
 
 		$file = App::import('Model', 'Model', false);
 		$this->assertTrue($file);
+		$this->assertTrue(class_exists('Model'));
 
 		$file = App::import('Controller', 'Controller', false);
 		$this->assertTrue($file);
+		$this->assertTrue(class_exists('Controller'));
 
 		$file = App::import('Component', 'Component', false);
 		$this->assertTrue($file);
+		$this->assertTrue(class_exists('Component'));
 
 		$file = App::import('Shell', 'Shell', false);
 		$this->assertTrue($file);
+		$this->assertTrue(class_exists('Shell'));
 
 		$file = App::import('Model', 'SomeRandomModelThatDoesNotExist', false);
 		$this->assertFalse($file);
 
 		$file = App::import('Model', 'AppModel', false);
 		$this->assertTrue($file);
+		$this->assertTrue(class_exists('AppModel'));
 
 		$file = App::import('WrongType', null, true, array(), '');
 		$this->assertTrue($file);
@@ -450,6 +455,7 @@ class AppImportTest extends UnitTestCase {
 
 			$file = App::import('Controller', 'Pages');
 			$this->assertTrue($file);
+			$this->assertTrue(class_exists('PagesController'));
 
 			$classes = array_flip(get_declared_classes());
 
@@ -458,18 +464,26 @@ class AppImportTest extends UnitTestCase {
 
 			$file = App::import('Behavior', 'Containable');
 			$this->assertTrue($file);
+			$this->assertTrue(class_exists('ContainableBehavior'));
 
 			$file = App::import('Component', 'RequestHandler');
 			$this->assertTrue($file);
+			$this->assertTrue(class_exists('RequestHandlerComponent'));
 
 			$file = App::import('Helper', 'Form');
 			$this->assertTrue($file);
+			$this->assertTrue(class_exists('FormHelper'));
 
 			$file = App::import('Model', 'NonExistingModel');
 			$this->assertFalse($file);
+
+			$file = App::import('Datasource', 'DboSource');
+			$this->assertTrue($file);
+			$this->assertTrue(class_exists('DboSource'));
 		}
 
 		App::build(array(
+			'libs' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'libs' . DS),
 			'plugins' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'plugins' . DS)
 		));
 
@@ -478,9 +492,21 @@ class AppImportTest extends UnitTestCase {
 		$this->assertTrue(class_exists('TestPluginAppController'));
 		$this->assertTrue(class_exists('TestsController'));
 
+		$result = App::import('Lib', 'TestPlugin.TestPluginLibrary');
+		$this->assertTrue($result);
+		$this->assertTrue(class_exists('TestPluginLibrary'));
+
+		$result = App::import('Lib', 'Library');
+		$this->assertTrue($result);
+		$this->assertTrue(class_exists('Library'));
+
 		$result = App::import('Helper', 'TestPlugin.OtherHelper');
 		$this->assertTrue($result);
 		$this->assertTrue(class_exists('OtherHelperHelper'));
+
+		$result = App::import('Datasource', 'TestPlugin.TestSource');
+		$this->assertTrue($result);
+		$this->assertTrue(class_exists('TestSource'));
 
 		App::build();
 	}

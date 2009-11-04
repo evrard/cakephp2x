@@ -216,6 +216,26 @@ class Helper extends Object {
 	}
 
 /**
+ * Adds a timestamp to a file based resource based on the value of `Asset.timestamp` in 
+ * Configure.  If Asset.timestamp is true and debug > 0, or Asset.timestamp == 'force'
+ * a timestamp will be added.
+ *
+ * @param string $path The file path to timestamp, the path must be inside WWW_ROOT
+ * @return string Path with a timestamp added, or not.
+ * @access public
+ **/
+	public function assetTimestamp($path) {
+		$timestampEnabled = (
+			(Configure::read('Asset.timestamp') === true && Configure::read() > 0) ||
+			Configure::read('Asset.timestamp') === 'force'
+		);
+		if (strpos($path, '?') === false && $timestampEnabled) {
+			$path .= '?' . @filemtime(WWW_ROOT . str_replace('/', DS, $path));
+		}
+		return $path;
+	}
+
+/**
  * Used to remove harmful tags from content
  *
  * @param mixed $output
@@ -241,33 +261,38 @@ class Helper extends Object {
 /**
  * Returns a space-delimited string with items of the $options array. If a
  * key of $options array happens to be one of:
- *	+ 'compact'
- *	+ 'checked'
- *	+ 'declare'
- *	+ 'readonly'
- *	+ 'disabled'
- *	+ 'selected'
- *	+ 'defer'
- *	+ 'ismap'
- *	+ 'nohref'
- *	+ 'noshade'
- *	+ 'nowrap'
- *	+ 'multiple'
- *	+ 'noresize'
+ *
+ * - 'compact'
+ * - 'checked'
+ * - 'declare'
+ * - 'readonly'
+ * - 'disabled'
+ * - 'selected'
+ * - 'defer'
+ * - 'ismap'
+ * - 'nohref'
+ * - 'noshade'
+ * - 'nowrap'
+ * - 'multiple'
+ * - 'noresize'
  *
  * And its value is one of:
- *	+ 1
- *	+ true
- *	+ 'true'
+ *
+ * - 1
+ * - true
+ * - 'true'
  *
  * Then the value will be reset to be identical with key's name.
  * If the value is not one of these 3, the parameter is not output.
  *
- * @param  array  $options Array of options.
- * @param  array  $exclude Array of options to be excluded.
- * @param  string $insertBefore String to be inserted before options.
- * @param  string $insertAfter  String to be inserted ater options.
- * @return string
+ * 'escape' is a special option in that it controls the conversion of
+ *  attributes to their html-entity encoded equivalents.  Set to false to disable html-encoding.
+ *
+ * @param array $options Array of options.
+ * @param array $exclude Array of options to be excluded, the options here will not be part of the return.
+ * @param string $insertBefore String to be inserted before options.
+ * @param string $insertAfter String to be inserted ater options.
+ * @return string Composed attributes.
  */
 	protected function _parseAttributes($options, $exclude = null, $insertBefore = ' ', $insertAfter = null) {
 		if (is_array($options)) {
@@ -292,9 +317,11 @@ class Helper extends Object {
 	}
 
 /**
- * @param  string $key
- * @param  string $value
- * @return string
+ * Formats an individual attribute, and returns the string value of the composed attribute.
+ *
+ * @param string $key The name of the attribute to create
+ * @param string $value The value of the attribute to create.
+ * @return string The composed attribute.
  * @access private
  */
 	private function __formatAttribute($key, $value, $escape = true) {
@@ -327,7 +354,7 @@ class Helper extends Object {
 
 		if ($setScope) {
 			$view->modelScope = false;
-		} elseif (join('.', $view->entity()) == $entity) {
+		} elseif (!empty($view->entityPath) && $view->entityPath == $entity) {
 			return;
 		}
 
@@ -336,9 +363,11 @@ class Helper extends Object {
 			$view->association = null;
 			$view->modelId = null;
 			$view->modelScope = false;
+			$view->entityPath = null;
 			return;
 		}
-
+		
+		$view->entityPath = $entity;
 		$model = $view->model;
 		$sameScope = $hasField = false;
 		$parts = array_values(Set::filter(explode('.', $entity), true));
@@ -347,17 +376,30 @@ class Helper extends Object {
 			return;
 		}
 
-		if (count($parts) === 1 || is_numeric($parts[0])) {
+		$count = count($parts);
+		if ($count === 1) {
 			$sameScope = true;
 		} else {
-			if (ClassRegistry::isKeySet($parts[0])) {
-				$model = $parts[0];
+			if (is_numeric($parts[0])) {
+				$sameScope = true;
+			}
+			$reverse = array_reverse($parts);
+			$field = array_shift($reverse);
+			while(!empty($reverse)) {
+				$subject = array_shift($reverse);
+				if (is_numeric($subject)) {
+					continue;
+				}
+				if (ClassRegistry::isKeySet($subject)) {
+					$model = $subject;
+					break;
+				}
 			}
 		}
 
 		if (ClassRegistry::isKeySet($model)) {
 			$ModelObj = ClassRegistry::getObject($model);
-			for ($i = 0; $i < count($parts); $i++) {
+			for ($i = 0; $i < $count; $i++) {
 				if ($ModelObj->hasField($parts[$i]) || array_key_exists($parts[$i], $ModelObj->validate)) {
 					$hasField = $i;
 					if ($hasField === 0 || ($hasField === 1 && is_numeric($parts[0]))) {
@@ -416,6 +458,23 @@ class Helper extends Object {
 					list($view->association, $view->modelId, $view->field, $view->fieldSuffix) = $parts;
 				}
 			break;
+			default:
+				$reverse = array_reverse($parts);
+				
+				if ($hasField) {
+						$view->field = $field;
+						if (!is_numeric($reverse[1]) && $reverse[1] != $model) {
+							$view->field = $reverse[1];
+							$view->fieldSuffix = $field;
+						}
+				}
+				if (is_numeric($parts[0])) {
+					$view->modelId = $parts[0];
+				} elseif ($view->model == $parts[0] && is_numeric($parts[1])) {
+					$view->modelId = $parts[1];
+				}
+				$view->association = $model;
+			break;
 		}
 
 		if (!isset($view->model) || empty($view->model)) {
@@ -472,23 +531,12 @@ class Helper extends Object {
  * @param integer $modelID	Unique index identifying this record within the form
  * @return boolean True on errors.
  */
-	public function tagIsInvalid($model = null, $field = null, $modelID = null) {
-		foreach (array('model', 'field', 'modelID') as $key) {
-			if (empty(${$key})) {
-				${$key} = $this->{$key}();
-			}
-		}
+	function tagIsInvalid($model = null, $field = null, $modelID = null) {
 		$view = ClassRegistry::getObject('view');
 		$errors = $this->validationErrors;
-
-		if ($view->model !== $model && isset($errors[$view->model][$model])) {
-			$errors = $errors[$view->model];
-		}
-
-		if (!isset($modelID)) {
-			return empty($errors[$model][$field]) ? 0 : $errors[$model][$field];
-		} else {
-			return empty($errors[$model][$modelID][$field]) ? 0 : $errors[$model][$modelID][$field];
+		$entity = $view->entity();
+		if (!empty($entity)) {
+			return Set::extract($errors,join('.',$entity));
 		}
 	}
 
@@ -509,8 +557,10 @@ class Helper extends Object {
 			$this->setEntity($options);
 			return $this->domId();
 		}
-
-		$dom = $this->model() . $this->modelID() . Inflector::camelize($view->field) . Inflector::camelize($view->fieldSuffix);
+		
+		$entity = $view->entity();
+		$model = array_shift($entity);
+		$dom = $model . join('', array_map(array('Inflector', 'camelize'), $entity));
 
 		if (is_array($options) && !array_key_exists($id, $options)) {
 			$options[$id] = $dom;
@@ -526,10 +576,10 @@ class Helper extends Object {
  * @param array $options
  * @param string $key
  * @return array
+ * @access private
  */
 	private function __name($options = array(), $field = null, $key = 'name') {
 		$view = ClassRegistry::getObject('view');
-
 		if ($options === null) {
 			$options = array();
 		} elseif (is_string($options)) {
@@ -578,40 +628,23 @@ class Helper extends Object {
 			$options = 0;
 		}
 
-		if (!empty($field)) {
-			$this->setEntity($field);
-		}
-
 		if (is_array($options) && isset($options[$key])) {
 			return $options;
 		}
-
-		$result = null;
-
-		$modelName = $this->model();
-		$fieldName = $this->field();
-		$modelID = $this->modelID();
-
-		if (is_null($fieldName)) {
-			$fieldName = $modelName;
-			$modelName = null;
+		
+		if (!empty($field)) {
+			$this->setEntity($field);
 		}
-
-		if (isset($this->data[$fieldName]) && $modelName === null) {
-			$result = $this->data[$fieldName];
-		} elseif (isset($this->data[$modelName][$fieldName])) {
-			$result = $this->data[$modelName][$fieldName];
-		} elseif (isset($this->data[$fieldName]) && is_array($this->data[$fieldName])) {
-			if (ClassRegistry::isKeySet($fieldName)) {
-				$model = ClassRegistry::getObject($fieldName);
-				$result = $this->__selectedArray($this->data[$fieldName], $model->primaryKey);
-			}
-		} elseif (isset($this->data[$modelName][$modelID][$fieldName])) {
-			$result = $this->data[$modelName][$modelID][$fieldName];
+		
+		$view = ClassRegistry::getObject('view');
+		$result = null;
+		
+		$entity = $view->entity();
+		if (!empty($this->data) && !empty($entity)) {
+			$result = Set::extract($this->data, join('.', $entity));
 		}
 
 		if (is_array($result)) {
-			$view = ClassRegistry::getObject('view');
 			if (array_key_exists($view->fieldSuffix, $result)) {
 				$result = $result[$view->fieldSuffix];
 			}

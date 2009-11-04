@@ -585,10 +585,12 @@ class Model extends Overloadable {
 	}
 
 /**
- * This function does two things: 1) it scans the array $one for the primary key,
+ * This function does two things: 
+ *
+ * 1. it scans the array $one for the primary key,
  * and if that's found, it sets the current id to the value of $one[id].
  * For all other keys than 'id' the keys and values of $one are copied to the 'data' property of this object.
- * 2) Returns an array with all of $one's keys and values.
+ * 2. Returns an array with all of $one's keys and values.
  * (Alternative indata: two strings, which are mangled to
  * a one-item, two-dimensional array using $one for a key and $two as its value.)
  *
@@ -817,11 +819,11 @@ class Model extends Overloadable {
 
 /**
  * Initializes the model for writing a new record, loading the default values
- * for those fields that are not defined in $data. Especially helpful for
- * saving data in loops.
+ * for those fields that are not defined in $data, and clearing previous validation errors. 
+ * Especially helpful for saving data in loops.
  *
  * @param mixed $data Optional data array to assign to the model after it is created.  If null or false,
- *                    schema data defaults are not merged.
+ *   schema data defaults are not merged.
  * @param boolean $filterKey If true, overwrites any primary key input with an empty value
  * @return array The current Model::data; after merging $data and/or defaults from database
  * @access public
@@ -952,8 +954,8 @@ class Model extends Overloadable {
  *
  * @param array $data Data to save.
  * @param mixed $validate Either a boolean, or an array.
- * 			If a boolean, indicates whether or not to validate before saving.
- *			If an array, allows control of validate, callbacks, and fieldList
+ *   If a boolean, indicates whether or not to validate before saving.
+ *   If an array, allows control of validate, callbacks, and fieldList
  * @param array $fieldList List of fields to allow to be written
  * @return mixed On success Model::$data if its not empty or true, false on failure
  * @access public
@@ -1217,7 +1219,7 @@ class Model extends Overloadable {
  *
  * @param array $keys Optional foreign key data, defaults to the information $this->data
  * @param boolean $created True if a new record was created, otherwise only associations with
- *				  'counterScope' defined get updated
+ *   'counterScope' defined get updated
  * @return void
  * @access public
  */
@@ -1301,17 +1303,20 @@ class Model extends Overloadable {
  * Saves multiple individual records for a single model; Also works with a single record, as well as
  * all its associated records.
  *
+ * #### Options
+ *
+ * - validate: Set to false to disable validation, true to validate each record before
+ *   saving, 'first' to validate *all* records before any are saved, or 'only' to only
+ *   validate the records, but not save them.
+ * - atomic: If true (default), will attempt to save all records in a single transaction.
+ *   Should be set to false if database/table does not support transactions.
+ *   If false, we return an array similar to the $data array passed, but values are set to true/false
+ *   depending on whether each record saved successfully.
+ * - fieldList: Equivalent to the $fieldList parameter in Model::save()
+ *
  * @param array $data Record data to save.  This can be either a numerically-indexed array (for saving multiple
- * 						records of the same type), or an array indexed by association name.
- * @param array $options Options to use when saving record data, which are as follows:
- * 							- validate: Set to false to disable validation, true to validate each record before
- * 							  saving, 'first' to validate *all* records before any are saved, or 'only' to only
- * 							  validate the records, but not save them.
- * 							- atomic: If true (default), will attempt to save all records in a single transaction.
- *							  Should be set to false if database/table does not support transactions.
- *								If false, we return an array similar to the $data array passed, but values are set to true/false
- *								depending on whether each record saved successfully.
- *							- fieldList: Equivalent to the $fieldList parameter in Model::save()
+ *     records of the same type), or an array indexed by association name.
+ * @param array $options Options to use when saving record data, See $options above.
  * @return mixed True on success, or false on failure
  * @access public
  * @link http://book.cakephp.org/view/84/Saving-Related-Model-Data-hasOne-hasMany-belongsTo
@@ -1508,7 +1513,7 @@ class Model extends Overloadable {
  * Updates multiple model records based on a set of conditions.
  *
  * @param array $fields Set of fields and values, indexed by fields.
- * 						Fields are treated as SQL snippets, to insert literal values manually escape your data.
+ *    Fields are treated as SQL snippets, to insert literal values manually escape your data.
  * @param mixed $conditions Conditions to match, true for all records
  * @return boolean True on success, false on failure
  * @access public
@@ -1756,14 +1761,19 @@ class Model extends Overloadable {
  * second parameter options for finding ( indexed array, including: 'conditions', 'limit',
  * 'recursive', 'page', 'fields', 'offset', 'order')
  *
- * Eg: find('all', array(
- * 					'conditions' => array('name' => 'Thomas Anderson'),
- * 					'fields' => array('name', 'email'),
- * 					'order' => 'field3 DESC',
- * 					'recursive' => 2,
- * 					'group' => 'type'));
+ * Eg: 
+ * {{{
+ *	find('all', array(
+ *		'conditions' => array('name' => 'Thomas Anderson'),
+ * 		'fields' => array('name', 'email'),
+ * 		'order' => 'field3 DESC',
+ * 		'recursive' => 2,
+ * 		'group' => 'type'
+ * ));
+ * }}}
  *
  * Specifying 'fields' for new-notation 'list':
+ *
  *  - If no fields are specified, then 'id' is used for key and 'model->displayField' is used for value.
  *  - If a single field is specified, 'id' is used for key and specified field is used for value.
  *  - If three fields are specified, they are used (in order) for key, value and group.
@@ -2315,6 +2325,13 @@ class Model extends Overloadable {
 							$valid = Validation::dispatchMethod($rule, $ruleParams);
 						} elseif (!is_array($validator['rule'])) {
 							$valid = preg_match($rule, $data[$fieldName]);
+						} elseif (Configure::read('debug') > 0) {
+							$error = sprintf(
+								__('Could not find validation handler %s for %s', true), 
+								$rule,
+								$fieldName
+							);
+							trigger_error($error, E_USER_WARNING);
 						}
 
 						if (!$valid || (is_string($valid) && strlen($valid) > 0)) {
@@ -2507,7 +2524,7 @@ class Model extends Overloadable {
 			$this->tablePrefix = $db->config['prefix'];
 		}
 
-		if (empty($db) || $db == null || !is_object($db)) {
+		if (empty($db) || !is_object($db)) {
 			return $this->cakeError('missingConnection', array(array('className' => $this->alias)));
 		}
 	}
