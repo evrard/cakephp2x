@@ -444,14 +444,6 @@ class App extends Object {
 	private static $datasources = array();
 
 /**
- * List of additional path(s) where datasource files reside.
- *
- * @var array
- * @access public
- */
-	var $datasources = array();
-
-/**
  * List of additional path(s) where libs files reside.
  *
  * @var array
