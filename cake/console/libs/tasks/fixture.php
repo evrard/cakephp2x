@@ -73,9 +73,6 @@ class FixtureTask extends Shell {
 	function __construct(&$dispatch) {
 		parent::__construct($dispatch);
 		$this->path = $this->params['working'] . DS . 'tests' . DS . 'fixtures' . DS;
-		if (!class_exists('CakeSchema')) {
-			App::import('Model', 'CakeSchema', false);
-		}
 	}
 
 /**
@@ -85,6 +82,10 @@ class FixtureTask extends Shell {
  * @access public
  */
 	function execute() {
+		if (!class_exists('CakeSchema')) {
+			App::import('Model', 'CakeSchema', false);
+		}
+
 		if (empty($this->args)) {
 			$this->__interactive();
 		}
@@ -412,6 +413,8 @@ class FixtureTask extends Shell {
 		$this->out("\t-count       When using generated data, the number of records to include in the fixture(s).");
 		$this->out("\t-connection  Which database configuration to use for baking.");
 		$this->out("\t-plugin      CamelCased name of plugin to bake fixtures for.");
+		$this->out("\t-records     Used with -count and <name>/all commands to pull [n] records from the live tables");
+		$this->out("\t             Where [n] is either -count or the default of 10.");
 		$this->out();
 		$this->_stop();
 	}

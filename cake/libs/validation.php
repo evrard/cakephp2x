@@ -448,26 +448,6 @@ class Validation extends Object {
 	}
 
 /**
- * Check that value is a file name
- *
- * @param mixed $check Value to check
- * @access public
- * @todo finish implementation
- */
-	public function file($check) {
-		// if (is_array($check)) {
-		// 	foreach ($check as $value) {
-		// 		if (!self::file($value)) {
-		// 			return false;
-		// 		}
-		// 	}
-		// 	return true;
-		// }
-		//
-		// return preg_match('/[\w| |_]+\.[\w]+/', $check);
-	}
-
-/**
  * Validation of an IP address.
  *
  * @param string $check The string to test.

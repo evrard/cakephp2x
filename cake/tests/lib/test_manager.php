@@ -12,7 +12,6 @@
  * Licensed under The Open Group Test Suite License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
@@ -273,7 +272,8 @@ class TestManager {
 			unset($matches[0]);
 			return $matches;
 		}
-		return array();
+		$matches = array();
+		return $matches;
 	}
 
 /**
@@ -631,7 +631,8 @@ if (function_exists('caketestsgetreporter')) {
 					$Reporter = new CakeHtmlReporter();
 					break;
 				default:
-					$Reporter = new TextReporter();
+					require_once CAKE_TESTS_LIB . 'cake_text_reporter.php';
+					$Reporter = new CakeTextReporter();
 					break;
 			}
 		}
