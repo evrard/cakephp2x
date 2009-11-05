@@ -160,6 +160,14 @@ class DboMssql extends DboSource {
 	}
 
 /**
+ * Check that MsSQL is installed/loaded
+ *
+ * @return boolean
+ **/
+	function enabled() {
+		return extension_loaded('mssql');
+	}
+/**
  * Disconnects from database.
  *
  * @return boolean True if the database could be disconnected, else false

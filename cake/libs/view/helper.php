@@ -536,7 +536,7 @@ class Helper extends Object {
 		$errors = $this->validationErrors;
 		$entity = $view->entity();
 		if (!empty($entity)) {
-			return Set::extract($errors,join('.',$entity));
+			return Set::extract($errors, join('.', $entity));
 		}
 	}
 
@@ -638,10 +638,18 @@ class Helper extends Object {
 		
 		$view = ClassRegistry::getObject('view');
 		$result = null;
-		
+
 		$entity = $view->entity();
 		if (!empty($this->data) && !empty($entity)) {
 			$result = Set::extract($this->data, join('.', $entity));
+		}
+
+		$habtmKey = $this->field();
+		if (empty($result) && isset($this->data[$habtmKey]) && is_array($this->data[$habtmKey])) {
+			if (ClassRegistry::isKeySet($habtmKey)) {
+				$model = ClassRegistry::getObject($habtmKey);
+				$result = $this->__selectedArray($this->data[$habtmKey], $model->primaryKey);
+			}
 		}
 
 		if (is_array($result)) {

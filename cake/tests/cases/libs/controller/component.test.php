@@ -384,6 +384,7 @@ class ComponentTest extends CakeTestCase {
 	function testNestedComponentLoading() {
 		$Controller = new ComponentTestController();
 		$Controller->components = array('Apple');
+		$Controller->uses = false;
 		$Controller->constructClasses();
 		$Controller->Component->initialize($Controller);
 
@@ -404,6 +405,7 @@ class ComponentTest extends CakeTestCase {
 	function testComponentStartup() {
 		$Controller = new ComponentTestController();
 		$Controller->components = array('Apple');
+		$Controller->uses = false;
 		$Controller->constructClasses();
 		$Controller->Component->initialize($Controller);
 		$Controller->beforeFilter();
@@ -424,6 +426,7 @@ class ComponentTest extends CakeTestCase {
  */
 	function testMultipleComponentInitialize() {
 		$Controller = new ComponentTestController();
+		$Controller->uses = false;
 		$Controller->components = array('Orange', 'Banana');
 		$Controller->constructClasses();
 		$Controller->Component->initialize($Controller);
@@ -445,7 +448,7 @@ class ComponentTest extends CakeTestCase {
 
 		$Controller = new ComponentTestController();
 		$Controller->components = array('ParamTest' => array('test' => 'value', 'flag'), 'Apple');
-
+		$Controller->uses = false;
 		$Controller->constructClasses();
 		$Controller->Component->initialize($Controller);
 
@@ -477,8 +480,12 @@ class ComponentTest extends CakeTestCase {
  * @return void
  **/
 	function testComponentParamsNoDuplication() {
+		if ($this->skipIf(defined('APP_CONTROLLER_EXISTS'), '%s Need a non-existent AppController')) {
+			return;
+		}
 		$Controller =& new ComponentTestController();
 		$Controller->components = array('Orange' => array('setting' => array('itemx')));
+		$Controller->uses = false;
 
 		$Controller->constructClasses();
 		$Controller->Component->initialize($Controller);
@@ -494,6 +501,7 @@ class ComponentTest extends CakeTestCase {
 	function testMutuallyReferencingComponents() {
 		$Controller = new ComponentTestController();
 		$Controller->components = array('MutuallyReferencingOne');
+		$Controller->uses = false;
 		$Controller->constructClasses();
 		$Controller->Component->initialize($Controller);
 
@@ -519,6 +527,7 @@ class ComponentTest extends CakeTestCase {
 	function testSomethingReferencingEmailComponent() {
 		$Controller = new ComponentTestController();
 		$Controller->components = array('SomethingWithEmail');
+		$Controller->uses = false;
 		$Controller->constructClasses();
 		$Controller->Component->initialize($Controller);
 		$Controller->beforeFilter();
@@ -545,10 +554,12 @@ class ComponentTest extends CakeTestCase {
  * @access public
  */
 	function testDoubleLoadingOfSessionComponent() {
-		$this->skipIf(defined('APP_CONTROLLER_EXISTS'), '%s Need a non-existent AppController');
+		if ($this->skipIf(defined('APP_CONTROLLER_EXISTS'), '%s Need a non-existent AppController')) {
+			return;
+		}
 
 		$Controller = new ComponentTestController();
-		$Controller->uses = array();
+		$Controller->uses = false;
 		$Controller->components = array('Session');
 		$Controller->constructClasses();
 

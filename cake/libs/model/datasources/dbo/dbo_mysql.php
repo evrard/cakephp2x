@@ -12,7 +12,6 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
@@ -113,6 +112,40 @@ class DboMysqlBase extends DboSource {
 		'boolean' => array('name' => 'tinyint', 'limit' => '1')
 	);
 
+/**
+ * Returns an array of the fields in given table name.
+ *
+ * @param string $tableName Name of database table to inspect
+ * @return array Fields in table. Keys are name and type
+ */
+	public function describe(&$model) {
+		$cache = parent::describe($model);
+		if ($cache != null) {
+			return $cache;
+		}
+		$fields = false;
+		$cols = $this->query('DESCRIBE ' . $this->fullTableName($model));
+
+		foreach ($cols as $column) {
+			$colKey = array_keys($column);
+			if (isset($column[$colKey[0]]) && !isset($column[0])) {
+				$column[0] = $column[$colKey[0]];
+			}
+			if (isset($column[0])) {
+				$fields[$column[0]['Field']] = array(
+					'type' => $this->column($column[0]['Type']),
+					'null' => ($column[0]['Null'] == 'YES' ? true : false),
+					'default' => $column[0]['Default'],
+					'length' => $this->length($column[0]['Type']),
+				);
+				if (!empty($column[0]['Key']) && isset($this->index[$column[0]['Key']])) {
+					$fields[$column[0]['Field']]['key'] = $this->index[$column[0]['Key']];
+				}
+			}
+		}
+		$this->__cacheDescription($this->fullTableName($model, false), $fields);
+		return $fields;
+	}
 /**
  * Generates and executes an SQL UPDATE statement for given model, fields, and values.
  *
@@ -494,6 +527,14 @@ class DboMysql extends DboMysqlBase {
 	}
 
 /**
+ * Check whether the MySQL extension is installed/loaded
+ *
+ * @return boolean
+ **/
+	public function enabled() {
+		return extension_loaded('mysql');
+	}
+/**
  * Disconnects from database.
  *
  * @return boolean True if the database could be disconnected, else false
@@ -540,52 +581,6 @@ class DboMysql extends DboMysqlBase {
 			parent::listSources($tables);
 			return $tables;
 		}
-	}
-
-/**
- * Returns an array of the fields in given table name.
- *
- * @param string $tableName Name of database table to inspect
- * @return array Fields in table. Keys are name and type
- */
-	public function describe(&$model) {
-		$cache = parent::describe($model);
-		if ($cache != null) {
-			return $cache;
-		}
-		$fields = false;
-		$cols = $this->query('SHOW FULL COLUMNS FROM ' . $this->fullTableName($model));
-
-		foreach ($cols as $column) {
-			$colKey = array_keys($column);
-			if (isset($column[$colKey[0]]) && !isset($column[0])) {
-				$column[0] = $column[$colKey[0]];
-			}
-			if (isset($column[0])) {
-				$fields[$column[0]['Field']] = array(
-					'type' => $this->column($column[0]['Type']),
-					'null' => ($column[0]['Null'] == 'YES' ? true : false),
-					'default' => $column[0]['Default'],
-					'length' => $this->length($column[0]['Type']),
-				);
-				if (!empty($column[0]['Key']) && isset($this->index[$column[0]['Key']])) {
-					$fields[$column[0]['Field']]['key'] = $this->index[$column[0]['Key']];
-				}
-				foreach ($this->fieldParameters as $name => $value) {
-					if (!empty($column[0][$value['column']])) {
-						$fields[$column[0]['Field']][$name] = $column[0][$value['column']];
-					}
-				}
-				if (isset($fields[$column[0]['Field']]['collate'])) {
-					$charset = $this->getCharsetName($fields[$column[0]['Field']]['collate']);
-					if ($charset) {
-						$fields[$column[0]['Field']]['charset'] = $charset;
-					}
-				}
-			}
-		}
-		$this->__cacheDescription($this->fullTableName($model, false), $fields);
-		return $fields;
 	}
 
 /**

@@ -773,7 +773,9 @@ class ControllerTest extends CakeTestCase {
  * @return void
  */
 	function testRender() {
-		App::build(array('views' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views'. DS)));
+		App::build(array(
+			'views' => array(TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'views'. DS)
+		), true);
 
 		$Controller = new Controller();
 		$Controller->viewPath = 'posts';
@@ -798,6 +800,7 @@ class ControllerTest extends CakeTestCase {
 
 		$Controller->ControllerComment->validationErrors = array();
 		ClassRegistry::flush();
+		App::build();
 	}
 
 /**

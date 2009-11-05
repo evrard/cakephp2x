@@ -12,7 +12,6 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
  * @copyright     Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
@@ -85,6 +84,14 @@ class DboMysqli extends DboMysqlBase {
 	}
 
 /**
+ * Check that MySQLi is installed/enabled
+ *
+ * @return boolean
+ **/
+	public function enabled() {
+		return extension_loaded('mysqli');
+	}
+/**
  * Disconnects from database.
  *
  * @return boolean True if the database could be disconnected, else false
@@ -155,44 +162,6 @@ class DboMysqli extends DboMysqlBase {
 	}
 
 /**
- * Returns an array of the fields in given table name.
- *
- * @param string $tableName Name of database table to inspect
- * @return array Fields in table. Keys are name and type
- */
-	public function describe(&$model) {
-
-		$cache = parent::describe($model);
-		if ($cache != null) {
-			return $cache;
-		}
-
-		$fields = false;
-		$cols = $this->query('DESCRIBE ' . $this->fullTableName($model));
-
-		foreach ($cols as $column) {
-			$colKey = array_keys($column);
-			if (isset($column[$colKey[0]]) && !isset($column[0])) {
-				$column[0] = $column[$colKey[0]];
-			}
-			if (isset($column[0])) {
-				$fields[$column[0]['Field']] = array(
-					'type'		=> $this->column($column[0]['Type']),
-					'null'		=> ($column[0]['Null'] == 'YES' ? true : false),
-					'default'	=> $column[0]['Default'],
-					'length'	=> $this->length($column[0]['Type'])
-				);
-				if (!empty($column[0]['Key']) && isset($this->index[$column[0]['Key']])) {
-					$fields[$column[0]['Field']]['key']	= $this->index[$column[0]['Key']];
-				}
-			}
-		}
-
-		$this->__cacheDescription($this->fullTableName($model, false), $fields);
-		return $fields;
-	}
-
-/**
  * Returns a quoted and escaped string of $data for use in an SQL statement.
  *
  * @param string $data String to be prepared for use in an SQL statement
@@ -239,20 +208,6 @@ class DboMysqli extends DboMysqlBase {
 		return $data;
 	}
 
-/**
- * Begin a transaction
- *
- * @param unknown_type $model
- * @return boolean True on success, false on fail
- * (i.e. if the database/model does not support transactions).
- */
-	public function begin(&$model) {
-		if (parent::begin($model) && $this->execute('START TRANSACTION')) {
-			$this->_transactionStarted = true;
-			return true;
-		}
-		return false;
-	}
 /**
  * Returns a formatted error message from previous database operation.
  *
@@ -351,26 +306,6 @@ class DboMysqli extends DboMysqlBase {
 			return "enum($vals)";
 		}
 		return 'text';
-	}
-
-/**
- * Gets the length of a database-native column description, or null if no length
- *
- * @param string $real Real database-layer column type (i.e. "varchar(255)")
- * @return integer An integer representing the length of the column
- */
-	public function length($real) {
-		$col = str_replace(array(')', 'unsigned'), '', $real);
-		$limit = null;
-	
-		if (strpos($col, '(') !== false) {
-			list($col, $limit) = explode('(', $col);
-		}
-	
-		if ($limit != null) {
-			return intval($limit);
-		}
-		return null;
 	}
 
 /**

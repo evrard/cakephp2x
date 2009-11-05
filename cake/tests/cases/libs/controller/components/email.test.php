@@ -403,8 +403,6 @@ HEADBLOC;
 This is the body of the message
 
 This email was sent using the CakePHP Framework, http://cakephp.org.
-
-
 TEXTBLOC;
 
 		$html = <<<HTMLBLOC
@@ -412,7 +410,7 @@ TEXTBLOC;
 
 <html>
 <head>
-	<title>EmailTest</title>
+	<title>Email Test</title>
 </head>
 
 <body>
@@ -420,7 +418,6 @@ TEXTBLOC;
 	<p>This email was sent using the <a href="http://cakephp.org">CakePHP Framework</a></p>
 </body>
 </html>
-
 HTMLBLOC;
 
 		$this->Controller->EmailTest->sendAs = 'text';
@@ -447,7 +444,7 @@ HTMLBLOC;
 
 <html>
 <head>
-	<title>EmailTest</title>
+	<title>Email Test</title>
 </head>
 
 <body>
@@ -472,8 +469,6 @@ standards.
 This is the body of the message
 
 This email was sent using the CakePHP Framework, http://cakephp.org.
-
-
 TEXTBLOC;
 
 		$this->Controller->EmailTest->sendAs = 'text';
