@@ -25,7 +25,7 @@
 </p>
 <p class="notice">
 	<strong><?php __('Notice', false); ?>: </strong>
-	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . "views" . DS . "errors" . DS . "scaffold_error.ctp"); ?>
+	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . 'views' . DS . 'errors' . DS . 'scaffold_error.ctp'); ?>
 </p>
 <pre>
 &lt;?php

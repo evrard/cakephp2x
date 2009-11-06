@@ -21,13 +21,13 @@
 <h2><?php __('Missing Layout', false); ?></h2>
 <p class="error">
 	<strong><?php __('Error', false); ?>: </strong>
-	<?php echo sprintf(__("The layout file %s can not be found or does not exist."), "<em>" . $file . "</em>"); ?>
+	<?php echo sprintf(__('The layout file %s can not be found or does not exist.'), '<em>' . $file . '</em>'); ?>
 </p>
 <p class="error">
 	<strong><?php __('Error', false); ?>: </strong>
-	<?php echo sprintf(__('Confirm you have created the file: %s'), "<em>" . $file . "</em>"); ?>
+	<?php echo sprintf(__('Confirm you have created the file: %s'), '<em>' . $file . '</em>'); ?>
 </p>
 <p class="notice">
 	<strong><?php __('Notice', false); ?>: </strong>
-	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_layout.ctp"); ?>
+	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . 'views' . DS . 'errors' . DS . 'missing_layout.ctp'); ?>
 </p>

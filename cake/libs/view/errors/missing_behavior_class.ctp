@@ -21,11 +21,11 @@
 <h2><?php __('Missing Behavior Class'); ?></h2>
 <p class="error">
 	<strong><?php __('Error', false); ?>: </strong>
-	<?php echo sprintf(__("The behavior class <em>%s</em> can not be found or does not exist."), $behaviorClass); ?>
+	<?php echo sprintf(__('The behavior class <em>%s</em> can not be found or does not exist.'), $behaviorClass); ?>
 </p>
 <p  class="error">
 	<strong><?php __('Error', false); ?>: </strong>
-	<?php echo sprintf(__('Create the class below in file: %s'), APP_DIR . DS . "models" . DS . "behaviors" . DS . $file); ?>
+	<?php echo sprintf(__('Create the class below in file: %s'), APP_DIR . DS . 'models' . DS . 'behaviors' . DS . $file); ?>
 </p>
 <pre>
 &lt;?php
@@ -36,5 +36,5 @@ class <?php echo $behaviorClass;?> extends ModelBehavior {
 </pre>
 <p class="notice">
 	<strong><?php __('Notice', false); ?>: </strong>
-	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_behavior_class.ctp"); ?>
+	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . 'views' . DS . 'errors' . DS . 'missing_behavior_class.ctp'); ?>
 </p>

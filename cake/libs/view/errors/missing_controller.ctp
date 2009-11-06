@@ -21,11 +21,11 @@
 <h2><?php __('Missing Controller', false); ?></h2>
 <p class="error">
 	<strong><?php __('Error', false); ?>: </strong>
-	<?php echo sprintf(__('%s could not be found.'), "<em>" . $controller . "</em>"); ?>
+	<?php echo sprintf(__('%s could not be found.'), '<em>' . $controller . '</em>'); ?>
 </p>
 <p class="error">
 	<strong><?php __('Error', false); ?>: </strong>
-	<?php echo sprintf(__('Create the class %s below in file: %s'), "<em>" . $controller . "</em>", APP_DIR . DS . "controllers" . DS . Inflector::underscore($controller) . ".php"); ?>
+	<?php echo sprintf(__('Create the class %s below in file: %s'), '<em>' . $controller . '</em>', APP_DIR . DS . 'controllers' . DS . Inflector::underscore($controller) . '.php'); ?>
 </p>
 <pre>
 &lt;?php
@@ -37,5 +37,5 @@ class <?php echo $controller; ?> extends AppController {
 </pre>
 <p class="notice">
 	<strong><?php __('Notice', false); ?>: </strong>
-	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_controller.ctp"); ?>
+	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . 'views' . DS . 'errors' . DS . 'missing_controller.ctp'); ?>
 </p>

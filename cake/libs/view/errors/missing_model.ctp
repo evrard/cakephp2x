@@ -21,11 +21,11 @@
 <h2><?php __('Missing Model', false); ?></h2>
 <p class="error">
 	<strong><?php __('Error', false); ?>: </strong>
-	<?php echo sprintf(__("<em>%s</em> could not be found."), $model); ?>
+	<?php echo sprintf(__('<em>%s</em> could not be found.'), $model); ?>
 </p>
 <p class="error">
 	<strong><?php __('Error', false); ?>: </strong>
-	<?php echo sprintf(__('Create the class %s in file: %s'), "<em>" . $model . "</em>", APP_DIR . DS . "models" . DS . Inflector::underscore($model) . ".php"); ?>
+	<?php echo sprintf(__('Create the class %s in file: %s'), '<em>' . $model . '</em>', APP_DIR . DS . 'models' . DS . Inflector::underscore($model) . '.php'); ?>
 </p>
 <pre>
 &lt;?php
@@ -38,5 +38,5 @@ class <?php echo $model;?> extends AppModel {
 </pre>
 <p class="notice">
 	<strong><?php __('Notice', false); ?>: </strong>
-	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_model.ctp"); ?>
+	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . 'views' . DS . 'errors' . DS . 'missing_model.ctp'); ?>
 </p>

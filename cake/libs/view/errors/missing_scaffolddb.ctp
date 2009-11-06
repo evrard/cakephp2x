@@ -25,9 +25,9 @@
 </p>
 <p class="error">
 	<strong><?php __('Error', false); ?>: </strong>
-	<?php echo sprintf(__('Confirm you have created the file: %s'), APP_DIR . DS . "config" . DS . "database.php");?>
+	<?php echo sprintf(__('Confirm you have created the file: %s'), APP_DIR . DS . 'config' . DS . 'database.php');?>
 </p>
 <p class="notice">
 	<strong><?php __('Notice', false); ?>: </strong>
-	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_scaffolddb.ctp");?>
+	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . 'views' . DS . 'errors' . DS . 'missing_scaffolddb.ctp');?>
 </p>

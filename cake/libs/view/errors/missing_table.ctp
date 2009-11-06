@@ -21,9 +21,9 @@
 <h2><?php __('Missing Database Table', false); ?></h2>
 <p class="error">
 	<strong><?php __('Error', false); ?>: </strong>
-	<?php echo sprintf(__('Database table %1$s for model %2$s was not found.'),"<em>" . $table . "</em>",  "<em>" . $model . "</em>"); ?>
+	<?php echo sprintf(__('Database table %1$s for model %2$s was not found.'), '<em>' . $table . '</em>',  '<em>' . $model . '</em>'); ?>
 </p>
 <p class="notice">
 	<strong><?php __('Notice', false); ?>: </strong>
-	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_table.ctp"); ?>
+	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . 'views' . DS . 'errors' . DS . 'missing_table.ctp'); ?>
 </p>

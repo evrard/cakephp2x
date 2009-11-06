@@ -21,9 +21,9 @@
 <h2><?php echo sprintf(__('Private Method in %s'), $controller);?></h2>
 <p class="error">
 	<strong><?php __('Error', false); ?>: </strong>
-	<?php echo sprintf(__("%s%s cannot be accessed directly."), "<em>" . $controller . "::</em>",  "<em>" . $action . "()</em>");?>
+	<?php echo sprintf(__('%s%s cannot be accessed directly.'), '<em>' . $controller . '::</em>',  '<em>' . $action . '()</em>');?>
 </p>
 <p class="notice">
 	<strong><?php __('Notice', false); ?>: </strong>
-	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . "views" . DS . "errors" . DS . "private_action.ctp");?>
+	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . 'views' . DS . 'errors' . DS . 'private_action.ctp');?>
 </p>

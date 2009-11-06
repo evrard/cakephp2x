@@ -21,11 +21,11 @@
 <h2><?php echo sprintf(__('Missing Method in %s'), $controller); ?></h2>
 <p class="error">
 	<strong><?php __('Error', false) ?>: </strong>
-	<?php echo sprintf(__('The action %1$s is not defined in controller %2$s'), "<em>" . $action . "</em>", "<em>" . $controller . "</em>"); ?>
+	<?php echo sprintf(__('The action %1$s is not defined in controller %2$s'), '<em>' . $action . '</em>', '<em>' . $controller . '</em>'); ?>
 </p>
 <p class="error">
 	<strong><?php __('Error', false) ?>: </strong>
-	<?php echo sprintf(__('Create %1$s%2$s in file: %3$s.'), "<em>" . $controller . "::</em>", "<em>" . $action . "()</em>", APP_DIR . DS . "controllers" . DS . Inflector::underscore($controller) . ".php"); ?>
+	<?php echo sprintf(__('Create %1$s%2$s in file: %3$s.'), '<em>' . $controller . '::</em>', '<em>' . $action . '()</em>', APP_DIR . DS . 'controllers' . DS . Inflector::underscore($controller) . '.php'); ?>
 </p>
 <pre>
 &lt;?php
@@ -43,5 +43,5 @@ class <?php echo $controller; ?> extends AppController {
 </pre>
 <p class="notice">
 	<strong><?php __('Notice', flase) ?>: </strong>
-	<?php echo sprintf(__('If you want to customize this error message, create %s.'), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_action.ctp"); ?>
+	<?php echo sprintf(__('If you want to customize this error message, create %s.'), APP_DIR . DS . 'views' . DS . 'errors' . DS . 'missing_action.ctp'); ?>
 </p>
