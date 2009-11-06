@@ -18,14 +18,14 @@
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 ?>
-<h2><?php __('Missing Component File'); ?></h2>
+<h2><?php __('Missing Component File', false); ?></h2>
 <p class="error">
-	<strong><?php __('Error'); ?>: </strong>
-	<?php __("The component file was not found."); ?>
+	<strong><?php __('Error', false); ?>: </strong>
+	<?php __('The component file was not found.', false); ?>
 </p>
 <p class="error">
-	<strong><?php __('Error'); ?>: </strong>
-	<?php echo sprintf(__('Create the class %s in file: %s', true), "<em>" . $component . "Component</em>", APP_DIR . DS . "controllers" . DS . "components" . DS . $file);?>
+	<strong><?php __('Error', false); ?>: </strong>
+	<?php echo sprintf(__('Create the class %s in file: %s'), "<em>" . $component . "Component</em>", APP_DIR . DS . "controllers" . DS . "components" . DS . $file); ?>
 </p>
 <pre>
 &lt;?php
@@ -35,6 +35,6 @@ class <?php echo $component;?>Component extends Object {<br />
 ?&gt;
 </pre>
 <p class="notice">
-	<strong><?php __('Notice'); ?>: </strong>
-	<?php echo sprintf(__('If you want to customize this error message, create %s', true), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_component_file.ctp");?>
+	<strong><?php __('Notice', false); ?>: </strong>
+	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_component_file.ctp"); ?>
 </p>

@@ -18,25 +18,25 @@
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 ?>
-<h2><?php __('Missing Model'); ?></h2>
+<h2><?php __('Missing Model', false); ?></h2>
 <p class="error">
-	<strong><?php __('Error'); ?>: </strong>
-	<?php echo sprintf(__("<em>%s</em> could not be found.", true), $model);?>
+	<strong><?php __('Error', false); ?>: </strong>
+	<?php echo sprintf(__("<em>%s</em> could not be found."), $model); ?>
 </p>
 <p class="error">
-	<strong><?php __('Error'); ?>: </strong>
-	<?php echo sprintf(__('Create the class %s in file: %s', true), "<em>" . $model . "</em>", APP_DIR . DS . "models" . DS . Inflector::underscore($model) . ".php");?>
+	<strong><?php __('Error', false); ?>: </strong>
+	<?php echo sprintf(__('Create the class %s in file: %s'), "<em>" . $model . "</em>", APP_DIR . DS . "models" . DS . Inflector::underscore($model) . ".php"); ?>
 </p>
 <pre>
 &lt;?php
 class <?php echo $model;?> extends AppModel {
 
-	public $name = '<?php echo $model;?>';
+	public $name = '<?php echo $model; ?>';
 
 }
 ?&gt;
 </pre>
 <p class="notice">
-	<strong><?php __('Notice'); ?>: </strong>
-	<?php echo sprintf(__('If you want to customize this error message, create %s', true), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_model.ctp");?>
+	<strong><?php __('Notice', false); ?>: </strong>
+	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_model.ctp"); ?>
 </p>

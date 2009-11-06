@@ -18,16 +18,16 @@
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 ?>
-<h2><?php __('Missing Layout'); ?></h2>
+<h2><?php __('Missing Layout', false); ?></h2>
 <p class="error">
-	<strong><?php __('Error'); ?>: </strong>
-	<?php echo sprintf(__("The layout file %s can not be found or does not exist.", true), "<em>" . $file . "</em>");?>
+	<strong><?php __('Error', false); ?>: </strong>
+	<?php echo sprintf(__("The layout file %s can not be found or does not exist."), "<em>" . $file . "</em>"); ?>
 </p>
 <p class="error">
-	<strong><?php __('Error'); ?>: </strong>
-	<?php echo sprintf(__('Confirm you have created the file: %s', true), "<em>" . $file . "</em>");?>
+	<strong><?php __('Error', false); ?>: </strong>
+	<?php echo sprintf(__('Confirm you have created the file: %s'), "<em>" . $file . "</em>"); ?>
 </p>
 <p class="notice">
-	<strong><?php __('Notice'); ?>: </strong>
-	<?php echo sprintf(__('If you want to customize this error message, create %s', true), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_layout.ctp");?>
+	<strong><?php __('Notice', false); ?>: </strong>
+	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_layout.ctp"); ?>
 </p>

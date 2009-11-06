@@ -18,14 +18,14 @@
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 ?>
-<h2><?php __('Missing Behavior File'); ?></h2>
+<h2><?php __('Missing Behavior File', false); ?></h2>
 <p class="error">
-	<strong><?php __('Error'); ?>: </strong>
-	<?php echo sprintf(__("The Behavior file %s can not be found or does not exist.", true), APP_DIR . DS . "models" . DS . "behaviors" . DS . $file);?>
+	<strong><?php __('Error', false); ?>: </strong>
+	<?php echo sprintf(__("The Behavior file %s can not be found or does not exist."), APP_DIR . DS . "models" . DS . "behaviors" . DS . $file); ?>
 </p>
 <p  class="error">
-	<strong><?php __('Error'); ?>: </strong>
-	<?php echo sprintf(__('Create the class below in file: %s', true), APP_DIR . DS . "models" . DS . "behaviors" . DS . $file);?>
+	<strong><?php __('Error', false); ?>: </strong>
+	<?php echo sprintf(__('Create the class below in file: %s'), APP_DIR . DS . "models" . DS . "behaviors" . DS . $file); ?>
 </p>
 <pre>
 &lt;?php
@@ -35,6 +35,6 @@ class <?php echo $behaviorClass;?> extends ModelBehavior {
 ?&gt;
 </pre>
 <p class="notice">
-	<strong><?php __('Notice'); ?>: </strong>
-	<?php echo sprintf(__('If you want to customize this error message, create %s', true), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_behavior_file.ctp");?>
+	<strong><?php __('Notice', false); ?>: </strong>
+	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_behavior_file.ctp"); ?>
 </p>

@@ -18,24 +18,24 @@
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 ?>
-<h2><?php __('Missing Controller'); ?></h2>
+<h2><?php __('Missing Controller', false); ?></h2>
 <p class="error">
-	<strong><?php __('Error'); ?>: </strong>
-	<?php echo sprintf(__('%s could not be found.', true), "<em>" . $controller . "</em>");?>
+	<strong><?php __('Error', false); ?>: </strong>
+	<?php echo sprintf(__('%s could not be found.'), "<em>" . $controller . "</em>"); ?>
 </p>
 <p class="error">
-	<strong><?php __('Error'); ?>: </strong>
-	<?php echo sprintf(__('Create the class %s below in file: %s', true), "<em>" . $controller . "</em>", APP_DIR . DS . "controllers" . DS . Inflector::underscore($controller) . ".php");?>
+	<strong><?php __('Error', false); ?>: </strong>
+	<?php echo sprintf(__('Create the class %s below in file: %s'), "<em>" . $controller . "</em>", APP_DIR . DS . "controllers" . DS . Inflector::underscore($controller) . ".php"); ?>
 </p>
 <pre>
 &lt;?php
-class <?php echo $controller;?> extends AppController {
+class <?php echo $controller; ?> extends AppController {
 
-	public $name = '<?php echo $controllerName;?>';
+	public $name = '<?php echo $controllerName; ?>';
 }
 ?&gt;
 </pre>
 <p class="notice">
-	<strong><?php __('Notice'); ?>: </strong>
-	<?php echo sprintf(__('If you want to customize this error message, create %s', true), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_controller.ctp");?>
+	<strong><?php __('Notice', false); ?>: </strong>
+	<?php echo sprintf(__('If you want to customize this error message, create %s'), APP_DIR . DS . "views" . DS . "errors" . DS . "missing_controller.ctp"); ?>
 </p>
