@@ -637,14 +637,13 @@ class App extends Object {
  * @return string full path to the plugin.
  **/
 	function pluginPath($plugin) {
-		$_this = App::getInstance();
 		$pluginDir = Inflector::underscore($plugin);
-		for ($i = 0, $length = count($_this->plugins); $i < $length; $i++) {
-			if (is_dir($_this->plugins[$i] . $pluginDir)) {
-				return $_this->plugins[$i] . $pluginDir . DS ;
+		for ($i = 0, $length = count(self::$plugins); $i < $length; $i++) {
+			if (is_dir(self::$plugins[$i] . $pluginDir)) {
+				return self::$plugins[$i] . $pluginDir . DS ;
 			}
 		}
-		return $_this->plugins[0] . $pluginDir . DS;
+		return self::$plugins[0] . $pluginDir . DS;
 	}
 
 /**
