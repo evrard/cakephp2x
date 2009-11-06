@@ -4,8 +4,6 @@
  *
  * Long description for file
  *
- * PHP Version 5.x
- *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
@@ -43,6 +41,7 @@ class TestTask extends Shell {
  * @access public
  */
 	var $path = TESTS;
+
 /**
  * Tasks used.
  *
@@ -92,6 +91,7 @@ class TestTask extends Shell {
 			}
 		}
 	}
+
 /**
  * Handles interactive baking
  *
@@ -350,6 +350,7 @@ class TestTask extends Shell {
 		$fixture = $prefix . Inflector::underscore($name);
 		$this->_fixtures[$name] = $fixture;
 	}
+
 /**
  * Interact with the user to get additional fixtures they want to use.
  *

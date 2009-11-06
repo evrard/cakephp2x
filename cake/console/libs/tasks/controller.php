@@ -7,7 +7,7 @@
  * PHP Version 5.x
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2009,	Cake Software Foundation, Inc.
+ * Copyright 2005-2009, Cake Software Foundation, Inc.
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.

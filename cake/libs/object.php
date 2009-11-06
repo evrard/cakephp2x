@@ -27,18 +27,10 @@
  * Also includes methods for logging and the special method RequestAction,
  * to call other Controllers' Actions from anywhere.
  *
- * @package       cake
- * @subpackage    cake.cake.libs
+ * @package cake
+ * @subpackage cake.cake.libs
  */
 class Object {
-
-/**
- * Log object
- *
- * @var CakeLog
- * @access protected
- */
-	protected $_log = null;
 
 /**
  * Class constructor, overridden in descendant classes.
@@ -138,13 +130,10 @@ class Object {
 		if (!class_exists('CakeLog')) {
 			require LIBS . 'cake_log.php';
 		}
-		if (is_null($this->_log)) {
-			$this->_log = new CakeLog();
-		}
 		if (!is_string($msg)) {
 			$msg = print_r($msg, true);
 		}
-		return $this->_log->write($type, $msg);
+		return CakeLog::write($type, $msg);
 	}
 
 /**

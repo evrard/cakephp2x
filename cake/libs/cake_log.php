@@ -55,15 +55,129 @@
 class CakeLog {
 
 /**
+ * An array of connected streams.
+ * Each stream represents a callable that will be called when write() is called.
+ *
+ * @var array
+ * @access protected
+ **/
+	protected $_streams = array();
+
+/**
+ * Configure and add a new logging stream to CakeLog
+ * You can use add loggers from app/libs use app.loggername, or any plugin/libs using plugin.loggername
+ *
+ * @param string $key The keyname for this logger, used to revmoe the logger later.
+ * @param array $config Array of configuration information for the logger
+ * @return boolean success of configuration.
+ * @static
+ **/
+	public static function config($key, $config) {
+		if (empty($config['engine'])) {
+			trigger_error(__('Missing logger classname', true), E_USER_WARNING);
+			return false;
+		}
+		$className = self::_getLogger($config['engine']);
+		if (!$className) {
+			return false;
+		}
+		unset($config['engine']);
+		self::$_streams[$key] = new $className($config);
+		return true;
+	}
+
+/**
+ * Attempts to import a logger class from the various paths it could be on.
+ * Checks that the logger class implements a write method as well.
+ *
+ * @return mixed boolean false on any failures, string of classname to use if search was successful.\
+ * @access protected
+ **/
+	protected static function _getLogger($loggerName) {
+		$plugin = null;
+		if (strpos($loggerName, '.') !== false) {
+			list($plugin, $loggerName) = explode('.', $loggerName);
+		}
+		if ($plugin) {
+			App::import('Lib', $plugin . '.log/' . $loggerName);
+		} else {
+			if (!App::import('Lib', 'log/' . $loggerName)) {
+				App::import('Core', 'log/' . $loggerName);
+			}
+		}
+		if (!class_exists($loggerName)) {
+			trigger_error(sprintf(__('Could not load logger class %s', true), $loggerName), E_USER_WARNING);
+			return false;
+		}
+		if (!method_exists($loggerName, 'write')) {
+			trigger_error(
+				sprintf(__('logger class %s does not implement a write method.', true), $loggerName),
+				E_USER_WARNING
+			);
+			return false;
+		}
+		return $loggerName;
+	}
+
+/**
+ * Returns the keynames of the currently active streams
+ *
+ * @return array
+ * @static
+ **/
+	public static function streams() {
+		return array_keys(self::$_streams);
+	}
+
+/**
+ * Remove a stream from the active streams.  Once a stream has been removed
+ * it will no longer be called.
+ *
+ * @param string $keyname Key name of callable to remove.
+ * @return void
+ * @static
+ **/
+	public static function remove($streamName) {
+		unset(self::$_streams[$streamName]);
+	}
+
+/**
+ * Add a stream the logger.
+ * Streams represent destinations for log messages.  Each stream can connect to
+ * a different resource /interface and capture/write output to that source.
+ *
+ * @param string $key Keyname of config.
+ * @param array $config Array of config information for the LogStream
+ * @return boolean success
+ * @static
+ **/
+	public static function addStream($key, $config) {
+		self::$_streams[$key] = $config;
+	}
+
+/**
+ * Configures the automatic/default stream a FileLog.
+ *
+ * @return void
+ * @access protected
+ **/
+	protected static function _autoConfig() {
+		if (!class_exists('FileLog')) {
+			App::import('Core', 'log/FileLog');
+		}
+		self::$_streams['default'] = new FileLog(array('path' => LOGS));
+	}
+
+/**
  * Writes given message to a log file in the logs directory.
  *
  * @param string $type Type of log, becomes part of the log's filename
- * @param string $msg  Message to log
+ * @param string $message  Message to log
  * @return boolean Success
  * @access public
  * @static
  */
-	public static function write($type, $msg) {
+	public static function write($type, $message) {
 		if (!defined('LOG_ERROR')) {
 			define('LOG_ERROR', 2);
 		}
@@ -82,19 +196,15 @@ class CakeLog {
 		if (is_int($type) && isset($levels[$type])) {
 			$type = $levels[$type];
 		}
-
-		if ($type == 'error' || $type == 'warning') {
-			$filename = LOGS . 'error.log';
-		} elseif (in_array($type, $levels)) {
-			$filename = LOGS . 'debug.log';
-		} else {
-			$filename = LOGS . $type . '.log';
+		if (empty(self::$_streams)) {
+			self::_autoConfig();
 		}
-		$output = date('Y-m-d H:i:s') . ' ' . ucfirst($type) . ': ' . $msg . "\n";
-		$log = new File($filename, true);
-		if ($log->writable()) {
-			return $log->append($output);
+		$keys = array_keys(self::$_streams);
+		foreach ($keys as $key) {
+			$logger = self::$_streams[$key];
+			$logger->write($type, $message);
 		}
+		return true;
 	}
 
 /**
@@ -107,7 +217,7 @@ class CakeLog {
  * @param array $context Context
  * @return void
  **/
-	public function handleError($code, $description, $file = null, $line = null, $context = null) {
+	public static function handleError($code, $description, $file = null, $line = null, $context = null) {
 		if ($code === 2048 || $code === 8192) {
 			return;
 		}
@@ -137,7 +247,7 @@ class CakeLog {
 			break;
 		}
 		$message = $error . ' (' . $code . '): ' . $description . ' in [' . $file . ', line ' . $line . ']';
-		CakeLog::write($level, $message);
+		self::write($level, $message);
 	}
 }
 

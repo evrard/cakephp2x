@@ -1,11 +1,12 @@
 <?php
 /* SVN FILE: $Id: counter_cache_fixture.php 7848 2008-11-08 02:58:37Z nate $ */
+
 /**
  * Short description for file.
  *
  * Long description for file
  *
- * PHP Version 5.x
+ * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
  * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -30,20 +31,20 @@
  * @package       cake
  * @subpackage    cake.tests.fixtures
  */
-class CounterCachePostFixture extends CakeTestFixture {
+class CounterCachePostNonstandardPrimaryKeyFixture extends CakeTestFixture {
 
-	var $name = 'CounterCachePost';
+	var $name = 'CounterCachePostNonstandardPrimaryKey';
 
 	var $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
+		'pid' => array('type' => 'integer', 'key' => 'primary'),
 		'title' => array('type' => 'string', 'length' => 255, 'null' => false),
-		'user_id' => array('type' => 'integer', 'null' => true),
+		'uid' => array('type' => 'integer', 'null' => true),
 	);
 
     var $records = array(
-		array('id' => 1, 'title' => 'Rock and Roll',  'user_id' => 66),
-		array('id' => 2, 'title' => 'Music',   'user_id' => 66),
-		array('id' => 3, 'title' => 'Food',   'user_id' => 301),
+		array('pid' => 1, 'title' => 'Rock and Roll',  'uid' => 66),
+		array('pid' => 2, 'title' => 'Music',   'uid' => 66),
+		array('pid' => 3, 'title' => 'Food',   'uid' => 301),
     );
 }
 

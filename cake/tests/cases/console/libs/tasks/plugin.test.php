@@ -1,6 +1,4 @@
 <?php
-/* SVN FILE: $Id$ */
-
 /**
  * PluginTask Test file
  *
@@ -8,14 +6,14 @@
  *
  * PHP Version 5.x
  *
- * CakePHP :  Rapid Development Framework (http://cakephp.org)
+ * CakePHP : Rapid Development Framework (http://cakephp.org)
  * Copyright 2006-2009, Cake Software Foundation, Inc.
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright 2006-2009, Cake Software Foundation, Inc.
- * @link          http://www.cakefoundation.org/projects/info/cakephp CakePHP Project
+ * @link          http://cakephp.org CakePHP Project
  * @package       cake
  * @subpackage    cake.tests.cases.console.libs.tasks
  * @since         CakePHP v 1.3.0
