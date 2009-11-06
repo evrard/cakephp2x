@@ -18,7 +18,7 @@
  * @link            http://www.cakefoundation.org/projects/info/cakephp CakePHP Project
  * @package         cake.tests
  * @subpackage      cake.tests.cases.views.helpers
- * @license         http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @license         MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 App::import('Helper', array('Html', 'Js', 'MootoolsEngine'));
 
