@@ -7,7 +7,7 @@
  * PHP Version 5.x
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2009, Cake Software Foundation, Inc. (http://www.cakefoundation.org)
+ * Copyright 2005-2009, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The Open Group Test Suite License
  * Redistributions of files must retain the above copyright notice.

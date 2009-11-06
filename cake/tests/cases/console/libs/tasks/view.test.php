@@ -6,7 +6,7 @@
  *
  * PHP Version 5.x
  *
- * CakePHP :  Rapid Development Framework (http://www.cakephp.org)
+ * CakePHP :  Rapid Development Framework (http://cakephp.org)
  * Copyright 2006-2008, Cake Software Foundation, Inc.
  *
  * Licensed under The MIT License

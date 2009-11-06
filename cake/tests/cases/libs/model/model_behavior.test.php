@@ -12,7 +12,7 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     CakePHP(tm) : Rapid Development Framework (http://www.cakephp.org)
+ * @copyright     CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * @link          http://www.cakephp.org
  * @package       cake
  * @subpackage    cake.tests.cases.libs.model
