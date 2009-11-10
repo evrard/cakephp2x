@@ -681,7 +681,7 @@ class Validation extends Object {
  * @access public
  */
 	public static function url($check, $strict = false, $ipVersion = '4') {
-		$validChars = '([' . preg_quote('!"$&\'()*+,-.@_:;=') . '\/0-9a-z]|(%[0-9a-f]{2}))';
+		$validChars = '([' . preg_quote('!"$&\'()*+,-.@_:;=~') . '\/0-9a-z]|(%[0-9a-f]{2}))';
 		$regex = '/^(?:(?:https?|ftps?|file|news|gopher):\/\/)' . (!empty($strict) ? '' : '?') .
 			'(?:' . self::$__pattern['ipv'.$ipVersion] . '|' . self::$__pattern['hostname'] . ')(?::[1-9][0-9]{0,3})?' .
 			'(?:\/?|\/' . $validChars . '*)?' .
