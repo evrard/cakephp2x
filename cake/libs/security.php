@@ -159,6 +159,7 @@ class Security extends Object {
 			trigger_error(__('You cannot use an empty key for Security::cipher()', true), E_USER_WARNING);
 			return '';
 		}
+
 		if (!defined('CIPHER_SEED')) {
 			//This is temporary will change later
 			define('CIPHER_SEED', '76859309657453542496749683645');
