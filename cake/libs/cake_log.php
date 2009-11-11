@@ -60,8 +60,9 @@ class CakeLog {
  *
  * @var array
  * @access protected
+ * @static
  **/
-	protected $_streams = array();
+	protected static $_streams = array();
 
 /**
  * Configure and add a new logging stream to CakeLog
