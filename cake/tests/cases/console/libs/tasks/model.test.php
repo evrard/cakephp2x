@@ -214,9 +214,9 @@ class ModelTaskTest extends CakeTestCase {
 	function testInteractiveFieldValidation() {
 		$this->Task->initValidations();
 		$this->Task->interactive = true;
-		$this->Task->setReturnValueAt(0, 'in', '19');
+		$this->Task->setReturnValueAt(0, 'in', '20');
 		$this->Task->setReturnValueAt(1, 'in', 'y');
-		$this->Task->setReturnValueAt(2, 'in', '15');
+		$this->Task->setReturnValueAt(2, 'in', '16');
 		$this->Task->setReturnValueAt(3, 'in', 'n');
 
 		$result = $this->Task->fieldValidation('text', array('type' => 'string', 'length' => 10, 'null' => false));

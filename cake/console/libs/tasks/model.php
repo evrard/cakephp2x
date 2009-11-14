@@ -342,12 +342,10 @@ class ModelTask extends Shell {
 			$options = array_diff($options, $parent);
 		}
 		sort($options);
-		$default = 1;
+		$index = 1;
 		foreach ($options as $key => $option) {
-			if ($option{0} != '_' && strtolower($option) != 'getinstance') {
-				$choices[$default] = strtolower($option);
-				$default++;
-			}
+			$choices[$index] = strtolower($option);
+			$index++;
 		}
 		$this->__validations = $choices;
 		return $choices;
