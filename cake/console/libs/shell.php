@@ -34,7 +34,7 @@ class Shell extends Object {
  * @var ShellDispatcher
  * @access public
  */
-	var $Dispatch = null;
+	private $Dispatch = null;
 
 /**
  * If true, the script will ask for permission to perform actions.
@@ -42,7 +42,7 @@ class Shell extends Object {
  * @var boolean
  * @access public
  */
-	var $interactive = true;
+	public $interactive = true;
 
 /**
  * Holds the DATABASE_CONFIG object for the app. Null if database.php could not be found,
@@ -51,7 +51,7 @@ class Shell extends Object {
  * @var DATABASE_CONFIG
  * @access public
  */
-	var $DbConfig = null;
+	private $DbConfig = null;
 
 /**
  * Contains command switches parsed from the command line.
@@ -59,7 +59,7 @@ class Shell extends Object {
  * @var array
  * @access public
  */
-	var $params = array();
+	private $params = array();
 
 /**
  * Contains arguments parsed from the command line.
@@ -67,7 +67,7 @@ class Shell extends Object {
  * @var array
  * @access public
  */
-	var $args = array();
+	private $args = array();
 
 /**
  * The file name of the shell that was invoked.
@@ -75,7 +75,7 @@ class Shell extends Object {
  * @var string
  * @access public
  */
-	var $shell = null;
+	private $shell = null;
 
 /**
  * The class name of the shell that was invoked.
@@ -83,7 +83,7 @@ class Shell extends Object {
  * @var string
  * @access public
  */
-	var $className = null;
+	private $className = null;
 
 /**
  * The command called if public methods are available.
@@ -91,7 +91,7 @@ class Shell extends Object {
  * @var string
  * @access public
  */
-	var $command = null;
+	private $command = null;
 
 /**
  * The name of the shell in camelized.
@@ -99,7 +99,7 @@ class Shell extends Object {
  * @var string
  * @access public
  */
-	var $name = null;
+	public $name = null;
 
 /**
  * An alias for the shell
@@ -107,7 +107,7 @@ class Shell extends Object {
  * @var string
  * @access public
  */
-	var $alias = null;
+	private $alias = null;
 
 /**
  * Contains tasks to load and instantiate
@@ -115,7 +115,7 @@ class Shell extends Object {
  * @var array
  * @access public
  */
-	var $tasks = array();
+	private $tasks = array();
 
 /**
  * Contains the loaded tasks
@@ -123,7 +123,7 @@ class Shell extends Object {
  * @var array
  * @access public
  */
-	var $taskNames = array();
+	private $taskNames = array();
 
 /**
  * Contains models to load and instantiate
@@ -131,13 +131,13 @@ class Shell extends Object {
  * @var array
  * @access public
  */
-	var $uses = array();
+	private $uses = array();
 
 /**
  *  Constructs this Shell instance.
  *
  */
-	function __construct(&$dispatch) {
+	public function __construct(&$dispatch) {
 		$vars = array('params', 'args', 'shell', 'shellCommand' => 'command');
 
 		foreach ($vars as $key => $var) {
@@ -169,7 +169,7 @@ class Shell extends Object {
  *
  * @access public
  */
-	function initialize() {
+	public function initialize() {
 		$this->_loadModels();
 	}
 
@@ -180,7 +180,7 @@ class Shell extends Object {
  *
  * @access public
  */
-	function startup() {
+	public function startup() {
 		$this->_welcome();
 	}
 
@@ -189,7 +189,7 @@ class Shell extends Object {
  *
  * @access protected
  */
-	function _welcome() {
+	protected function _welcome() {
 		$this->Dispatch->clear();
 		$this->out();
 		$this->out('Welcome to CakePHP v' . Configure::version() . ' Console');
@@ -206,7 +206,7 @@ class Shell extends Object {
  * @return bool
  * @access protected
  */
-	function _loadDbConfig() {
+	protected function _loadDbConfig() {
 		if (config('database') && class_exists('DATABASE_CONFIG')) {
 			$this->DbConfig = new DATABASE_CONFIG();
 			return true;
@@ -225,7 +225,7 @@ class Shell extends Object {
  * @return bool
  * @access protected
  */
-	function _loadModels() {
+	protected function _loadModels() {
 		if ($this->uses === null || $this->uses === false) {
 			return;
 		}
@@ -263,7 +263,7 @@ class Shell extends Object {
  * @return bool
  * @access public
  */
-	function loadTasks() {
+	public function loadTasks() {
 		if ($this->tasks === null || $this->tasks === false || $this->tasks === true || empty($this->tasks)) {
 			return true;
 		}
@@ -312,7 +312,7 @@ class Shell extends Object {
  * @return Either the default value, or the user-provided input.
  * @access public
  */
-	function in($prompt, $options = null, $default = null) {
+	public function in($prompt, $options = null, $default = null) {
 		if (!$this->interactive) {
 			return $default;
 		}
@@ -346,7 +346,7 @@ class Shell extends Object {
  * @return integer Returns the number of bytes returned from writing to stdout.
  * @access public
  */
-	function out($message = null, $newlines = 1) {
+	public function out($message = null, $newlines = 1) {
 		if (is_array($message)) {
 			$message = implode($this->nl(), $message);
 		}
@@ -361,7 +361,7 @@ class Shell extends Object {
  * @param integer $newlines Number of newlines to append
  * @access public
  */
-	function err($message = null, $newlines = 1) {
+	public function err($message = null, $newlines = 1) {
 		if (is_array($message)) {
 			$message = implode($this->nl(), $message);
 		}
@@ -375,7 +375,7 @@ class Shell extends Object {
  * @access public
  * @return string
  */
-	function nl($multiplier = 1) {
+	public function nl($multiplier = 1) {
 		return str_repeat("\n", $multiplier);
 	}
 
@@ -385,7 +385,7 @@ class Shell extends Object {
  * @param integer $newlines Number of newlines to pre- and append
  * @access public
  */
-	function hr($newlines = 0) {
+	public function hr($newlines = 0) {
 		$this->out(null, $newlines);
 		$this->out('---------------------------------------------------------------');
 		$this->out(null, $newlines);
@@ -399,7 +399,7 @@ class Shell extends Object {
  * @param string $message An optional error message
  * @access public
  */
-	function error($title, $message = null) {
+	public function error($title, $message = null) {
 		$this->err(sprintf(__('Error: %s', true), $title));
 
 		if (!empty($message)) {
@@ -415,7 +415,7 @@ class Shell extends Object {
  * @param string $command Command
  * @access protected
  */
-	function _checkArgs($expectedNum, $command = null) {
+	protected function _checkArgs($expectedNum, $command = null) {
 		if (!$command) {
 			$command = $this->command;
 		}
@@ -436,7 +436,7 @@ class Shell extends Object {
  * @return boolean Success
  * @access public
  */
-	function createFile($path, $contents) {
+	public function createFile($path, $contents) {
 		$path = str_replace(DS . DS, DS, $path);
 
 		$this->out();
@@ -474,7 +474,7 @@ class Shell extends Object {
  *
  * @access public
  */
-	function help() {
+	public function help() {
 		if ($this->command != null) {
 			$this->err("Unknown {$this->name} command `{$this->command}`.");
 			$this->err("For usage, try `cake {$this->shell} help`.", 2);
@@ -489,7 +489,7 @@ class Shell extends Object {
  * @return boolean Success
  * @access protected
  */
-	function _checkUnitTest() {
+	public function _checkUnitTest() {
 		if (App::import('vendor', 'simpletest' . DS . 'simpletest')) {
 			return true;
 		}
@@ -511,7 +511,7 @@ class Shell extends Object {
  * @return sting short path
  * @access public
  */
-	function shortPath($file) {
+	public function shortPath($file) {
 		$shortPath = str_replace(ROOT, null, $file);
 		$shortPath = str_replace('..' . DS, '', $shortPath);
 		return str_replace(DS . DS, DS, $shortPath);
@@ -524,7 +524,7 @@ class Shell extends Object {
  * @return string Path to controller
  * @access protected
  */
-	function _controllerPath($name) {
+	protected function _controllerPath($name) {
 		return strtolower(Inflector::underscore($name));
 	}
 
@@ -535,7 +535,7 @@ class Shell extends Object {
  * @return string Controller plural name
  * @access protected
  */
-	function _controllerName($name) {
+	protected function _controllerName($name) {
 		return Inflector::pluralize(Inflector::camelize($name));
 	}
 
@@ -546,7 +546,7 @@ class Shell extends Object {
  * @return string Camelized and singularized controller name
  * @access protected
  */
-	function _modelName($name) {
+	protected function _modelName($name) {
 		return Inflector::camelize(Inflector::singularize($name));
 	}
 
@@ -557,7 +557,7 @@ class Shell extends Object {
  * @return string Singular model key
  * @access protected
  */
-	function _modelKey($name) {
+	protected function _modelKey($name) {
 		return Inflector::underscore(Inflector::singularize($name)) . '_id';
 	}
 
@@ -568,7 +568,7 @@ class Shell extends Object {
  * @return string Model name
  * @access protected
  */
-	function _modelNameFromKey($key) {
+	protected function _modelNameFromKey($key) {
 		return Inflector::camelize(str_replace('_id', '', $key));
 	}
 
@@ -579,7 +579,7 @@ class Shell extends Object {
  * @return string $name
  * @access protected
  */
-	function _singularName($name) {
+	protected function _singularName($name) {
 		return Inflector::variable(Inflector::singularize($name));
 	}
 
@@ -590,7 +590,7 @@ class Shell extends Object {
  * @return string Plural name for views
  * @access protected
  */
-	function _pluralName($name) {
+	protected function _pluralName($name) {
 		return Inflector::variable(Inflector::pluralize($name));
 	}
 
@@ -601,7 +601,7 @@ class Shell extends Object {
  * @return string Singular human name
  * @access protected
  */
-	function _singularHumanName($name) {
+	protected function _singularHumanName($name) {
 		return Inflector::humanize(Inflector::underscore(Inflector::singularize($name)));
 	}
 
@@ -612,7 +612,7 @@ class Shell extends Object {
  * @return string Plural human name
  * @access protected
  */
-	function _pluralHumanName($name) {
+	protected function _pluralHumanName($name) {
 		return Inflector::humanize(Inflector::underscore(Inflector::pluralize($name)));
 	}
 
@@ -622,7 +622,7 @@ class Shell extends Object {
  * @param string $pluginName Name of the plugin you want ie. DebugKit
  * @return string $path path to the correct plugin.
  **/
-	function _pluginPath($pluginName) {
+	protected function _pluginPath($pluginName) {
 		return App::pluginPath($pluginName);
 	}
 }
