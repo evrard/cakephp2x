@@ -48,25 +48,6 @@ class TheJsTestController extends Controller {
 }
 
 /**
- * TheView class
- *
- * @package       cake
- * @subpackage    cake.tests.cases.libs.view.helpers
- */
-class TheView extends View {
-
-/**
- * scripts method
- *
- * @access public
- * @return void
- */
-	function scripts() {
-		return $this->__scripts;
-	}
-}
-
-/**
  * TestJavascriptObject class
  *
  * @package       cake
@@ -124,7 +105,7 @@ class JavascriptTest extends CakeTestCase {
 		$this->Javascript = new JavascriptHelper();
 		$this->Javascript->Html = new HtmlHelper();
 		$this->Javascript->Form = new FormHelper();
-		$this->View = new TheView(new TheJsTestController());
+		$this->View = new View(new TheJsTestController());
 		ClassRegistry::addObject('view', $this->View);
 	}
 
