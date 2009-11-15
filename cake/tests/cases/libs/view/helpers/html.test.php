@@ -1068,8 +1068,8 @@ class HtmlHelperTest extends CakeTestCase {
 
 		$this->assertNull($this->Html->meta(array('name' => 'ROBOTS', 'content' => 'ALL'), null, array('inline' => false)));
 		$view = ClassRegistry::getObject('view');
-		$result = $view->__scripts[0];
-		$this->assertTags($result, array('meta' => array('name' => 'ROBOTS', 'content' => 'ALL')));
+		$scripts = $view->scripts();
+		$this->assertTags($scripts[0], array('meta' => array('name' => 'ROBOTS', 'content' => 'ALL')));
 	}
 
 /**
