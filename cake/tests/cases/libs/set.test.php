@@ -1796,6 +1796,7 @@ class SetTest extends CakeTestCase {
 		$result = Set::reverse($class);
 		$this->assertIdentical($result, $expected);
 
+		// @todo: This needs to be adjusted once model access modifiers are solidified.
 		$model = new Model(array('id' => false, 'name' => 'Model', 'table' => false));
 		$expected = array(
 			'Behaviors' => array(
@@ -1804,9 +1805,10 @@ class SetTest extends CakeTestCase {
 				// '_disabled' => array(),
 				// '__methods' => array(),
 				// '__mappedMethods' => array(),
-				'_log' => null),
-			//'useDbConfig' => 'default',
-			//'useTable' => false,
+				//'_log' => null
+				),
+			'useDbConfig' => 'default',
+			'useTable' => false,
 			'displayField' => null,
 			'id' => false,
 			'data' => array(),
@@ -1816,7 +1818,7 @@ class SetTest extends CakeTestCase {
 			'validate' => array(),
 			'validationErrors' => array(),
 			'tablePrefix' => null,
-			//'name' => 'Model',
+			'name' => 'Model',
 			'alias' => 'Model',
 			'tableToModel' => array(),
 			'logTransactions' => false,
@@ -1827,7 +1829,7 @@ class SetTest extends CakeTestCase {
 			'hasMany' =>  array(),
 			'hasAndBelongsToMany' =>  array(),
 			'actsAs' => null,
-			//'whitelist' =>  array(),
+			'whitelist' =>  array(),
 			'cacheSources' => true,
 			'findQueryType' => null,
 			'recursive' => 1,
@@ -1844,7 +1846,8 @@ class SetTest extends CakeTestCase {
 			'__numRows' => null,
 			'__affectedRows' => null,
 			'_findMethods' => array('all' => true, 'first' => true, 'count' => true, 'neighbors' => true, 'list' => true, 'threaded' => true),
-			'_log' => null);
+			//'_log' => null
+			);
 		$result = Set::reverse($model);
 
 		ksort($result);
