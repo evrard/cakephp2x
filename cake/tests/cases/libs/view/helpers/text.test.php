@@ -87,7 +87,7 @@ class TextHelperTest extends CakeTestCase {
 		$this->assertIdentical($this->Text->truncate($text1, 15, array('exact' => false, 'html' => true)), 'The quick...');
 		$this->assertIdentical($this->Text->truncate($text2, 10, array('html' => true)), 'Heiz&ouml;lr...');
 		$this->assertIdentical($this->Text->truncate($text2, 10, array('exact' => false, 'html' => true)), '...');
-		$this->assertIdentical($this->Text->truncate($text3, 20, array('html' => true)), '<b>&copy; 2005-2007, Cake...</b>');
+		$this->assertIdentical($this->Text->truncate($text3, 20, array('html' => true)), '<b>&copy; 2005-2009, Cake...</b>');
 		$this->assertIdentical($this->Text->truncate($text4, 15, array('html' => true)), '<img src="mypic.jpg"> This image ...');
 		$this->assertIdentical($this->Text->truncate($text4, 45, array('html' => true)), '<img src="mypic.jpg"> This image tag is not XHTML conform!<br><hr/><b>But t...</b>');
 		$this->assertIdentical($this->Text->truncate($text4, 90, array('html' => true)), '<img src="mypic.jpg"> This image tag is not XHTML conform!<br><hr/><b>But the following image tag should be conform <img src="mypic.jpg" alt="Me, myself and I" /></b><br />Grea...');
