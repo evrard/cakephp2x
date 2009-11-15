@@ -1748,6 +1748,7 @@ class ValidationTest extends CakeTestCase {
 		$this->assertTrue(Validation::ip('4::4', '6'));
 		$this->assertTrue(Validation::ip('4::', '6'));
 
+		$this->assertTrue( Validation::ip('::ffff:12.34.56.78', '6'));
 		$this->assertFalse(Validation::ip('::01.02.03.04', '6'));
 		$this->assertFalse(Validation::ip('0:0:0:255.255.255.255', '6'));
 		$this->assertFalse(Validation::ip('1fff::a88:85a3::172.31.128.1', '6'));
