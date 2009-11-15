@@ -88,14 +88,6 @@ class View extends Object {
 	public $passedArgs = array();
 
 /**
- * Array of data
- *
- * @var array Parameter data
- * @todo: Check for deprecation
- */
-	//protected $data = array();
-
-/**
  * An array of names of built-in helpers to include.
  *
  * @var mixed A single name as a string or a list of names as an array.
@@ -584,6 +576,16 @@ class View extends Object {
 		} else {
 			$this->__scripts[$name] = $content;
 		}
+	}
+	
+/**
+ * Return the scripts set for this view
+ *
+ * @return array
+ * @access public
+ */
+	public function scripts() {
+		return $this->__scripts;
 	}
 
 /**
