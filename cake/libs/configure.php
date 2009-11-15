@@ -636,7 +636,7 @@ class App extends Object {
  *
  * @param string $plugin CamelCased plugin name to find the path of.
  * @return string full path to the plugin.
- **/
+ */
 	function pluginPath($plugin) {
 		$pluginDir = Inflector::underscore($plugin);
 		for ($i = 0, $length = count(self::$plugins); $i < $length; $i++) {

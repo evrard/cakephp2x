@@ -93,7 +93,7 @@ class SessionHelperTest extends CakeTestCase {
  * test construction and initial property settings
  *
  * @return void
- **/
+ */
 	function testConstruct() {
 		$this->assertFalse(empty($this->Session->sessionTime));
 		$this->assertFalse(empty($this->Session->security));

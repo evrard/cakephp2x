@@ -87,7 +87,7 @@ class DboMysqli extends DboMysqlBase {
  * Check that MySQLi is installed/enabled
  *
  * @return boolean
- **/
+ */
 	public function enabled() {
 		return extension_loaded('mysqli');
 	}

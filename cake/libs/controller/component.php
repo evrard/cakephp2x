@@ -56,7 +56,7 @@ class Component extends Object {
  *
  * @var array
  * @access private
- **/
+ */
 	private $__settings = array();
 
 /**

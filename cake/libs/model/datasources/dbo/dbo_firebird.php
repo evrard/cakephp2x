@@ -117,7 +117,7 @@ class DboFirebird extends DboSource {
  * Firebird Transaction commands.
  *
  * @var array
- **/
+ */
 	protected $_commands = array(
 		'begin'	   => 'SET TRANSACTION',
 		'commit'   => 'COMMIT',
@@ -143,7 +143,7 @@ class DboFirebird extends DboSource {
  * Check that the interbase extension is loaded
  *
  * @return boolean
- **/
+ */
 	function enabled() {
 		return extension_loaded('interbase');
 	}

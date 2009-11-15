@@ -65,7 +65,7 @@ class ModelTaskTest extends CakeTestCase {
  * fixtures
  *
  * @var array
- **/
+ */
 	public $fixtures = array('core.article', 'core.comment', 'core.articles_tag', 'core.tag', 'core.category_thread');
 
 /**
@@ -357,7 +357,6 @@ class ModelTaskTest extends CakeTestCase {
 		);
 		$this->assertEqual($result, $expected);
 
-
 		$model = new Model(array('ds' => 'test_suite', 'name' => 'CategoryThread'));
 		$result = $this->Task->findBelongsTo($model, array());
 		$expected = array(
@@ -401,7 +400,6 @@ class ModelTaskTest extends CakeTestCase {
 		);
 		$this->assertEqual($result, $expected);
 
-
 		$model = new Model(array('ds' => 'test_suite', 'name' => 'CategoryThread'));
 		$result = $this->Task->findHasOneAndMany($model, array());
 		$expected = array(
@@ -424,7 +422,7 @@ class ModelTaskTest extends CakeTestCase {
 	}
 
 /**
- * test that habtm generation works
+ * Test that HABTM generation works
  *
  * @return void
  * @access public

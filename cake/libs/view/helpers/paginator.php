@@ -46,7 +46,7 @@ class PaginatorHelper extends AppHelper {
  * The class used for 'Ajax' pagination links.
  *
  * @var string
- **/
+ */
 	protected $_ajaxHelperClass = 'Js';
 
 /**

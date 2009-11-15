@@ -63,7 +63,7 @@ class CakeSchema extends Object {
  * plugin name.
  *
  * @var string
- **/
+ */
 	public $plugin = null;
 
 /**
@@ -378,7 +378,7 @@ class CakeSchema extends Object {
  * @param string $table Table name you want returned.
  * @param array $fields Array of field information to generate the table with.
  * @return string Variable declaration for a schema class
- **/
+ */
 	public function generateTable($table, $fields) {
 		$out = "\tvar \${$table} = array(\n";
 		if (is_array($fields)) {
@@ -570,7 +570,7 @@ class CakeSchema extends Object {
  * @param array $old Old indexes
  * @return mixed False on failure, or an array of parameters to add & drop.
  * @access protected
- **/
+ */
 	protected function _compareTableParameters($new, $old) {
 		if (!is_array($new) || !is_array($old)) {
 			return false;

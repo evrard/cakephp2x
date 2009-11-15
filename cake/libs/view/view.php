@@ -253,7 +253,7 @@ class View extends Object {
  * Holds View output.
  *
  * @var string
- **/
+ */
 	public $output = false;
 
 /**

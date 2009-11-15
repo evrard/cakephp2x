@@ -222,7 +222,7 @@ class Helper extends Object {
  * @param string $path The file path to timestamp, the path must be inside WWW_ROOT
  * @return string Path with a timestamp added, or not.
  * @access public
- **/
+ */
 	public function assetTimestamp($path) {
 		$timestampEnabled = (
 			(Configure::read('Asset.timestamp') === true && Configure::read() > 0) ||
