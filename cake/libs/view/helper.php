@@ -575,9 +575,9 @@ class Helper extends Object {
  * @param array $options
  * @param string $key
  * @return array
- * @access private
+ * @access protected
  */
-	private function __name($options = array(), $field = null, $key = 'name') {
+	protected function _name($options = array(), $field = null, $key = 'name') {
 		$view = ClassRegistry::getObject('view');
 		if ($options === null) {
 			$options = array();
@@ -687,7 +687,7 @@ class Helper extends Object {
 			$this->setEntity($field);
 		}
 		$options = (array)$options;
-		$options = $this->__name($options);
+		$options = $this->_name($options);
 		$options = $this->value($options);
 		$options = $this->domId($options);
 		if ($this->tagIsInvalid()) {
