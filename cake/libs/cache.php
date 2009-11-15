@@ -25,7 +25,7 @@
  * @package       cake
  * @subpackage    cake.cake.libs
  */
-class Cache extends Object {
+class Cache {
 
 /**
  * Cache engine to use
@@ -76,20 +76,6 @@ class Cache extends Object {
 	}
 */
 /**
- * Tries to find and include a file for a cache engine and returns object instance
- *
- * @param $name	Name of the engine (without 'Engine')
- * @return mixed $engine object or null
- * @access private
- */
-	private static function __loadEngine($name) {
-		if (!class_exists($name . 'Engine')) {
-			require LIBS . DS . 'cache' . DS . strtolower($name) . '.php';
-		}
-		return true;
-	}
-
-/**
  * Set the cache configuration to use
  *
  * @see app/config/core.php for configuration settings
@@ -137,6 +123,44 @@ class Cache extends Object {
 	}
 
 /**
+ * Returns an array containing the currently configured Cache settings.
+ *
+ * @return array
+ * @access public
+ */
+	public function configured() {
+		return array_keys(self::__config);
+	}
+
+/**
+ * Drops a cache engine.  Deletes the cache configuration information
+ * If the deleted configuration is the last configuration using an certain engine,
+ * the Engine instance is also unset.
+ *
+ * @param string $name A currently configured cache config you wish to remove.
+ * @return boolen success of the removal, returns false when the config does not exist.
+ * @access public
+ */
+	public function drop($name) {
+		if (!isset(self::$__config[$name])) {
+			return false;
+		}
+		$last = true;
+		$engine = self::$__config[$name]['engine'];
+		unset(self::$__config[$name]);
+		foreach (self::$__config as $name => $settings) {
+			if ($settings['engine'] == $engine) {
+				$last = false;
+				break;
+			}
+		}
+		if ($last) {
+			unset(self::$_Engine[$engine]);
+		}
+		return true;
+	}
+
+/**
  * Set the cache engine to use or modify settings for one instance
  *
  * @param string $name Name of the engine (without 'Engine')
@@ -145,11 +169,15 @@ class Cache extends Object {
  * @access public
  * @static
  */
-	public static function engine($name = 'File', $settings = array()) {
-		$cacheClass = $name . 'Engine';
-
+	public function engine($name = 'File', $settings = array()) {
+		$plugin = null;
+		$class = $name;
+		if (strpos($name, '.') !== false) {
+			list($plugin, $class) = explode('.', $name);
+		}
+		$cacheClass = $class . 'Engine';
 		if (!isset(self::$_Engine[$name])) {
-			if (self::__loadEngine($name) === false) {
+			if (self::__loadEngine($class, $plugin) === false) {
 				return false;
 			}
 			self::$_Engine[$name] = new $cacheClass();
@@ -164,6 +192,26 @@ class Cache extends Object {
 		self::$_Engine[$name] = null;
 		return false;
 	}
+
+/**
+ * Tries to find and include a file for a cache engine and returns object instance
+ *
+ * @param $name	Name of the engine (without 'Engine')
+ * @return mixed $engine object or null
+ * @access private
+ */
+	private function __loadEngine($name, $plugin = null) {
+		if ($plugin) {
+			return App::import('Lib', $plugin . '.cache' . DS . $name);
+		} else {
+			$app = App::import('Lib', 'cache' . DS . $name);
+			if (!$app) {
+				return App::import('Core', 'cache' . DS . $name);
+			}
+			return true;
+		}
+	}
+
 
 /**
  * Temporarily change settings to current config options. if no params are passed, resets settings if needed
@@ -226,13 +274,7 @@ class Cache extends Object {
  * @access public
  * @static
  */
-	public static function write($key, $value, $config = null) {
-		if (is_array($config)) {
-			extract($config);
-		} else if ($config && (is_numeric($config) || is_numeric($config[0]) || (isset($config[1]) && is_numeric($config[1])))) {
-			$config = null;
-		}
-
+	public function write($key, $value, $config = null) {
 		if ($config && isset(self::$__config[$config])) {
 			$settings = self::set(self::$__config[$config]);
 		} else {
@@ -408,7 +450,7 @@ class Cache extends Object {
  * @package       cake
  * @subpackage    cake.cake.libs
  */
-class CacheEngine extends Object {
+class CacheEngine {
 
 /**
  * settings of current engine instance

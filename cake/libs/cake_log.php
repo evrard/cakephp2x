@@ -21,14 +21,6 @@
  */
 
 /**
- * Included libraries.
- *
- */
-	if (!class_exists('File')) {
-		require LIBS . 'file.php';
-	}
-
-/**
  * Set up error level constants to be used within the framework if they are not defined within the
  * system.
  *
@@ -124,36 +116,24 @@ class CakeLog {
  * Returns the keynames of the currently active streams
  *
  * @return array
+ * @access public
  * @static
  */
-	public static function streams() {
+	public function configured() {
 		return array_keys(self::$_streams);
 	}
 
 /**
- * Remove a stream from the active streams.  Once a stream has been removed
- * it will no longer be called.
+ * Removes a stream from the active streams.  Once a stream has been removed
+ * it will no longer have messages sent to it.
  *
  * @param string $keyname Key name of callable to remove.
  * @return void
+ * @access public
  * @static
  */
-	public static function remove($streamName) {
+	public function drop($streamName) {
 		unset(self::$_streams[$streamName]);
-	}
-
-/**
- * Add a stream the logger.
- * Streams represent destinations for log messages.  Each stream can connect to
- * a different resource /interface and capture/write output to that source.
- *
- * @param string $key Keyname of config.
- * @param array $config Array of config information for the LogStream
- * @return boolean success
- * @static
- */
-	public static function addStream($key, $config) {
-		self::$_streams[$key] = $config;
 	}
 
 /**

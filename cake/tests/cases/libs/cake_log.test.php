@@ -34,9 +34,9 @@ class CakeLogTest extends CakeTestCase {
  * @return void
  */
 	function startTest() {
-		$streams = CakeLog::streams();
+		$streams = CakeLog::configured();
 		foreach ($streams as $stream) {
-			CakeLog::remove($stream);
+			CakeLog::drop($stream);
 		}
 	}
 
@@ -55,13 +55,13 @@ class CakeLogTest extends CakeTestCase {
 			'engine' => 'TestAppLog'
 		));
 		$this->assertTrue($result);
-		$this->assertEqual(CakeLog::streams(), array('libtest'));
+		$this->assertEqual(CakeLog::configured(), array('libtest'));
 
 		$result = CakeLog::config('plugintest', array(
 			'engine' => 'TestPlugin.TestPluginLog'
 		));
 		$this->assertTrue($result);
-		$this->assertEqual(CakeLog::streams(), array('libtest', 'plugintest'));
+		$this->assertEqual(CakeLog::configured(), array('libtest', 'plugintest'));
 
 		App::build();
 	}
@@ -93,7 +93,7 @@ class CakeLogTest extends CakeTestCase {
 		CakeLog::write(LOG_WARNING, 'Test warning');
 		$this->assertTrue(file_exists(LOGS . 'error.log'));
 
-		$result = CakeLog::streams();
+		$result = CakeLog::configured();
 		$this->assertEqual($result, array('default'));
 		unlink(LOGS . 'error.log');
 	}
@@ -108,7 +108,7 @@ class CakeLogTest extends CakeTestCase {
 			'engine' => 'FileLog',
 			'path' => LOGS
 		));
-		$result = CakeLog::streams();
+		$result = CakeLog::configured();
 		$this->assertEqual($result, array('file'));
 
 		@unlink(LOGS . 'error.log');
@@ -118,6 +118,24 @@ class CakeLogTest extends CakeTestCase {
 		$result = file_get_contents(LOGS . 'error.log');
 		$this->assertPattern('/^2[0-9]{3}-[0-9]+-[0-9]+ [0-9]+:[0-9]+:[0-9]+ Warning: Test warning/', $result);
 		unlink(LOGS . 'error.log');
+	}
+
+/**
+ * explict tests for drop()
+ *
+ * @return void
+ **/
+	function testDrop() {
+		CakeLog::config('file', array(
+			'engine' => 'FileLog',
+			'path' => LOGS
+		));
+		$result = CakeLog::configured();
+		$this->assertEqual($result, array('file'));
+
+		CakeLog::drop('file');
+		$result = CakeLog::configured();
+		$this->assertEqual($result, array());
 	}
 
 /**

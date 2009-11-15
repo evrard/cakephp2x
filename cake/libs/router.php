@@ -196,6 +196,7 @@ class Router {
 		foreach (self::$__prefixes as $prefix) {
 			if (isset($default[$prefix])) {
 				$default['prefix'] = $prefix;
+				break;
 			}
 		}
 		if (isset($default['prefix'])) {
