@@ -817,23 +817,18 @@ class ViewTest extends CakeTestCase {
  */
 	function testSet() {
 		$View = new TestView($this->PostsController);
+		$View->viewVars = array();
 		$View->set('somekey', 'someValue');
-		$result = $View->getVars();
-		$this->assertEqual(count($result), 4);
-		$this->assertTrue(in_array('somekey', $result));
+		$this->assertIdentical($View->viewVars, array('somekey' => 'someValue'));
+		$this->assertIdentical($View->getVars(), array('somekey'));
 
-		$View->set('title', 'my_title');
-		$this->assertIdentical($View->pageTitle, 'my_title');
-
+		$View->viewVars = array();
 		$keys = array('key1', 'key2');
 		$values = array('value1', 'value2');
 		$View->set($keys, $values);
-		$result = $View->getVars();
-		$this->assertEqual(count($result), 6);
-		$this->assertTrue(in_array('key1', $result));
-		$this->assertTrue(in_array('key2', $result));
+		$this->assertIdentical($View->viewVars, array('key1' => 'value1', 'key2' => 'value2'));
+		$this->assertIdentical($View->getVars(), array('key1', 'key2'));
 		$this->assertIdentical($View->getVar('key1'), 'value1');
-		$this->assertIdentical($View->getVar('key2'), 'value2');
 		$this->assertNull($View->getVar('key3'));
 
 		$View->set(array('key3' => 'value3'));
