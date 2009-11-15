@@ -451,10 +451,10 @@ class ViewTest extends CakeTestCase {
 	function testAddInlineScripts() {
 		$this->View->addScript('prototype.js');
 		$this->View->addScript('prototype.js');
-		$this->assertEqual($this->View->__scripts, array('prototype.js'));
+		$this->assertEqual($this->View->scripts(), array('prototype.js'));
 
 		$this->View->addScript('mainEvent', 'Event.observe(window, "load", function() { doSomething(); }, true);');
-		$this->assertEqual($this->View->__scripts, array('prototype.js', 'mainEvent' => 'Event.observe(window, "load", function() { doSomething(); }, true);'));
+		$this->assertEqual($this->View->scripts(), array('prototype.js', 'mainEvent' => 'Event.observe(window, "load", function() { doSomething(); }, true);'));
 	}
 
 /**
@@ -617,7 +617,7 @@ class ViewTest extends CakeTestCase {
 		$this->PostsController->helpers = array('Html', 'Form', 'Ajax');
 		$View = new TestView($this->PostsController);
 
-		$result = $View->_render($View->getViewFileName('index'), array());
+		$result = $View->render($View->getViewFileName('index'), array());
 		$this->assertEqual($result, 'posts index');
 
 		$helpers = $View->loaded;
@@ -629,7 +629,7 @@ class ViewTest extends CakeTestCase {
 		$this->PostsController->helpers = array('Html', 'Form', 'Ajax', 'TestPlugin.PluggedHelper');
 		$View = new TestView($this->PostsController);
 
-		$result = $View->_render($View->getViewFileName('index'), array());
+		$result = $View->render($View->getViewFileName('index'), array());
 		$this->assertEqual($result, 'posts index');
 
 		$helpers = $View->loaded;
