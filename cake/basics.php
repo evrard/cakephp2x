@@ -347,6 +347,58 @@
 	}
 
 /**
+ * Reads/writes temporary data to cache files or session.
+ *
+ * @param  string $path	File path within /tmp to save the file.
+ * @param  mixed  $data	The data to save to the temporary file.
+ * @param  mixed  $expires A valid strtotime string when the data expires.
+ * @param  string $target  The target of the cached data; either 'cache' or 'public'.
+ * @return mixed  The contents of the temporary file.
+ * @deprecated Please use Cache::write() instead
+ */
+	function cache($path, $data = null, $expires = '+1 day', $target = 'cache') {
+		if (Configure::read('Cache.disable')) {
+			return null;
+		}
+		$now = time();
+
+		if (!is_numeric($expires)) {
+			$expires = strtotime($expires, $now);
+		}
+
+		switch (strtolower($target)) {
+			case 'cache':
+				$filename = CACHE . $path;
+			break;
+			case 'public':
+				$filename = WWW_ROOT . $path;
+			break;
+			case 'tmp':
+				$filename = TMP . $path;
+			break;
+		}
+		$timediff = $expires - $now;
+		$filetime = false;
+
+		if (file_exists($filename)) {
+			$filetime = @filemtime($filename);
+		}
+
+		if ($data === null) {
+			if (file_exists($filename) && $filetime !== false) {
+				if ($filetime + $timediff < $now) {
+					@unlink($filename);
+				} else {
+					$data = @file_get_contents($filename);
+				}
+			}
+		} elseif (is_writable(dirname($filename))) {
+			@file_put_contents($filename, $data);
+		}
+		return $data;
+	}
+
+/**
  * Used to delete files in the cache directories, or clear contents of cache directories
  *
  * @param mixed $params As String name to be searched for deletion, if name is a directory all files in
