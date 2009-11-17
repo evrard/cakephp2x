@@ -557,6 +557,165 @@ class Model extends Overloadable {
 	}
 
 /**
+ * Create a set of associations.
+ *
+ * @return void
+ * @access private
+ */
+	function __createLinks() {
+		foreach ($this->__associations as $type) {
+			if (!is_array($this->{$type})) {
+				$this->{$type} = explode(',', $this->{$type});
+
+				foreach ($this->{$type} as $i => $className) {
+					$className = trim($className);
+					unset ($this->{$type}[$i]);
+					$this->{$type}[$className] = array();
+				}
+			}
+
+			if (!empty($this->{$type})) {
+				foreach ($this->{$type} as $assoc => $value) {
+					$plugin = null;
+
+					if (is_numeric($assoc)) {
+						unset ($this->{$type}[$assoc]);
+						$assoc = $value;
+						$value = array();
+						$this->{$type}[$assoc] = $value;
+
+						if (strpos($assoc, '.') !== false) {
+							$value = $this->{$type}[$assoc];
+							unset($this->{$type}[$assoc]);
+							list($plugin, $assoc) = pluginSplit($assoc, true);
+							$this->{$type}[$assoc] = $value;
+						}
+					}
+					$className =  $assoc;
+
+					if (!empty($value['className'])) {
+						list($plugin, $className) = pluginSplit($value['className'], true);
+						$this->{$type}[$assoc]['className'] = $className;
+					}
+					$this->__constructLinkedModel($assoc, $plugin . $className);
+				}
+				$this->__generateAssociation($type);
+			}
+		}
+	}
+
+/**
+ * Private helper method to create associated models of a given class.
+ *
+ * @param string $assoc Association name
+ * @param string $className Class name
+ * @deprecated $this->$className use $this->$assoc instead. $assoc is the 'key' in the associations array;
+ * 	examples: var $hasMany = array('Assoc' => array('className' => 'ModelName'));
+ * 					usage: $this->Assoc->modelMethods();
+ *
+ * 				var $hasMany = array('ModelName');
+ * 					usage: $this->ModelName->modelMethods();
+ * @return void
+ * @access private
+ */
+	function __constructLinkedModel($assoc, $className = null) {
+		if (empty($className)) {
+			$className = $assoc;
+		}
+
+		if (!isset($this->{$assoc}) || $this->{$assoc}->name !== $className) {
+			$model = array('class' => $className, 'alias' => $assoc);
+			if (PHP5) {
+				$this->{$assoc} = ClassRegistry::init($model);
+			} else {
+				$this->{$assoc} =& ClassRegistry::init($model);
+			}
+			if ($assoc) {
+				$this->tableToModel[$this->{$assoc}->table] = $assoc;
+			}
+		}
+	}
+
+/**
+ * Build an array-based association from string.
+ *
+ * @param string $type 'belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany'
+ * @return void
+ * @access private
+ */
+	function __generateAssociation($type) {
+		foreach ($this->{$type} as $assocKey => $assocData) {
+			$class = $assocKey;
+			$dynamicWith = false;
+
+			foreach ($this->__associationKeys[$type] as $key) {
+
+				if (!isset($this->{$type}[$assocKey][$key]) || $this->{$type}[$assocKey][$key] === null) {
+					$data = '';
+
+					switch ($key) {
+						case 'fields':
+							$data = '';
+						break;
+
+						case 'foreignKey':
+							$data = (($type == 'belongsTo') ? Inflector::underscore($assocKey) : Inflector::singularize($this->table)) . '_id';
+						break;
+
+						case 'associationForeignKey':
+							$data = Inflector::singularize($this->{$class}->table) . '_id';
+						break;
+
+						case 'with':
+							$data = Inflector::camelize(Inflector::singularize($this->{$type}[$assocKey]['joinTable']));
+							$dynamicWith = true;
+						break;
+
+						case 'joinTable':
+							$tables = array($this->table, $this->{$class}->table);
+							sort ($tables);
+							$data = $tables[0] . '_' . $tables[1];
+						break;
+
+						case 'className':
+							$data = $class;
+						break;
+
+						case 'unique':
+							$data = true;
+						break;
+					}
+					$this->{$type}[$assocKey][$key] = $data;
+				}
+			}
+
+			if (!empty($this->{$type}[$assocKey]['with'])) {
+				$joinClass = $this->{$type}[$assocKey]['with'];
+				if (is_array($joinClass)) {
+					$joinClass = key($joinClass);
+				}
+				list($plugin, $joinClass) = pluginSplit($joinClass, true);
+				$this->{$type}[$assocKey]['with'] = $joinClass;
+
+				if (!ClassRegistry::isKeySet($joinClass) && $dynamicWith === true) {
+					$this->{$joinClass} = new AppModel(array(
+						'name' => $joinClass,
+						'table' => $this->{$type}[$assocKey]['joinTable'],
+						'ds' => $this->useDbConfig
+					));
+				} else {
+					$this->__constructLinkedModel($joinClass, $plugin . $joinClass);
+					$this->{$type}[$assocKey]['joinTable'] = $this->{$joinClass}->table;
+				}
+
+				if (count($this->{$joinClass}->schema()) <= 2 && $this->{$joinClass}->primaryKey !== false) {
+					$this->{$joinClass}->primaryKey = $this->{$type}[$assocKey]['foreignKey'];
+				}
+			}
+		}
+	}
+
+/**
  * Sets a custom table for your controller class. Used by your controller to select a database table.
  *
  * @param string $tableName Name of the custom table

@@ -578,7 +578,8 @@ class HttpSocket extends CakeSocket {
 		$stripIfEmpty = array(
 			'query' => '?%query',
 			'fragment' => '#%fragment',
-			'user' => '%user:%pass@'
+			'user' => '%user:%pass@',
+			'host' => '%host:%port/'
 		);
 
 		foreach ($stripIfEmpty as $key => $strip) {
@@ -591,7 +592,6 @@ class HttpSocket extends CakeSocket {
 		if (array_key_exists($uri['scheme'], $defaultPorts) && $defaultPorts[$uri['scheme']] == $uri['port']) {
 			$uriTemplate = str_replace(':%port', null, $uriTemplate);
 		}
-
 		foreach ($uri as $property => $value) {
 			$uriTemplate = str_replace('%'.$property, $value, $uriTemplate);
 		}

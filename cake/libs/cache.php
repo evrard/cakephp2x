@@ -170,11 +170,8 @@ class Cache {
  * @static
  */
 	public function engine($name = 'File', $settings = array()) {
-		$plugin = null;
 		$class = $name;
-		if (strpos($name, '.') !== false) {
-			list($plugin, $class) = explode('.', $name);
-		}
+		list($plugin, $class) = pluginSplit($name);
 		$cacheClass = $class . 'Engine';
 		if (!isset(self::$_Engine[$name])) {
 			if (self::__loadEngine($class, $plugin) === false) {

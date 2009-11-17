@@ -245,11 +245,7 @@ class Shell extends Object {
 			$this->modelClass = $modelClassName;
 
 			foreach ($uses as $modelClass) {
-				$plugin = null;
-				if (strpos($modelClass, '.') !== false) {
-					list($plugin, $modelClass) = explode('.', $modelClass);
-					$plugin = $plugin . '.';
-				}
+				list($plugin, $modelClass) = pluginSplit($modelClass, true);
 				$this->{$modelClass} = ClassRegistry::init($plugin . $modelClass);
 			}
 			return true;

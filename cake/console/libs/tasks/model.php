@@ -127,8 +127,11 @@ class ModelTask extends Shell {
  * @param string $className Name of class you want model to be.
  * @return object Model instance
  */
-	function &_getModelObject($className) {
-		$object = new Model(array('name' => $className, 'ds' => $this->connection));
+	function &_getModelObject($className, $table = null) {
+		if (!$table) {
+			$table = Inflector::tableize($className);
+		}
+		$object =& new Model(array('name' => $className, 'table' => $table, 'ds' => $this->connection));
 		return $object;
 	}
 
@@ -511,7 +514,7 @@ class ModelTask extends Shell {
 	function findHasOneAndMany(&$model, $associations) {
 		$foreignKey = $this->_modelKey($model->name);
 		foreach ($this->__tables as $otherTable) {
-			$tempOtherModel = $this->_getModelObject($this->_modelName($otherTable));
+			$tempOtherModel = $this->_getModelObject($this->_modelName($otherTable), $otherTable);
 			$modelFieldsTemp = $tempOtherModel->schema();
 
 			$pattern = '/_' . preg_quote($model->table, '/') . '|' . preg_quote($model->table, '/') . '_/';
@@ -553,7 +556,7 @@ class ModelTask extends Shell {
 	function findHasAndBelongsToMany(&$model, $associations) {
 		$foreignKey = $this->_modelKey($model->name);
 		foreach ($this->__tables as $otherTable) {
-			$tempOtherModel = $this->_getModelObject($this->_modelName($otherTable));
+			$tempOtherModel = $this->_getModelObject($this->_modelName($otherTable), $otherTable);
 			$modelFieldsTemp = $tempOtherModel->schema();
 
 			$offset = strpos($otherTable, $model->table . '_');
