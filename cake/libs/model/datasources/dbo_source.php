@@ -2486,7 +2486,7 @@ class DboSource extends DataSource {
  * @param string $position The position type to use. 'beforeDefault' or 'afterDefault' are common
  * @return string a built column with the field parameters added.
  */
-	function _buildFieldParameters($columnString, $columnData, $position) {
+	protected function _buildFieldParameters($columnString, $columnData, $position) {
 		foreach ($this->fieldParameters as $paramName => $value) {
 			if (isset($columnData[$paramName]) && $value['position'] == $position) {
 				if (isset($value['options']) && !in_array($columnData[$paramName], $value['options'])) {
