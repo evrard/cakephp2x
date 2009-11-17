@@ -121,9 +121,9 @@ class Shell extends Object {
  * Contains the loaded tasks
  *
  * @var array
- * @access public
+ * @access protected
  */
-	private $taskNames = array();
+	protected $_taskNames = array();
 
 /**
  * Contains models to load and instantiate
@@ -287,10 +287,10 @@ class Shell extends Object {
 				}
 			}
 			if (ClassRegistry::isKeySet($taskClass)) {
-				$this->taskNames[] = $taskName;
+				$this->_taskNames[] = $taskName;
 				$this->{$taskName} = ClassRegistry::getObject($taskClass);
 			} else {
-				$this->taskNames[] = $taskName;
+				$this->_taskNames[] = $taskName;
 				$this->{$taskName} = new $taskClass($this->Dispatch);
 			}
 
@@ -301,6 +301,16 @@ class Shell extends Object {
 		}
 
 		return true;
+	}
+
+/**
+ * Return loaded task names
+ *
+ * @return array
+ * @access public
+ */
+	public function tasks() {
+		return $this->_taskNames;
 	}
 
 /**

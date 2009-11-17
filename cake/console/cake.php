@@ -348,7 +348,7 @@ class ShellDispatcher {
 			$Shell->initialize();
 			$Shell->loadTasks();
 
-			foreach ($Shell->taskNames as $task) {
+			foreach ($Shell->tasks() as $task) {
 				if (is_a($Shell->{$task}, 'Shell')) {
 					$Shell->{$task}->initialize();
 					$Shell->{$task}->loadTasks();
@@ -357,7 +357,7 @@ class ShellDispatcher {
 
 			$task = Inflector::camelize($arg);
 
-			if (in_array($task, $Shell->taskNames)) {
+			if (in_array($task, $Shell->tasks())) {
 				$this->shiftArgs();
 				$Shell->{$task}->startup();
 
