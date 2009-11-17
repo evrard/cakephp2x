@@ -131,7 +131,7 @@ class ModelTask extends Shell {
 		if (!$table) {
 			$table = Inflector::tableize($className);
 		}
-		$object =& new Model(array('name' => $className, 'table' => $table, 'ds' => $this->connection));
+		$object = new Model(array('name' => $className, 'table' => $table, 'ds' => $this->connection));
 		return $object;
 	}
 
@@ -180,7 +180,7 @@ class ModelTask extends Shell {
 		}
 		$currentModelName = $this->getName();
 		$useTable = $this->getTable($currentModelName);
-		$db =& ConnectionManager::getDataSource($this->connection);
+		$db = ConnectionManager::getDataSource($this->connection);
 		$fullTableName = $db->fullTableName($useTable);
 
 		if (in_array($useTable, $this->__tables)) {
@@ -784,7 +784,7 @@ class ModelTask extends Shell {
 		}
 		App::import('Model', 'ConnectionManager', false);
 
-		$db =& ConnectionManager::getDataSource($useDbConfig);
+		$db = ConnectionManager::getDataSource($useDbConfig);
 		$useTable = Inflector::tableize($modelName);
 		$fullTableName = $db->fullTableName($useTable, false);
 		$tableIsGood = false;
