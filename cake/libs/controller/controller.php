@@ -733,7 +733,7 @@ class Controller extends Object {
  */
 	public function isAuthorized() {
 		trigger_error(sprintf(
-			__('%s::isAuthorized() is not defined.', true), $this->name
+			__('%s::isAuthorized() is not defined.'), $this->name
 		), E_USER_WARNING);
 		return false;
 	}
@@ -1018,9 +1018,8 @@ class Controller extends Object {
 
 		if (!is_object($object)) {
 			trigger_error(sprintf(
-				__('Controller::paginate() - can\'t find model %1$s in controller %2$sController',
-					true
-				), $object, $this->name
+				__('Controller::paginate() - can\'t find model %1$s in controller %2$sController'),
+				$object, $this->name
 			), E_USER_WARNING);
 			return array();
 		}
