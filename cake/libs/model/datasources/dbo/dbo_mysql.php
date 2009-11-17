@@ -75,7 +75,7 @@ class DboMysqlBase extends DboSource {
  * @var array
  * @access public
  */
-	var $fieldParameters = array(
+	public $fieldParameters = array(
 		'charset' => array('value' => 'CHARACTER SET', 'quote' => false, 'join' => ' ', 'column' => false, 'position' => 'beforeDefault'),
 		'collate' => array('value' => 'COLLATE', 'quote' => false, 'join' => ' ', 'column' => 'Collation', 'position' => 'beforeDefault'),
 		'comment' => array('value' => 'COMMENT', 'quote' => true, 'join' => ' ', 'column' => 'Comment', 'position' => 'afterDefault')
@@ -87,7 +87,7 @@ class DboMysqlBase extends DboSource {
  * @var array
  * @access public
  */
-	var $tableParameters = array(
+	public $tableParameters = array(
 		'charset' => array('value' => 'DEFAULT CHARSET', 'quote' => false, 'join' => '=', 'column' => 'charset'),
 		'collate' => array('value' => 'COLLATE', 'quote' => false, 'join' => '=', 'column' => 'Collation'),
 		'engine' => array('value' => 'ENGINE', 'quote' => false, 'join' => '=', 'column' => 'Engine')
@@ -353,7 +353,7 @@ class DboMysqlBase extends DboSource {
  * @return array Array of table property alteration statementes.
  * @todo Implement this method.
  */
-	function _alterTableParameters($table, $parameters) {
+	protected function _alterTableParameters($table, $parameters) {
 		if (isset($parameters['change'])) {
 			return $this->buildTableParameters($parameters['change']);
 		}
@@ -423,7 +423,7 @@ class DboMysqlBase extends DboSource {
  * @param string $name Table name to get parameters 
  * @return array Array of tablenames in the database
  */
-	function listDetailedSources($name = null) {
+	public function listDetailedSources($name = null) {
 		$condition = '';
 		if (is_string($name)) {
 			$condition = ' WHERE Name = ' . $this->value($name);
@@ -455,7 +455,7 @@ class DboMysqlBase extends DboSource {
  * @param string $name Collation name
  * @return string Character set name
  */
-	function getCharsetName($name) {
+	public function getCharsetName($name) {
 		if ((bool)version_compare(mysql_get_server_info($this->connection), "5", ">=")) {
 			$cols = $this->query('SELECT CHARACTER_SET_NAME FROM INFORMATION_SCHEMA.COLLATIONS WHERE COLLATION_NAME= ' . $this->value($name) . ';');
 			if (isset($cols[0]['COLLATIONS']['CHARACTER_SET_NAME'])) {
