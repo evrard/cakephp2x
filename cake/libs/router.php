@@ -844,7 +844,7 @@ class Router {
 				}
 				$originalUrl = $url;
 
-				if (isset($route[4]['persist'], $_this->__params[0])) {
+				if (isset($route[4]['persist'], self::$__params[0])) {
 					foreach($route[4]['persist'] as $_key) {
 						if (array_key_exists($_key, $_url)) {
 							$url[$_key] = $_url[$_key];
