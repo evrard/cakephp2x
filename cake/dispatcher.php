@@ -25,6 +25,7 @@
  * List of helpers to include
  */
 App::import('Core', 'Router');
+Router::init();
 App::import('Controller', 'Controller', false);
 
 /**
