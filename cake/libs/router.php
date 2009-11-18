@@ -168,17 +168,6 @@ class Router {
 	}
 
 /**
- * @todo remove since since these are now constants proper usage in routes.php
- * will be:
- * Current way: Router::connect('/:plugin/:id/*', array('controller' => 'posts', 'action' => 'view'), array('id' => $ID));
- * New way: Router::connect('/:plugin/:id/*', array('controller' => 'posts', 'action' => 'view'), array('id' => Router::ID));
- * @deprecated
- */
-	public static function getNamedExpressions() {
-		trigger_error('Router::getNamedExpressions(); is deprectated please use Router::{const}', E_USER_ERROR);
-	}
-
-/**
  * Returns this object's routes array. Returns false if there are no routes available.
  *
  * @param string $route An empty string, or a route string "/"
@@ -774,7 +763,7 @@ class Router {
 		}
 
 		if (!empty(self::$__params)) {
-			if (isset($this) && !isset($this->params['requested'])) {
+			if (!isset(self::$__params['requested'])) {
 				$params = self::$__params[0];
 			} else {
 				$params = end(self::$__params);
@@ -786,7 +775,7 @@ class Router {
 		$path = array('base' => null);
 
 		if (!empty(self::$__paths)) {
-			if (isset($this) && !isset($this->params['requested'])) {
+			if (!isset(self::$__params['requested'])) {
 				$path = self::$__paths[0];
 			} else {
 				$path = end(self::$__paths);
