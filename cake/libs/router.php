@@ -145,7 +145,7 @@ class Router {
  *
  * @return void
  */
-	public function __construct() {
+	public function init() {
 		self::__setPrefixes();
 	}
 
@@ -707,6 +707,8 @@ class Router {
 		self::$__params = array();
 		self::$__paths = array();
 		self::$__defaultsMapped = false;
+		
+		self::init();
 	}
 
 /**
