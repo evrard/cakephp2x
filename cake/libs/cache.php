@@ -458,7 +458,7 @@ class CacheEngine {
 	protected $settings = array();
 
 /**
- * Iitialize the cache engine
+ * Initialize the cache engine
  *
  * Called automatically by the cache frontend
  *
