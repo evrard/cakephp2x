@@ -21,6 +21,11 @@
  */
 
 /**
+ * Include required libraries
+ */
+App::import('Core', array('Set'));
+
+/**
  * Configuration class (singleton). Used for managing runtime configuration information.
  *
  * @package       cake

@@ -5074,6 +5074,7 @@ class FormHelperTest extends CakeTestCase {
 			'input' => array('type' => 'hidden', 'name' => '_method', 'value' => 'POST'),
 			'/fieldset'
 		);
+		debug(compact('expected', 'result'));
 		$this->assertTags($result, $expected);
 		
 	}

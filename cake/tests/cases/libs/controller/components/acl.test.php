@@ -514,48 +514,48 @@ class AclComponentTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function testIniReadConfigFile() {
-		Configure::write('Acl.classname', 'IniAclTest');
-		unset($this->Acl);
-		$this->Acl = new AclComponent();
-		$iniFile = TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'config'. DS . 'acl.ini.php';
-		$result = $this->Acl->_Instance->readConfigFile($iniFile);
-		$expected = array(
-			'admin' => array(
-				'groups' => 'administrators',
-				'allow' => '',
-				'deny' => 'ads',
-			),
-			'paul' => array(
-				'groups' => 'users',
-				'allow' =>'',
-				'deny' => '',
-			),
-			'jenny' => array(
-				'groups' => 'users',
-				'allow' => 'ads',
-				'deny' => 'images, files',
-			),
-			'nobody' => array(
-				'groups' => 'anonymous',
-				'allow' => '',
-				'deny' => '',
-			),
-			'administrators' => array(
-				'deny' => '',
-				'allow' => 'posts, comments, images, files, stats, ads',
-			),
-			'users' => array(
-				'allow' => 'posts, comments, images, files',
-				'deny' => 'stats, ads',
-			),
-			'anonymous' => array(
-				'allow' => '',
-				'deny' => 'posts, comments, images, files, stats, ads',
-			),
-		);
-		$this->assertEqual($result, $expected);
-	}
+	// function testIniReadConfigFile() {
+	// 	Configure::write('Acl.classname', 'IniAclTest');
+	// 	unset($this->Acl);
+	// 	$this->Acl = new AclComponent();
+	// 	$iniFile = TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'config'. DS . 'acl.ini.php';
+	// 	$result = $this->Acl->_Instance->readConfigFile($iniFile);
+	// 	$expected = array(
+	// 		'admin' => array(
+	// 			'groups' => 'administrators',
+	// 			'allow' => '',
+	// 			'deny' => 'ads',
+	// 		),
+	// 		'paul' => array(
+	// 			'groups' => 'users',
+	// 			'allow' =>'',
+	// 			'deny' => '',
+	// 		),
+	// 		'jenny' => array(
+	// 			'groups' => 'users',
+	// 			'allow' => 'ads',
+	// 			'deny' => 'images, files',
+	// 		),
+	// 		'nobody' => array(
+	// 			'groups' => 'anonymous',
+	// 			'allow' => '',
+	// 			'deny' => '',
+	// 		),
+	// 		'administrators' => array(
+	// 			'deny' => '',
+	// 			'allow' => 'posts, comments, images, files, stats, ads',
+	// 		),
+	// 		'users' => array(
+	// 			'allow' => 'posts, comments, images, files',
+	// 			'deny' => 'stats, ads',
+	// 		),
+	// 		'anonymous' => array(
+	// 			'allow' => '',
+	// 			'deny' => 'posts, comments, images, files, stats, ads',
+	// 		),
+	// 	);
+	// 	$this->assertEqual($result, $expected);
+	// }
 
 /**
  * testIniCheck method
@@ -563,25 +563,25 @@ class AclComponentTest extends CakeTestCase {
  * @access public
  * @return void
  */
-	function testIniCheck() {
-		Configure::write('Acl.classname', 'IniAclTest');
-		unset($this->Acl);
-		$iniFile = TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'config'. DS . 'acl.ini.php';
-
-		$this->Acl = new AclComponent();
-		$this->Acl->_Instance->config= $this->Acl->_Instance->readConfigFile($iniFile);
-
-		$this->assertFalse($this->Acl->check('admin', 'ads'));
-		$this->assertTrue($this->Acl->check('admin', 'posts'));
-
-		$this->assertTrue($this->Acl->check('jenny', 'posts'));
-		$this->assertTrue($this->Acl->check('jenny', 'ads'));
-
-		$this->assertTrue($this->Acl->check('paul', 'posts'));
-		$this->assertFalse($this->Acl->check('paul', 'ads'));
-
-		$this->assertFalse($this->Acl->check('nobody', 'comments'));
-	}
+	// function testIniCheck() {
+	// 	Configure::write('Acl.classname', 'IniAclTest');
+	// 	unset($this->Acl);
+	// 	$iniFile = TEST_CAKE_CORE_INCLUDE_PATH . 'tests' . DS . 'test_app' . DS . 'config'. DS . 'acl.ini.php';
+	// 
+	// 	$this->Acl = new AclComponent();
+	// 	$this->Acl->_Instance->config= $this->Acl->_Instance->readConfigFile($iniFile);
+	// 
+	// 	$this->assertFalse($this->Acl->check('admin', 'ads'));
+	// 	$this->assertTrue($this->Acl->check('admin', 'posts'));
+	// 
+	// 	$this->assertTrue($this->Acl->check('jenny', 'posts'));
+	// 	$this->assertTrue($this->Acl->check('jenny', 'ads'));
+	// 
+	// 	$this->assertTrue($this->Acl->check('paul', 'posts'));
+	// 	$this->assertFalse($this->Acl->check('paul', 'ads'));
+	// 
+	// 	$this->assertFalse($this->Acl->check('nobody', 'comments'));
+	// }
 
 /**
  * debug function - to help editing/creating test cases for the ACL component
