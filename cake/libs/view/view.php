@@ -160,7 +160,7 @@ class View extends Object {
  *
  * @var string
  */
-	public $themeWeb = null;
+	public $theme = null;
 
 /**
  * Used to define methods a controller that will be cached.
@@ -449,7 +449,7 @@ class View extends Object {
 
 		$dataForLayout = array_merge($this->viewVars, array(
 			'content_for_layout' => $content_for_layout,
-			'scripts_for_layout' => join("\n\t", $this->__scripts),
+			'scripts_for_layout' => implode("\n\t", $this->__scripts),
 			'cakeDebug' => $debug
 		));
 
@@ -694,13 +694,16 @@ class View extends Object {
 
 			for ($i = count($helpers) - 1; $i >= 0; $i--) {
 				$name = $helperNames[$i];
+				$helper = $loadedHelpers[$helpers[$i]];
 
-				${$name} = $loadedHelpers[$helpers[$i]];
-				$this->loaded[$helperNames[$i]] = ${$name};
-				$this->{$helpers[$i]} = ${$name};
+				if (!isset($___dataForView[$name])) {
+					${$name} = $helper;
+				}
+				$this->loaded[$helperNames[$i]] = $helper;
+				$this->{$helpers[$i]} = $helper;
 			}
 			$this->_triggerHelpers('beforeRender');
-			unset($name, $loadedHelpers, $helpers, $i, $helperNames);
+			unset($name, $loadedHelpers, $helpers, $i, $helperNames, $helper);
 		}
 
 		extract($___dataForView, EXTR_SKIP);
@@ -788,9 +791,7 @@ class View extends Object {
 					}
 				}
 				$loaded[$helper] = new $helperCn($options);
-				$vars = array(
-					'base', 'webroot', 'here', 'params', 'action', 'data', 'themeWeb', 'plugin'
-				);
+				$vars = array('base', 'webroot', 'here', 'params', 'action', 'data', 'theme', 'plugin');
 				$c = count($vars);
 
 				for ($j = 0; $j < $c; $j++) {
@@ -846,7 +847,6 @@ class View extends Object {
 				$name = $this->viewPath . DS . $subDir . $name;
 			}
 		}
-
 		$paths = $this->_paths(Inflector::underscore($this->plugin));
 		
 		$exts = array($this->ext);
@@ -957,12 +957,8 @@ class View extends Object {
 			}
 			$paths[] = App::pluginPath($plugin) . 'views' . DS;
 		}
-		$paths = array_merge($paths, $viewPaths);
-
-		if (empty($this->__paths)) {
-			$this->__paths = $paths;
-		}
-		return $paths;
+		$this->__paths = array_merge($paths, $viewPaths);
+		return $this->__paths;
 	}
 }
 ?>

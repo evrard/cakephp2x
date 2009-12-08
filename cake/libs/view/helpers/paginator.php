@@ -585,7 +585,7 @@ class PaginatorHelper extends AppHelper {
 				$out = str_replace($newKeys, array_values($map), $out);
 			break;
 		}
-		return $this->output($out);
+		return $out;
 	}
 
 /**
@@ -707,7 +707,7 @@ class PaginatorHelper extends AppHelper {
 			$out .= $after;
 		}
 
-		return $this->output($out);
+		return $out;
 	}
 
 /**

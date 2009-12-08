@@ -204,7 +204,7 @@ class HtmlHelper extends AppHelper {
  */
 	public function docType($type = 'xhtml-strict') {
 		if (isset($this->__docTypes[$type])) {
-			return $this->output($this->__docTypes[$type]);
+			return $this->__docTypes[$type];
 		}
 		return null;
 	}
@@ -273,7 +273,7 @@ class HtmlHelper extends AppHelper {
 		}
 
 		if ($inline) {
-			return $this->output($out);
+			return $out;
 		} else {
 			$view = ClassRegistry::getObject('view');
 			$view->addScript($out);
@@ -291,7 +291,7 @@ class HtmlHelper extends AppHelper {
 		if (empty($charset)) {
 			$charset = strtolower(Configure::read('App.encoding'));
 		}
-		return $this->output(sprintf($this->tags['charset'], (!empty($charset) ? $charset : 'utf-8')));
+		return sprintf($this->tags['charset'], (!empty($charset) ? $charset : 'utf-8'));
 	}
 
 /**
@@ -350,7 +350,7 @@ class HtmlHelper extends AppHelper {
 			}
 			unset($options['default']);
 		}
-		return $this->output(sprintf($this->tags['link'], $url, $this->_parseAttributes($options), $title));
+		return sprintf($this->tags['link'], $url, $this->_parseAttributes($options), $title);
 	}
 
 /**
@@ -411,7 +411,6 @@ class HtmlHelper extends AppHelper {
 			}
 			$out = sprintf($this->tags['css'], $rel, $url, $this->_parseAttributes($options, array('inline'), '', ' '));
 		}
-		$out = $this->output($out);
 
 		if ($options['inline']) {
 			return $out;
@@ -475,7 +474,7 @@ class HtmlHelper extends AppHelper {
 			}
 		}
 		$attributes = $this->_parseAttributes($options, array('inline', 'once'), ' ');
-		$out = $this->output(sprintf($this->tags['javascriptlink'], $url, $attributes));
+		$out = sprintf($this->tags['javascriptlink'], $url, $attributes);
 
 		if ($options['inline']) {
 			return $out;
@@ -563,7 +562,7 @@ class HtmlHelper extends AppHelper {
 		if ($oneline) {
 			return join(' ', $out);
 		}
-		return join("\n", $out);
+		return implode("\n", $out);
 	}
 
 /**
@@ -575,7 +574,7 @@ class HtmlHelper extends AppHelper {
  * @access public
  */
 	public function getCrumbs($separator = '&raquo;', $startText = false) {
-		if (count($this->_crumbs)) {
+		if (!empty($this->_crumbs)) {
 			$out = array();
 			if ($startText) {
 				$out[] = $this->link($startText, '/');
@@ -588,7 +587,7 @@ class HtmlHelper extends AppHelper {
 					$out[] = $crumb[0];
 				}
 			}
-			return $this->output(join($separator, $out));
+			return join($separator, $out);
 		} else {
 			return null;
 		}
@@ -627,9 +626,9 @@ class HtmlHelper extends AppHelper {
 		$image = sprintf($this->tags['image'], $path, $this->_parseAttributes($options, null, '', ' '));
 
 		if ($url) {
-			return $this->output(sprintf($this->tags['link'], $this->url($url), null, $image));
+			return sprintf($this->tags['link'], $this->url($url), null, $image);
 		}
-		return $this->output($image);
+		return $image;
 	}
 
 /**
@@ -646,8 +645,7 @@ class HtmlHelper extends AppHelper {
 		foreach ($names as $arg) {
 			$out[] = sprintf($this->tags['tableheader'], $this->_parseAttributes($thOptions), $arg);
 		}
-		$data = sprintf($this->tags['tablerow'], $this->_parseAttributes($trOptions), join(' ', $out));
-		return $this->output($data);
+		return sprintf($this->tags['tablerow'], $this->_parseAttributes($trOptions), join(' ', $out));
 	}
 
 /**
@@ -699,9 +697,9 @@ class HtmlHelper extends AppHelper {
 				$cellsOut[] = sprintf($this->tags['tablecell'], $this->_parseAttributes($cellOptions), $cell);
 			}
 			$options = $this->_parseAttributes($count % 2 ? $oddTrOptions : $evenTrOptions);
-			$out[] = sprintf($this->tags['tablerow'], $options, join(' ', $cellsOut));
+			$out[] = sprintf($this->tags['tablerow'], $options, implode(' ', $cellsOut));
 		}
-		return $this->output(join("\n", $out));
+		return implode("\n", $out);
 	}
 
 /**
@@ -732,7 +730,7 @@ class HtmlHelper extends AppHelper {
 		} else {
 			$tag = 'tag';
 		}
-		return $this->output(sprintf($this->tags[$tag], $name, $this->_parseAttributes($options, null, ' ', ''), $text, $name));
+		return sprintf($this->tags[$tag], $name, $this->_parseAttributes($options, null, ' ', ''), $text, $name);
 	}
 
 /**
@@ -781,7 +779,7 @@ class HtmlHelper extends AppHelper {
 		} else {
 			$tag = 'para';
 		}
-		return $this->output(sprintf($this->tags[$tag], $this->_parseAttributes($options, null, ' ', ''), $text));
+		return sprintf($this->tags[$tag], $this->_parseAttributes($options, null, ' ', ''), $text);
 	}
 
 /**

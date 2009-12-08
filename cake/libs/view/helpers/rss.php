@@ -217,7 +217,7 @@ class RssHelper extends XmlHelper {
 							}
 							$categories[] = $this->element($key, $attrib, $category);
 						}
-						$elements[$key] = join('', $categories);
+						$elements[$key] = implode('', $categories);
 						continue 2;
 					} else if (is_array($val) && isset($val['domain'])) {
 						$attrib['domain'] = $val['domain'];
@@ -267,9 +267,9 @@ class RssHelper extends XmlHelper {
 			$elements[$key] = $this->element($key, $attrib, $val);
 		}
 		if (!empty($elements)) {
-			$content = join('', $elements);
+			$content = implode('', $elements);
 		}
-		return $this->output($this->element('item', $att, $content, !($content === null)));
+		return $this->element('item', $att, $content, !($content === null));
 	}
 
 /**

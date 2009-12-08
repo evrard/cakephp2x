@@ -272,7 +272,7 @@ class JavascriptHelper extends AppHelper {
 				}
 			}
 		}
-		$out = $this->output(sprintf($this->tags['javascriptlink'], $url));
+		$out = sprintf($this->tags['javascriptlink'], $url);
 
 		if ($inline) {
 			return $out;
@@ -592,7 +592,7 @@ class JavascriptHelper extends AppHelper {
  * - postfix - Appends the string to the returned data. Default is ''
  * - stringKeys - A list of array keys to be treated as a string.
  * - quoteKeys - If false treats $stringKeys as a list of keys **not** to be quoted. Default is true.
- * - q - The type of quote to use. Default is "'"
+ * - q - The type of quote to use. Default is '"'.  This option only affects the keys, not the values.
  *
  * @param array $data Data to be converted
  * @param array $options Set of options: block, prefix, postfix, stringKeys, quoteKeys, q
@@ -655,9 +655,9 @@ class JavascriptHelper extends AppHelper {
 			}
 
 			if (!$numeric) {
-				$rt = '{' . join(',', $out) . '}';
+				$rt = '{' . implode(',', $out) . '}';
 			} else {
-				$rt = '[' . join(',', $out) . ']';
+				$rt = '[' . implode(',', $out) . ']';
 			}
 		}
 		$rt = $options['prefix'] . $rt . $options['postfix'];

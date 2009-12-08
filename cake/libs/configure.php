@@ -85,11 +85,21 @@ final class Configure extends Object {
 			if (strpos($name, '.') === false) {
 				self::$__values[$name] = $value;
 			} else {
-				$names = explode('.', $name, 2);
-				if (!isset(self::$__values[$names[0]])) {
-					self::$__values[$names[0]] = array();
+				$names = explode('.', $name, 4);
+				switch (count($names)) {
+					case 2:
+						self::${$names[0]}[$names[1]] = $value;
+					break;
+					case 3:
+						self::${$names[0]}[$names[1]][$names[2]] = $value;
+					case 4:
+						$names = explode('.', $name, 2);
+						if (!isset(self::${$names[0]})) {
+							self::${$names[0]} = array();
+						}
+						self::${$names[0]} = Set::insert(self::${$names[0]}, $names[1], $value);
+					break;
 				}
-				self::$__values[$names[0]] = Set::insert(self::$__values[$names[0]], $names[1], $value);
 			}
 		}
 
@@ -137,17 +147,32 @@ final class Configure extends Object {
  */
 	public static function read($var = 'debug') {
 		if (strpos($var, '.') !== false) {
-			$names = explode('.', $var, 2);
+			$names = explode('.', $var, 3);
 			$var = $names[0];
 		}
 		if (!isset(self::$__values[$var])) {
 			return null;
 		}
-		if (!empty($names[1])) {
-			return Set::extract(self::$__values[$var], $names[1]);
+		if (!isset($names[1])) {
+			return self::${$var};
 		}
-
-		return self::$__values[$var];
+		switch (count($names)) {
+			case 2:
+				if (isset(self::${$var}[$names[1]])) {
+					return self::${$var}[$names[1]];
+				}
+			break;
+			case 3:
+				if (isset(self::${$var}[$names[1]][$names[2]])) {
+					return self::${$var}[$names[1]][$names[2]];
+				}
+				if (!isset(self::${$var}[$names[1]])) {
+					return null;
+				}
+				return Set::classicExtract(self::${$var}[$names[1]], $names[2]);
+			break;
+		}
+		return null;
 	}
 
 /**
@@ -195,22 +220,25 @@ final class Configure extends Object {
 		if ($plugin) {
 			$pluginPath = App::pluginPath($plugin);
 		}
-
-		if ($pluginPath && file_exists($pluginPath . 'config' . DS . $fileName . '.php')) {
-			include($pluginPath . 'config' . DS . $fileName . '.php');
-			$found = true;
-		} elseif (file_exists(CONFIGS . $fileName . '.php')) {
-			include(CONFIGS . $fileName . '.php');
-			$found = true;
-		} elseif (file_exists(CACHE . 'persistent' . DS . $fileName . '.php')) {
-			include(CACHE . 'persistent' . DS . $fileName . '.php');
-			$found = true;
-		} else {
-			foreach (App::core('cake') as $key => $path) {
-				if (file_exists($path . DS . 'config' . DS . $fileName . '.php')) {
-					include($path . DS . 'config' . DS . $fileName . '.php');
-					$found = true;
-					break;
+		$pos = strpos($fileName, '..');
+		
+		if ($pos === false) {
+			if ($pluginPath && file_exists($pluginPath . 'config' . DS . $fileName . '.php')) {
+				include($pluginPath . 'config' . DS . $fileName . '.php');
+				$found = true;
+			} elseif (file_exists(CONFIGS . $fileName . '.php')) {
+				include(CONFIGS . $fileName . '.php');
+				$found = true;
+			} elseif (file_exists(CACHE . 'persistent' . DS . $fileName . '.php')) {
+				include(CACHE . 'persistent' . DS . $fileName . '.php');
+				$found = true;
+			} else {
+				foreach (App::core('cake') as $key => $path) {
+					if (file_exists($path . DS . 'config' . DS . $fileName . '.php')) {
+						include($path . DS . 'config' . DS . $fileName . '.php');
+						$found = true;
+						break;
+					}
 				}
 			}
 		}
@@ -321,7 +349,7 @@ final class Configure extends Object {
 		$libPaths = $modelPaths = $behaviorPaths = $controllerPaths = $componentPaths = $viewPaths = $helperPaths = $pluginPaths = $vendorPaths = $localePaths = $shellPaths = null;
 
 		if ($boot) {
-			self::write('App', array('base' => false, 'baseUrl' => false, 'dir' => APP_DIR, 'webroot' => WEBROOT_DIR));
+			self::write('App', array('base' => false, 'baseUrl' => false, 'dir' => APP_DIR, 'webroot' => WEBROOT_DIR, 'www_root' => WWW_ROOT));
 
 			if (!include(CONFIGS . 'core.php')) {
 				trigger_error(sprintf(__("Can't find application core file. Please create %score.php, and make sure it is readable by PHP.", true), CONFIGS), E_USER_ERROR);
@@ -788,11 +816,7 @@ class App extends Object {
  * @return boolean true if Class is already in memory or if file is found and loaded, false if not
  * @access public
  */
-	public static function import($type = null, $name = null, $parent = true, $search = array(), $file = null, $return = false) {
-		if (empty(self::$__map)) {
-			self::$__map = Cache::read('file_map', '_cake_core_');
-		}
-		
+	public function import($type = null, $name = null, $parent = true, $search = array(), $file = null, $return = false) {
 		$plugin = $directory = null;
 
 		if (is_array($type)) {
@@ -843,7 +867,6 @@ class App extends Object {
 			list($plugin, $name) = explode('.', $name);
 			$plugin = Inflector::camelize($plugin);
 		}
-
 		self::$return = $return;
 
 		if (isset($ext)) {

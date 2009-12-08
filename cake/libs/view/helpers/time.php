@@ -64,7 +64,7 @@ class TimeHelper extends AppHelper {
 		if (empty($dateString)) {
 			return false;
 		}
-		if (is_integer($dateString) || is_numeric($dateString)) {
+		if (is_int($dateString) || is_numeric($dateString)) {
 			$date = intval($dateString);
 		} else {
 			$date = strtotime($dateString);
@@ -90,8 +90,7 @@ class TimeHelper extends AppHelper {
 			$date = time();
 		}
 
-		$ret = date("D, M jS Y, H:i", $date);
-		return $this->output($ret);
+		return date("D, M jS Y, H:i", $date);
 	}
 
 /**
@@ -118,8 +117,7 @@ class TimeHelper extends AppHelper {
 		} else {
 			$ret = date("M jS{$y}, H:i", $date);
 		}
-
-		return $this->output($ret);
+		return $ret;
 	}
 
 /**
@@ -137,8 +135,7 @@ class TimeHelper extends AppHelper {
 		$begin = date('Y-m-d', $begin) . ' 00:00:00';
 		$end = date('Y-m-d', $end) . ' 23:59:59';
 
-		$ret  ="($fieldName >= '$begin') AND ($fieldName <= '$end')";
-		return $this->output($ret);
+		return "($fieldName >= '$begin') AND ($fieldName <= '$end')";
 	}
 
 /**
@@ -152,8 +149,7 @@ class TimeHelper extends AppHelper {
  */
 	public function dayAsSql($dateString, $fieldName, $userOffset = null) {
 		$date = $this->fromString($dateString, $userOffset);
-		$ret = $this->daysAsSql($dateString, $dateString, $fieldName);
-		return $this->output($ret);
+		return $this->daysAsSql($dateString, $dateString, $fieldName);
 	}
 
 /**
@@ -257,7 +253,7 @@ class TimeHelper extends AppHelper {
 					break;
 			}
 		}
-		return $this->output($date);
+		return $date;
 	}
 
 /**
@@ -268,8 +264,7 @@ class TimeHelper extends AppHelper {
  * @return integer Unix timestamp
  */
 	public function toUnix($dateString, $userOffset = null) {
-		$ret = $this->fromString($dateString, $userOffset);
-		return $this->output($ret);
+		return $this->fromString($dateString, $userOffset);
 	}
 
 /**
@@ -281,8 +276,7 @@ class TimeHelper extends AppHelper {
  */
 	public function toAtom($dateString, $userOffset = null) {
 		$date = $this->fromString($dateString, $userOffset);
-		$ret = date('Y-m-d\TH:i:s\Z', $date);
-		return $this->output($ret);
+		return date('Y-m-d\TH:i:s\Z', $date);
 	}
 
 /**
@@ -294,8 +288,7 @@ class TimeHelper extends AppHelper {
  */
 	public function toRSS($dateString, $userOffset = null) {
 		$date = $this->fromString($dateString, $userOffset);
-		$ret = date("r", $date);
-		return $this->output($ret);
+		return date("r", $date);
 	}
 
 /**
@@ -475,7 +468,7 @@ class TimeHelper extends AppHelper {
 				$relativeDate = sprintf(__('%s ago', true), $relativeDate);
 			}
 		}
-		return $this->output($relativeDate);
+		return $relativeDate;
 	}
 
 /**

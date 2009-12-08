@@ -319,7 +319,7 @@ class Set {
 					if (count($context['trace']) == 1) {
 						$context['trace'][] = $context['key'];
 					}
-					$parent = join('/', $context['trace']) . '/.';
+					$parent = implode('/', $context['trace']) . '/.';
 					$context['item'] = self::extract($parent, $data);
 					$context['key'] = array_pop($context['trace']);
 					if (isset($context['trace'][1]) && $context['trace'][1] > 0) {
@@ -995,7 +995,7 @@ class Set {
 			if (!is_null($key)) {
 				$id = $key;
 			}
-			if (is_array($r) && count($r)) {
+			if (is_array($r) && !empty($r)) {
 				$stack = array_merge($stack, self::__flatten($r, $id));
 			} else {
 				$stack[] = array('id' => $id, 'value' => $r);

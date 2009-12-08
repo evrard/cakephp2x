@@ -1,4 +1,4 @@
-;<?php die() ?>
+;<?php exit() ?>
 ;/**
 ; * Test App Ini Based Acl Config File
 ; *

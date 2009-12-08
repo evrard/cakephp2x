@@ -349,7 +349,7 @@ class SecurityComponent extends Object {
 			$out[] = 'opaque="' . md5($options['realm']).'"';
 		}
 
-		return $auth . ' ' . join(',', $out);
+		return $auth . ' ' . implode(',', $out);
 	}
 
 /**
@@ -429,6 +429,9 @@ class SecurityComponent extends Object {
  * @access protected
  */
 	protected function _requireMethod($method, $actions = array()) {
+		if (isset($actions[0]) && is_array($actions[0])) {
+			$actions = $actions[0];
+		}
 		$this->{'require' . $method} = (empty($actions)) ? array('*'): $actions;
 	}
 

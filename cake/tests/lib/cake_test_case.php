@@ -586,6 +586,9 @@ class CakeTestCase extends UnitTestCase {
 		}
 		$i = 0;
 		foreach ($normalized as $tags) {
+			if (!is_array($tags)) {
+				$tags = (string)$tags;
+			}
 			$i++;
 			if (is_string($tags) && $tags{0} == '<') {
 				$tags = array(substr($tags, 1) => array());
@@ -656,10 +659,10 @@ class CakeTestCase extends UnitTestCase {
 					$permutations = $this->__array_permute($attrs);
 					$permutationTokens = array();
 					foreach ($permutations as $permutation) {
-						$permutationTokens[] = join('', $permutation);
+						$permutationTokens[] = implode('', $permutation);
 					}
 					$regex[] = array(
-						sprintf('%s', join(', ', $explanations)),
+						sprintf('%s', implode(', ', $explanations)),
 						$permutationTokens,
 						$i,
 					);

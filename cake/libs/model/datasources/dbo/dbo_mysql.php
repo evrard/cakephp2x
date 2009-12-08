@@ -168,7 +168,7 @@ class DboMysqlBase extends DboSource {
 
 		$alias = $joins = false;
 		$fields = $this->_prepareUpdateFields($model, $combined, empty($conditions), !empty($conditions));
-		$fields = join(', ', $fields);
+		$fields = implode(', ', $fields);
 		$table = $this->fullTableName($model);
 
 		if (!empty($conditions)) {
@@ -392,7 +392,7 @@ class DboMysqlBase extends DboSource {
 					}
 				}
 				if (is_array($value['column'])) {
-					$out .= 'KEY '. $name .' (' . join(', ', array_map(array(&$this, 'name'), $value['column'])) . ')';
+					$out .= 'KEY '. $name .' (' . implode(', ', array_map(array(&$this, 'name'), $value['column'])) . ')';
 				} else {
 					$out .= 'KEY '. $name .' (' . $this->name($value['column']) . ')';
 				}
@@ -412,7 +412,7 @@ class DboMysqlBase extends DboSource {
 	public function insertMulti($table, $fields, $values) {
 		$table = $this->fullTableName($table);
 		if (is_array($fields)) {
-			$fields = join(', ', array_map(array(&$this, 'name'), $fields));
+			$fields = implode(', ', array_map(array(&$this, 'name'), $fields));
 		}
 		$values = implode(', ', $values);
 		$this->query("INSERT INTO {$table} ({$fields}) VALUES {$values}");
@@ -450,19 +450,51 @@ class DboMysqlBase extends DboSource {
 	}
 
 /**
- * Query charset by collation
+ * Converts database-layer column types to basic types
  *
- * @param string $name Collation name
- * @return string Character set name
+ * @param string $real Real database-layer column type (i.e. "varchar(255)")
+ * @return string Abstract column type (i.e. "string")
  */
-	public function getCharsetName($name) {
-		if ((bool)version_compare(mysql_get_server_info($this->connection), "5", ">=")) {
-			$cols = $this->query('SELECT CHARACTER_SET_NAME FROM INFORMATION_SCHEMA.COLLATIONS WHERE COLLATION_NAME= ' . $this->value($name) . ';');
-			if (isset($cols[0]['COLLATIONS']['CHARACTER_SET_NAME'])) {
-				return $cols[0]['COLLATIONS']['CHARACTER_SET_NAME'];
+	public function column($real) {
+		if (is_array($real)) {
+			$col = $real['name'];
+			if (isset($real['limit'])) {
+				$col .= '('.$real['limit'].')';
 			}
+			return $col;
 		}
-		return false;
+
+		$col = str_replace(')', '', $real);
+		$limit = $this->length($real);
+		if (strpos($col, '(') !== false) {
+			list($col, $vals) = explode('(', $col);
+		}
+
+		if (in_array($col, array('date', 'time', 'datetime', 'timestamp'))) {
+			return $col;
+		}
+		if (($col == 'tinyint' && $limit == 1) || $col == 'boolean') {
+			return 'boolean';
+		}
+		if (strpos($col, 'int') !== false) {
+			return 'integer';
+		}
+		if (strpos($col, 'char') !== false || $col == 'tinytext') {
+			return 'string';
+		}
+		if (strpos($col, 'text') !== false) {
+			return 'text';
+		}
+		if (strpos($col, 'blob') !== false || $col == 'binary') {
+			return 'binary';
+		}
+		if (strpos($col, 'float') !== false || strpos($col, 'double') !== false || strpos($col, 'decimal') !== false) {
+			return 'float';
+		}
+		if (strpos($col, 'enum') !== false) {
+			return "enum($vals)";
+		}
+		return 'text';
 	}
 }
 
@@ -683,54 +715,6 @@ class DboMysql extends DboMysqlBase {
 	}
 
 /**
- * Converts database-layer column types to basic types
- *
- * @param string $real Real database-layer column type (i.e. "varchar(255)")
- * @return string Abstract column type (i.e. "string")
- */
-	public function column($real) {
-		if (is_array($real)) {
-			$col = $real['name'];
-			if (isset($real['limit'])) {
-				$col .= '('.$real['limit'].')';
-			}
-			return $col;
-		}
-
-		$col = str_replace(')', '', $real);
-		$limit = $this->length($real);
-		if (strpos($col, '(') !== false) {
-			list($col, $vals) = explode('(', $col);
-		}
-
-		if (in_array($col, array('date', 'time', 'datetime', 'timestamp'))) {
-			return $col;
-		}
-		if (($col == 'tinyint' && $limit == 1) || $col == 'boolean') {
-			return 'boolean';
-		}
-		if (strpos($col, 'int') !== false) {
-			return 'integer';
-		}
-		if (strpos($col, 'char') !== false || $col == 'tinytext') {
-			return 'string';
-		}
-		if (strpos($col, 'text') !== false) {
-			return 'text';
-		}
-		if (strpos($col, 'blob') !== false || $col == 'binary') {
-			return 'binary';
-		}
-		if (strpos($col, 'float') !== false || strpos($col, 'double') !== false || strpos($col, 'decimal') !== false) {
-			return 'float';
-		}
-		if (strpos($col, 'enum') !== false) {
-			return "enum($vals)";
-		}
-		return 'text';
-	}
-
-/**
  * Enter description here...
  *
  * @param unknown_type $results
@@ -784,6 +768,23 @@ class DboMysql extends DboMysqlBase {
  */
 	public function getEncoding() {
 		return mysql_client_encoding($this->connection);
+	}
+
+/**
+ * Query charset by collation
+ *
+ * @param string $name Collation name
+ * @return string Character set name
+ * @access public
+ */
+	public function getCharsetName($name) {
+		if ((bool)version_compare(mysql_get_server_info($this->connection), "5", ">=")) {
+			$cols = $this->query('SELECT CHARACTER_SET_NAME FROM INFORMATION_SCHEMA.COLLATIONS WHERE COLLATION_NAME= ' . $this->value($name) . ';');
+			if (isset($cols[0]['COLLATIONS']['CHARACTER_SET_NAME'])) {
+				return $cols[0]['COLLATIONS']['CHARACTER_SET_NAME'];
+			}
+		}
+		return false;
 	}
 }
 ?>

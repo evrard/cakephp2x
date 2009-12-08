@@ -26,7 +26,11 @@
  * @package       cake
  * @subpackage    cake.cake.libs
  */
+<<<<<<< HEAD
 final class String {
+=======
+class String {
+>>>>>>> cakephp/1.3
 
 /**
  * Generate a random UUID

@@ -694,8 +694,13 @@ class Model extends Overloadable {
 				if (is_array($joinClass)) {
 					$joinClass = key($joinClass);
 				}
-				list($plugin, $joinClass) = pluginSplit($joinClass, true);
-				$this->{$type}[$assocKey]['with'] = $joinClass;
+
+				$plugin = null;
+				if (strpos($joinClass, '.') !== false) {
+					list($plugin, $joinClass) = explode('.', $joinClass);
+					$plugin .= '.';
+					$this->{$type}[$assocKey]['with'] = $joinClass;
+				}
 
 				if (!ClassRegistry::isKeySet($joinClass) && $dynamicWith === true) {
 					$this->{$joinClass} = new AppModel(array(
@@ -1073,7 +1078,7 @@ class Model extends Overloadable {
 					return $data[$name[0]][$name[1]];
 				}
 			}
-			if (isset($data[0]) && count($data[0]) > 0) {
+			if (!empty($data[0])) {
 				$name = key($data[0]);
 				return $data[0][$name];
 			}
@@ -1299,14 +1304,6 @@ class Model extends Overloadable {
 			if (isset($this->hasAndBelongsToMany[$assoc])) {
 				list($join) = $this->joinModel($this->hasAndBelongsToMany[$assoc]['with']);
 
-				$conditions = array($join . '.' . $this->hasAndBelongsToMany[$assoc]['foreignKey'] => $id);
-
-				$links = $this->{$join}->find('all', array(
-					'conditions' => $conditions,
-					'recursive' => -1,
-					'fields' => $this->hasAndBelongsToMany[$assoc]['associationForeignKey']
-				));
-
 				$isUUID = !empty($this->{$join}->primaryKey) && (
 						$this->{$join}->_schema[$this->{$join}->primaryKey]['length'] === 36 && (
 						$this->{$join}->_schema[$this->{$join}->primaryKey]['type'] === 'string' ||
@@ -1337,7 +1334,7 @@ class Model extends Overloadable {
 						if ($isUUID && $primaryAdded) {
 							$values[] = $db->value(String::uuid());
 						}
-						$values = join(',', $values);
+						$values = implode(',', $values);
 						$newValues[] = "({$values})";
 						unset($values);
 					} elseif (isset($row[$this->hasAndBelongsToMany[$assoc]['associationForeignKey']])) {
@@ -1348,6 +1345,16 @@ class Model extends Overloadable {
 				}
 
 				if ($this->hasAndBelongsToMany[$assoc]['unique']) {
+					$conditions = array_merge(
+						array($join . '.' . $this->hasAndBelongsToMany[$assoc]['foreignKey'] => $id),
+						(array)$this->hasAndBelongsToMany[$assoc]['conditions']
+					);
+					$links = $this->{$join}->find('all', array(
+						'conditions' => $conditions,
+						'recursive' => empty($this->hasAndBelongsToMany[$assoc]['conditions']) ? -1 : 0,
+						'fields' => $this->hasAndBelongsToMany[$assoc]['associationForeignKey']
+					));
+
 					$associationForeignKey = "{$join}." . $this->hasAndBelongsToMany[$assoc]['associationForeignKey'];
 					$oldLinks = Set::extract($links, "{n}.{$associationForeignKey}");
 					if (!empty($oldLinks)) {
@@ -1365,7 +1372,7 @@ class Model extends Overloadable {
 				}
 
 				if (!empty($newValues)) {
-					$fields =  join(',', $fields);
+					$fields =  implode(',', $fields);
 					$db->insertMulti($this->{$join}, $fields, $newValues);
 				}
 			}
@@ -2349,6 +2356,8 @@ class Model extends Overloadable {
 /**
  * Returns true if all fields pass validation.
  *
+ * Will validate the currently set data.  Use Model::set() or Model::create() to set the active data.
+ *
  * @param string $options An optional array of custom options to be made available in the beforeValidate callback
  * @return boolean True if there are no errors
  * @access public
@@ -2367,6 +2376,7 @@ class Model extends Overloadable {
  *
  * @param string $options An optional array of custom options to be made available in the beforeValidate callback
  * @return array Array of invalid fields
+ * @see Model::validates()
  * @access public
  * @link http://book.cakephp.org/view/410/Validating-Data-from-the-Controller
  */

@@ -29,24 +29,26 @@
 class FileEngine extends CacheEngine {
 
 /**
- * settings
- * 		path = absolute path to cache directory, default => CACHE
- * 		prefix = string prefix for filename, default => cake_
- * 		lock = enable file locking on write, default => false
- * 		serialize = serialize the data, default => true
- *
- * @var array
- * @see CacheEngine::__defaults
- * @access public
- */
-	public $settings = array();
-/**
  * Instance of File class
  *
  * @var File
  * @access private
  */
 	private $__File = null;
+
+/**
+ * Settings
+ * 
+ * - path = absolute path to cache directory, default => CACHE
+ * - prefix = string prefix for filename, default => cake_
+ * - lock = enable file locking on write, default => false
+ * - serialize = serialize the data, default => true
+ *
+ * @var array
+ * @see CacheEngine::__defaults
+ * @access public
+ */
+	public $settings = array();
 
 /**
  * Set to true if FileEngine::init(); and FileEngine::__active(); do not fail.
@@ -171,10 +173,9 @@ class FileEngine extends CacheEngine {
 
 		if ($cachetime !== false && ($cachetime < $time || ($time + $this->settings['duration']) < $cachetime)) {
 			$this->__File->close();
-			$this->__File->delete();
 			return false;
 		}
-		$data = trim($this->__File->read(true));
+		$data = $this->__File->read(true);
 
 		if ($data !== '' && !empty($this->settings['serialize'])) {
 			if ($this->settings['isWindows']) {

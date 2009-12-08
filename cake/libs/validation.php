@@ -521,10 +521,10 @@ class Validation extends Object {
 		if (empty($check)) {
 			return false;
 		}
-		if ($options['max'] && sizeof($check) > $options['max']) {
+		if ($options['max'] && count($check) > $options['max']) {
 			return false;
 		}
-		if ($options['min'] && sizeof($check) < $options['min']) {
+		if ($options['min'] && count($check) < $options['min']) {
 			return false;
 		}
 		if ($options['in'] && is_array($options['in'])) {
@@ -662,10 +662,12 @@ class Validation extends Object {
 					$regex  = '/\\A\\b[0-9]{9}\\b\\z/i';
 					break;
 				case 'us':
-				default:
 					$regex  = '/\\A\\b[0-9]{3}-[0-9]{2}-[0-9]{4}\\b\\z/i';
 					break;
 			}
+		}
+		if (empty($regex)) {
+			return self::_pass('ssn', $check, $country);
 		}
 		return self::_check($check, $regex);
 	}
